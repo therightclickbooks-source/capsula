@@ -202,6 +202,9 @@
   table.hcp td{padding:5px 8px; border-bottom:1px solid var(--line)}
   table.hcp tr:last-child td{border-bottom:none}
   table.hcp td.rng{white-space:nowrap; color:var(--ok); font-weight:700; font-variant-numeric:tabular-nums}
+  .hcsem{display:flex; flex-direction:column; gap:6px; margin-top:10px; font-size:13px}
+  .hcsem .chip{margin-right:6px}
+  .gnote{font-size:12.5px; color:var(--faint); background:var(--surface2); border-radius:8px; padding:8px 12px; margin-top:8px}
 
   /* history */
   .sessrow{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:8px}
@@ -263,6 +266,93 @@
   .actionbar .btn{flex:1; max-width:480px}
   .banner{background:var(--warn-dim); color:var(--warn); font-size:13px; padding:8px 14px; border-radius:10px; margin-bottom:12px; display:none}
 
+  /* griglia domande: card di egual misura, effetto "corposo" alla pressione */
+  .qgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; max-width:840px; margin:18px auto 0}
+  .qgrid.zones{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); max-width:720px}
+  .qcard{
+    background:var(--surface); border:1.5px solid var(--line); border-radius:16px;
+    padding:20px 14px; text-align:center; cursor:pointer; user-select:none;
+    min-height:118px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    transition:transform .1s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  .qcard.slim{min-height:56px; padding:12px 10px}
+  .qcard .qi{font-size:30px; line-height:1}
+  .qcard .ql{font-weight:800; font-size:15.5px; letter-spacing:.01em}
+  .qcard .qs{font-size:12px; color:var(--faint); line-height:1.35}
+  .qcard:active{
+    transform:scale(.965);
+    background:linear-gradient(180deg, var(--accent-dim), var(--surface));
+    border-color:var(--accent);
+    box-shadow:inset 0 3px 10px rgba(0,0,0,.45), 0 0 0 4px var(--accent-dim);
+  }
+  .qcard.on{background:var(--accent-dim); border-color:var(--accent); box-shadow:inset 0 2px 8px rgba(0,0,0,.3)}
+  .qcard.on .ql{color:var(--accent-strong)}
+
+  /* sagoma corpo umano */
+  .bodywrap{display:flex; gap:26px; justify-content:center; margin:14px 0 6px}
+  .bodyfig{text-align:center}
+  .bodyfig svg{width:130px; height:auto; display:block}
+  .bodyfig .sil path, .bodyfig .sil circle{fill:var(--surface2); stroke:var(--line); stroke-width:1.5}
+  .bodyfig .bz rect{fill:transparent; stroke:var(--faint); stroke-width:1; stroke-dasharray:3 3; cursor:pointer; transition:fill .15s ease, stroke .15s ease}
+  .bodyfig .bz:active rect{fill:var(--accent-dim)}
+  .bodyfig .bz.on rect{fill:var(--accent); fill-opacity:.55; stroke:var(--accent-strong); stroke-dasharray:none; filter:drop-shadow(0 0 6px var(--accent))}
+  .bodylabel{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-top:6px}
+
+  /* slogan 25 milioni */
+  .slogan{
+    text-align:center; margin:20px auto 4px; max-width:640px;
+    font-size:13.5px; font-weight:700; letter-spacing:.06em; color:var(--accent-strong);
+    background:var(--accent-dim); border:1px solid var(--accent); border-radius:999px; padding:9px 20px;
+  }
+  .slogan b{font-variant-numeric:tabular-nums}
+
+  /* mascotte */
+  #mascot{
+    position:fixed; left:14px; bottom:96px; z-index:90; max-width:270px;
+    display:none; align-items:flex-end; gap:8px; cursor:pointer;
+  }
+  #mascot.show{display:flex}
+  #mascot .mz{
+    width:44px; height:44px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color:#fff; font-weight:800; font-size:20px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,.4); border:2px solid var(--bg);
+  }
+  #mascot .mb{
+    background:var(--surface2); border:1px solid var(--accent); border-radius:14px 14px 14px 4px;
+    padding:10px 14px; font-size:13px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.45);
+  }
+  #mascot .mb b{color:var(--accent-strong)}
+  @media (prefers-reduced-motion: no-preference){
+    #mascot.show{animation:mpop .3s ease}
+    @keyframes mpop{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+  }
+
+  /* stat tiles differenziate */
+  .stat{border-top:3px solid transparent}
+  .stat.s1{border-top-color:var(--accent)} .stat.s1 .n{color:var(--accent-strong)}
+  .stat.s2{border-top-color:var(--ok)} .stat.s2 .n{color:var(--ok)}
+  .stat.s3{border-top-color:#d4af37} .stat.s3 .n{color:#d4af37}
+  .stat .ic{font-size:15px; opacity:.8}
+
+  /* bottoni scheda cliente: stessa misura, colori diversi */
+  .btnrow.equal{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px}
+  .btnrow.equal .btn{width:100%; padding:15px 10px; font-size:15px}
+  .btn.info{background:rgba(143,178,201,.16); color:#9fc2d6; border:1px solid rgba(143,178,201,.4)}
+  .btn.info:active{background:rgba(143,178,201,.3)}
+
+  /* marcatori quadrati (valori da regolare) */
+  .marker.sq{border-radius:14px}
+
+  /* stella preferito e ripeti */
+  .starbtn,.repbtn{
+    margin-left:6px; background:none; border:1px solid var(--line); color:var(--faint);
+    border-radius:8px; width:36px; height:36px; font-size:16px; cursor:pointer; flex:none;
+  }
+  .starbtn.on{color:#d4af37; border-color:#d4af37; background:rgba(212,175,55,.12)}
+  .repbtn:active{color:var(--accent-strong); border-color:var(--accent)}
+  .starbtn:active{transform:scale(.88)}
+
   /* pressed feedback — elegante ma ben visibile */
   .btn,.tile,.seg .opt,.clientrow,.yn button,.pinpad button,.stepper button,.btn-back,.delbtn,.sw{
     transition:transform .09s ease, filter .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
@@ -279,7 +369,7 @@
     .btn:active,.tile:active,.seg .opt:active,.clientrow:active,.pinpad button:active,.stepper button:active,.yn button:active{transform:none}
   }
 
-  /* cestino sedute */
+  /* cestino sessioni */
   .delbtn{
     margin-left:8px; background:none; border:1px solid var(--line); color:var(--faint);
     border-radius:8px; width:36px; height:36px; font-size:15px; cursor:pointer; flex:none;
@@ -300,6 +390,7 @@
 <div id="app"></div>
 <div id="toast"></div>
 <div id="modal"></div>
+<div id="mascot" onclick="this.classList.remove('show')"><div class="mz">Z</div><div class="mb" id="mascotmsg"></div></div>
 
 <script>
 /* ================= ZENITH COPILOT ================= */
@@ -377,18 +468,30 @@ function idoneitaChip(st){
 
 /* ---------- programmi ---------- */
 const PROGRAMS = {
-  P01:{n:'Salute Totale', o:'Health Mode'},           P02:{n:'Regina — Bodycare', o:'Queen Bodycare'},
-  P03:{n:'Collo & Spalle', o:'Shoulder Care'},         P04:{n:'Sollievo Schiena', o:'Back Relieve'},
-  P05:{n:'Glutei & Zona Lombare', o:'Buttock & Waist'},P06:{n:'Rilassamento Muscolare', o:'Muscle Relax'},
-  P07:{n:'Anti-Indolenzimento', o:'Soreness Improvement'}, P08:{n:'Sollievo Gambe & Piedi', o:'Leg & Foot Relief'},
-  P09:{n:'Parte Alta', o:'Upper Body'},                P10:{n:'Parte Bassa', o:'Lower Body'},
-  P11:{n:'Tradizione Orientale', o:'TCM Massage'},     P12:{n:'Thai SPA', o:'Thai SPA'},
-  P13:{n:'Colletto Bianco', o:'White-collar'},         P14:{n:'Classico del Maestro', o:'Master Classic'},
-  P15:{n:'Risveglio', o:'Fresh Morning'},              P16:{n:'Pausa Pranzo', o:'Lunch Break'},
-  P17:{n:'Dondolio', o:'Shake Sleeping'},              P18:{n:'Buonanotte', o:'Sleep Aid at Night'},
-  P19:{n:'Executive', o:'CEO Fitness'},                P20:{n:'Lunga Guida', o:'Long-term Driving'},
-  P21:{n:'Recupero Sportivo', o:'Exercise Recovery'},  P22:{n:'Carezza', o:'Gently Rub Soothing'},
-  P23:{n:'Onda d\'Aria', o:'Airbag Massage'},          P24:{n:'Su Misura', o:'Customised'}
+  P01:{o:'Health Mode', d:'Percorso completo ed equilibrato dalla cervicale ai piedi', cat:['Tutti','Primo utilizzo']},
+  P02:{o:'Queen Bodycare', d:'Percorso femminile: manovre avvolgenti e compressione drenante', cat:['Vacufit','EMS2']},
+  P03:{o:'Shoulder Care', d:'Concentrato su collo, trapezi e spalle', cat:['Ufficio','Cervicale']},
+  P04:{o:'Back Relieve', d:'Dorsali e lombari con calore e pressioni lente e profonde', cat:['Schiena']},
+  P05:{o:'Buttock & Waist', d:'Vita, fianchi e glutei: l\'origine di molte tensioni lombari', cat:['Schiena','Matrix','Vacufit']},
+  P06:{o:'Muscle Relax', d:'Allungamento e trazione dolce di tutto il corpo (stretching)', cat:['EMS','Matrix']},
+  P07:{o:'Soreness Improvement', d:'Anti-indolenzimento profondo per i DOMS del giorno dopo', cat:['EMS','EMS2','Matrix']},
+  P08:{o:'Leg & Foot Relief', d:'Gambe e piedi: compressione a onde, frizione polpacci e rulli plantari', cat:['Vacufit','EMS2','Circolazione']},
+  P09:{o:'Upper Body', d:'Solo parte alta: cervicale, spalle, dorso e braccia', cat:['EMS','Ufficio']},
+  P10:{o:'Lower Body', d:'Solo dalla vita in giù: lombare basso, glutei, gambe e piedi', cat:['EMS2','Vacufit','Circolazione']},
+  P11:{o:'TCM Massage', d:'Digitopressione lenta ispirata alla medicina tradizionale cinese', cat:['Relax','Primo utilizzo']},
+  P12:{o:'Thai SPA', d:'Allungamenti e pressioni ampie in stile spa thailandese', cat:['Matrix','Relax']},
+  P13:{o:'White-collar', d:'Per chi vive alla scrivania: collo, trapezi, lombare e avambracci', cat:['Ufficio','Cervicale']},
+  P14:{o:'Master Classic', d:'La sequenza classica del massaggiatore esperto', cat:['Primo utilizzo','Relax']},
+  P15:{o:'Fresh Morning', d:'Ritmo vivace e tonificante per attivare corpo e circolazione', cat:['Energia']},
+  P16:{o:'Lunch Break', d:'Pausa rigenerante dolce di metà giornata', cat:['Relax','Ufficio']},
+  P17:{o:'Shake Sleeping', d:'Dondolio lento con stimolazione minima, come un\'amaca', cat:['Sonno','Soft']},
+  P18:{o:'Sleep Aid at Night', d:'Rituale serale lentissimo che accompagna verso il sonno', cat:['Sonno']},
+  P19:{o:'CEO Fitness', d:'Decontratturante collo/spalle + rilassamento profondo antistress', cat:['Ufficio','Stress']},
+  P20:{o:'Long-term Driving', d:'Reset dopo ore di guida: lombare, glutei, collo e spalle', cat:['Schiena','Circolazione']},
+  P21:{o:'Exercise Recovery', d:'Defaticamento profondo dei grandi gruppi muscolari dopo lo sforzo', cat:['EMS','EMS2','Matrix','Vacufit']},
+  P22:{o:'Gently Rub Soothing', d:'Il più delicato di tutti: sfregamento dolce a intensità minima', cat:['Primo utilizzo','Soft','Senior']},
+  P23:{o:'Airbag Massage', d:'Solo compressione ad aria stile pressoterapia, senza rulli', cat:['Vacufit','EMS2','Circolazione','Soft']},
+  P24:{o:'Customised', d:'Programma costruito su misura per il cliente e salvato (6 slot)', cat:['Tutti']}
 };
 
 /* posizione dei riquadri sui touchscreen (percentuali sull'immagine) */
@@ -414,39 +517,46 @@ const MUSICS = {
 
 /* Health Check — parametri e testi */
 const HC_TABLE = `<table class="hcp">
-  <tr><td>❤️ Battito cardiaco</td><td class="rng">60–100 /min</td><td>quanto lavora il cuore a riposo: stress e fatica lo alzano</td></tr>
-  <tr><td>🫁 Ossigenazione</td><td class="rng">95–99 %</td><td>quanto ossigeno viaggia nel sangue</td></tr>
-  <tr><td>🔄 Microcircolo</td><td class="rng">&gt; 79</td><td>quanto bene il sangue raggiunge i tessuti periferici</td></tr>
-  <tr><td>📈 Variabilità cardiaca</td><td class="rng">22–120 ms</td><td>la capacità di recupero del sistema nervoso: più è alta (nel range), meglio si recupera</td></tr>
-  <tr><td>⚡ Indice di fatica</td><td class="rng">Normale</td><td>la stanchezza complessiva del momento</td></tr>
-</table>`;
+  <tr style="background:var(--surface2)"><td style="font-size:10.5px; letter-spacing:.08em; color:var(--faint)">PARAMETRO</td><td style="font-size:10.5px; letter-spacing:.08em; color:var(--faint)">RANGE 🟢</td><td style="font-size:10.5px; letter-spacing:.08em; color:var(--faint)">COSA MISURA</td><td style="font-size:10.5px; letter-spacing:.08em; color:var(--faint)">DOPO LA SESSIONE CI ASPETTIAMO</td></tr>
+  <tr><td>❤️ Battito cardiaco</td><td class="rng">60–100 /min</td><td>quanto lavora il cuore a riposo: stress e fatica lo alzano</td><td>↓ tende a scendere di qualche battito (con i protocolli Energia può restare uguale o salire un po': è normale)</td></tr>
+  <tr><td>🫁 Ossigenazione</td><td class="rng">95–99 %</td><td>quanto ossigeno viaggia nel sangue</td><td>= stabile nel range (già alta di suo)</td></tr>
+  <tr><td>🔄 Microcircolo</td><td class="rng">&gt; 79</td><td>quanto bene il sangue raggiunge i tessuti periferici</td><td>↑ tende a salire: trattamento e calore riattivano la circolazione</td></tr>
+  <tr><td>📈 Variabilità cardiaca</td><td class="rng">22–120 ms</td><td>la capacità di recupero del sistema nervoso</td><td>↑ tende a salire nel range: il recupero si è attivato</td></tr>
+  <tr><td>⚡ Indice di fatica</td><td class="rng">Normale</td><td>la stanchezza complessiva del momento</td><td>↓ tende a migliorare verso “Normale”</td></tr>
+</table>
+<div class="hcsem">
+  <span class="chip ok">🟢 Nel range</span> tutto regolare: si legge il valore al cliente e si prosegue.
+  <span class="chip amb">🟡 Fuori range una volta</span> quasi sempre dito freddo o mal posizionato: si ripete il test (“Retest”).
+  <span class="chip red">🔴 Fuori range persistente</span> sessione più soft; se c'è anche malessere si rimanda, suggerendo con delicatezza il medico.
+</div>
+<p style="font-size:12px; color:var(--faint); margin:8px 0 0">⚠ Le attese “dopo la sessione” sono tendenze statistiche di benessere, variano da persona a persona e in base al protocollo scelto: <b>non sono dati scientifici né medici</b> e non vanno mai usati per diagnosi. Servono solo a raccontare al cliente, coi suoi numeri, la direzione del suo rilassamento.</p>`;
 const HC_START_EXTRA = `<div class="hcbox">
   <div class="hct">Cosa dire al cliente</div>
-  <div class="script">«Prima di partire facciamo la tua fotografia d'ingresso: appoggia l'indice sul sensore, la capsula misura battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine seduta la ripetiamo: vedrai coi tuoi occhi cosa è cambiato.»</div>
-  <div class="hct">I 5 parametri e i valori di riferimento</div>
+  <div class="script">«Prima di partire misuriamo i tuoi parametri d'ingresso: appoggia l'indice sul sensore. La capsula legge battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine sessione rimisuriamo e confrontiamo.»</div>
+  <div class="hct">Importante: la capsula non memorizza i valori</div>
+  Il display mostra solo la misura corrente. Quindi allo START <b>leggi i valori ad alta voce insieme al cliente</b> e tenete a mente i due chiave: <b>battito</b> e <b>indice di fatica</b>. Il confronto di fine sessione si fa a voce, ed è ancora più coinvolgente.
+  <div class="hct">I 5 parametri, i range e cosa aspettarsi</div>
   ${HC_TABLE}
-  <div class="hct">Se un valore è fuori range</div>
-  Niente allarmismi: la causa più comune è il dito freddo o mal posizionato → <b>ripetere il test</b> ("Retest"). Se resta anomalo: seduta più soft e frase con delicatezza: <i>«questo sensore non è uno strumento medico e non fa diagnosi — se il valore ti incuriosisce, parlane col tuo medico»</i>. Se il cliente riferisce anche malessere, meglio rimandare la seduta. Mai interpretare i valori come diagnosi.
 </div>`;
 const HC_END_EXTRA = `<div class="hcbox">
   <div class="hct">La domanda di chiusura — sempre</div>
   <div class="script">«Hai fatto il test di uscita?» — si chiede prima che il cliente scenda dalla capsula, quando è ancora seduto e rilassato.</div>
-  <div class="hct">Cosa osservare e cosa dire</div>
-  Confronta col test d'ingresso: tipicamente <b>battito più basso</b>, <b>indice di fatica migliorato</b>, microcircolo più alto (merito di massaggio e calore). La frase che vale la seduta: <div class="script">«Guarda qui: sei entrato con il battito a X e l'indice di fatica alto, esci con Y e fatica normale. Questo è quello che Zenith ha fatto per te oggi.»</div>
-  Se un valore non è migliorato: nessun dramma — <i>«ogni corpo risponde coi suoi tempi: è proprio per questo che misuriamo, per calibrare la prossima seduta su di te»</i>.
+  <div class="hct">Come si fa il confronto</div>
+  La capsula mostra solo la misura corrente: il confronto è <b>a voce</b>, con i valori letti insieme allo START. Tipicamente: <b>battito più basso</b>, <b>indice di fatica migliorato</b>, microcircolo più alto. La frase che vale la sessione: <div class="script">«Sei entrato con il battito più alto e la fatica su, esci con il battito giù e fatica normale: questo è quello che Zenith ha fatto per te oggi.»</div>
+  Se un valore non è migliorato: nessun dramma — <i>«ogni corpo risponde coi suoi tempi: è proprio per questo che misuriamo, per calibrare la prossima sessione su di te»</i>.
 </div>`;
 
 /* famiglie di protocollo Z */
 const ZFAM = {
-  Z1:{name:'Zenith Benvenuto', color:'#c3cad4', who:'Prima seduta in capsula', why:'La prima esperienza decide se il cliente tornerà: tutto dolce, timer breve, ogni sensazione spiegata.', adv:'Ingresso morbido e sicuro nel mondo Zenith.'},
+  Z1:{name:'Zenith Benvenuto', color:'#c3cad4', who:'Prima sessione in capsula', why:'La prima esperienza decide se il cliente tornerà: tutto dolce, timer breve, ogni sensazione spiegata.', adv:'Ingresso morbido e sicuro nel mondo Zenith.'},
   Z2:{name:'Zenith Recupero', color:'#b3799a', who:'Dopo EMS o allenamento Matrix', why:'L\'allenamento intenso lascia i muscoli affaticati e "pieni": questa famiglia trasforma la fatica in recupero.', adv:'Defaticamento profondo dei gruppi muscolari lavorati: l\'allenamento si trasforma in risultato.'},
   Z3:{name:'Zenith Gambe Leggere', color:'#77b795', who:'Dopo Vacufit · gambe pesanti o gonfie', why:'Compressione a onde, rulli plantari e gambe sopra il cuore per accompagnare i liquidi verso l\'alto.', adv:'Leggerezza immediata alle gambe e spinta al ritorno venoso.'},
   Z4:{name:'Zenith Schiena', color:'#dcab63', who:'Tensioni dorsali, lombari o ai glutei', why:'Calore in fibra di carbone + manovre lente e profonde lungo i paravertebrali, all\'origine della tensione.', adv:'Sollievo e scioglimento della rigidità di schiena e zona lombare.'},
   Z5:{name:'Zenith Collo & Spalle', color:'#8fb2c9', who:'Cervicale e spalle da ufficio o guida', why:'Ore di scrivania induriscono trapezi e collo: lavoro mirato sulla parte alta con airbag di spalle e braccia.', adv:'Spalle giù e collo libero: cancella la postura da monitor.'},
   Z6:{name:'Zenith Sonno & Relax', color:'#7d7ce0', who:'Stress, agitazione, sonno difficile', why:'Manovre lentissime, ioni, musica e dondolio per abbassare i giri del sistema nervoso.', adv:'Rilassamento profondo che prepara il corpo al sonno.'},
-  Z7:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione massaggio.', adv:'Accende corpo, circolazione e lucidità in 15 minuti.'},
+  Z7:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione trattamento.', adv:'Accende corpo, circolazione e lucidità in 15 minuti.'},
   Z8:{name:'Zenith Total Body', color:'#9aa66f', who:'Benessere generale, nessuna esigenza specifica', why:'Riequilibrio completo dalla nuca ai piedi quando non c\'è una zona o un obiettivo dominante.', adv:'Il check-up del benessere: tutto il corpo, senza stressare nulla.'},
-  Z9:{name:'Zenith Su Misura', color:'#cf94b4', who:'Clienti abituali di qualunque categoria', why:'Il programma costruito sulle preferenze del cliente e salvato col suo nome nella capsula (P24).', adv:'La sua seduta perfetta, ripetibile con un solo tasto.'}
+  Z9:{name:'Zenith Su Misura', color:'#cf94b4', who:'Clienti abituali di qualunque categoria', why:'Il programma costruito sulle preferenze del cliente e salvato col suo nome nella capsula (P24).', adv:'La sua sessione perfetta, ripetibile con un solo tasto.'}
 };
 
 /* ---------- MOTORE PROTOCOLLI ---------- */
@@ -459,57 +569,78 @@ function buildProtocol(client, quiz){
   let S = {...m};
   let prog=null, fam='Z8', why=[];
 
+  const zones = quiz.zones || [];
+  const has = z => zones.includes(z);
+  const painZone = has('dorsale') || has('lombare') || has('glutei') || has('cervicale');
+
   const now = new Date().getHours();
   const when = quiz.when || (now<12?'mattina': now<16?'pranzo':'sera');
 
-  /* 1. prima seduta → profilo di benvenuto */
+  /* 1. prima sessione → profilo di benvenuto */
   if (firstTime){
     prog = (client.anamnesi && client.anamnesi.prefIntensita==='deciso') ? 'P01' : 'P22';
     fam='Z1';
     S.timer=15; S.intensita=Math.min(S.intensita,2); S.fourD=Math.min(S.fourD,2); S.airbag=Math.min(S.airbag,2);
-    why.push('Prima seduta in capsula: si parte dolcemente per far conoscere ogni sensazione.');
+    why.push('Prima sessione in capsula: si parte dolcemente per far conoscere ogni sensazione.');
   }
-  /* 2. dolore/zona da trattare */
-  else if (quiz.goal==='sollievo' || ['schiena','lombare','glutei','cervicale'].includes(quiz.zone)){
-    if (quiz.zone==='glutei'){ prog='P05'; fam='Z4'; why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.'); }
-    else if (quiz.zone==='cervicale'){ prog = quiz.activity==='riposo' ? 'P13':'P03'; fam='Z5'; why.push('Focus su collo, trapezi e spalle, la zona indicata come tesa.'); }
+  /* 2. sollievo mirato / zone di tensione */
+  else if (quiz.goal==='sollievo' || (painZone && quiz.goal!=='drenaggio' && quiz.goal!=='energia')){
+    if (has('glutei') && !has('dorsale')){ prog='P05'; fam='Z4'; why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.'); }
+    else if (has('cervicale') && !has('dorsale') && !has('lombare')){ prog = quiz.activity==='riposo' ? 'P13':'P03'; fam='Z5'; why.push('Focus su collo, trapezi e spalle, le zone indicate come tese.'); }
+    else if (has('braccia') && !painZone){ prog='P09'; fam='Z5'; why.push('Parte alta al centro: braccia e spalle indicate come zone del giorno.'); }
     else { prog='P04'; fam='Z4'; why.push('Programma dedicato al tratto dorso-lombare con calore attivo.'); }
     S.intensita=Math.min(S.intensita, 3); S.calore = !an.caloreSensibile;
   }
   /* 3. attività di oggi */
   else if (quiz.activity==='ems'){
-    prog = quiz.mood==='dolorante' ? 'P07' : 'P21'; fam='Z2';
-    why.push(quiz.mood==='dolorante' ? 'DOMS da EMS: manovre lente e profonde anti-indolenzimento.' : 'Dopo l\'EMS il recupero è parte del metodo: defaticamento completo.');
+    if (has('braccia') && !has('gambe')){ prog='P09'; fam='Z2'; why.push('EMS sulla parte alta: recupero mirato di spalle, dorso e braccia.'); }
+    else { prog = quiz.mood==='dolorante' ? 'P07' : 'P21'; fam='Z2';
+      why.push(quiz.mood==='dolorante' ? 'DOMS da EMS: manovre lente e profonde anti-indolenzimento.' : 'Dopo l\'EMS il recupero è parte del metodo: defaticamento completo.'); }
+  }
+  else if (quiz.activity==='ems2'){
+    if (quiz.mood==='dolorante'){ prog='P07'; fam='Z2'; why.push('EMS2 con muscoli indolenziti: prima si scioglie, poi si drena.'); }
+    else if (quiz.prefSoloAria){ prog='P23'; fam='Z3'; why.push('Dopo EMS2 (tonificante + drenante): compressione pura per completare il lavoro di compattezza.'); }
+    else if (quiz.goal==='recupero' && !has('gambe')){ prog='P21'; fam='Z2'; why.push('EMS2 total body: defaticamento completo dei gruppi lavorati.'); }
+    else { prog='P08'; fam='Z3'; why.push('Dopo EMS2: gambe e piedi al centro per prolungare l\'effetto tonificante-drenante e la sensazione di compattezza.'); }
+    S.zerog=true; S.airbag=Math.max(S.airbag,4); S.plantari=Math.max(S.plantari,2); S.polpacci=Math.max(S.polpacci,2);
   }
   else if (quiz.activity==='vacufit'){
     fam='Z3';
-    if (client.genere==='F' && (quiz.goal==='relax'||quiz.goal==='drenaggio')) { prog='P02'; why.push('Percorso Regina: completa il lavoro drenante del Vacufit con manovre avvolgenti.'); }
+    if (client.genere==='F' && (quiz.goal==='relax'||quiz.goal==='drenaggio')) { prog='P02'; why.push('Percorso Queen Bodycare: completa il lavoro drenante del Vacufit con manovre avvolgenti.'); }
     else if (quiz.prefSoloAria){ prog='P23'; why.push('Solo compressione d\'aria: effetto pressoterapia senza rulli.'); }
     else { prog='P08'; why.push('Gambe e piedi al centro: prolunga l\'effetto leggerezza del Vacufit.'); }
     S.zerog=true; S.airbag=Math.max(S.airbag,4); S.plantari=Math.max(S.plantari,2); S.polpacci=Math.max(S.polpacci,2);
   }
   else if (quiz.activity==='matrix'){
     fam='Z2';
-    if (quiz.zone==='gambe'){ prog='P10'; why.push('Leg day: tutto il lavoro sulla parte bassa.'); }
-    else if (quiz.zone==='braccia'){ prog='P09'; why.push('Upper day: recupero mirato della parte alta.'); }
+    if (has('gambe')||has('glutei')){ prog='P10'; why.push('Leg day: tutto il lavoro sulla parte bassa.'); }
+    else if (has('braccia')){ prog='P09'; why.push('Upper day: recupero mirato della parte alta.'); }
     else if (quiz.goal==='relax'){ prog='P12'; fam='Z8'; why.push('Total body + relax: stile Thai SPA, allunga e distende.'); }
     else { prog='P21'; why.push('Allenamento completo in sala: defaticamento da professionisti.'); }
   }
   /* 4. obiettivi senza allenamento */
   if (!prog){
-    if (quiz.goal==='drenaggio' || quiz.zone==='gambe'){ prog = quiz.prefSoloAria?'P23':'P08'; fam='Z3'; S.zerog=true; S.airbag=Math.max(S.airbag,4); why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
+    if (quiz.goal==='drenaggio' || has('gambe') || has('piedi')){ prog = quiz.prefSoloAria?'P23':'P08'; fam='Z3'; S.zerog=true; S.airbag=Math.max(S.airbag,4); why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
     else if (quiz.goal==='sonno' || (when==='sera' && quiz.goal==='relax')){ prog = quiz.mood==='stressato'?'P17':'P18'; fam='Z6'; S.ioni=true; S.intensita=Math.min(S.intensita,2); why.push('Rituale serale: prepara il corpo al sonno.'); }
-    else if (quiz.goal==='relax'){ prog = when==='pranzo'?'P16':(quiz.mood==='stressato'?'P19':'P11'); fam = when==='pranzo'?'Z8':'Z6'; S.ioni=true; why.push('Decompressione: massaggio lento e atmosfera rilassante.'); }
+    else if (quiz.goal==='relax'){ prog = when==='pranzo'?'P16':(quiz.mood==='stressato'?'P19':'P11'); fam = when==='pranzo'?'Z8':'Z6'; S.ioni=true; why.push('Decompressione: trattamento lento e atmosfera rilassante.'); }
     else if (quiz.goal==='energia'){ prog='P15'; fam='Z7'; S.zerog=false; S.timer=Math.min(S.timer,15); S.plantari=3; why.push('Ritmo tonificante che accende corpo e circolazione.'); }
   }
   /* 5. fallback benessere */
   if (!prog){ prog = quiz.mood==='sereno' ? 'P14':'P01'; fam='Z8'; why.push('Riequilibrio completo dalla nuca ai piedi.'); }
 
+  /* pressione desiderata oggi (Q5) */
+  if (quiz.pressione==='dolce'){ S.intensita=Math.max(0,S.intensita-1); S.fourD=Math.max(0,S.fourD-1); why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.'); }
+  if (quiz.pressione==='decisa'){ S.intensita=Math.min(6,S.intensita+1); S.fourD=Math.min(6,S.fourD+1); why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.'); }
+
   /* vincoli anamnesi */
   if (an.caloreSensibile){ S.calore=false; why.push('Calore disattivato: sensibilità dichiarata in anamnesi.'); }
   if (soft){ S.intensita=Math.min(S.intensita,2); S.fourD=Math.min(S.fourD,2); S.airbag=Math.min(S.airbag,3); why.push('Profilo soft: idoneità con certificato medico.'); }
+  if (zones.length>1){
+    const labels = {cervicale:'collo/spalle', braccia:'braccia', dorsale:'dorsale', lombare:'lombare', glutei:'glutei', gambe:'gambe', piedi:'piedi'};
+    why.push('Zone selezionate oggi: '+zones.map(z=>labels[z]||z).join(', ')+' — la prima guida il programma, le altre si rifiniscono con airbag e regolazioni.');
+  }
   const zoneTese = (an.zone||[]);
-  if (zoneTese.length) why.push('Zone segnalate in anamnesi: '+zoneTese.join(', ')+' — chiedi conferma della pressione durante la seduta.');
+  if (zoneTese.length) why.push('Zone segnalate in anamnesi: '+zoneTese.join(', ')+' — chiedi conferma della pressione durante la sessione.');
 
   /* musica */
   let mus = 'Soothing';
@@ -521,13 +652,17 @@ function buildProtocol(client, quiz){
   if (quiz.mood==='stressato' && fam!=='Z7') mus='Mental';
   S.musica = mus;
 
-  const zCode = `${fam}·${prog}·I${S.intensita}D${S.fourD}A${S.airbag}${S.calore?'C':''}${S.zerog?'G':''}`;
+  const zCode = zCodeOf(fam, prog, S);
   return { prog, fam, S, why, zCode };
+}
+function zCodeOf(fam, prog, S){
+  return `${fam}·${prog}·I${S.intensita}D${S.fourD}A${S.airbag}${S.calore?'C':''}${S.zerog?'G':''}`;
 }
 
 /* ---------- passi guidati con schermate ---------- */
 function buildSteps(prot){
   const {prog, S} = prot;
+  prot.quizZones = prot.quizZones || (typeof quizState!=='undefined' && quizState.zones ? quizState.zones : []);
   const steps = [];
   const P = PROGRAMS[prog];
 
@@ -544,25 +679,33 @@ function buildSteps(prot){
     const scr = PROGRAM_SCREEN[prog];
     const swipe = scr==='modes1' ? '' : scr==='modes2' ? ' (scorri alla 2ª schermata)' : ' (scorri alla 3ª schermata)';
     steps.push({img:scr, title:`Scegli il programma${swipe}`,
-      markers:[{pos:TILE[scr][prog], label:`Tocca “${P.o}” — ${P.n}`}]});
+      markers:[{pos:TILE[scr][prog], label:`Tocca “${P.o}” (programma ${prog})`}]});
   }
 
   const am = [];
-  am.push({pos:TILE.auto.FOURD_P, label:`Profondità 4D → porta a ${S.fourD} (tocca 4D+/4D−)`});
-  am.push({pos:TILE.auto.AIR_P, label:`Forza airbag → porta a ${S.airbag} (Airbag strength +/−)`});
+  am.push({pos:TILE.auto.FOURD_P, type:'set', label:`Profondità 4D → porta il valore a ${S.fourD} (tocca 4D+/4D−)`});
+  am.push({pos:TILE.auto.AIR_P, type:'set', label:`Forza airbag → porta il valore a ${S.airbag} (Airbag strength +/−)`});
   if (S.calore) am.push({pos:TILE.auto.HEAT, label:'Attiva “Heating” (calore lombare)'});
   if (S.ioni) am.push({pos:TILE.auto.ION, label:'Attiva “Negative Ion”'});
-  if (S.timer!==20) am.push({pos:TILE.auto.TIME, label:`Tocca “Time” fino a ${S.timer} min`});
+  if (S.timer!==20) am.push({pos:TILE.auto.TIME, type:'set', label:`Tocca “Time” fino a ${S.timer} min`});
   if (S.zerog) am.push({pos:TILE.auto.ZEROG, label:'Attiva Zero Gravity (icona a destra)'});
   else am.push({pos:TILE.auto.BACK_UP, label:'Niente zero gravity: postura attiva, schienale più alto se serve'});
   if (S.polpacci>0) am.push({pos:TILE.auto.CALF_KN, label:`“Calf Kneading” attivo (frizione polpacci, livello ${S.polpacci})`});
   if (S.plantari>0) am.push({pos:TILE.auto.FOOT, label:`“Foot Roller” attivo (rulli plantari, velocità ${S.plantari})`});
   steps.push({img:'auto', title:'Regola i parametri sulla schermata del programma', markers:am});
 
+  const zsel = (prot.quizZones||[]);
+  if ((zsel.includes('braccia') || zsel.length>1) && prog!=='P23'){
+    const zl = {cervicale:'spalle', braccia:'braccia', dorsale:'vita/schiena', lombare:'vita', glutei:'vita/fianchi', gambe:'gambe', piedi:'gambe'};
+    const parts = [...new Set(zsel.map(z=>zl[z]).filter(Boolean))].join(', ');
+    steps.push({img:'airbag', title:'Rifinisci le zone di compressione (per le zone extra scelte)',
+      markers:[{pos:[50,55], label:`Dal menu “Airbag” attiva la compressione anche su: ${parts}`}]});
+  }
+
   steps.push({img:'music', title:'Imposta l\'atmosfera sonora',
     markers:[
       {pos:TILE.music[S.musica], label:`Dal menu “Music mode”: scegli “${MUSICS[S.musica]}”`},
-      {pos:TILE.music.VOL, label:'Volume basso: deve accompagnare, non coprire'}
+      {pos:TILE.music.VOL, type:'set', label:'Volume basso ≈ ⅓ della scala: il numero compare tra i tasti + e − accanto all\'altoparlante. La musica deve accompagnare la voce, mai coprirla'}
     ]});
 
   if (prog==='P23'){
@@ -571,7 +714,7 @@ function buildSteps(prot){
   }
 
   steps.push({img:'home', kind:'end', title:'END SEDUTA — Health Check d\'uscita',
-    markers:[{pos:TILE.home.HEALTH, label:'A massaggio terminato, prima di far scendere il cliente: di nuovo “Health Check” dalla Home e confronto con i valori d\'ingresso.'}],
+    markers:[{pos:TILE.home.HEALTH, label:'A trattamento terminato, prima di far scendere il cliente: di nuovo “Health Check” dalla Home e confronto con i valori d\'ingresso.'}],
     extra: HC_END_EXTRA});
   return steps;
 }
@@ -585,7 +728,7 @@ let draftClient = null;
 
 function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg){ const t=document.getElementById('toast'); t.innerHTML=msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none', 3200); }
-function go(name, data={}){ VIEW={name,...data}; render(); window.scrollTo(0,0); }
+function go(name, data={}){ VIEW={name,...data}; render(); window.scrollTo(0,0); try{ pokeMascot(); }catch(e){} }
 function initials(c){ return (c.nome[0]||'')+(c.cognome[0]||''); }
 function fmtDate(iso){ const d=new Date(iso); return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -623,21 +766,22 @@ function vHome(){
   const today = new Date().toDateString();
   const sToday = DB.sessions.filter(s=>new Date(s.date).toDateString()===today).length;
   return topbar('Zenith Copilot') + `
+    <div class="slogan">✦ <b>25.000.000</b> di combinazioni · nessuna sessione è mai uguale ✦</div>
     <div class="tilegrid">
-      <div class="tile" onclick="go('checkin')"><div class="ic">🚪</div><div class="tt">Check-in seduta</div><div class="td">Chi sta entrando in capsula?</div></div>
+      <div class="tile" onclick="go('checkin')"><div class="ic">🚪</div><div class="tt">Check-in sessione</div><div class="td">Chi sta entrando in capsula?</div></div>
       <div class="tile" onclick="go('clients')"><div class="ic">👥</div><div class="tt">Clienti</div><div class="td">Anagrafica, anamnesi, storico</div></div>
-      <div class="tile" onclick="go('history')"><div class="ic">📜</div><div class="tt">Storico sedute</div><div class="td">Tutti i protocolli effettuati</div></div>
-      <div class="tile" onclick="go('legend')"><div class="ic">📖</div><div class="tt">Protocolli & Legenda</div><div class="td">Le famiglie Z e come si legge un codice</div></div>
+      <div class="tile" onclick="go('history')"><div class="ic">📜</div><div class="tt">Storico sessioni</div><div class="td">Tutti i protocolli effettuati</div></div>
+      <div class="tile" onclick="LEGEND_BACK='home'; go('legend')"><div class="ic">📖</div><div class="tt">Protocolli & Legenda</div><div class="td">Le famiglie Z e come si legge un codice</div></div>
       <div class="tile" onclick="go('manual')"><div class="ic">📚</div><div class="tt">Guida all'uso</div><div class="td">Il manuale del gestionale, passo per passo</div></div>
       <div class="tile" onclick="go('settings')"><div class="ic">⚙️</div><div class="tt">Impostazioni</div><div class="td">PIN, backup, livelli badge</div></div>
     </div>
     <div class="statrow">
-      <div class="stat"><div class="n">${DB.clients.length}</div><div class="l">Clienti</div></div>
-      <div class="stat"><div class="n">${sToday}</div><div class="l">Sedute oggi</div></div>
-      <div class="stat"><div class="n">${DB.sessions.length}</div><div class="l">Sedute totali</div></div>
+      <div class="stat s1"><div class="ic">👥</div><div class="n">${DB.clients.length}</div><div class="l">Clienti</div></div>
+      <div class="stat s2"><div class="ic">📅</div><div class="n">${sToday}</div><div class="l">Sessioni oggi</div></div>
+      <div class="stat s3"><div class="ic">🏆</div><div class="n">${DB.sessions.length}</div><div class="l">Sessioni totali</div></div>
     </div>
     <div class="call acc" style="margin-top:22px"><b class="tt">Promemoria</b>
-    Un ciclo in capsula dura al massimo 20–30 minuti; per ripetere sulla stessa zona servono almeno 30 minuti di pausa. La capsula è uno strumento di benessere e non sostituisce il parere medico.</div>`;
+    Una sessione in capsula dura al massimo 20–30 minuti; per ripetere sulla stessa zona servono almeno 30 minuti di pausa. La capsula è uno strumento di benessere e non sostituisce il parere medico.</div>`;
 }
 
 /* ---------- CLIENTI ---------- */
@@ -660,7 +804,7 @@ function clientRows(list){
     return `<div class="clientrow" onclick="go('client',{id:'${c.id}'})">
       <div class="avatar" style="background:${lv.color}; color:#111">${esc(initials(c))}</div>
       <div class="cn"><div class="nm">${esc(c.nome)} ${esc(c.cognome)}</div>
-      <div class="sub">${DB.sessions.filter(s=>s.clientId===c.id).length} sedute · ${pts} punti</div></div>
+      <div class="sub">${DB.sessions.filter(s=>s.clientId===c.id).length} sessioni · ${pts} punti</div></div>
       ${st!=='ok'?idoneitaChip(st):''}
       <span class="badge" style="background:${lv.color}">${lv.emoji} ${lv.name}</span>
     </div>`;
@@ -697,14 +841,15 @@ function vClient(){
         <span class="badge" style="background:${lv.color}; font-size:13px">${lv.emoji} ${lv.name}</span>
         <div style="font-size:22px;font-weight:800;margin-top:6px">${pts} <small style="font-size:12px;color:var(--faint)">punti</small></div>
         ${nx?`<div class="pbar"><div class="fill" style="width:${Math.min(100,Math.round(pts/nx.pts*100))}%"></div></div>
-        <div style="font-size:11.5px;color:var(--faint)">${nx.pts-pts} punti a ${nx.name} (${(nx.pts-pts)/10} sedute)</div>`:'<div style="font-size:11.5px;color:var(--faint)">Livello massimo 💎</div>'}
+        <div style="font-size:11.5px;color:var(--faint)">${nx.pts-pts} punti a ${nx.name} (${(nx.pts-pts)/10} sessioni)</div>`:'<div style="font-size:11.5px;color:var(--faint)">Livello massimo 💎</div>'}
       </div>
     </div>
-    <div class="btnrow">
-      <button class="btn" onclick="startCheckinFor('${c.id}')">▶ Nuova seduta</button>
-      <button class="btn sec" onclick="editClient('${c.id}')">✎ Modifica scheda & anamnesi</button>
-      <button class="btn danger" onclick="delClient('${c.id}')">Elimina</button>
+    <div class="btnrow equal">
+      <button class="btn" onclick="startCheckinFor('${c.id}')">▶ Nuova sessione</button>
+      <button class="btn info" onclick="editClient('${c.id}')">✎ Scheda & anamnesi</button>
+      <button class="btn danger" onclick="delClient('${c.id}')">🗑 Elimina</button>
     </div>
+    ${(()=>{ const fav = DB.sessions.filter(s=>s.clientId===c.id && s.fav)[0]; return fav ? `<button class="btn sec" style="width:100%; margin-bottom:6px" onclick="repeatSession('${fav.id}')">⭐ Ripeti la sua preferita — ${esc(fav.zCode)}</button>` : ''; })()}
 
     <h2>Anamnesi <small style="font-size:12px;color:var(--faint);font-weight:400">aggiornata ${an.aggiornata?fmtDate(an.aggiornata):'—'}</small></h2>
     <div class="card">
@@ -721,10 +866,10 @@ function vClient(){
 
     <h2>Macro-parametri di default</h2>
     <div class="card"><div class="settinggrid">${macroCells(effMacro(c))}</div>
-    <p class="hint" style="margin:8px 0 0">Punto di partenza di ogni seduta: il motore li adatta poi a questionario e anamnesi.</p></div>
+    <p class="hint" style="margin:8px 0 0">Punto di partenza di ogni sessione: il motore li adatta poi a questionario e anamnesi.</p></div>
 
-    <h2>Storico sedute (${sess.length})</h2>
-    ${sess.length?sess.map(sessRow).join(''):'<p class="hint">Ancora nessuna seduta registrata.</p>'}`;
+    <h2>Storico sessioni (${sess.length})</h2>
+    ${sess.length?sess.map(sessRow).join(''):'<p class="hint">Ancora nessuna sessione registrata.</p>'}`;
 }
 function effMacro(c){
   if (c.macro) return c.macro;
@@ -750,16 +895,26 @@ function sessRow(s){
   return `<div class="sessrow">
     <div class="top"><span class="zd" style="background:${fam.color}"></span>
       <span class="zc">${esc(s.zCode)}</span>
-      <span class="chip acc">${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].n:s.prog)}</span>
+      <span class="chip acc">${s.prog} · ${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].o:'')}</span>
       <span class="dt">${fmtDate(s.date)}</span>
-      <button class="delbtn" title="Cancella seduta" onclick="delSession('${s.id}', event)">🗑</button></div>
+      <button class="starbtn ${s.fav?'on':''}" title="Preferita" onclick="toggleFav('${s.id}', event)">★</button>
+      <button class="repbtn" title="Ripeti questa sessione" onclick="repeatSession('${s.id}', event)">↻</button>
+      <button class="delbtn" title="Cancella sessione" onclick="delSession('${s.id}', event)">🗑</button></div>
     <div class="det">${fam.name} · ${esc(s.quizLabel||'')}${(s.healthIn||s.healthOut)?` · Health Check: ${s.healthIn?'IN ✓':'IN –'} / ${s.healthOut?'OUT ✓':'OUT –'}`:''}${s.notes?' · '+esc(s.notes):''} · +10 punti</div>
   </div>`;
 }
 function askCode(title, message, cb){
   if(!DB.delHash){
-    toast('Prima imposta il codice di cancellazione nelle Impostazioni');
-    go('settings'); return;
+    const m = document.getElementById('modal');
+    m.innerHTML = `<div class="mcard">
+      <div class="mt">Serve il codice di cancellazione</div>
+      <div class="mm">Per eliminare sessioni o anagrafiche va prima creato il <b>codice segreto di cancellazione</b> (4–6 cifre). Si registra una sola volta nelle Impostazioni, sezione Sicurezza.</div>
+      <div class="mrow">
+        <button class="btn sec" onclick="closeModal()">Annulla</button>
+        <button class="btn" onclick="closeModal(); go('settings')">Vai alle Impostazioni</button>
+      </div></div>`;
+    m.classList.add('open');
+    return;
   }
   const m = document.getElementById('modal');
   m.innerHTML = `<div class="mcard">
@@ -785,7 +940,7 @@ function delClient(id){
   const c = DB.clients.find(x=>x.id===id);
   const n = DB.sessions.filter(s=>s.clientId===id).length;
   askCode('Eliminare questa anagrafica?',
-    `Stai per eliminare <b>${esc(c.nome)} ${esc(c.cognome)}</b> con ${n} sedute e tutti i suoi punti. Operazione irreversibile: inserisci il codice di cancellazione.`,
+    `Stai per eliminare <b>${esc(c.nome)} ${esc(c.cognome)}</b> con ${n} sessioni e tutti i suoi punti. Operazione irreversibile: inserisci il codice di cancellazione.`,
     ()=>{ DB.clients = DB.clients.filter(x=>x.id!==id);
           DB.sessions = DB.sessions.filter(s=>s.clientId!==id);
           persist(); toast('Anagrafica eliminata'); go('clients'); });
@@ -794,9 +949,9 @@ function delSession(id, ev){
   if(ev) ev.stopPropagation();
   const s = DB.sessions.find(x=>x.id===id);
   const c = DB.clients.find(x=>x.id===s.clientId);
-  askCode('Cancellare questa seduta?',
-    `Seduta <b>${esc(s.zCode)}</b> di <b>${c?esc(c.nome+' '+c.cognome):'—'}</b> del ${fmtDate(s.date)}. Verranno tolti anche i suoi 10 punti. Inserisci il codice di cancellazione.`,
-    ()=>{ DB.sessions = DB.sessions.filter(x=>x.id!==id); persist(); toast('Seduta cancellata'); render(); });
+  askCode('Cancellare questa sessione?',
+    `Sessione <b>${esc(s.zCode)}</b> di <b>${c?esc(c.nome+' '+c.cognome):'—'}</b> del ${fmtDate(s.date)}. Verranno tolti anche i suoi 10 punti. Inserisci il codice di cancellazione.`,
+    ()=>{ DB.sessions = DB.sessions.filter(x=>x.id!==id); persist(); toast('Sessione cancellata'); render(); });
 }
 function editClient(id){ draftClient = JSON.parse(JSON.stringify(DB.clients.find(x=>x.id===id))); go('editClient',{isNew:false}); }
 
@@ -843,9 +998,9 @@ function vEditClient(){
     </div>
 
     <h2>Macro-parametri di default</h2>
-    <p class="hint">Il punto di partenza per ogni seduta di questo cliente. Se non li tocchi, vengono proposti in automatico dalla sezione C.</p>
+    <p class="hint">Il punto di partenza per ogni sessione di questo cliente. Se non li tocchi, vengono proposti in automatico dalla sezione C.</p>
     <div class="card">
-      ${stepRow('intensita','Intensità massaggio','0–6',M)}
+      ${stepRow('intensita','Intensità trattamento','0–6',M)}
       ${stepRow('fourD','Profondità 4D','0–6',M)}
       ${stepRow('airbag','Forza airbag','0–6',M)}
       ${stepRow('plantari','Rulli plantari','0–3',M,3)}
@@ -930,32 +1085,121 @@ function startCheckinFor(id){
   const st = idoneita(c);
   if(st==='no'){ toast('⛔ Cliente NON idoneo (sezione A dell\'anamnesi): la capsula non può essere usata.'); return; }
   if(st==='blocked'){ toast('⚠ Serve prima il certificato medico (sezione B). Registralo nella scheda.'); go('client',{id}); return; }
-  quizState = {clientId:id, step:0, activity:null, zone:null, goal:null, mood:null, prefSoloAria:false};
+  quizState = {clientId:id, step:0, activity:null, zone:null, zones:[], goal:null, mood:null, pressione:null, prefSoloAria:false};
   go('quiz');
 }
 
 /* ---------- MICRO-QUESTIONARIO ---------- */
 const QUIZ_STEPS = [
-  {k:'activity', t:'Cosa ha fatto oggi?', opts:[['ems','⚡ EMS Training'],['vacufit','🌀 Vacufit'],['matrix','🏋️ Matrix / Sala'],['riposo','😌 Nessun allenamento']]},
-  {k:'zone', t:'Zona lavorata oggi o che dà fastidio?', opts:[['totale','Total body'],['gambe','Gambe / piedi'],['schiena','Schiena / dorsale'],['lombare','Lombare'],['glutei','Glutei / anche'],['cervicale','Collo / spalle'],['braccia','Braccia / parte alta'],['nessuna','Nessuna in particolare']]},
-  {k:'goal', t:'Obiettivo di questa seduta?', opts:[['recupero','💪 Recupero muscolare'],['sollievo','🎯 Sollievo da tensione/dolore'],['drenaggio','💧 Drenaggio / gambe leggere'],['relax','🧘 Relax / antistress'],['sonno','🌙 Aiuto sonno'],['energia','☀️ Energia / risveglio']]},
-  {k:'mood', t:'Come si sente adesso?', opts:[['sereno','🙂 Sereno'],['stanco','🥱 Stanco'],['stressato','😣 Stressato'],['dolorante','😖 Dolorante / indolenzito'],['carico','🔥 Carico']]}
+  {k:'activity', t:'Cosa ha fatto oggi?', type:'cards', opts:[
+    ['ems','⚡','EMS','elettrostimolazione'],
+    ['ems2','🌀','EMS2','impulso tonificante + drenante'],
+    ['vacufit','💨','Vacufit','camminata in vuototerapia'],
+    ['matrix','🏋️','Matrix','allenamento con attrezzi'],
+    ['riposo','😌','Nessun allenamento','giornata senza attività']]},
+  {k:'zones', t:'Su quali zone concentriamo il trattamento?', type:'zones'},
+  {k:'goal', t:'Qual è l\'obiettivo di questa sessione?', type:'cards', opts:[
+    ['recupero','💪','Recupero muscolare','defaticare e rigenerare dopo il lavoro fisico'],
+    ['sollievo','🎯','Sollievo mirato','tensioni o fastidi in una zona precisa'],
+    ['drenaggio','💧','Leggerezza & drenaggio','gambe leggere, contrasto al gonfiore'],
+    ['relax','🧘','Relax profondo','sciogliere corpo e mente'],
+    ['sonno','🌙','Verso il sonno','prepararsi a una notte migliore'],
+    ['energia','☀️','Energia','attivarsi e ripartire']]},
+  {k:'mood', t:'Come si sente in questo momento?', type:'cards', opts:[
+    ['sereno','🙂','Sereno','tutto nella norma'],
+    ['stanco','🥱','Stanco','giornata pesante'],
+    ['stressato','😣','Stressato','mente sotto pressione'],
+    ['dolorante','😖','Indolenzito','muscoli che si fanno sentire'],
+    ['carico','🔥','Carico','pieno di energia']]},
+  {k:'pressione', t:'Che pressione desidera oggi?', type:'cards', opts:[
+    ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
+    ['solito','⚖️','Come sempre','le sue regolazioni abituali'],
+    ['decisa','💎','Più decisa','vuole sentire il lavoro in profondità']]}
 ];
+const BODY_ZONES = [
+  ['cervicale','Collo & Spalle'], ['braccia','Braccia'], ['dorsale','Dorsale'],
+  ['lombare','Lombare'], ['glutei','Glutei'], ['gambe','Gambe'], ['piedi','Piedi']
+];
+function bodySVG(view){
+  const z = (id, shape) => `<g class="bz ${quizState.zones.includes(id)?'on':''}" data-z="${id}" onclick="zoneTap('${id}')">${shape}</g>`;
+  const sil = view==='front'
+    ? `<circle cx="60" cy="18" r="12"/><path d="M52 30 h16 l2 6 h14 c6 0 8 5 8 10 v46 l-8 26 h-6 l4 -30 v-14 h-4 v22 l-6 40 h4 l-2 52 h6 l2 10 h-18 l-2 -10 -4 -44 -4 44 -2 10 h-18 l2 -10 h6 l-2 -52 h4 l-6 -40 v-22 h-4 v14 l4 30 h-6 l-8 -26 v-46 c0 -5 2 -10 8 -10 h14 z"/>`
+    : `<circle cx="60" cy="18" r="12"/><path d="M52 30 h16 l2 6 h14 c6 0 8 5 8 10 v46 l-8 26 h-6 l4 -30 v-14 h-4 v22 l-6 40 h4 l-2 52 h6 l2 10 h-18 l-2 -10 -4 -44 -4 44 -2 10 h-18 l2 -10 h6 l-2 -52 h4 l-6 -40 v-22 h-4 v14 l4 30 h-6 l-8 -26 v-46 c0 -5 2 -10 8 -10 h14 z"/>`;
+  let zones = '';
+  if (view==='front'){
+    zones += z('cervicale','<rect x="34" y="30" width="52" height="14" rx="7"/>');
+    zones += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
+    zones += z('gambe','<rect x="40" y="110" width="16" height="80" rx="8"/><rect x="64" y="110" width="16" height="80" rx="8"/>');
+    zones += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
+  } else {
+    zones += z('cervicale','<rect x="34" y="30" width="52" height="12" rx="6"/>');
+    zones += z('dorsale','<rect x="38" y="44" width="44" height="32" rx="8"/>');
+    zones += z('lombare','<rect x="40" y="78" width="40" height="20" rx="8"/>');
+    zones += z('glutei','<rect x="38" y="99" width="44" height="20" rx="9"/>');
+    zones += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
+    zones += z('gambe','<rect x="40" y="122" width="16" height="68" rx="8"/><rect x="64" y="122" width="16" height="68" rx="8"/>');
+    zones += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
+  }
+  return `<div class="bodyfig"><svg viewBox="8 0 104 214" aria-label="Sagoma ${view==='front'?'frontale':'posteriore'}">
+    <g class="sil">${sil}</g>${zones}</svg>
+    <div class="bodylabel">${view==='front'?'Fronte':'Retro'}</div></div>`;
+}
+function zoneTap(id){
+  const arr = quizState.zones;
+  const i = arr.indexOf(id);
+  if (i>=0) arr.splice(i,1);
+  else { if(arr.length>=3){ toast('Massimo 3 zone: togline una per aggiungerne un\'altra'); return; } arr.push(id); }
+  quizState.zone = arr.length ? arr[0] : null;
+  render();
+}
+function zoneQuick(mode){
+  quizState.zones = [];
+  quizState.zone = mode; /* 'totale' | 'nessuna' */
+  quizState.step++;
+  render(); window.scrollTo(0,0);
+}
+function zonesNext(){
+  if(!quizState.zones.length){ toast('Seleziona almeno una zona, oppure “Total body” / “Nessuna in particolare”'); return; }
+  quizState.zone = quizState.zones[0];
+  quizState.step++;
+  render(); window.scrollTo(0,0);
+}
 function vQuiz(){
   const c = DB.clients.find(x=>x.id===quizState.clientId);
   const step = QUIZ_STEPS[quizState.step];
-  return topbar(`Seduta di ${esc(c.nome)}`,'checkin') + `
-    <p class="hint" style="text-align:center">Domanda ${quizState.step+1} di ${QUIZ_STEPS.length}</p>
-    <h2 style="text-align:center">${step.t}</h2>
-    <div class="seg big" style="justify-content:center; margin-top:20px">
-      ${step.opts.map(([v,l])=>`<span class="opt ${quizState[step.k]===v?'on':''}" onclick="quizPick('${step.k}','${v}')">${l}</span>`).join('')}
+  let body = '';
+  if (step.type === 'zones'){
+    body = `
+    <p class="hint" style="text-align:center; margin-top:-2px">Tocca la sagoma o i riquadri: fino a <b>3 zone</b>. La prima scelta guida il programma, le altre lo rifiniscono.</p>
+    <div class="bodywrap">${bodySVG('front')}${bodySVG('back')}</div>
+    <div class="qgrid zones">
+      ${BODY_ZONES.map(([id,l])=>`<div class="qcard slim ${quizState.zones.includes(id)?'on':''}" onclick="zoneTap('${id}')"><div class="ql">${l}</div></div>`).join('')}
     </div>
-    ${step.k==='goal' && quizState.activity==='vacufit' ? `
+    <div class="qgrid" style="margin-top:10px">
+      <div class="qcard slim ${quizState.zone==='totale'?'on':''}" onclick="zoneQuick('totale')"><div class="qi">🧍</div><div class="ql">Total body</div><div class="qs">tutto il corpo, nessun focus</div></div>
+      <div class="qcard slim ${quizState.zone==='nessuna'?'on':''}" onclick="zoneQuick('nessuna')"><div class="qi">✨</div><div class="ql">Nessuna in particolare</div><div class="qs">decide il motore</div></div>
+    </div>
+    <div class="btnrow" style="justify-content:center; margin-top:20px">
+      <button class="btn ghost" onclick="quizBack()">‹ Precedente</button>
+      <button class="btn" onclick="zonesNext()" ${quizState.zones.length?'':'disabled'}>Avanti (${quizState.zones.length} zone) ›</button>
+    </div>`;
+  } else {
+    body = `
+    <div class="qgrid">
+      ${step.opts.map(([v,ic,l,s])=>`<div class="qcard ${quizState[step.k]===v?'on':''}" onclick="quizPick('${step.k}','${v}')">
+        <div class="qi">${ic}</div><div class="ql">${l}</div><div class="qs">${s}</div></div>`).join('')}
+    </div>
+    ${step.k==='goal' && (quizState.activity==='vacufit'||quizState.activity==='ems2') ? `
       <div class="paramrow" style="max-width:520px;margin:24px auto 0"><div class="pl">Preferisce solo compressione d'aria<small>niente rulli sulla schiena (stile pressoterapia)</small></div>
       <div class="sw ${quizState.prefSoloAria?'on':''}" onclick="quizState.prefSoloAria=!quizState.prefSoloAria; this.classList.toggle('on')"></div></div>`:''}
-    <div class="btnrow" style="justify-content:center; margin-top:26px">
+    <div class="btnrow" style="justify-content:center; margin-top:24px">
       ${quizState.step>0?'<button class="btn ghost" onclick="quizBack()">‹ Precedente</button>':''}
     </div>`;
+  }
+  return topbar(`Sessione di ${esc(c.nome)}`,'checkin') + `
+    <p class="hint" style="text-align:center">Domanda ${quizState.step+1} di ${QUIZ_STEPS.length}</p>
+    <h2 style="text-align:center; text-wrap:balance">${step.t}</h2>
+    ${body}`;
 }
 function quizPick(k,v){
   quizState[k]=v;
@@ -967,8 +1211,15 @@ function quizBack(){ quizState.step--; render(); }
 /* ---------- PROPOSTA PROTOCOLLO ---------- */
 let currentProt = null;
 function vProposal(){
-  const c = DB.clients.find(x=>x.id===quizState.clientId);
-  currentProt = buildProtocol(c, quizState);
+  const isRep = !!VIEW.repeat && REPEAT;
+  const c = DB.clients.find(x=>x.id===(isRep?REPEAT.clientId:quizState.clientId));
+  if (isRep){
+    currentProt = { prog:REPEAT.prog, fam:REPEAT.fam, S:{...REPEAT.S}, quizZones:(REPEAT.quiz&&REPEAT.quiz.zones)||[],
+      why:['Ripetizione della sessione del '+fmtDate(REPEAT.srcDate)+': i parametri di quella volta sono già impostati qui sotto — ritoccali se serve.'],
+      zCode: zCodeOf(REPEAT.fam, REPEAT.prog, REPEAT.S) };
+  } else {
+    currentProt = buildProtocol(c, quizState);
+  }
   const {prog, fam, S, why, zCode} = currentProt;
   const P = PROGRAMS[prog]; const F = ZFAM[fam];
   const steps = buildSteps(currentProt);
@@ -976,13 +1227,23 @@ function vProposal(){
     <div class="proposal">
       <div class="phead">
         <div class="zcode" style="color:${F.color}">● ${zCode}</div>
-        <div style="font-size:11px; color:var(--faint); letter-spacing:.04em; margin-top:2px">I = intensità · D = profondità 4D · A = airbag (0–6) · C = calore · G = zero gravity — <a href="#" onclick="go('legend'); return false" style="color:var(--accent-strong)">legenda completa</a></div>
-        <div class="pname">${F.name} — ${P.n}</div>
-        <div class="pwhy">Programma <b>${prog}</b> (“${P.o}” sul touchscreen della capsula) · ${S.timer} minuti</div>
+        <div style="font-size:11px; color:var(--faint); letter-spacing:.04em; margin-top:2px">I = intensità (0–6) · D = profondità 4D (0–6) · A = airbag (0–6) · C = calore attivo · G = zero gravity attivo — <a href="#" onclick="openLegend(); return false" style="color:var(--accent-strong)">legenda completa</a></div>
+        <div class="pname">${F.name}</div>
+        <div class="pwhy">Programma <b>${prog}</b> · “${P.o}” sul touchscreen della capsula · ${S.timer} minuti<br><span style="color:var(--muted)">${P.d}</span></div>
       </div>
       <div class="pbody">
         <div class="settinggrid">${macroCells(S)}</div>
         <div class="call acc" style="margin-top:8px"><b class="tt">Perché questo protocollo</b>${why.map(w=>'• '+esc(w)).join('<br>')}</div>
+        ${isRep ? `<div class="card" style="margin-top:10px">
+          <p class="hint" style="margin:0 0 6px"><b>Ritocca la ripetizione</b> — i valori qui sotto partono da quelli della sessione originale:</p>
+          <div class="paramrow"><div class="pl">Intensità (0–6)</div><div class="stepper"><button onclick="repAdj('intensita',-1,6)">−</button><span class="val">${S.intensita}</span><button onclick="repAdj('intensita',1,6)">＋</button></div></div>
+          <div class="paramrow"><div class="pl">Profondità 4D (0–6)</div><div class="stepper"><button onclick="repAdj('fourD',-1,6)">−</button><span class="val">${S.fourD}</span><button onclick="repAdj('fourD',1,6)">＋</button></div></div>
+          <div class="paramrow"><div class="pl">Forza airbag (0–6)</div><div class="stepper"><button onclick="repAdj('airbag',-1,6)">−</button><span class="val">${S.airbag}</span><button onclick="repAdj('airbag',1,6)">＋</button></div></div>
+          <div class="paramrow"><div class="pl">Calore</div><div class="sw ${S.calore?'on':''}" onclick="repToggle('calore')"></div></div>
+          <div class="paramrow"><div class="pl">Ioni negativi</div><div class="sw ${S.ioni?'on':''}" onclick="repToggle('ioni')"></div></div>
+          <div class="paramrow"><div class="pl">Zero gravity</div><div class="sw ${S.zerog?'on':''}" onclick="repToggle('zerog')"></div></div>
+          <div class="paramrow"><div class="pl">Timer</div><div class="seg">${[15,20,25,30].map(t=>`<span class="opt ${S.timer===t?'on':''}" onclick="repTimer(${t})">${t}′</span>`).join('')}</div></div>
+        </div>`:''}
       </div>
     </div>
 
@@ -994,9 +1255,10 @@ function vProposal(){
       <div class="gstep">
         <div class="gh">${badge}<span class="gt">${st.title}</span></div>
         <div class="shot"><img src="${IMG[st.img]}" alt="Schermata della capsula">
-          ${st.markers.map((m,j)=>`<div class="marker" style="left:${m.pos[0]}%; top:${m.pos[1]}%">${st.markers.length>1?`<span class="mn">${j+1}</span>`:''}</div>`).join('')}
+          ${st.markers.map((m,j)=>`<div class="marker ${m.type==='set'?'sq':''}" style="left:${m.pos[0]}%; top:${m.pos[1]}%">${st.markers.length>1?`<span class="mn">${j+1}</span>`:''}</div>`).join('')}
         </div>
-        <div class="glegend">${st.markers.map((m,j)=>`<div class="gi">${st.markers.length>1?`<span class="gn">${j+1}</span>`:'<span class="gn">●</span>'}<span>${m.label}</span></div>`).join('')}</div>
+        <div class="glegend">${st.markers.map((m,j)=>`<div class="gi">${st.markers.length>1?`<span class="gn">${j+1}</span>`:'<span class="gn">●</span>'}<span>${m.label}</span></div>`).join('')}
+        ${st.markers.length>1?'<div class="gnote">ℹ️ I numeri rossi indicano <b>l\'ordine delle azioni</b> da fare sul touchscreen, non un valore da impostare. Cerchio = tasto da attivare · Quadrato = valore da regolare (il numero giusto è scritto qui sopra).</div>':''}
         ${st.extra||''}
       </div>`; }).join(''); })()}
 
@@ -1004,31 +1266,37 @@ function vProposal(){
     Tasche vuote, niente orologi o gioielli · schiena bene aderente allo schienale · la scansione spalle parte da sola: al “DiDi” correggi con ▲▼ e conferma OK.</div>
 
     <div class="card" style="margin-top:14px">
-      <div class="paramrow"><div class="pl">🟢 START — Test d'ingresso eseguito<small>fotografia dei parametri prima del massaggio</small></div>
+      <p class="hint" style="margin:0 0 6px">Rituale Health Check — questi due interruttori registrano solo <b>che il rituale è stato fatto</b> (nessun valore viene salvato nell'app: il confronto si fa a voce col cliente).</p>
+      <div class="paramrow"><div class="pl">🟢 START — misura d'ingresso effettuata<small>valori letti ad alta voce insieme al cliente</small></div>
         <div class="sw" id="hcin" onclick="this.classList.toggle('on')"></div></div>
-      <div class="paramrow"><div class="pl">🟠 END — Test d'uscita eseguito<small>chiedi sempre: «hai fatto il test di uscita?»</small></div>
+      <div class="paramrow"><div class="pl">🟠 END — misura d'uscita effettuata<small>«hai fatto il test di uscita?» chiesto e confronto commentato</small></div>
         <div class="sw" id="hcout" onclick="this.classList.toggle('on')"></div></div>
     </div>
-    <label class="f">Nota sulla seduta (facoltativa — puoi annotare qui i valori, es. "battito 82→71")</label>
-    <input type="text" id="sess_note" placeholder="es. battito 82→71, fatica alta→normale…">
+    <label class="f">Nota sulla sessione (facoltativa — solo annotazioni, niente valori numerici)</label>
+    <input type="text" id="sess_note" placeholder="es. ha gradito più pressione sulle spalle…">
     <div class="actionbar">
-      <button class="btn sec" onclick="go('quiz')">‹ Cambia risposte</button>
-      <button class="btn big" onclick="confirmSession()">✓ OK — Avvia e registra la seduta</button>
+      ${isRep?`<button class="btn sec" onclick="go('client',{id:'${c.id}'})">‹ Annulla</button>`:`<button class="btn sec" onclick="go('quiz')">‹ Cambia risposte</button>`}
+      <button class="btn big" onclick="confirmSession()">✓ OK — Avvia e registra la sessione</button>
     </div>`;
 }
 function confirmSession(){
-  const c = DB.clients.find(x=>x.id===quizState.clientId);
+  const isRep = !!VIEW.repeat && REPEAT;
+  const cId = isRep ? REPEAT.clientId : quizState.clientId;
+  const c = DB.clients.find(x=>x.id===cId);
   const beforeLv = clientLevel(clientPoints(c));
-  const q = quizState;
-  const label = [
-    {ems:'EMS',vacufit:'Vacufit',matrix:'Matrix',riposo:'nessun allenamento'}[q.activity],
-    q.zone && q.zone!=='nessuna' ? 'zona '+q.zone : null,
-    'obiettivo '+q.goal, 'umore '+q.mood
+  const q = isRep ? (REPEAT.quiz||{}) : quizState;
+  const label = isRep
+    ? 'ripetizione della sessione del '+new Date(REPEAT.srcDate).toLocaleDateString('it-IT')
+    : [
+    {ems:'EMS',ems2:'EMS2',vacufit:'Vacufit',matrix:'Matrix',riposo:'nessun allenamento'}[q.activity],
+    (q.zones&&q.zones.length) ? 'zone: '+q.zones.join(', ') : (q.zone && q.zone!=='nessuna' ? 'zona '+q.zone : null),
+    'obiettivo '+q.goal, 'umore '+q.mood,
+    q.pressione && q.pressione!=='solito' ? 'pressione '+q.pressione : null
   ].filter(Boolean).join(' · ');
   DB.sessions.push({
     id:uid(), clientId:c.id, date:new Date().toISOString(),
-    prog:currentProt.prog, fam:currentProt.fam, zCode:currentProt.zCode,
-    settings:currentProt.S, quiz:{...q}, quizLabel:label,
+    prog:currentProt.prog, fam:currentProt.fam, zCode:zCodeOf(currentProt.fam,currentProt.prog,currentProt.S),
+    settings:{...currentProt.S}, quiz:{...q}, quizLabel:label,
     notes:(document.getElementById('sess_note')||{}).value||'',
     healthIn: !!(document.getElementById('hcin')||{classList:{contains:()=>false}}).classList.contains('on'),
     healthOut: !!(document.getElementById('hcout')||{classList:{contains:()=>false}}).classList.contains('on'),
@@ -1037,7 +1305,7 @@ function confirmSession(){
   persist();
   const afterPts = clientPoints(c); const afterLv = clientLevel(afterPts);
   if(afterLv.name!==beforeLv.name) toast(`🎉 ${c.nome} è salito a livello <b style="color:${afterLv.color}">${afterLv.name}</b>!`);
-  else toast(`Seduta registrata ✓ · ${c.nome}: ${afterPts} punti (${afterLv.name})`);
+  else toast(`Sessione registrata ✓ · ${c.nome}: ${afterPts} punti (${afterLv.name})`);
   go('client',{id:c.id});
 }
 
@@ -1046,68 +1314,70 @@ function vManual(){
   return topbar('Guida all\'uso del gestionale','home') + `
     <div class="call acc" style="margin-top:6px">
       <b class="tt">Perché Zenith Copilot è diverso</b>
-      La capsula di recupero biomuscolare offre <b>oltre 25 milioni di combinazioni</b> tra programmi, intensità, profondità, compressioni, calore, posizioni e atmosfere. Nessun cliente farà mai due volte "il solito massaggio": il corpo non si assuefà mai allo stimolo e ogni seduta è <b>un protocollo esclusivo, cucito sullo stato di salute e sulle sensazioni di quel preciso momento</b>. Questo gestionale serve esattamente a questo: trasformare quei milioni di possibilità nella combinazione giusta per la persona che sta entrando in capsula, oggi.
+      La capsula di recupero biomuscolare offre <b>oltre 25 milioni di combinazioni</b> tra programmi, intensità, profondità, compressioni, calore, posizioni e atmosfere. Nessun cliente farà mai due volte “la solita sessione”: il corpo non si assuefà mai allo stimolo e ogni sessione è <b>un protocollo esclusivo, cucito sullo stato di salute e sulle sensazioni di quel preciso momento</b>. Questo gestionale serve esattamente a questo: trasformare quei milioni di possibilità nella combinazione giusta per la persona che sta entrando in capsula, oggi.
     </div>
 
     <h2>Il flusso di lavoro in 7 passi</h2>
     <ol class="msteps">
       <li><b>Crea la scheda cliente</b> — Da <span class="chip">👥 Clienti → ＋ Nuovo</span>: anagrafica, attività svolte nel centro e <b>scheda anamnestica digitale</b>. La sezione <span style="color:var(--danger)">A (rossa)</span> con un "SÌ" blocca l'uso della capsula; la sezione <span style="color:var(--warn)">B (gialla)</span> richiede il certificato medico (registralo qui appena arriva); la sezione C raccoglie le preferenze da cui nascono i <b>macro-parametri di default</b>, diversi per ogni cliente e sempre ritoccabili.</li>
-      <li><b>Check-in a ogni ingresso</b> — Da <span class="chip">🚪 Check-in seduta</span>: cerca chi sta entrando. L'app verifica da sola l'idoneità: se il cliente non può salire, te lo dice prima ancora di iniziare.</li>
-      <li><b>Micro-questionario (4 tocchi)</b> — Cosa ha fatto oggi (EMS, Vacufit, Matrix, riposo), la zona lavorata o che dà fastidio, l'obiettivo della seduta e come si sente. È la fotografia dello stato del momento: la stessa persona in giorni diversi riceverà protocolli diversi.</li>
+      <li><b>Check-in a ogni ingresso</b> — Da <span class="chip">🚪 Check-in sessione</span>: cerca chi sta entrando. L'app verifica da sola l'idoneità: se il cliente non può salire, te lo dice prima ancora di iniziare.</li>
+      <li><b>Micro-questionario (5 tocchi)</b> — Cosa ha fatto oggi (EMS, EMS2, Vacufit, Matrix, riposo), fino a 3 zone sulla sagoma del corpo, l'obiettivo della sessione, come si sente e che pressione desidera oggi. È la fotografia dello stato del momento: la stessa persona in giorni diversi riceverà protocolli diversi.</li>
       <li><b>Il motore genera il protocollo</b> — Incrocia anamnesi + macro-parametri + questionario e propone: famiglia Z, programma P01–P24, tutte le regolazioni e la musica, con il <b>perché</b> scritto in chiaro. È qui che i 25 milioni di combinazioni diventano <b>la sua</b> combinazione.</li>
       <li><b>Setup guidato sulla capsula</b> — Segui i <b>cerchi rossi numerati</b> sulle schermate: sono i tasti reali del touchscreen da toccare, con i valori esatti da impostare. Nessuna esperienza richiesta: chiunque dello staff imposta la capsula da professionista.</li>
-      <li><b>OK → tutto in memoria</b> — Confermando, la seduta si salva nello storico con data automatica, codice Z e nota. Il cliente guadagna <b>10 punti</b> (non si azzerano mai) e scala i livelli: Member → Silver 130 → Gold 260 → Platinum 390 → <b>Diamond 520</b>. Il badge colorato accanto al nome lo identifica a colpo d'occhio.</li>
+      <li><b>OK → tutto in memoria</b> — Confermando, la sessione si salva nello storico con data automatica, codice Z e nota. Il cliente guadagna <b>10 punti</b> (non si azzerano mai) e scala i livelli: Member → Silver 130 → Gold 260 → Platinum 390 → <b>Diamond 520</b>. Il badge colorato accanto al nome lo identifica a colpo d'occhio.</li>
       <li><b>Custodisci i dati</b> — Da <span class="chip">⚙️ Impostazioni</span>: cambia il PIN al primo uso ed <b>esporta il backup</b> regolarmente (contiene dati sanitari: trattalo con riservatezza). I dati vivono solo su questo tablet.</li>
     </ol>
 
     <h2>Il rituale Health Check — START & END</h2>
     <div class="call ok" style="margin-top:6px"><b class="tt">Perché farlo, in una frase</b>
-    Il massaggio si sente, ma l'Health Check si <b>vede</b>: misurare i parametri all'ingresso (START) e all'uscita (END) trasforma una sensazione in un numero — ed è il numero che fa tornare il cliente.</div>
+    Il trattamento si sente, ma l'Health Check si <b>vede</b>: misurare i parametri all'ingresso (START) e all'uscita (END) trasforma una sensazione in un numero — ed è il numero che fa tornare il cliente.</div>
     <div class="card">
       <div class="hcbox" style="border:none; padding:0">
         <div class="hct">A cosa serve nello specifico</div>
-        1) Rende <b>visibile e misurabile</b> il beneficio della seduta (il prima/dopo). 2) Fotografa lo stato del giorno: un indice di fatica alto all'ingresso suggerisce un protocollo più soft. 3) Crea un rituale che fidelizza: il cliente aspetta il "suo" confronto di fine seduta.
+        1) Rende <b>visibile e misurabile</b> il beneficio della sessione (il prima/dopo). 2) Fotografa lo stato del giorno: un indice di fatica alto all'ingresso suggerisce un protocollo più soft. 3) Crea un rituale che fidelizza: il cliente aspetta il "suo" confronto di fine sessione.
         <div class="hct">Come si fa</div>
         Dalla Home della capsula → <b>Health Check</b>. Il cliente appoggia l'<b>indice sul sensore del bracciolo destro</b>, mano rilassata, respiro regolare, senza premere e senza far filtrare luce. La misura dura pochi secondi; "Retest" per ripetere.
         <div class="hct">I 5 parametri, i range e cosa significano</div>
         ${HC_TABLE}
         <div class="hct">Cosa dire — START</div>
-        <div class="script">«Facciamo la tua fotografia d'ingresso: battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine seduta la ripetiamo e confrontiamo.»</div>
+        <div class="script">«Facciamo la tua fotografia d'ingresso: battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine sessione la ripetiamo e confrontiamo.»</div>
         <div class="hct">Cosa dire — END</div>
         <div class="script">«Hai fatto il test di uscita? Guarda: battito da X a Y, fatica da alta a normale. Questo è quello che Zenith ha fatto per te oggi.»</div>
         <div class="hct">Valori anomali o degni di nota — protocollo in 3 mosse</div>
-        1) <b>Ripeti il test</b>: dito freddo, smalto spesso o posizione sbagliata sono la causa più comune. 2) Se resta fuori range: <b>seduta soft</b> e tono leggero — <i>«non è uno strumento medico e non fa diagnosi; se vuoi, parlane col tuo medico»</i>. 3) Se c'è anche malessere riferito: si rimanda la seduta. <b>Mai usare i valori come diagnosi o terapia.</b>
+        1) <b>Ripeti il test</b>: dito freddo, smalto spesso o posizione sbagliata sono la causa più comune. 2) Se resta fuori range: <b>sessione soft</b> e tono leggero — <i>«non è uno strumento medico e non fa diagnosi; se vuoi, parlane col tuo medico»</i>. 3) Se c'è anche malessere riferito: si rimanda la sessione. <b>Mai usare i valori come diagnosi o terapia.</b>
       </div>
     </div>
 
     <h2>Le frasi che vendono l'esclusività</h2>
     <div class="card">
-      <div class="pquote"><b>Al primo ingresso</b>«La nostra capsula ha oltre 25 milioni di combinazioni possibili: il massaggio che riceverai oggi è costruito su di te, su come stai in questo preciso momento. Non esiste un'altra persona al mondo con la tua stessa seduta.»</div>
+      <div class="pquote"><b>Al primo ingresso</b>«La nostra capsula ha oltre 25 milioni di combinazioni possibili: la sessione che riceverai oggi è costruita su di te, su come stai in questo preciso momento. Non esiste un'altra persona al mondo con la tua stessa sessione.»</div>
       <div class="pquote"><b>Al cliente abituale</b>«Il tuo corpo non fa mai due allenamenti uguali: perché dovrebbe ricevere due recuperi uguali? Ogni volta ricalibriamo tutto sul tuo stato di oggi.»</div>
-      <div class="pquote"><b>Quando mostri il codice Z</b>«Questo codice è la targa della tua seduta di oggi: unica, tracciata e registrata nel tuo storico personale.»</div>
-      <div class="pquote"><b>Sul programma della capsula</b>«Il corpo si abitua a ciò che si ripete: qui non si ripete mai niente. È il motivo per cui l'effetto resta forte seduta dopo seduta.»</div>
+      <div class="pquote"><b>Quando mostri il codice Z</b>«Questo codice è la targa della tua sessione di oggi: unica, tracciata e registrata nel tuo storico personale.»</div>
+      <div class="pquote"><b>Sul programma della capsula</b>«Il corpo si abitua a ciò che si ripete: qui non si ripete mai niente. È il motivo per cui l'effetto resta forte sessione dopo sessione.»</div>
     </div>
 
     <h2>Regole d'oro (sempre valide)</h2>
     <div class="call ok"><b class="tt">✓ Da ricordare</b>
-      Un ciclo dura massimo 20–30 minuti · almeno 30 minuti di pausa prima di ripetere sulla stessa zona · tasche vuote e niente gioielli · prima seduta sempre soft (ci pensa il motore con il protocollo Z1) · se qualcosa non convince durante la seduta: pausa, si riparla, si riparte. La capsula è uno strumento di benessere e non sostituisce mai il parere del medico.
+      Un ciclo dura massimo 20–30 minuti · almeno 30 minuti di pausa prima di ripetere sulla stessa zona · tasche vuote e niente gioielli · prima sessione sempre soft (ci pensa il motore con il protocollo Z1) · se qualcosa non convince durante la sessione: pausa, si riparla, si riparte. La capsula è uno strumento di benessere e non sostituisce mai il parere del medico.
     </div>`;
 }
 
 /* ---------- LEGENDA PROTOCOLLI ---------- */
+let LEGEND_BACK = 'home';
+function openLegend(){ LEGEND_BACK = VIEW.name==='proposal' ? 'proposal' : 'home'; go('legend'); }
 function vLegend(){
-  return topbar('Protocolli & Legenda','home') + `
+  return topbar('Protocolli & Legenda', LEGEND_BACK) + `
     <h2>Come si legge un codice protocollo</h2>
     <div class="card">
       <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · I2 D2 A2 C G</div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della seduta (vedi elenco sotto)</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24, qui "Carezza")</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità del massaggio, scala 0–6</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della sessione (vedi elenco sotto)</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24; qui “Gently Rub Soothing”, il nome che leggi sul touchscreen)</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità del trattamento, scala 0–6</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–6</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">A2</b> — Forza <b>A</b>irbag, scala 0–6</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">C</b> — <b>C</b>alore lombare acceso (se la lettera manca, è spento)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">G</b> — Zero <b>G</b>ravity attivo (se la lettera manca, posizione normale)</span></div>
-      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della seduta.</p>
+      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione.</p>
     </div>
 
     <h2>Le 9 famiglie di protocollo</h2>
@@ -1123,9 +1393,23 @@ function vLegend(){
         <p style="font-size:14px; margin:0"><b style="color:var(--ok); font-size:11px; text-transform:uppercase; letter-spacing:.08em">Vantaggio principale</b><br>${F.adv}</p>
       </div>`).join('')}
 
+    <h2>I 24 programmi della capsula</h2>
+    <p class="hint">Il codice P e il nome che compare sul touchscreen. “Indicato per” suggerisce macchinari e situazioni tipiche: il motore li usa come base, ma ogni programma resta utilizzabile da chiunque sia idoneo.</p>
+    <div class="tablewrap" style="border:1px solid var(--line); border-radius:12px; overflow-x:auto">
+      <table style="width:100%; border-collapse:collapse; font-size:13.5px">
+        <tr style="background:var(--surface2)"><th style="text-align:left; padding:8px 12px; font-size:11px; letter-spacing:.1em; color:var(--faint)">CODICE</th><th style="text-align:left; padding:8px 12px; font-size:11px; letter-spacing:.1em; color:var(--faint)">NOME SUL TOUCHSCREEN</th><th style="text-align:left; padding:8px 12px; font-size:11px; letter-spacing:.1em; color:var(--faint)">COSA FA</th><th style="text-align:left; padding:8px 12px; font-size:11px; letter-spacing:.1em; color:var(--faint)">INDICATO PER</th></tr>
+        ${Object.entries(PROGRAMS).map(([k,p])=>`<tr>
+          <td style="padding:7px 12px; border-top:1px solid var(--line); font-weight:800; color:var(--accent-strong); white-space:nowrap">${k}</td>
+          <td style="padding:7px 12px; border-top:1px solid var(--line); font-weight:600; white-space:nowrap">${p.o}</td>
+          <td style="padding:7px 12px; border-top:1px solid var(--line); color:var(--muted)">${p.d}</td>
+          <td style="padding:7px 12px; border-top:1px solid var(--line)">${p.cat.map(c=>`<span class="chip" style="margin:1px">${c}</span>`).join(' ')}</td>
+        </tr>`).join('')}
+      </table>
+    </div>
+
     <h2>I parametri regolabili e le loro scale</h2>
     <div class="card">
-      <div class="qrow"><span class="qt">Intensità massaggio</span><span class="chip acc">0 – 6</span></div>
+      <div class="qrow"><span class="qt">Intensità trattamento</span><span class="chip acc">0 – 6</span></div>
       <div class="qrow"><span class="qt">Profondità 4D dei rulli</span><span class="chip acc">0 – 6</span></div>
       <div class="qrow"><span class="qt">Forza airbag</span><span class="chip acc">0 – 6</span></div>
       <div class="qrow"><span class="qt">Calore lombare</span><span class="chip acc">ON / OFF</span></div>
@@ -1136,24 +1420,46 @@ function vLegend(){
       <div class="qrow"><span class="qt">Frizione polpacci</span><span class="chip acc">0 – 3</span></div>
       <div class="qrow"><span class="qt">Musica</span><span class="chip acc">6 ambienti + Bluetooth</span></div>
       <div class="qrow"><span class="qt">Health Check (sensore sul bracciolo destro)</span><span class="chip acc">5 parametri · START/END</span></div>
-      <p class="hint" style="margin:12px 0 0">Sulla capsula esistono anche regolazioni manuali extra (6 tecniche di massaggio, larghezza rulli, zona locale/punto fisso, posture G1–G3, selezione zone airbag): l'app le indica nei passi guidati quando servono.</p>
+      <p class="hint" style="margin:12px 0 0">Sulla capsula esistono anche regolazioni manuali extra (6 tecniche di lavoro dei rulli, larghezza rulli, zona locale/punto fisso, posture G1–G3, selezione zone airbag): l'app le indica nei passi guidati quando servono.</p>
     </div>`;
 }
+
+function toggleFav(id, ev){
+  if(ev) ev.stopPropagation();
+  const s = DB.sessions.find(x=>x.id===id);
+  s.fav = !s.fav; persist(); render();
+  if(s.fav) toast('⭐ Salvata come preferita');
+}
+let REPEAT = null;
+function repeatSession(id, ev){
+  if(ev) ev.stopPropagation();
+  const s = DB.sessions.find(x=>x.id===id);
+  REPEAT = { srcId:id, clientId:s.clientId, prog:s.prog, fam:s.fam, S:{...s.settings}, srcDate:s.date, quiz:s.quiz||{} };
+  quizState = {clientId:s.clientId, zones:(s.quiz&&s.quiz.zones)||[]};
+  go('proposal', {repeat:true});
+}
+function repAdj(k, d, max){
+  REPEAT.S[k] = Math.max(0, Math.min(max, (REPEAT.S[k]??0)+d)); render();
+}
+function repToggle(k){ REPEAT.S[k] = !REPEAT.S[k]; render(); }
+function repTimer(t){ REPEAT.S.timer = t; render(); }
 
 /* ---------- STORICO GLOBALE ---------- */
 function vHistory(){
   const sess = [...DB.sessions].sort((a,b)=>b.date.localeCompare(a.date));
-  return topbar('Storico sedute','home') + (sess.length ? sess.map(s=>{
+  return topbar('Storico sessioni','home') + (sess.length ? sess.map(s=>{
     const c = DB.clients.find(x=>x.id===s.clientId);
     return `<div class="sessrow" onclick="go('client',{id:'${s.clientId}'})" style="cursor:pointer">
       <div class="top"><span class="zd" style="background:${(ZFAM[s.fam]||{}).color||'#888'}"></span>
       <span class="zc">${esc(s.zCode)}</span>
       <span class="chip">${c?esc(c.nome+' '+c.cognome):'—'}</span>
-      <span class="chip acc">${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].n:s.prog)}</span>
+      <span class="chip acc">${s.prog} · ${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].o:'')}</span>
       <span class="dt">${fmtDate(s.date)}</span>
-      <button class="delbtn" title="Cancella seduta" onclick="delSession('${s.id}', event)">🗑</button></div>
+      <button class="starbtn ${s.fav?'on':''}" title="Preferita" onclick="toggleFav('${s.id}', event)">★</button>
+      <button class="repbtn" title="Ripeti questa sessione" onclick="repeatSession('${s.id}', event)">↻</button>
+      <button class="delbtn" title="Cancella sessione" onclick="delSession('${s.id}', event)">🗑</button></div>
       <div class="det">${(ZFAM[s.fam]||{}).name||''} · ${esc(s.quizLabel||'')}</div></div>`;
-  }).join('') : '<p class="hint">Nessuna seduta registrata finora.</p>');
+  }).join('') : '<p class="hint">Nessuna sessione registrata finora.</p>');
 }
 
 /* ---------- IMPOSTAZIONI ---------- */
@@ -1162,8 +1468,8 @@ function vSettings(){
     <h2>Livelli fedeltà</h2>
     <div class="card">
       ${LEVELS.map(L=>`<div class="paramrow"><div class="pl"><span class="badge" style="background:${L.color}">${L.emoji} ${L.name}</span></div>
-        <div style="color:var(--muted);font-size:14px">${L.pts===0?'da 0 punti':'da '+L.pts+' punti ('+(L.pts/10)+' sedute)'}</div></div>`).join('')}
-      <p class="hint" style="margin:10px 0 0">Ogni seduta vale 10 punti, i punti non si azzerano mai. Diamond = 520 punti, una seduta a settimana per un anno.</p>
+        <div style="color:var(--muted);font-size:14px">${L.pts===0?'da 0 punti':'da '+L.pts+' punti ('+(L.pts/10)+' sessioni)'}</div></div>`).join('')}
+      <p class="hint" style="margin:10px 0 0">Ogni sessione vale 10 punti, i punti non si azzerano mai. Diamond = 520 punti, una sessione a settimana per un anno.</p>
     </div>
     <h2>Sicurezza</h2>
     <div class="card">
@@ -1171,7 +1477,7 @@ function vSettings(){
       <div style="display:flex; gap:10px"><input type="password" id="newpin" maxlength="4" inputmode="numeric" placeholder="••••">
       <button class="btn sec" onclick="changePin()">Cambia PIN</button></div>
       <label class="f" style="margin-top:20px">Codice di cancellazione (4–6 cifre) — ${DB.delHash?'<span style="color:var(--ok)">impostato ✓</span>':'<span style="color:var(--warn)">non ancora impostato</span>'}</label>
-      <p class="hint" style="margin:2px 0 8px">Serve per cancellare singole sedute o intere anagrafiche (es. le prove fatte con la famiglia). Senza codice, i cestini 🗑 non funzionano.</p>
+      <p class="hint" style="margin:2px 0 8px">Serve per cancellare singole sessioni o intere anagrafiche (es. le prove fatte con la famiglia). Senza codice, i cestini 🗑 non funzionano.</p>
       ${DB.delHash?'<div style="display:flex; gap:10px; margin-bottom:8px"><input type="password" id="curdel" maxlength="6" inputmode="numeric" placeholder="codice attuale"></div>':''}
       <div style="display:flex; gap:10px"><input type="password" id="newdel" maxlength="6" inputmode="numeric" placeholder="nuovo codice">
       <button class="btn sec" onclick="changeDelCode()">${DB.delHash?'Cambia codice':'Imposta codice'}</button></div>
@@ -1189,7 +1495,7 @@ function vSettings(){
         <button class="btn danger" onclick="wipeAll()">Cancella tutti i dati</button>
       </div>
     </div>
-    <p class="hint">Zenith Copilot v1.0 · Capsula di Recupero Biomuscolare · Zenith Fitness Lab — Fit&Go Pompei</p>`;
+    <p class="hint">Zenith Copilot v2.0 · Capsula di Recupero Biomuscolare · Zenith Fitness Lab — Fit&Go Pompei</p>`;
 }
 function changePin(){
   const v = document.getElementById('newpin').value;
@@ -1231,6 +1537,34 @@ function seedDemo(){
     macro:null, note:'Cliente di prova', createdAt:new Date().toISOString()};
   QA.concat(QB).forEach(([k])=>{ d1.anamnesi[k]=false; d2.anamnesi[k]=false; });
   DB.clients.push(d1,d2); persist(); toast('Clienti di prova creati ✓'); go('clients');
+}
+
+/* ---------- mascotte ---------- */
+const MASCOT_TIPS = [
+  '<b>25 milioni di combinazioni.</b> Ricordalo al cliente: la sua sessione di oggi non esiste da nessun\'altra parte.',
+  'Cliente indeciso? <b>«Il corpo si abitua a ciò che si ripete: qui non si ripete mai niente.»</b>',
+  'Il momento migliore per proporre la prossima sessione è <b>subito dopo l\'Health Check di uscita</b>, coi numeri ancora sul display.',
+  'Prima sessione di un nuovo cliente? Resta accanto alla capsula e <b>anticipa ogni sensazione</b> prima che arrivi.',
+  'Ricorda il rituale: <b>START</b> misura d\'ingresso, <b>END</b> «hai fatto il test di uscita?».',
+  '<b>Zero gravity</b> è il tasto magia: gambe sopra il cuore, colonna scaricata. Quasi sempre un sì.',
+  'Gambe pesanti stasera? Proponi la compressione ad aria: <b>«la nostra pressoterapia in capsula»</b>.',
+  'Un cliente Silver è a metà strada dal Gold: <b>diglielo</b> — i punti motivano più di quanto pensi.',
+  'Dopo un leg day su Matrix: <b>P10 o P08</b> e domani le scale non faranno paura.',
+  'Il calore lombare d\'inverno vende da solo: <b>accendilo e lascia parlare la schiena</b>.',
+  'EMS2 fatto? Chiudi il cerchio: <b>compressione e rulli</b> per fissare la sensazione di compattezza.',
+  'Esporta il <b>backup</b> dei dati almeno una volta a settimana, dalle Impostazioni.'
+];
+let MASCOT_N = 0;
+function pokeMascot(){
+  MASCOT_N++;
+  if (VIEW.name==='lock' || VIEW.name==='quiz' || MASCOT_N % 3 !== 0) {
+    document.getElementById('mascot').classList.remove('show');
+    return;
+  }
+  const el = document.getElementById('mascot');
+  document.getElementById('mascotmsg').innerHTML = MASCOT_TIPS[Math.floor(Math.random()*MASCOT_TIPS.length)];
+  el.classList.add('show');
+  clearTimeout(el._h); el._h = setTimeout(()=>el.classList.remove('show'), 9000);
 }
 
 /* ---------- router ---------- */
