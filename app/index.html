@@ -251,10 +251,44 @@
   }
   .actionbar .btn{flex:1; max-width:480px}
   .banner{background:var(--warn-dim); color:var(--warn); font-size:13px; padding:8px 14px; border-radius:10px; margin-bottom:12px; display:none}
+
+  /* pressed feedback — elegante ma ben visibile */
+  .btn,.tile,.seg .opt,.clientrow,.yn button,.pinpad button,.stepper button,.btn-back,.delbtn,.sw{
+    transition:transform .09s ease, filter .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:scale(.955); filter:brightness(1.18); box-shadow:0 0 0 4px var(--accent-dim)}
+  .btn.sec:active,.btn.ghost:active,.btn-back:active{background:var(--accent-dim); color:var(--accent-strong); border-color:var(--accent); transform:scale(.96)}
+  .btn.danger:active{box-shadow:0 0 0 4px var(--danger-dim); border-color:var(--danger)}
+  .tile:active{transform:scale(.965); background:var(--accent-dim); border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-dim)}
+  .seg .opt:active{transform:scale(.93); border-color:var(--accent); color:var(--accent-strong); background:var(--accent-dim)}
+  .clientrow:active{transform:scale(.985); border-color:var(--accent); background:var(--accent-dim)}
+  .pinpad button:active{transform:scale(.9); background:var(--accent-dim); border-color:var(--accent); color:var(--accent-strong)}
+  .stepper button:active,.yn button:active{transform:scale(.88); border-color:var(--accent)}
+  @media (prefers-reduced-motion: reduce){
+    .btn:active,.tile:active,.seg .opt:active,.clientrow:active,.pinpad button:active,.stepper button:active,.yn button:active{transform:none}
+  }
+
+  /* cestino sedute */
+  .delbtn{
+    margin-left:8px; background:none; border:1px solid var(--line); color:var(--faint);
+    border-radius:8px; width:36px; height:36px; font-size:15px; cursor:pointer; flex:none;
+  }
+  .delbtn:active{border-color:var(--danger); color:var(--danger); background:var(--danger-dim); transform:scale(.88)}
+
+  /* modale codice segreto */
+  #modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200; align-items:center; justify-content:center; padding:20px}
+  #modal.open{display:flex}
+  #modal .mcard{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px; max-width:400px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  #modal .mt{font-weight:800; font-size:17px; margin-bottom:6px}
+  #modal .mm{font-size:14px; color:var(--muted); margin-bottom:14px}
+  #modal input{margin-bottom:14px; text-align:center; letter-spacing:.3em; font-size:20px}
+  #modal .mrow{display:flex; gap:10px}
+  #modal .mrow .btn{flex:1}
 </style>
 
 <div id="app"></div>
 <div id="toast"></div>
+<div id="modal"></div>
 
 <script>
 /* ================= ZENITH COPILOT ================= */
@@ -279,7 +313,8 @@ const store = {
 };
 function hash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return 'h'+h.toString(36); }
 
-let DB = store.load() || { pinHash: hash('1234'), clients: [], sessions: [] };
+let DB = store.load() || { pinHash: hash('1234'), delHash: null, clients: [], sessions: [] };
+if (DB.delHash === undefined) DB.delHash = null;
 function persist(){ store.save(DB); }
 
 /* ---------- badge / livelli ---------- */
@@ -673,16 +708,52 @@ function sessRow(s){
     <div class="top"><span class="zd" style="background:${fam.color}"></span>
       <span class="zc">${esc(s.zCode)}</span>
       <span class="chip acc">${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].n:s.prog)}</span>
-      <span class="dt">${fmtDate(s.date)}</span></div>
+      <span class="dt">${fmtDate(s.date)}</span>
+      <button class="delbtn" title="Cancella seduta" onclick="delSession('${s.id}', event)">🗑</button></div>
     <div class="det">${fam.name} · ${esc(s.quizLabel||'')}${s.notes?' · '+esc(s.notes):''} · +10 punti</div>
   </div>`;
 }
+function askCode(title, message, cb){
+  if(!DB.delHash){
+    toast('Prima imposta il codice di cancellazione nelle Impostazioni');
+    go('settings'); return;
+  }
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">${title}</div>
+    <div class="mm">${message}</div>
+    <input type="password" id="mcode" inputmode="numeric" maxlength="6" placeholder="••••" autocomplete="off">
+    <div class="mrow">
+      <button class="btn sec" onclick="closeModal()">Annulla</button>
+      <button class="btn" onclick="confirmCode()">Conferma</button>
+    </div></div>`;
+  m.classList.add('open');
+  m._cb = cb;
+  setTimeout(()=>{ const i=document.getElementById('mcode'); if(i) i.focus(); }, 50);
+}
+function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('open'); m._cb=null; m.innerHTML=''; }
+function confirmCode(){
+  const m = document.getElementById('modal');
+  const v = document.getElementById('mcode').value;
+  if(hash(v) === DB.delHash){ const cb = m._cb; closeModal(); cb(); }
+  else { document.getElementById('mcode').value=''; toast('Codice errato'); }
+}
 function delClient(id){
   const c = DB.clients.find(x=>x.id===id);
-  if(!confirm(`Eliminare definitivamente ${c.nome} ${c.cognome} e tutto il suo storico?`)) return;
-  DB.clients = DB.clients.filter(x=>x.id!==id);
-  DB.sessions = DB.sessions.filter(s=>s.clientId!==id);
-  persist(); toast('Cliente eliminato'); go('clients');
+  const n = DB.sessions.filter(s=>s.clientId===id).length;
+  askCode('Eliminare questa anagrafica?',
+    `Stai per eliminare <b>${esc(c.nome)} ${esc(c.cognome)}</b> con ${n} sedute e tutti i suoi punti. Operazione irreversibile: inserisci il codice di cancellazione.`,
+    ()=>{ DB.clients = DB.clients.filter(x=>x.id!==id);
+          DB.sessions = DB.sessions.filter(s=>s.clientId!==id);
+          persist(); toast('Anagrafica eliminata'); go('clients'); });
+}
+function delSession(id, ev){
+  if(ev) ev.stopPropagation();
+  const s = DB.sessions.find(x=>x.id===id);
+  const c = DB.clients.find(x=>x.id===s.clientId);
+  askCode('Cancellare questa seduta?',
+    `Seduta <b>${esc(s.zCode)}</b> di <b>${c?esc(c.nome+' '+c.cognome):'—'}</b> del ${fmtDate(s.date)}. Verranno tolti anche i suoi 10 punti. Inserisci il codice di cancellazione.`,
+    ()=>{ DB.sessions = DB.sessions.filter(x=>x.id!==id); persist(); toast('Seduta cancellata'); render(); });
 }
 function editClient(id){ draftClient = JSON.parse(JSON.stringify(DB.clients.find(x=>x.id===id))); go('editClient',{isNew:false}); }
 
@@ -1003,7 +1074,8 @@ function vHistory(){
       <span class="zc">${esc(s.zCode)}</span>
       <span class="chip">${c?esc(c.nome+' '+c.cognome):'—'}</span>
       <span class="chip acc">${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].n:s.prog)}</span>
-      <span class="dt">${fmtDate(s.date)}</span></div>
+      <span class="dt">${fmtDate(s.date)}</span>
+      <button class="delbtn" title="Cancella seduta" onclick="delSession('${s.id}', event)">🗑</button></div>
       <div class="det">${(ZFAM[s.fam]||{}).name||''} · ${esc(s.quizLabel||'')}</div></div>`;
   }).join('') : '<p class="hint">Nessuna seduta registrata finora.</p>');
 }
@@ -1019,9 +1091,14 @@ function vSettings(){
     </div>
     <h2>Sicurezza</h2>
     <div class="card">
-      <label class="f">Nuovo PIN (4 cifre)</label>
+      <label class="f">Nuovo PIN di accesso (4 cifre)</label>
       <div style="display:flex; gap:10px"><input type="password" id="newpin" maxlength="4" inputmode="numeric" placeholder="••••">
       <button class="btn sec" onclick="changePin()">Cambia PIN</button></div>
+      <label class="f" style="margin-top:20px">Codice di cancellazione (4–6 cifre) — ${DB.delHash?'<span style="color:var(--ok)">impostato ✓</span>':'<span style="color:var(--warn)">non ancora impostato</span>'}</label>
+      <p class="hint" style="margin:2px 0 8px">Serve per cancellare singole sedute o intere anagrafiche (es. le prove fatte con la famiglia). Senza codice, i cestini 🗑 non funzionano.</p>
+      ${DB.delHash?'<div style="display:flex; gap:10px; margin-bottom:8px"><input type="password" id="curdel" maxlength="6" inputmode="numeric" placeholder="codice attuale"></div>':''}
+      <div style="display:flex; gap:10px"><input type="password" id="newdel" maxlength="6" inputmode="numeric" placeholder="nuovo codice">
+      <button class="btn sec" onclick="changeDelCode()">${DB.delHash?'Cambia codice':'Imposta codice'}</button></div>
     </div>
     <h2>Backup dei dati</h2>
     <div class="card">
@@ -1042,6 +1119,15 @@ function changePin(){
   const v = document.getElementById('newpin').value;
   if(!/^\d{4}$/.test(v)){ toast('Il PIN deve essere di 4 cifre'); return; }
   DB.pinHash = hash(v); persist(); toast('PIN aggiornato ✓');
+}
+function changeDelCode(){
+  const v = document.getElementById('newdel').value;
+  if(!/^\d{4,6}$/.test(v)){ toast('Il codice deve essere di 4–6 cifre'); return; }
+  if(DB.delHash){
+    const cur = document.getElementById('curdel').value;
+    if(hash(cur) !== DB.delHash){ toast('Codice attuale errato'); return; }
+  }
+  DB.delHash = hash(v); persist(); toast('Codice di cancellazione salvato ✓'); render();
 }
 function exportData(){
   const blob = new Blob([JSON.stringify(DB,null,1)], {type:'application/json'});
