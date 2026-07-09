@@ -220,6 +220,21 @@
   }
   .pinpad button:active{background:var(--accent-dim)}
 
+  ol.msteps{list-style:none; counter-reset:ms; padding:0; margin:14px 0}
+  ol.msteps>li{
+    counter-increment:ms; position:relative; padding:14px 16px 14px 58px; margin-bottom:10px;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); font-size:14.5px;
+  }
+  ol.msteps>li::before{
+    content:counter(ms); position:absolute; left:16px; top:14px;
+    width:28px; height:28px; border-radius:50%;
+    background:var(--accent-dim); color:var(--accent-strong);
+    font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center;
+  }
+  ol.msteps>li b{color:var(--text)}
+  .pquote{border-left:3px solid var(--accent); background:var(--accent-dim); padding:10px 14px; border-radius:0 8px 8px 0; font-size:14px; font-style:italic; margin:10px 0}
+  .pquote b{display:block; font-style:normal; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent-strong); margin-bottom:3px}
+
   /* toast */
   #toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
@@ -535,6 +550,7 @@ function vHome(){
       <div class="tile" onclick="go('clients')"><div class="ic">👥</div><div class="tt">Clienti</div><div class="td">Anagrafica, anamnesi, storico</div></div>
       <div class="tile" onclick="go('history')"><div class="ic">📜</div><div class="tt">Storico sedute</div><div class="td">Tutti i protocolli effettuati</div></div>
       <div class="tile" onclick="go('legend')"><div class="ic">📖</div><div class="tt">Protocolli & Legenda</div><div class="td">Le famiglie Z e come si legge un codice</div></div>
+      <div class="tile" onclick="go('manual')"><div class="ic">📚</div><div class="tt">Guida all'uso</div><div class="td">Il manuale del gestionale, passo per passo</div></div>
       <div class="tile" onclick="go('settings')"><div class="ic">⚙️</div><div class="tt">Impostazioni</div><div class="td">PIN, backup, livelli badge</div></div>
     </div>
     <div class="statrow">
@@ -899,6 +915,39 @@ function confirmSession(){
   go('client',{id:c.id});
 }
 
+/* ---------- GUIDA ALL'USO (manuale USER) ---------- */
+function vManual(){
+  return topbar('Guida all\'uso del gestionale','home') + `
+    <div class="call acc" style="margin-top:6px">
+      <b class="tt">Perché Zenith Copilot è diverso</b>
+      La capsula di recupero biomuscolare offre <b>oltre 25 milioni di combinazioni</b> tra programmi, intensità, profondità, compressioni, calore, posizioni e atmosfere. Nessun cliente farà mai due volte "il solito massaggio": il corpo non si assuefà mai allo stimolo e ogni seduta è <b>un protocollo esclusivo, cucito sullo stato di salute e sulle sensazioni di quel preciso momento</b>. Questo gestionale serve esattamente a questo: trasformare quei milioni di possibilità nella combinazione giusta per la persona che sta entrando in capsula, oggi.
+    </div>
+
+    <h2>Il flusso di lavoro in 7 passi</h2>
+    <ol class="msteps">
+      <li><b>Crea la scheda cliente</b> — Da <span class="chip">👥 Clienti → ＋ Nuovo</span>: anagrafica, attività svolte nel centro e <b>scheda anamnestica digitale</b>. La sezione <span style="color:var(--danger)">A (rossa)</span> con un "SÌ" blocca l'uso della capsula; la sezione <span style="color:var(--warn)">B (gialla)</span> richiede il certificato medico (registralo qui appena arriva); la sezione C raccoglie le preferenze da cui nascono i <b>macro-parametri di default</b>, diversi per ogni cliente e sempre ritoccabili.</li>
+      <li><b>Check-in a ogni ingresso</b> — Da <span class="chip">🚪 Check-in seduta</span>: cerca chi sta entrando. L'app verifica da sola l'idoneità: se il cliente non può salire, te lo dice prima ancora di iniziare.</li>
+      <li><b>Micro-questionario (4 tocchi)</b> — Cosa ha fatto oggi (EMS, Vacufit, Matrix, riposo), la zona lavorata o che dà fastidio, l'obiettivo della seduta e come si sente. È la fotografia dello stato del momento: la stessa persona in giorni diversi riceverà protocolli diversi.</li>
+      <li><b>Il motore genera il protocollo</b> — Incrocia anamnesi + macro-parametri + questionario e propone: famiglia Z, programma P01–P24, tutte le regolazioni e la musica, con il <b>perché</b> scritto in chiaro. È qui che i 25 milioni di combinazioni diventano <b>la sua</b> combinazione.</li>
+      <li><b>Setup guidato sulla capsula</b> — Segui i <b>cerchi rossi numerati</b> sulle schermate: sono i tasti reali del touchscreen da toccare, con i valori esatti da impostare. Nessuna esperienza richiesta: chiunque dello staff imposta la capsula da professionista.</li>
+      <li><b>OK → tutto in memoria</b> — Confermando, la seduta si salva nello storico con data automatica, codice Z e nota. Il cliente guadagna <b>10 punti</b> (non si azzerano mai) e scala i livelli: Member → Silver 130 → Gold 260 → Platinum 390 → <b>Diamond 520</b>. Il badge colorato accanto al nome lo identifica a colpo d'occhio.</li>
+      <li><b>Custodisci i dati</b> — Da <span class="chip">⚙️ Impostazioni</span>: cambia il PIN al primo uso ed <b>esporta il backup</b> regolarmente (contiene dati sanitari: trattalo con riservatezza). I dati vivono solo su questo tablet.</li>
+    </ol>
+
+    <h2>Le frasi che vendono l'esclusività</h2>
+    <div class="card">
+      <div class="pquote"><b>Al primo ingresso</b>«La nostra capsula ha oltre 25 milioni di combinazioni possibili: il massaggio che riceverai oggi è costruito su di te, su come stai in questo preciso momento. Non esiste un'altra persona al mondo con la tua stessa seduta.»</div>
+      <div class="pquote"><b>Al cliente abituale</b>«Il tuo corpo non fa mai due allenamenti uguali: perché dovrebbe ricevere due recuperi uguali? Ogni volta ricalibriamo tutto sul tuo stato di oggi.»</div>
+      <div class="pquote"><b>Quando mostri il codice Z</b>«Questo codice è la targa della tua seduta di oggi: unica, tracciata e registrata nel tuo storico personale.»</div>
+      <div class="pquote"><b>Sul programma della capsula</b>«Il corpo si abitua a ciò che si ripete: qui non si ripete mai niente. È il motivo per cui l'effetto resta forte seduta dopo seduta.»</div>
+    </div>
+
+    <h2>Regole d'oro (sempre valide)</h2>
+    <div class="call ok"><b class="tt">✓ Da ricordare</b>
+      Un ciclo dura massimo 20–30 minuti · almeno 30 minuti di pausa prima di ripetere sulla stessa zona · tasche vuote e niente gioielli · prima seduta sempre soft (ci pensa il motore con il protocollo Z8) · se qualcosa non convince durante la seduta: pausa, si riparla, si riparte. La capsula è uno strumento di benessere e non sostituisce mai il parere del medico.
+    </div>`;
+}
+
 /* ---------- LEGENDA PROTOCOLLI ---------- */
 function vLegend(){
   return topbar('Protocolli & Legenda','home') + `
@@ -1036,6 +1085,7 @@ function render(){
     case 'proposal': html=vProposal(); break;
     case 'history': html=vHistory(); break;
     case 'legend': html=vLegend(); break;
+    case 'manual': html=vManual(); break;
     case 'settings': html=vSettings(); break;
     default: html=vLock();
   }
