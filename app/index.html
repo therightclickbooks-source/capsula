@@ -1847,8 +1847,8 @@ function vSettings(){
       <label class="f">Codice Amministratore (4–8 cifre)</label>
       <input type="password" id="adm_new" maxlength="8" inputmode="numeric" placeholder="••••••">
       ${[1,2,3].map(i=>`
-        <label class="f">Domanda ${i}</label>
-        <input type="text" id="adm_q${i}" value="${['Nome del tuo primo animale?','Città di nascita di tua madre?','Titolo del tuo film preferito?'][i-1]}">
+        <label class="f">Domanda ${i} — scrivila tu, personale e che nessun altro possa indovinare</label>
+        <input type="text" id="adm_q${i}" value="" placeholder="es. una domanda che solo tu sai...">
         <label class="f">Risposta ${i}</label>
         <input type="text" id="adm_a${i}" autocomplete="off">`).join('')}
       <div class="btnrow"><button class="btn" onclick="setupAdmin()">🔐 Attiva l'amministratore</button></div>
