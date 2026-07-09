@@ -368,15 +368,15 @@ const MUSICS = {
 
 /* famiglie di protocollo Z */
 const ZFAM = {
-  Z1:{name:'Zenith Recupero', color:'#b3799a', who:'Dopo EMS o allenamento Matrix', why:'L\'allenamento intenso lascia i muscoli affaticati e "pieni": questa famiglia trasforma la fatica in recupero.', adv:'Defaticamento profondo dei gruppi muscolari lavorati: l\'allenamento si trasforma in risultato.'},
-  Z2:{name:'Zenith Gambe Leggere', color:'#77b795', who:'Dopo Vacufit · gambe pesanti o gonfie', why:'Compressione a onde, rulli plantari e gambe sopra il cuore per accompagnare i liquidi verso l\'alto.', adv:'Leggerezza immediata alle gambe e spinta al ritorno venoso.'},
-  Z3:{name:'Zenith Schiena', color:'#dcab63', who:'Tensioni dorsali, lombari o ai glutei', why:'Calore in fibra di carbone + manovre lente e profonde lungo i paravertebrali, all\'origine della tensione.', adv:'Sollievo e scioglimento della rigidità di schiena e zona lombare.'},
-  Z4:{name:'Zenith Collo & Spalle', color:'#8fb2c9', who:'Cervicale e spalle da ufficio o guida', why:'Ore di scrivania induriscono trapezi e collo: lavoro mirato sulla parte alta con airbag di spalle e braccia.', adv:'Spalle giù e collo libero: cancella la postura da monitor.'},
-  Z5:{name:'Zenith Sonno & Relax', color:'#7d7ce0', who:'Stress, agitazione, sonno difficile', why:'Manovre lentissime, ioni, musica e dondolio per abbassare i giri del sistema nervoso.', adv:'Rilassamento profondo che prepara il corpo al sonno.'},
-  Z6:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione massaggio.', adv:'Accende corpo, circolazione e lucidità in 15 minuti.'},
-  Z7:{name:'Zenith Su Misura', color:'#cf94b4', who:'Clienti abituali di qualunque categoria', why:'Il programma costruito sulle preferenze del cliente e salvato col suo nome nella capsula (P24).', adv:'La sua seduta perfetta, ripetibile con un solo tasto.'},
-  Z8:{name:'Zenith Benvenuto', color:'#c3cad4', who:'Prima seduta in capsula', why:'La prima esperienza decide se il cliente tornerà: tutto dolce, timer breve, ogni sensazione spiegata.', adv:'Ingresso morbido e sicuro nel mondo Zenith.'},
-  Z9:{name:'Zenith Total Body', color:'#9aa66f', who:'Benessere generale, nessuna esigenza specifica', why:'Riequilibrio completo dalla nuca ai piedi quando non c\'è una zona o un obiettivo dominante.', adv:'Il check-up del benessere: tutto il corpo, senza stressare nulla.'}
+  Z1:{name:'Zenith Benvenuto', color:'#c3cad4', who:'Prima seduta in capsula', why:'La prima esperienza decide se il cliente tornerà: tutto dolce, timer breve, ogni sensazione spiegata.', adv:'Ingresso morbido e sicuro nel mondo Zenith.'},
+  Z2:{name:'Zenith Recupero', color:'#b3799a', who:'Dopo EMS o allenamento Matrix', why:'L\'allenamento intenso lascia i muscoli affaticati e "pieni": questa famiglia trasforma la fatica in recupero.', adv:'Defaticamento profondo dei gruppi muscolari lavorati: l\'allenamento si trasforma in risultato.'},
+  Z3:{name:'Zenith Gambe Leggere', color:'#77b795', who:'Dopo Vacufit · gambe pesanti o gonfie', why:'Compressione a onde, rulli plantari e gambe sopra il cuore per accompagnare i liquidi verso l\'alto.', adv:'Leggerezza immediata alle gambe e spinta al ritorno venoso.'},
+  Z4:{name:'Zenith Schiena', color:'#dcab63', who:'Tensioni dorsali, lombari o ai glutei', why:'Calore in fibra di carbone + manovre lente e profonde lungo i paravertebrali, all\'origine della tensione.', adv:'Sollievo e scioglimento della rigidità di schiena e zona lombare.'},
+  Z5:{name:'Zenith Collo & Spalle', color:'#8fb2c9', who:'Cervicale e spalle da ufficio o guida', why:'Ore di scrivania induriscono trapezi e collo: lavoro mirato sulla parte alta con airbag di spalle e braccia.', adv:'Spalle giù e collo libero: cancella la postura da monitor.'},
+  Z6:{name:'Zenith Sonno & Relax', color:'#7d7ce0', who:'Stress, agitazione, sonno difficile', why:'Manovre lentissime, ioni, musica e dondolio per abbassare i giri del sistema nervoso.', adv:'Rilassamento profondo che prepara il corpo al sonno.'},
+  Z7:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione massaggio.', adv:'Accende corpo, circolazione e lucidità in 15 minuti.'},
+  Z8:{name:'Zenith Total Body', color:'#9aa66f', who:'Benessere generale, nessuna esigenza specifica', why:'Riequilibrio completo dalla nuca ai piedi quando non c\'è una zona o un obiettivo dominante.', adv:'Il check-up del benessere: tutto il corpo, senza stressare nulla.'},
+  Z9:{name:'Zenith Su Misura', color:'#cf94b4', who:'Clienti abituali di qualunque categoria', why:'Il programma costruito sulle preferenze del cliente e salvato col suo nome nella capsula (P24).', adv:'La sua seduta perfetta, ripetibile con un solo tasto.'}
 };
 
 /* ---------- MOTORE PROTOCOLLI ---------- */
@@ -387,7 +387,7 @@ function buildProtocol(client, quiz){
   const soft = (st==='cert');
   const m = Object.assign({intensita:3,fourD:3,airbag:3,calore:true,ioni:false,zerog:true,timer:20,plantari:2,polpacci:2}, client.macro||{});
   let S = {...m};
-  let prog=null, fam='Z9', why=[];
+  let prog=null, fam='Z8', why=[];
 
   const now = new Date().getHours();
   const when = quiz.when || (now<12?'mattina': now<16?'pranzo':'sera');
@@ -395,45 +395,45 @@ function buildProtocol(client, quiz){
   /* 1. prima seduta → profilo di benvenuto */
   if (firstTime){
     prog = (client.anamnesi && client.anamnesi.prefIntensita==='deciso') ? 'P01' : 'P22';
-    fam='Z8';
+    fam='Z1';
     S.timer=15; S.intensita=Math.min(S.intensita,2); S.fourD=Math.min(S.fourD,2); S.airbag=Math.min(S.airbag,2);
     why.push('Prima seduta in capsula: si parte dolcemente per far conoscere ogni sensazione.');
   }
   /* 2. dolore/zona da trattare */
   else if (quiz.goal==='sollievo' || ['schiena','lombare','glutei','cervicale'].includes(quiz.zone)){
-    if (quiz.zone==='glutei'){ prog='P05'; fam='Z3'; why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.'); }
-    else if (quiz.zone==='cervicale'){ prog = quiz.activity==='riposo' ? 'P13':'P03'; fam='Z4'; why.push('Focus su collo, trapezi e spalle, la zona indicata come tesa.'); }
-    else { prog='P04'; fam='Z3'; why.push('Programma dedicato al tratto dorso-lombare con calore attivo.'); }
+    if (quiz.zone==='glutei'){ prog='P05'; fam='Z4'; why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.'); }
+    else if (quiz.zone==='cervicale'){ prog = quiz.activity==='riposo' ? 'P13':'P03'; fam='Z5'; why.push('Focus su collo, trapezi e spalle, la zona indicata come tesa.'); }
+    else { prog='P04'; fam='Z4'; why.push('Programma dedicato al tratto dorso-lombare con calore attivo.'); }
     S.intensita=Math.min(S.intensita, 3); S.calore = !an.caloreSensibile;
   }
   /* 3. attività di oggi */
   else if (quiz.activity==='ems'){
-    prog = quiz.mood==='dolorante' ? 'P07' : 'P21'; fam='Z1';
+    prog = quiz.mood==='dolorante' ? 'P07' : 'P21'; fam='Z2';
     why.push(quiz.mood==='dolorante' ? 'DOMS da EMS: manovre lente e profonde anti-indolenzimento.' : 'Dopo l\'EMS il recupero è parte del metodo: defaticamento completo.');
   }
   else if (quiz.activity==='vacufit'){
-    fam='Z2';
+    fam='Z3';
     if (client.genere==='F' && (quiz.goal==='relax'||quiz.goal==='drenaggio')) { prog='P02'; why.push('Percorso Regina: completa il lavoro drenante del Vacufit con manovre avvolgenti.'); }
     else if (quiz.prefSoloAria){ prog='P23'; why.push('Solo compressione d\'aria: effetto pressoterapia senza rulli.'); }
     else { prog='P08'; why.push('Gambe e piedi al centro: prolunga l\'effetto leggerezza del Vacufit.'); }
     S.zerog=true; S.airbag=Math.max(S.airbag,4); S.plantari=Math.max(S.plantari,2); S.polpacci=Math.max(S.polpacci,2);
   }
   else if (quiz.activity==='matrix'){
-    fam='Z1';
+    fam='Z2';
     if (quiz.zone==='gambe'){ prog='P10'; why.push('Leg day: tutto il lavoro sulla parte bassa.'); }
     else if (quiz.zone==='braccia'){ prog='P09'; why.push('Upper day: recupero mirato della parte alta.'); }
-    else if (quiz.goal==='relax'){ prog='P12'; fam='Z9'; why.push('Total body + relax: stile Thai SPA, allunga e distende.'); }
+    else if (quiz.goal==='relax'){ prog='P12'; fam='Z8'; why.push('Total body + relax: stile Thai SPA, allunga e distende.'); }
     else { prog='P21'; why.push('Allenamento completo in sala: defaticamento da professionisti.'); }
   }
   /* 4. obiettivi senza allenamento */
   if (!prog){
-    if (quiz.goal==='drenaggio' || quiz.zone==='gambe'){ prog = quiz.prefSoloAria?'P23':'P08'; fam='Z2'; S.zerog=true; S.airbag=Math.max(S.airbag,4); why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
-    else if (quiz.goal==='sonno' || (when==='sera' && quiz.goal==='relax')){ prog = quiz.mood==='stressato'?'P17':'P18'; fam='Z5'; S.ioni=true; S.intensita=Math.min(S.intensita,2); why.push('Rituale serale: prepara il corpo al sonno.'); }
-    else if (quiz.goal==='relax'){ prog = when==='pranzo'?'P16':(quiz.mood==='stressato'?'P19':'P11'); fam = when==='pranzo'?'Z9':'Z5'; S.ioni=true; why.push('Decompressione: massaggio lento e atmosfera rilassante.'); }
-    else if (quiz.goal==='energia'){ prog='P15'; fam='Z6'; S.zerog=false; S.timer=Math.min(S.timer,15); S.plantari=3; why.push('Ritmo tonificante che accende corpo e circolazione.'); }
+    if (quiz.goal==='drenaggio' || quiz.zone==='gambe'){ prog = quiz.prefSoloAria?'P23':'P08'; fam='Z3'; S.zerog=true; S.airbag=Math.max(S.airbag,4); why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
+    else if (quiz.goal==='sonno' || (when==='sera' && quiz.goal==='relax')){ prog = quiz.mood==='stressato'?'P17':'P18'; fam='Z6'; S.ioni=true; S.intensita=Math.min(S.intensita,2); why.push('Rituale serale: prepara il corpo al sonno.'); }
+    else if (quiz.goal==='relax'){ prog = when==='pranzo'?'P16':(quiz.mood==='stressato'?'P19':'P11'); fam = when==='pranzo'?'Z8':'Z6'; S.ioni=true; why.push('Decompressione: massaggio lento e atmosfera rilassante.'); }
+    else if (quiz.goal==='energia'){ prog='P15'; fam='Z7'; S.zerog=false; S.timer=Math.min(S.timer,15); S.plantari=3; why.push('Ritmo tonificante che accende corpo e circolazione.'); }
   }
   /* 5. fallback benessere */
-  if (!prog){ prog = quiz.mood==='sereno' ? 'P14':'P01'; fam='Z9'; why.push('Riequilibrio completo dalla nuca ai piedi.'); }
+  if (!prog){ prog = quiz.mood==='sereno' ? 'P14':'P01'; fam='Z8'; why.push('Riequilibrio completo dalla nuca ai piedi.'); }
 
   /* vincoli anamnesi */
   if (an.caloreSensibile){ S.calore=false; why.push('Calore disattivato: sensibilità dichiarata in anamnesi.'); }
@@ -443,12 +443,12 @@ function buildProtocol(client, quiz){
 
   /* musica */
   let mus = 'Soothing';
+  if (fam==='Z2') mus='Mindful';
+  if (fam==='Z3') mus='Soothing';
+  if (fam==='Z6') mus= (quiz.goal==='sonno'||when==='sera') ? 'Sweet':'Mental';
+  if (fam==='Z7') mus= quiz.mood==='carico' ? 'Motivation':'Morning';
   if (fam==='Z1') mus='Mindful';
-  if (fam==='Z2') mus='Soothing';
-  if (fam==='Z5') mus= (quiz.goal==='sonno'||when==='sera') ? 'Sweet':'Mental';
-  if (fam==='Z6') mus= quiz.mood==='carico' ? 'Motivation':'Morning';
-  if (fam==='Z8') mus='Mindful';
-  if (quiz.mood==='stressato' && fam!=='Z6') mus='Mental';
+  if (quiz.mood==='stressato' && fam!=='Z7') mus='Mental';
   S.musica = mus;
 
   const zCode = `${fam}·${prog}·I${S.intensita}D${S.fourD}A${S.airbag}${S.calore?'C':''}${S.zerog?'G':''}`;
@@ -944,7 +944,7 @@ function vManual(){
 
     <h2>Regole d'oro (sempre valide)</h2>
     <div class="call ok"><b class="tt">✓ Da ricordare</b>
-      Un ciclo dura massimo 20–30 minuti · almeno 30 minuti di pausa prima di ripetere sulla stessa zona · tasche vuote e niente gioielli · prima seduta sempre soft (ci pensa il motore con il protocollo Z8) · se qualcosa non convince durante la seduta: pausa, si riparla, si riparte. La capsula è uno strumento di benessere e non sostituisce mai il parere del medico.
+      Un ciclo dura massimo 20–30 minuti · almeno 30 minuti di pausa prima di ripetere sulla stessa zona · tasche vuote e niente gioielli · prima seduta sempre soft (ci pensa il motore con il protocollo Z1) · se qualcosa non convince durante la seduta: pausa, si riparla, si riparte. La capsula è uno strumento di benessere e non sostituisce mai il parere del medico.
     </div>`;
 }
 
@@ -953,8 +953,8 @@ function vLegend(){
   return topbar('Protocolli & Legenda','home') + `
     <h2>Come si legge un codice protocollo</h2>
     <div class="card">
-      <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z8 · P22 · I2 D2 A2 C G</div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z8</b> — Famiglia del protocollo: il "perché" della seduta (vedi elenco sotto)</span></div>
+      <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · I2 D2 A2 C G</div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della seduta (vedi elenco sotto)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24, qui "Carezza")</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità del massaggio, scala 0–6</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–6</span></div>

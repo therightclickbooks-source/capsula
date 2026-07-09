@@ -7,7 +7,7 @@ Strumenti digitali per la capsula di recupero biomuscolare del centro **Zenith F
 | Percorso | Cosa contiene |
 |---|---|
 | `app/index.html` | **Zenith Copilot** — app per tablet: anagrafica clienti con scheda anamnestica digitale, check-in seduta, micro-questionario, motore dei protocolli (codici Z), setup guidato con schermate annotate, storico sedute e badge fedeltà (Member → Silver → Gold → Platinum → Diamond). |
-| `docs/guida-zenith.html` | **Guida operativa per lo staff** — programmi P01–P24, categorie clienti C1–C8, protocolli combinati Z1–Z7, scheda anamnestica stampabile, sicurezza e manutenzione. |
+| `docs/guida-zenith.html` | **Guida operativa per lo staff** — programmi P01–P24, categorie clienti C1–C8, protocolli combinati Z1–Z9, scheda anamnestica stampabile, sicurezza e manutenzione. |
 
 Entrambi i file sono **autonomi** (un solo file HTML, immagini incluse): si aprono in qualsiasi browser, anche senza internet.
 
