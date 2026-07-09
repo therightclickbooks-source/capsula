@@ -251,6 +251,7 @@
 
   /* toast */
   #toast{
+    pointer-events:none;
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
     background:var(--surface2); border:1px solid var(--accent); color:var(--text);
     padding:14px 24px; border-radius:14px; font-weight:600; z-index:100; display:none;
@@ -372,6 +373,19 @@
   .starbtn.on{color:#d4af37; border-color:#d4af37; background:rgba(212,175,55,.12)}
   .repbtn:active{color:var(--accent-strong); border-color:var(--accent)}
   .starbtn:active{transform:scale(.88)}
+
+  /* firma anamnesi */
+  .sigwrap{margin-top:10px}
+  #sigpad{
+    width:100%; height:170px; display:block; touch-action:none; cursor:crosshair;
+    background:var(--surface2); border:2px dashed var(--accent); border-radius:12px;
+  }
+  .sighint{font-size:12px; color:var(--faint); text-align:center; margin:6px 0 10px}
+  .siglocked{
+    background:var(--surface2); border:1px solid var(--ok); border-radius:12px; padding:14px 16px;
+  }
+  .siglocked img{max-width:280px; width:100%; background:#fff; border-radius:8px; display:block; margin:10px 0}
+  .sigchip{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--ok)}
 
   /* pressed feedback — elegante ma ben visibile */
   .btn,.tile,.seg .opt,.clientrow,.yn button,.pinpad button,.stepper button,.btn-back,.delbtn,.sw{
@@ -917,6 +931,7 @@ function vClient(){
     <div class="card">
       ${QA.filter(([k])=>an[k]).map(([k,q])=>`<div class="qrow"><span class="qt" style="color:var(--danger)">✕ ${q}</span></div>`).join('')}
       ${QB.filter(([k])=>an[k]).map(([k,q])=>`<div class="qrow"><span class="qt" style="color:var(--warn)">! ${q}</span></div>`).join('')}
+      ${an.firma?`<p style="margin:0 0 8px"><span class="sigchip">🔏 Firmata dal cliente il ${fmtDate(an.firmaData)}</span></p>`:''}
       ${QA.concat(QB).every(([k])=>!an[k])?'<p class="hint" style="margin:0">Nessuna controindicazione dichiarata.</p>':''}
       ${QB.some(([k])=>an[k])?`<p class="hint" style="margin:10px 0 0">Certificato medico: <b style="color:${an.certificatoOk?'var(--ok)':'var(--danger)'}">${an.certificatoOk?'ricevuto ✓':'NON ancora ricevuto'}</b></p>`:''}
       <p class="hint" style="margin:10px 0 0">
@@ -1038,7 +1053,14 @@ function vEditClient(){
     </div>
 
     <h2>Scheda anamnestica</h2>
-    <div class="card">
+    ${an.firma ? `<div class="card">
+      <div class="siglocked">
+        <span class="sigchip">🔏 Anamnesi firmata e bloccata il ${fmtDate(an.firmaData)}</span>
+        <img src="${an.firma}" alt="Firma del cliente">
+        <p class="hint" style="margin:0 0 10px">Dopo la firma la scheda anamnestica non è più modificabile. Se lo stato di salute del cliente è cambiato, sblocca con il codice di cancellazione: la firma verrà rimossa e a fine compilazione servirà una <b>nuova firma</b>.</p>
+        <button class="btn danger" onclick="unlockAnamnesi()">🔓 Sblocca per nuova anamnesi (codice)</button>
+      </div>
+    </div>` : `<div class="card">
       <div class="secband red">Sezione A — un “SÌ” = uso non consentito</div>
       ${QA.map(([k,q])=>ynRow(k,q)).join('')}
       <div class="secband amb">Sezione B — un “SÌ” = serve certificato medico</div>
@@ -1056,7 +1078,19 @@ function vEditClient(){
       <div class="seg" id="seg_int">${['delicato','medio','deciso'].map(v=>`<span class="opt ${an.prefIntensita===v?'on':''}" onclick="draftClient.anamnesi.prefIntensita='${v}'; segRefresh('seg_int','${v}')">${v}</span>`).join('')}</div>
       <label class="f">Qualità del sonno</label>
       <div class="seg" id="seg_sonno">${['buono','discontinuo','scarso'].map(v=>`<span class="opt ${an.sonno===v?'on':''}" onclick="draftClient.anamnesi.sonno='${v}'; segRefresh('seg_sonno','${v}')">${v}</span>`).join('')}</div>
-      <label class="f">Note operatore</label>
+      <div class="secband neu" style="margin-top:22px">Firma del cliente — conferma dell'anamnesi</div>
+      <p class="hint" style="margin:4px 0 8px">Il cliente firma con il dito o il pennino nello spazio qui sotto. <b>Attenzione:</b> dopo la conferma la scheda anamnestica si blocca e non sarà più modificabile.</p>
+      <div class="sigwrap">
+        <canvas id="sigpad"></canvas>
+        <div class="sighint">✍️ firma qui dentro</div>
+        <div class="btnrow">
+          <button class="btn ghost" onclick="clearSig()">Pulisci</button>
+          <button class="btn" onclick="confirmSig()">✔ Conferma firma e blocca l'anamnesi</button>
+        </div>
+      </div>
+    </div>`}
+    <div class="card" style="margin-top:12px">
+      <label class="f" style="margin-top:0">Note operatore</label>
       <textarea id="f_note" rows="2">${esc(c.note||'')}</textarea>
     </div>
 
@@ -1077,6 +1111,66 @@ function vEditClient(){
     <div class="actionbar"><button class="btn big" onclick="saveClient()">💾 Salva scheda</button></div>`;
 }
 let MDRAFT = null;
+let SIG_DIRTY = false;
+function captureDraftForm(){
+  const g = id => { const e=document.getElementById(id); return e ? e.value : null; };
+  if (g('f_nome')!==null) draftClient.nome = g('f_nome').trim();
+  if (g('f_cognome')!==null) draftClient.cognome = g('f_cognome').trim();
+  if (g('f_nascita')!==null) draftClient.nascita = g('f_nascita');
+  if (g('f_tel')!==null) draftClient.telefono = g('f_tel').trim();
+  if (g('f_note')!==null) draftClient.note = g('f_note').trim();
+}
+function initSigPad(){
+  const cv = document.getElementById('sigpad');
+  if (!cv || cv._init) return;
+  cv._init = true;
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = w*dpr; cv.height = h*dpr;
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.lineWidth = 2.2; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#eae7ee';
+  let drawing=false, lx=0, ly=0;
+  const pos = e => { const r=cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
+  cv.addEventListener('pointerdown', e=>{ e.preventDefault(); drawing=true; [lx,ly]=pos(e); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e=>{ if(!drawing) return; e.preventDefault(); const [x,y]=pos(e);
+    ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke(); lx=x; ly=y; SIG_DIRTY=true; });
+  const stop = e=>{ drawing=false; };
+  cv.addEventListener('pointerup', stop); cv.addEventListener('pointercancel', stop);
+}
+function clearSig(){
+  const cv = document.getElementById('sigpad'); if(!cv) return;
+  const ctx = cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height); SIG_DIRTY=false;
+}
+function confirmSig(){
+  if (!SIG_DIRTY){ toast('Il cliente deve prima firmare nello spazio'); return; }
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">Confermare la firma?</div>
+    <div class="mm">Dopo la conferma la <b>scheda anamnestica si blocca</b>: non sarà più modificabile (sblocco solo con il codice di cancellazione e nuova firma). Le risposte inserite sono definitive?</div>
+    <div class="mrow">
+      <button class="btn sec" onclick="closeModal()">Non ancora</button>
+      <button class="btn" onclick="doConfirmSig()">Sì, blocca con la firma</button>
+    </div></div>`;
+  m.classList.add('open');
+}
+function doConfirmSig(){
+  closeModal();
+  captureDraftForm();
+  const cv = document.getElementById('sigpad');
+  QA.concat(QB).forEach(([k])=>{ if(draftClient.anamnesi[k]===undefined) draftClient.anamnesi[k]=false; });
+  draftClient.anamnesi.firma = cv.toDataURL('image/png');
+  draftClient.anamnesi.firmaData = new Date().toISOString();
+  SIG_DIRTY = false;
+  toast('🔏 Anamnesi firmata e bloccata — ricorda di salvare la scheda');
+  render();
+}
+function unlockAnamnesi(){
+  askCode('Sbloccare l\'anamnesi firmata?',
+    'La firma attuale verrà rimossa e la scheda tornerà modificabile. A fine compilazione servirà una nuova firma del cliente.',
+    ()=>{ captureDraftForm(); delete draftClient.anamnesi.firma; delete draftClient.anamnesi.firmaData; SIG_DIRTY=false; toast('Anamnesi sbloccata: aggiorna le risposte e fai rifirmare'); render(); });
+}
 function ynRow(k,q){
   const v = draftClient.anamnesi[k];
   return `<div class="qrow"><span class="qt">${q}</span><span class="yn">
@@ -1107,11 +1201,7 @@ function stepRow(k,label,range,M,max=6){
 function stepVal(k,d,max){ MDRAFT[k]=Math.max(0,Math.min(max, (MDRAFT[k]??0)+d)); document.getElementById('sv_'+k).textContent=MDRAFT[k]; }
 function saveClient(){
   const c = draftClient;
-  c.nome = document.getElementById('f_nome').value.trim();
-  c.cognome = document.getElementById('f_cognome').value.trim();
-  c.nascita = document.getElementById('f_nascita').value;
-  c.telefono = document.getElementById('f_tel').value.trim();
-  c.note = document.getElementById('f_note').value.trim();
+  captureDraftForm();
   QA.concat(QB).forEach(([k])=>{ if(c.anamnesi[k]===undefined) c.anamnesi[k]=false; });
   c.anamnesi.aggiornata = new Date().toISOString();
   c.macro = MDRAFT;
@@ -1769,7 +1859,21 @@ const MASCOT_TIPS = [
   'Il calore lombare d\'inverno vende da solo: <b>accendilo e lascia parlare la schiena</b>.',
   'EMS2 fatto? Chiudi il cerchio: <b>compressione e rulli</b> per fissare la sensazione di compattezza.',
   'Esporta il <b>backup</b> dei dati almeno una volta a settimana, dalle Impostazioni.',
-  'C\'è un <b>giorno record</b> da battere: guarda le Statistiche e prova a superarlo oggi.'
+  'C\'è un <b>giorno record</b> da battere: guarda le Statistiche e prova a superarlo oggi.',
+  '<b>Ascolta il doppio di quanto parli.</b> La vendita migliore comincia con «come ti senti oggi?»',
+  'Il cliente non compra la capsula: compra <b>come si sentirà dopo</b>. Vendi il dopo, non la macchina.',
+  'Prima di proporre, chiedi <b>«dove lo senti?»</b>: la zona giusta vale più di dieci parole.',
+  'All\'uscita chiedi «ti è piaciuta?» e <b>ascolta fino in fondo</b>: lì dentro c\'è la prossima vendita.',
+  'Obiezione sul prezzo? Dividi: <b>«meno di un caffè al giorno»</b> per recuperare davvero.',
+  'Il momento d\'oro per proporre un pacchetto è dopo il terzo <b>«che meraviglia»</b> di fila.',
+  'Impara i nomi: <b>«bentornata, Maria»</b> vale più di qualsiasi sconto.',
+  'Cliente silenzioso ≠ cliente soddisfatto: fagli una <b>domanda aperta</b> prima che esca.',
+  'Racconta l\'Health Check come una storia: <b>i numeri convincono, le storie fanno tornare</b>.',
+  'Chi viene per la schiena resta per il relax: alla terza sessione <b>proponi qualcosa di diverso</b>.',
+  'Il cliente ha fretta? Non tagliare il rituale: <b>taglia le chiacchiere</b>.',
+  'Scrivi una cosa personale nelle note («maratona a ottobre»): <b>citarla la volta dopo fa magia</b>.',
+  'La postura di chi entra parla prima del questionario: <b>spalle chiuse? Proponi collo & spalle</b>.',
+  'Non dire mai «programma P08»: dì <b>«oggi ti alleggerisco le gambe»</b>. Il codice è per te, la sensazione è per lui.'
 ];
 let MASCOT_N = 0;
 function pokeMascot(){
@@ -1804,6 +1908,7 @@ function render(){
     default: html=vLock();
   }
   app.innerHTML = html;
+  if (document.getElementById('sigpad')) setTimeout(initSigPad, 30);
   if(!store.ok){ const b=document.getElementById('storagebanner'); if(b) b.style.display='block'; }
 }
 render();
