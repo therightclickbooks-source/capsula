@@ -779,20 +779,30 @@ let draftClient = null;
 
 function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg){ const t=document.getElementById('toast'); t.innerHTML=msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none', 3200); }
-function go(name, data={}){ VIEW={name,...data}; render(); window.scrollTo(0,0); try{ pokeMascot(); }catch(e){} }
+let NAV = [];
+function go(name, data={}){
+  if (VIEW.name && VIEW.name!=='lock' && VIEW.name!==name) NAV.push({...VIEW});
+  if (NAV.length>25) NAV.shift();
+  VIEW={name,...data}; render(); window.scrollTo(0,0); try{ pokeMascot(); }catch(e){}
+}
+function goBack(){
+  const prev = NAV.pop();
+  VIEW = prev || {name:'home'};
+  render(); window.scrollTo(0,0);
+}
 function initials(c){ return (c.nome[0]||'')+(c.cognome[0]||''); }
 function fmtDate(iso){ const d=new Date(iso); return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
 function topbar(title, backTo){
   return `<div class="topbar">
-    ${backTo?`<button class="btn-back" onclick="go('${backTo}')">‹ Indietro</button>`:`<div class="brand"><div class="b1">ZEN1TH<sup>®</sup></div><div class="b2">Fitness Lab</div></div>`}
+    ${backTo?`<button class="btn-back" onclick="goBack()">‹ Indietro</button>`:`<div class="brand"><div class="b1">ZEN1TH<sup>®</sup></div><div class="b2">Fitness Lab</div></div>`}
     <h1>${title}</h1>
     <button class="lockbtn" title="Blocca" onclick="lockNow()">🔒</button>
   </div>
   <div class="banner" id="storagebanner">⚠ Salvataggio locale non disponibile in questa anteprima: i dati restano solo finché la pagina è aperta.</div>`;
 }
-function lockNow(){ pinBuf=''; go('lock'); }
+function lockNow(){ pinBuf=''; NAV=[]; go('lock'); }
 
 /* ---------- LOCK ---------- */
 function vLock(){
@@ -808,7 +818,7 @@ function vLock(){
     <p class="hint" style="margin-top:20px">PIN iniziale: 1234 — cambialo dalle Impostazioni</p>
   </div>`;
 }
-function pinKey(n){ if(pinBuf.length>=4) return; pinBuf+=n; if(pinBuf.length===4){ if(hash(pinBuf)===DB.pinHash){ pinBuf=''; go('home'); toast('Benvenuto in Zenith Copilot'); } else { pinBuf=''; toast('PIN errato'); render(); } } else render(); }
+function pinKey(n){ if(pinBuf.length>=4) return; pinBuf+=n; if(pinBuf.length===4){ if(hash(pinBuf)===DB.pinHash){ pinBuf=''; NAV=[]; go('home'); toast('Benvenuto in Zenith Copilot'); } else { pinBuf=''; toast('PIN errato'); render(); } } else render(); }
 function pinClear(){ pinBuf=''; render(); }
 function pinDel(){ pinBuf=pinBuf.slice(0,-1); render(); }
 
@@ -823,7 +833,7 @@ function vHome(){
       <div class="tile" onclick="go('clients')"><div class="ic">👥</div><div class="tt">Clienti</div><div class="td">Anagrafica, anamnesi, storico</div></div>
       <div class="tile" onclick="go('history')"><div class="ic">📜</div><div class="tt">Storico sessioni</div><div class="td">Tutti i protocolli effettuati</div></div>
       <div class="tile" onclick="go('stats')"><div class="ic">📊</div><div class="tt">Statistiche</div><div class="td">Andamento, record e clienti da richiamare</div></div>
-      <div class="tile" onclick="LEGEND_BACK='home'; go('legend')"><div class="ic">📖</div><div class="tt">Protocolli & Legenda</div><div class="td">Le famiglie Z e come si legge un codice</div></div>
+      <div class="tile" onclick="go('legend')"><div class="ic">📖</div><div class="tt">Protocolli & Legenda</div><div class="td">Le famiglie Z e come si legge un codice</div></div>
       <div class="tile" onclick="go('manual')"><div class="ic">📚</div><div class="tt">Guida all'uso</div><div class="td">Il manuale del gestionale, passo per passo</div></div>
       <div class="tile" onclick="go('settings')"><div class="ic">⚙️</div><div class="tt">Impostazioni</div><div class="td">PIN, backup, livelli badge</div></div>
     </div>
@@ -995,7 +1005,8 @@ function delClient(id){
     `Stai per eliminare <b>${esc(c.nome)} ${esc(c.cognome)}</b> con ${n} sessioni e tutti i suoi punti. Operazione irreversibile: inserisci il codice di cancellazione.`,
     ()=>{ DB.clients = DB.clients.filter(x=>x.id!==id);
           DB.sessions = DB.sessions.filter(s=>s.clientId!==id);
-          persist(); toast('Anagrafica eliminata'); go('clients'); });
+          persist(); toast('Anagrafica eliminata');
+          NAV = [{name:'home'}]; VIEW = {name:'clients'}; render(); });
 }
 function delSession(id, ev){
   if(ev) ev.stopPropagation();
@@ -1107,7 +1118,9 @@ function saveClient(){
   if(!c.nome && !c.cognome){ toast('Inserisci almeno il nome'); return; }
   const i = DB.clients.findIndex(x=>x.id===c.id);
   if(i>=0) DB.clients[i]=c; else DB.clients.push(c);
-  persist(); toast('Scheda salvata ✓'); go('client',{id:c.id});
+  persist(); toast('Scheda salvata ✓');
+  NAV = [{name:'home'},{name:'clients'}];
+  VIEW = {name:'client', id:c.id}; render(); window.scrollTo(0,0);
 }
 
 /* ---------- CHECK-IN ---------- */
@@ -1382,7 +1395,8 @@ function confirmSession(){
   const afterPts = clientPoints(c); const afterLv = clientLevel(afterPts);
   if(afterLv.name!==beforeLv.name) toast(`🎉 ${c.nome} è salito a livello <b style="color:${afterLv.color}">${afterLv.name}</b>!`);
   else toast(`Sessione registrata ✓ · ${c.nome}: ${afterPts} punti (${afterLv.name})`);
-  go('client',{id:c.id});
+  NAV = [{name:'home'},{name:'clients'}];
+  VIEW = {name:'client', id:c.id}; render(); window.scrollTo(0,0);
 }
 
 /* ---------- GUIDA ALL'USO (manuale USER) ---------- */
@@ -1466,8 +1480,8 @@ function vManual(){
 }
 
 /* ---------- LEGENDA PROTOCOLLI ---------- */
-let LEGEND_BACK = 'home';
-function openLegend(){ LEGEND_BACK = VIEW.name==='proposal' ? 'proposal' : 'home'; go('legend'); }
+let LEGEND_BACK = 'home'; /* mantenuta per compatibilità: il ritorno ora usa la cronologia */
+function openLegend(){ go('legend'); }
 function vLegend(){
   return topbar('Protocolli & Legenda', LEGEND_BACK) + `
     <h2>Come si legge un codice protocollo</h2>
