@@ -192,6 +192,17 @@
   .glegend .gi{display:flex; gap:10px; padding:5px 0; align-items:baseline}
   .glegend .gn{width:22px; height:22px; border-radius:50%; background:#ff5f5f; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; align-self:center}
 
+  .gnum.hcs{background:var(--ok) !important}
+  .gnum.hce{background:var(--warn) !important}
+  .hcbox{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:10px; font-size:14px}
+  .hcbox .hct{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-strong); margin:10px 0 4px}
+  .hcbox .hct:first-child{margin-top:0}
+  .hcbox .script{border-left:3px solid var(--accent); background:var(--accent-dim); padding:8px 12px; border-radius:0 8px 8px 0; font-style:italic; margin:6px 0}
+  table.hcp{width:100%; border-collapse:collapse; font-size:13px; margin:6px 0}
+  table.hcp td{padding:5px 8px; border-bottom:1px solid var(--line)}
+  table.hcp tr:last-child td{border-bottom:none}
+  table.hcp td.rng{white-space:nowrap; color:var(--ok); font-weight:700; font-variant-numeric:tabular-nums}
+
   /* history */
   .sessrow{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:8px}
   .sessrow .top{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
@@ -401,6 +412,30 @@ const MUSICS = {
   Mental:'Mental Healing', Soothing:'Soothing Relief', Sweet:'Sweet Dreams'
 };
 
+/* Health Check — parametri e testi */
+const HC_TABLE = `<table class="hcp">
+  <tr><td>❤️ Battito cardiaco</td><td class="rng">60–100 /min</td><td>quanto lavora il cuore a riposo: stress e fatica lo alzano</td></tr>
+  <tr><td>🫁 Ossigenazione</td><td class="rng">95–99 %</td><td>quanto ossigeno viaggia nel sangue</td></tr>
+  <tr><td>🔄 Microcircolo</td><td class="rng">&gt; 79</td><td>quanto bene il sangue raggiunge i tessuti periferici</td></tr>
+  <tr><td>📈 Variabilità cardiaca</td><td class="rng">22–120 ms</td><td>la capacità di recupero del sistema nervoso: più è alta (nel range), meglio si recupera</td></tr>
+  <tr><td>⚡ Indice di fatica</td><td class="rng">Normale</td><td>la stanchezza complessiva del momento</td></tr>
+</table>`;
+const HC_START_EXTRA = `<div class="hcbox">
+  <div class="hct">Cosa dire al cliente</div>
+  <div class="script">«Prima di partire facciamo la tua fotografia d'ingresso: appoggia l'indice sul sensore, la capsula misura battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine seduta la ripetiamo: vedrai coi tuoi occhi cosa è cambiato.»</div>
+  <div class="hct">I 5 parametri e i valori di riferimento</div>
+  ${HC_TABLE}
+  <div class="hct">Se un valore è fuori range</div>
+  Niente allarmismi: la causa più comune è il dito freddo o mal posizionato → <b>ripetere il test</b> ("Retest"). Se resta anomalo: seduta più soft e frase con delicatezza: <i>«questo sensore non è uno strumento medico e non fa diagnosi — se il valore ti incuriosisce, parlane col tuo medico»</i>. Se il cliente riferisce anche malessere, meglio rimandare la seduta. Mai interpretare i valori come diagnosi.
+</div>`;
+const HC_END_EXTRA = `<div class="hcbox">
+  <div class="hct">La domanda di chiusura — sempre</div>
+  <div class="script">«Hai fatto il test di uscita?» — si chiede prima che il cliente scenda dalla capsula, quando è ancora seduto e rilassato.</div>
+  <div class="hct">Cosa osservare e cosa dire</div>
+  Confronta col test d'ingresso: tipicamente <b>battito più basso</b>, <b>indice di fatica migliorato</b>, microcircolo più alto (merito di massaggio e calore). La frase che vale la seduta: <div class="script">«Guarda qui: sei entrato con il battito a X e l'indice di fatica alto, esci con Y e fatica normale. Questo è quello che Zenith ha fatto per te oggi.»</div>
+  Se un valore non è migliorato: nessun dramma — <i>«ogni corpo risponde coi suoi tempi: è proprio per questo che misuriamo, per calibrare la prossima seduta su di te»</i>.
+</div>`;
+
 /* famiglie di protocollo Z */
 const ZFAM = {
   Z1:{name:'Zenith Benvenuto', color:'#c3cad4', who:'Prima seduta in capsula', why:'La prima esperienza decide se il cliente tornerà: tutto dolce, timer breve, ogni sensazione spiegata.', adv:'Ingresso morbido e sicuro nel mondo Zenith.'},
@@ -496,6 +531,10 @@ function buildSteps(prot){
   const steps = [];
   const P = PROGRAMS[prog];
 
+  steps.push({img:'home', kind:'start', title:'START SEDUTA — Health Check d\'ingresso',
+    markers:[{pos:TILE.home.HEALTH, label:'Dalla Home tocca “Health Check”: indice sul sensore del bracciolo destro, mano rilassata, respiro regolare, senza premere. Pochi secondi.'}],
+    extra: HC_START_EXTRA});
+
   if (prog==='P01' || prog==='P02'){
     steps.push({img:'home', title:'Dalla Home della capsula, avvia il programma',
       markers:[{pos:TILE.home[prog], label:`Tocca “${P.o}”`}]});
@@ -530,6 +569,10 @@ function buildSteps(prot){
     steps.push({img:'airbag', title:'Seleziona le zone di compressione',
       markers:[{pos:[50,55], label:'Dal menu “Airbag”: scegli le zone (gambe, vita, spalle o corpo intero)'}]});
   }
+
+  steps.push({img:'home', kind:'end', title:'END SEDUTA — Health Check d\'uscita',
+    markers:[{pos:TILE.home.HEALTH, label:'A massaggio terminato, prima di far scendere il cliente: di nuovo “Health Check” dalla Home e confronto con i valori d\'ingresso.'}],
+    extra: HC_END_EXTRA});
   return steps;
 }
 
@@ -710,7 +753,7 @@ function sessRow(s){
       <span class="chip acc">${esc(PROGRAMS[s.prog]?PROGRAMS[s.prog].n:s.prog)}</span>
       <span class="dt">${fmtDate(s.date)}</span>
       <button class="delbtn" title="Cancella seduta" onclick="delSession('${s.id}', event)">🗑</button></div>
-    <div class="det">${fam.name} · ${esc(s.quizLabel||'')}${s.notes?' · '+esc(s.notes):''} · +10 punti</div>
+    <div class="det">${fam.name} · ${esc(s.quizLabel||'')}${(s.healthIn||s.healthOut)?` · Health Check: ${s.healthIn?'IN ✓':'IN –'} / ${s.healthOut?'OUT ✓':'OUT –'}`:''}${s.notes?' · '+esc(s.notes):''} · +10 punti</div>
   </div>`;
 }
 function askCode(title, message, cb){
@@ -945,20 +988,29 @@ function vProposal(){
 
     <h2>Setup guidato sulla capsula</h2>
     <p class="hint">Segui i cerchi rossi: sono i tasti da toccare sul touchscreen della capsula di recupero biomuscolare.</p>
-    ${steps.map((st,i)=>`
+    ${(()=>{ let n=0; return steps.map(st=>{
+      const badge = st.kind==='start' ? '<span class="gnum hcs">S</span>' : st.kind==='end' ? '<span class="gnum hce">E</span>' : `<span class="gnum">${++n}</span>`;
+      return `
       <div class="gstep">
-        <div class="gh"><span class="gnum">${i+1}</span><span class="gt">${st.title}</span></div>
+        <div class="gh">${badge}<span class="gt">${st.title}</span></div>
         <div class="shot"><img src="${IMG[st.img]}" alt="Schermata della capsula">
           ${st.markers.map((m,j)=>`<div class="marker" style="left:${m.pos[0]}%; top:${m.pos[1]}%">${st.markers.length>1?`<span class="mn">${j+1}</span>`:''}</div>`).join('')}
         </div>
         <div class="glegend">${st.markers.map((m,j)=>`<div class="gi">${st.markers.length>1?`<span class="gn">${j+1}</span>`:'<span class="gn">●</span>'}<span>${m.label}</span></div>`).join('')}</div>
-      </div>`).join('')}
+        ${st.extra||''}
+      </div>`; }).join(''); })()}
 
     <div class="call ok"><b class="tt">Prima di avviare</b>
     Tasche vuote, niente orologi o gioielli · schiena bene aderente allo schienale · la scansione spalle parte da sola: al “DiDi” correggi con ▲▼ e conferma OK.</div>
 
-    <label class="f">Nota sulla seduta (facoltativa)</label>
-    <input type="text" id="sess_note" placeholder="es. richiesta più pressione sulle spalle…">
+    <div class="card" style="margin-top:14px">
+      <div class="paramrow"><div class="pl">🟢 START — Test d'ingresso eseguito<small>fotografia dei parametri prima del massaggio</small></div>
+        <div class="sw" id="hcin" onclick="this.classList.toggle('on')"></div></div>
+      <div class="paramrow"><div class="pl">🟠 END — Test d'uscita eseguito<small>chiedi sempre: «hai fatto il test di uscita?»</small></div>
+        <div class="sw" id="hcout" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <label class="f">Nota sulla seduta (facoltativa — puoi annotare qui i valori, es. "battito 82→71")</label>
+    <input type="text" id="sess_note" placeholder="es. battito 82→71, fatica alta→normale…">
     <div class="actionbar">
       <button class="btn sec" onclick="go('quiz')">‹ Cambia risposte</button>
       <button class="btn big" onclick="confirmSession()">✓ OK — Avvia e registra la seduta</button>
@@ -977,7 +1029,10 @@ function confirmSession(){
     id:uid(), clientId:c.id, date:new Date().toISOString(),
     prog:currentProt.prog, fam:currentProt.fam, zCode:currentProt.zCode,
     settings:currentProt.S, quiz:{...q}, quizLabel:label,
-    notes:(document.getElementById('sess_note')||{}).value||'', points:10
+    notes:(document.getElementById('sess_note')||{}).value||'',
+    healthIn: !!(document.getElementById('hcin')||{classList:{contains:()=>false}}).classList.contains('on'),
+    healthOut: !!(document.getElementById('hcout')||{classList:{contains:()=>false}}).classList.contains('on'),
+    points:10
   });
   persist();
   const afterPts = clientPoints(c); const afterLv = clientLevel(afterPts);
@@ -1004,6 +1059,26 @@ function vManual(){
       <li><b>OK → tutto in memoria</b> — Confermando, la seduta si salva nello storico con data automatica, codice Z e nota. Il cliente guadagna <b>10 punti</b> (non si azzerano mai) e scala i livelli: Member → Silver 130 → Gold 260 → Platinum 390 → <b>Diamond 520</b>. Il badge colorato accanto al nome lo identifica a colpo d'occhio.</li>
       <li><b>Custodisci i dati</b> — Da <span class="chip">⚙️ Impostazioni</span>: cambia il PIN al primo uso ed <b>esporta il backup</b> regolarmente (contiene dati sanitari: trattalo con riservatezza). I dati vivono solo su questo tablet.</li>
     </ol>
+
+    <h2>Il rituale Health Check — START & END</h2>
+    <div class="call ok" style="margin-top:6px"><b class="tt">Perché farlo, in una frase</b>
+    Il massaggio si sente, ma l'Health Check si <b>vede</b>: misurare i parametri all'ingresso (START) e all'uscita (END) trasforma una sensazione in un numero — ed è il numero che fa tornare il cliente.</div>
+    <div class="card">
+      <div class="hcbox" style="border:none; padding:0">
+        <div class="hct">A cosa serve nello specifico</div>
+        1) Rende <b>visibile e misurabile</b> il beneficio della seduta (il prima/dopo). 2) Fotografa lo stato del giorno: un indice di fatica alto all'ingresso suggerisce un protocollo più soft. 3) Crea un rituale che fidelizza: il cliente aspetta il "suo" confronto di fine seduta.
+        <div class="hct">Come si fa</div>
+        Dalla Home della capsula → <b>Health Check</b>. Il cliente appoggia l'<b>indice sul sensore del bracciolo destro</b>, mano rilassata, respiro regolare, senza premere e senza far filtrare luce. La misura dura pochi secondi; "Retest" per ripetere.
+        <div class="hct">I 5 parametri, i range e cosa significano</div>
+        ${HC_TABLE}
+        <div class="hct">Cosa dire — START</div>
+        <div class="script">«Facciamo la tua fotografia d'ingresso: battito, ossigenazione, microcircolo, capacità di recupero e indice di fatica. A fine seduta la ripetiamo e confrontiamo.»</div>
+        <div class="hct">Cosa dire — END</div>
+        <div class="script">«Hai fatto il test di uscita? Guarda: battito da X a Y, fatica da alta a normale. Questo è quello che Zenith ha fatto per te oggi.»</div>
+        <div class="hct">Valori anomali o degni di nota — protocollo in 3 mosse</div>
+        1) <b>Ripeti il test</b>: dito freddo, smalto spesso o posizione sbagliata sono la causa più comune. 2) Se resta fuori range: <b>seduta soft</b> e tono leggero — <i>«non è uno strumento medico e non fa diagnosi; se vuoi, parlane col tuo medico»</i>. 3) Se c'è anche malessere riferito: si rimanda la seduta. <b>Mai usare i valori come diagnosi o terapia.</b>
+      </div>
+    </div>
 
     <h2>Le frasi che vendono l'esclusività</h2>
     <div class="card">
@@ -1060,6 +1135,7 @@ function vLegend(){
       <div class="qrow"><span class="qt">Rulli plantari (piedi)</span><span class="chip acc">0 – 3</span></div>
       <div class="qrow"><span class="qt">Frizione polpacci</span><span class="chip acc">0 – 3</span></div>
       <div class="qrow"><span class="qt">Musica</span><span class="chip acc">6 ambienti + Bluetooth</span></div>
+      <div class="qrow"><span class="qt">Health Check (sensore sul bracciolo destro)</span><span class="chip acc">5 parametri · START/END</span></div>
       <p class="hint" style="margin:12px 0 0">Sulla capsula esistono anche regolazioni manuali extra (6 tecniche di massaggio, larghezza rulli, zona locale/punto fisso, posture G1–G3, selezione zone airbag): l'app le indica nei passi guidati quando servono.</p>
     </div>`;
 }
