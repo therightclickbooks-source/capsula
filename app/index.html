@@ -450,9 +450,33 @@ const store = {
   save(d){ MEM = d; try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){ this.ok=false; } }
 };
 function hash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return 'h'+h.toString(36); }
+function normA(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+function xorCode(code, answers){
+  const key = answers.map(normA).join('|');
+  const out = [];
+  for (let i=0;i<code.length;i++){
+    let k=5381; const seed = key + '#' + i;
+    for (let j=0;j<seed.length;j++){ k=((k<<5)+k+seed.charCodeAt(j))>>>0; }
+    out.push(code.charCodeAt(i) ^ (k & 0xff));
+  }
+  return out;
+}
+function unxorCode(enc, answers){
+  const key = answers.map(normA).join('|');
+  let s='';
+  for (let i=0;i<enc.length;i++){
+    let k=5381; const seed = key + '#' + i;
+    for (let j=0;j<seed.length;j++){ k=((k<<5)+k+seed.charCodeAt(j))>>>0; }
+    s += String.fromCharCode(enc[i] ^ (k & 0xff));
+  }
+  return s;
+}
 
 let DB = store.load() || { pinHash: hash('1234'), delHash: null, clients: [], sessions: [] };
 if (DB.delHash === undefined) DB.delHash = null;
+if (DB.adminHash === undefined) DB.adminHash = null;   /* codice amministratore */
+if (DB.adminEnc === undefined) DB.adminEnc = null;     /* codice cifrato con le 3 risposte */
+if (DB.secQ === undefined) DB.secQ = null;             /* [{q, aHash} x3] */
 function persist(){ store.save(DB); }
 
 /* ---------- badge / livelli ---------- */
@@ -830,11 +854,50 @@ function vLock(){
       <button onclick="pinClear()">C</button><button onclick="pinKey('0')">0</button><button onclick="pinDel()">⌫</button>
     </div>
     <p class="hint" style="margin-top:20px">PIN iniziale: 1234 — cambialo dalle Impostazioni</p>
+    ${DB.adminHash?`<button class="btn ghost" style="margin-top:8px" onclick="go('recover')">PIN dimenticato?</button>`:''}
   </div>`;
 }
 function pinKey(n){ if(pinBuf.length>=4) return; pinBuf+=n; if(pinBuf.length===4){ if(hash(pinBuf)===DB.pinHash){ pinBuf=''; NAV=[]; go('home'); toast('Benvenuto in Zenith Copilot'); } else { pinBuf=''; toast('PIN errato'); render(); } } else render(); }
 function pinClear(){ pinBuf=''; render(); }
 function pinDel(){ pinBuf=pinBuf.slice(0,-1); render(); }
+
+/* ---------- RECUPERO CODICE AMMINISTRATORE ---------- */
+function vRecover(){
+  if (!DB.secQ) return topbar('Recupero','home')+'<p class="hint">Amministratore non ancora configurato.</p>';
+  return `<div class="lock" style="max-width:460px">
+    <div class="logo1" style="font-size:30px">ZEN1TH<sup>®</sup></div>
+    <div class="logo2">Fitness Lab</div>
+    <div class="sub">Recupero riservato all'amministratore<br>Rispondi alle 3 domande di sicurezza: se sono corrette, il Codice Amministratore comparirà in chiaro.</div>
+    <div style="text-align:left">
+      ${DB.secQ.map((x,i)=>`<label class="f">${i+1}. ${esc(x.q)}</label><input type="text" id="ra${i}" autocomplete="off">`).join('')}
+    </div>
+    <div class="btnrow" style="justify-content:center; margin-top:18px">
+      <button class="btn ghost" onclick="pinBuf=''; NAV=[]; go('lock')">Annulla</button>
+      <button class="btn" onclick="tryRecover()">Verifica risposte</button>
+    </div>
+    <div id="recresult"></div>
+  </div>`;
+}
+function tryRecover(){
+  const answers = DB.secQ.map((x,i)=>document.getElementById('ra'+i).value);
+  const ok = DB.secQ.every((x,i)=>hash(normA(answers[i]))===x.aHash);
+  const box = document.getElementById('recresult');
+  if (!ok){ box.innerHTML = '<div class="call red" style="margin-top:16px"><b class="tt">Risposte non corrette</b>Controlla maiuscole a parte (non contano) e riprova.</div>'; return; }
+  const code = unxorCode(DB.adminEnc, answers);
+  box.innerHTML = `<div class="call ok" style="margin-top:16px; text-align:left">
+    <b class="tt">✓ Identità confermata</b>
+    Codice Amministratore: <span style="font-size:24px; font-weight:800; letter-spacing:.2em">${esc(code)}</span>
+    <label class="f" style="margin-top:14px">Imposta subito un nuovo PIN di accesso (4 cifre)</label>
+    <div style="display:flex; gap:10px"><input type="password" id="recpin" maxlength="4" inputmode="numeric" placeholder="••••">
+    <button class="btn" onclick="recoverSetPin()">Salva PIN</button></div>
+  </div>`;
+}
+function recoverSetPin(){
+  const v = document.getElementById('recpin').value;
+  if(!/^\d{4}$/.test(v)){ toast('Il PIN deve essere di 4 cifre'); return; }
+  DB.pinHash = hash(v); persist(); toast('PIN aggiornato ✓ — sbloccati con il nuovo PIN');
+  pinBuf=''; NAV=[]; go('lock');
+}
 
 /* ---------- HOME ---------- */
 function vHome(){
@@ -1778,16 +1841,39 @@ function vSettings(){
       <p class="hint" style="margin:10px 0 0">Ogni sessione vale 10 punti, i punti non si azzerano mai. Diamond = 520 punti, una sessione a settimana per un anno.</p>
     </div>
     <h2>Sicurezza</h2>
-    <div class="card">
+    ${!DB.adminHash ? `<div class="card">
+      <div class="secband amb">Prima configurazione — Codice Amministratore</div>
+      <p class="hint" style="margin:6px 0 10px">Il Codice Amministratore è <b>segreto e noto solo a te</b>: serve per qualsiasi modifica dei codici (PIN di accesso e codice di cancellazione). Si recupera <b>solo</b> rispondendo alle 3 domande di sicurezza qui sotto: scegli domande di cui solo tu conosci la risposta.</p>
+      <label class="f">Codice Amministratore (4–8 cifre)</label>
+      <input type="password" id="adm_new" maxlength="8" inputmode="numeric" placeholder="••••••">
+      ${[1,2,3].map(i=>`
+        <label class="f">Domanda ${i}</label>
+        <input type="text" id="adm_q${i}" value="${['Nome del tuo primo animale?','Città di nascita di tua madre?','Titolo del tuo film preferito?'][i-1]}">
+        <label class="f">Risposta ${i}</label>
+        <input type="text" id="adm_a${i}" autocomplete="off">`).join('')}
+      <div class="btnrow"><button class="btn" onclick="setupAdmin()">🔐 Attiva l'amministratore</button></div>
+    </div>` : `<div class="card">
+      <p class="hint" style="margin:0 0 10px">🔐 Amministratore attivo. Ogni modifica dei codici richiede il <b>Codice Amministratore</b> (recuperabile solo con le 3 domande di sicurezza — <a href="#" onclick="go('recover'); return false" style="color:var(--accent-strong)">recupero</a>).</p>
       <label class="f">Nuovo PIN di accesso (4 cifre)</label>
-      <div style="display:flex; gap:10px"><input type="password" id="newpin" maxlength="4" inputmode="numeric" placeholder="••••">
-      <button class="btn sec" onclick="changePin()">Cambia PIN</button></div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <input type="password" id="newpin" maxlength="4" inputmode="numeric" placeholder="nuovo PIN" style="flex:1; min-width:130px">
+        <input type="password" id="pin_adm" maxlength="8" inputmode="numeric" placeholder="codice amministratore" style="flex:1; min-width:170px">
+        <button class="btn sec" onclick="changePin()">Cambia PIN</button>
+      </div>
       <label class="f" style="margin-top:20px">Codice di cancellazione (4–6 cifre) — ${DB.delHash?'<span style="color:var(--ok)">impostato ✓</span>':'<span style="color:var(--warn)">non ancora impostato</span>'}</label>
-      <p class="hint" style="margin:2px 0 8px">Serve per cancellare singole sessioni o intere anagrafiche (es. le prove fatte con la famiglia). Senza codice, i cestini 🗑 non funzionano.</p>
-      ${DB.delHash?'<div style="display:flex; gap:10px; margin-bottom:8px"><input type="password" id="curdel" maxlength="6" inputmode="numeric" placeholder="codice attuale"></div>':''}
-      <div style="display:flex; gap:10px"><input type="password" id="newdel" maxlength="6" inputmode="numeric" placeholder="nuovo codice">
-      <button class="btn sec" onclick="changeDelCode()">${DB.delHash?'Cambia codice':'Imposta codice'}</button></div>
-    </div>
+      <p class="hint" style="margin:2px 0 8px">Serve per cancellare singole sessioni o intere anagrafiche e per sbloccare le anamnesi firmate.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <input type="password" id="newdel" maxlength="6" inputmode="numeric" placeholder="nuovo codice" style="flex:1; min-width:130px">
+        <input type="password" id="del_adm" maxlength="8" inputmode="numeric" placeholder="codice amministratore" style="flex:1; min-width:170px">
+        <button class="btn sec" onclick="changeDelCode()">${DB.delHash?'Cambia codice':'Imposta codice'}</button>
+      </div>
+      <label class="f" style="margin-top:20px">Nuovo Codice Amministratore (facoltativo)</label>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <input type="password" id="adm_new2" maxlength="8" inputmode="numeric" placeholder="nuovo codice admin" style="flex:1; min-width:150px">
+        <input type="password" id="adm_cur" maxlength="8" inputmode="numeric" placeholder="codice attuale" style="flex:1; min-width:150px">
+        <button class="btn sec" onclick="changeAdmin()">Cambia</button>
+      </div>
+    </div>`}
     <h2>Backup dei dati</h2>
     <div class="card">
       <p class="hint" style="margin-top:0">I dati vivono solo su questo tablet. Esporta regolarmente un backup e conservalo al sicuro (contiene dati sanitari).</p>
@@ -1803,19 +1889,60 @@ function vSettings(){
     </div>
     <p class="hint">Zenith Copilot v2.0 · Capsula di Recupero Biomuscolare · Zenith Fitness Lab — Fit&Go Pompei</p>`;
 }
+function setupAdmin(){
+  const code = document.getElementById('adm_new').value;
+  if(!/^\d{4,8}$/.test(code)){ toast('Il Codice Amministratore deve essere di 4–8 cifre'); return; }
+  const qs=[], as=[];
+  for (let i=1;i<=3;i++){
+    const q = document.getElementById('adm_q'+i).value.trim();
+    const a = document.getElementById('adm_a'+i).value;
+    if(!q || !normA(a)){ toast('Compila tutte e 3 le domande con le risposte'); return; }
+    qs.push(q); as.push(a);
+  }
+  DB.adminHash = hash(code);
+  DB.adminEnc = xorCode(code, as);
+  DB.secQ = qs.map((q,i)=>({q, aHash: hash(normA(as[i]))}));
+  persist(); toast('🔐 Amministratore attivato — custodisci codice e risposte'); render();
+}
+function checkAdmin(fieldId){
+  if(!DB.adminHash){ toast('Configura prima il Codice Amministratore'); return false; }
+  const v = document.getElementById(fieldId).value;
+  if(hash(v) !== DB.adminHash){ toast('Codice Amministratore errato'); return false; }
+  return true;
+}
 function changePin(){
+  if(!checkAdmin('pin_adm')) return;
   const v = document.getElementById('newpin').value;
   if(!/^\d{4}$/.test(v)){ toast('Il PIN deve essere di 4 cifre'); return; }
   DB.pinHash = hash(v); persist(); toast('PIN aggiornato ✓');
 }
 function changeDelCode(){
+  if(!checkAdmin('del_adm')) return;
   const v = document.getElementById('newdel').value;
   if(!/^\d{4,6}$/.test(v)){ toast('Il codice deve essere di 4–6 cifre'); return; }
-  if(DB.delHash){
-    const cur = document.getElementById('curdel').value;
-    if(hash(cur) !== DB.delHash){ toast('Codice attuale errato'); return; }
-  }
   DB.delHash = hash(v); persist(); toast('Codice di cancellazione salvato ✓'); render();
+}
+function changeAdmin(){
+  if(!checkAdmin('adm_cur')) return;
+  const v = document.getElementById('adm_new2').value;
+  if(!/^\d{4,8}$/.test(v)){ toast('Il nuovo codice deve essere di 4–8 cifre'); return; }
+  /* ricifra con le stesse risposte: ricaviamo le risposte? impossibile (solo hash) → chiedi le 3 risposte per ricifrare */
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard"><div class="mt">Conferma con le 3 risposte</div>
+    <div class="mm">Per poter recuperare in futuro il nuovo codice, rispondi alle tue 3 domande di sicurezza:</div>
+    ${DB.secQ.map((x,i)=>`<label class="f" style="text-align:left">${esc(x.q)}</label><input type="text" id="ca${i}" autocomplete="off" style="margin-bottom:8px; text-align:left; letter-spacing:normal; font-size:15px">`).join('')}
+    <div class="mrow"><button class="btn sec" onclick="closeModal()">Annulla</button>
+    <button class="btn" onclick="doChangeAdmin('${v}')">Conferma</button></div></div>`;
+  m.classList.add('open');
+}
+function doChangeAdmin(newCode){
+  const answers = DB.secQ.map((x,i)=>document.getElementById('ca'+i).value);
+  const ok = DB.secQ.every((x,i)=>hash(normA(answers[i]))===x.aHash);
+  if(!ok){ toast('Risposte non corrette'); return; }
+  closeModal();
+  DB.adminHash = hash(newCode);
+  DB.adminEnc = xorCode(newCode, answers);
+  persist(); toast('Codice Amministratore aggiornato ✓'); render();
 }
 function exportData(){
   const blob = new Blob([JSON.stringify(DB,null,1)], {type:'application/json'});
@@ -1902,6 +2029,7 @@ function render(){
     case 'proposal': html=vProposal(); break;
     case 'history': html=vHistory(); break;
     case 'stats': html=vStats(); break;
+    case 'recover': html=vRecover(); break;
     case 'legend': html=vLegend(); break;
     case 'manual': html=vManual(); break;
     case 'settings': html=vSettings(); break;
