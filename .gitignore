@@ -1,0 +1,5 @@
+# Tooling installato localmente (skill di design "taste") — non fa parte del sito
+.agents/
+.claude/
+skills-lock.json
+node_modules/
