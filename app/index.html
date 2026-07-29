@@ -611,6 +611,39 @@
   }
   .sessrow .sr-who:active{color:var(--accent-hi); text-decoration-color:var(--accent-hi)}
   .sessrow .sr-who.vuoto{text-decoration:none; cursor:default; color:var(--faint)}
+
+  /* ── come si distinguono i due nomi cliccabili ── */
+  /* a · il programma resta un titolo sottolineato, il cliente diventa una persona */
+  .sessrow .sr-who.lk-a{
+    display:inline-flex; align-items:center; gap:7px; text-decoration:none;
+    background:var(--surface2); border:1px solid var(--line); border-radius:999px;
+    padding:3px 12px 3px 4px; font-size:12.5px; font-weight:700; color:var(--text);
+    transition:border-color .16s, background .16s;
+  }
+  .sessrow .sr-who.lk-a:active{border-color:var(--accent); background:var(--accent-dim)}
+  .sessrow .sr-who.lk-a .wp-av{
+    width:21px; height:21px; flex:none; border-radius:7px; font-size:9px; font-weight:800; letter-spacing:.02em;
+    background:var(--accent-dim); color:var(--accent-hi);
+    display:flex; align-items:center; justify-content:center;
+  }
+  /* b · solo tipografia: titolo sottolineato contro maiuscoletto spaziato */
+  .sessrow .sr-who.lk-b{
+    text-decoration:none; text-transform:uppercase; letter-spacing:.11em;
+    font-size:11.5px; font-weight:800; color:var(--accent-hi);
+  }
+  .sessrow .sr-who.lk-b:active{color:#fff}
+  /* c · nessuna sottolineatura: una freccina al programma, una figura al cliente */
+  .sessrow .sr-prog.lk-c{text-decoration:none; display:inline-flex; align-items:baseline; gap:7px}
+  .sessrow .sr-prog.lk-c .lk-ch{
+    font-style:normal; font-size:16px; font-weight:800; color:var(--accent-hi); line-height:1;
+    transform:translateY(1px);
+  }
+  .sessrow .sr-who.lk-c{
+    display:inline-flex; align-items:center; gap:6px; text-decoration:none;
+    font-size:12.5px; font-weight:700; color:var(--muted);
+  }
+  .sessrow .sr-who.lk-c .wp-ic{display:flex; color:var(--accent-hi); flex:none}
+  .sessrow .sr-who.lk-c:active{color:var(--accent-hi)}
   /* b · cliente e data sulla stessa riga, ai due lati */
   .sessrow .sr-meta{display:flex; align-items:baseline; gap:10px; margin-top:11px}
   .sessrow .sr-meta .sm-l{flex:1; min-width:0; text-align:left}
@@ -2539,7 +2572,9 @@ function durChip(s){ const t=(s.settings&&s.settings.timer)||20; return `<span c
 /* disposizione dei dettagli: 'a' righe · 'b' griglia · 'c' pillole */
 let SR_STYLE = 'a';
 /* dove stanno cliente e data: 'a' centrati · 'b' su una riga ai lati · 'c' cliente accanto al massaggio */
-let SW_STYLE = 'a';
+let SW_STYLE = 'b';
+/* come si distinguono i due nomi cliccabili: 'a' pastiglia persona · 'b' maiuscoletto · 'c' icone discrete */
+let LK_STYLE = 'a';
 const FEEDBACK = {
   ok:   ['jd-ok',   '✓',  'Perfetta'],
   soft: ['jd-soft', '🪶', 'Troppo forte'],
@@ -2601,11 +2636,15 @@ function srDettagli(s){
 }
 /* nome del programma, cliente e data: tre disposizioni, stesso contenuto */
 function srIdentita(s, P, c){
-  const prog = `<button class="sr-prog" onclick="openProg('${s.prog}'); event.stopPropagation()"
-    title="Apri la descrizione del programma">${esc(P.o)}</button>`;
+  const prog = `<button class="sr-prog lk-${LK_STYLE}" onclick="openProg('${s.prog}'); event.stopPropagation()"
+    title="Apri la descrizione del programma">${esc(P.o)}${LK_STYLE==='c'?'<i class="lk-ch">›</i>':''}</button>`;
+  const nome = c ? esc(c.nome+' '+c.cognome) : '';
+  const dentro = LK_STYLE==='a' ? `<span class="wp-av">${c?esc(initials(c)):''}</span>${nome}`
+               : LK_STYLE==='c' ? `<span class="wp-ic">${icon('users',13)}</span>${nome}`
+               : nome;
   const who = c
-    ? `<button class="sr-who" onclick="go('client',{id:'${c.id}'}); event.stopPropagation()"
-       title="Apri la scheda del cliente">${esc(c.nome+' '+c.cognome)}</button>`
+    ? `<button class="sr-who lk-${LK_STYLE}" onclick="go('client',{id:'${c.id}'}); event.stopPropagation()"
+       title="Apri la scheda del cliente">${dentro}</button>`
     : '<span class="sr-who vuoto">—</span>';
   const when = `<div class="sr-when">${fmtLungo(s.date)}</div>`;
   if(SW_STYLE === 'b') return `${prog}
