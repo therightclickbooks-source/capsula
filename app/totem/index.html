@@ -7,6 +7,10 @@
 <meta name="theme-color" content="#0c0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Totem Zenith">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" href="../favicon.png">
 <style>
 @font-face{font-family:Jak; src:url('../fonts/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2');
   font-weight:200 800; font-display:swap}
@@ -19,7 +23,9 @@ html,body{height:100%; background:#000; overflow:hidden;
    stare in qualunque schermo: così quello che vedi sul telefono è
    esattamente, proporzione per proporzione, quello che vedrai sui 50". */
 #fit{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#000}
-#tot{width:1080px; height:1920px; position:relative; overflow:hidden;
+/* flex:none è la riga che conta: senza, il contenitore restringeva il
+   foglio da 1080 alla larghezza del telefono e tutto finiva accavallato */
+#tot{width:1080px; height:1920px; flex:none; position:relative; overflow:hidden;
   transform-origin:center center; background:#0c0a0f; color:#fff}
 
 /* ═══════════ il fondo che respira ═══════════ */
@@ -69,19 +75,19 @@ html,body{height:100%; background:#000; overflow:hidden;
 .roam .tx em{font-style:normal; color:#e6c65c}
 .roam .sub{font-size:24px; color:rgba(255,255,255,.62); margin-top:18px; line-height:1.45}
 /* cinque ancore diverse */
-.p0{left:88px;  top:430px; text-align:left;   transform:translateX(-70px)}
+.p0{left:88px;  top:22%; text-align:left;   transform:translateX(-70px)}
 .p0.on{transform:none}
-.p1{right:88px; top:520px; text-align:right;  transform:translateX(70px)}
+.p1{right:88px; top:27%; text-align:right;  transform:translateX(70px)}
 .p1.on{transform:none}
-.p2{left:88px;  right:88px; top:400px; text-align:center; max-width:none; transform:scale(.9)}
+.p2{left:88px;  right:88px; top:21%; text-align:center; max-width:none; transform:scale(.9)}
 .p2.on{transform:none}
-.p3{left:110px; top:340px; text-align:left;   transform:translateY(60px)}
+.p3{left:110px; top:18%; text-align:left;   transform:translateY(60px)}
 .p3.on{transform:none}
-.p4{right:100px; top:600px; text-align:right; transform:translateY(-60px)}
+.p4{right:100px; top:31%; text-align:right; transform:translateY(-60px)}
 .p4.on{transform:none}
 
 /* l'avatar: la Z che respira */
-.avatar{position:absolute; left:50%; transform:translateX(-50%); bottom:560px; z-index:14;
+.avatar{position:absolute; left:50%; transform:translateX(-50%); bottom:29%; z-index:14;
   display:flex; flex-direction:column; align-items:center; cursor:pointer}
 .orb{width:200px; height:200px; border-radius:50%; position:relative;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
@@ -104,7 +110,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 @keyframes bob{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
 
 /* il grande invito in fondo */
-.cta{position:absolute; left:64px; right:64px; bottom:150px; z-index:15}
+.cta{position:absolute; left:64px; right:64px; bottom:8%; z-index:15}
 .cta .btn{height:196px; border-radius:34px; position:relative; overflow:hidden;
   background:linear-gradient(135deg,#a9779a,#7a496c 60%,#5c3550);
   box-shadow:0 26px 70px rgba(122,73,108,.5);
@@ -366,8 +372,13 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAFeCAYAAAAWrzWl
 /* il foglio è disegnato a 1080×1920 e poi scalato: quello che vedi sul
    telefono è proporzionalmente identico a quello che vedrai sui 50" */
 function fit(){
-  const k = Math.min(innerWidth / 1080, innerHeight / 1920);
-  document.getElementById('tot').style.transform = 'scale(' + k + ')';
+  /* il foglio è sempre largo 1080; l'altezza segue la forma dello schermo,
+     con un minimo di 1920 (il totem vero). Così sul telefono, che è più
+     lungo, non restano bande nere, e sul totem il disegno è quello. */
+  const H = Math.max(1920, Math.round(1080 * innerHeight / innerWidth));
+  const t = document.getElementById('tot');
+  t.style.height = H + 'px';
+  t.style.transform = 'scale(' + Math.min(innerWidth / 1080, innerHeight / H) + ')';
 }
 addEventListener('resize', fit); fit();
 
