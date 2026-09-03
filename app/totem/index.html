@@ -301,6 +301,12 @@ html,body{height:100%; background:#000; overflow:hidden;
 .pindots{display:flex; gap:20px; margin:48px 0 40px}
 .pindots i{width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.3)}
 .pindots i.f{background:#e6c65c; border-color:#e6c65c}
+.pindots.err i{border-color:#e05a5a}
+.pindots.err i.f{background:#e05a5a; border-color:#e05a5a}
+@keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-14px)}
+  75%{transform:translateX(14px)}}
+.pindots.err{animation:shake .4s ease-in-out}
+.pinerr{min-height:24px; color:#f28b8b; font-size:16px; font-weight:700; margin-top:-24px; margin-bottom:24px}
 .pinpad{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; width:100%; max-width:620px}
 .pinpad .key{height:130px; font-size:46px}
 .pinwrap .esc{margin-top:44px; font-size:22px; color:rgba(255,255,255,.4)}
@@ -400,6 +406,7 @@ html,body{height:100%; background:#000; overflow:hidden;
     <div class="pt">Codice Zenith</div>
     <div class="ps">Accesso riservato agli operatori del centro</div>
     <div class="pindots" id="pindots"></div>
+    <div class="pinerr" id="pinerr"></div>
     <div class="pinpad" id="pinpad"></div>
     <div class="esc" onclick="closePin()">Annulla</div>
   </div>
@@ -763,12 +770,27 @@ logo.addEventListener('pointerdown', ()=>{
     clearTimeout(pressT); logo.classList.remove('press'); ring.classList.remove('on');
   }));
 
+/* lo stesso calcolo del gestionale, copiato qui: cosi' il confronto
+   funziona senza dover caricare tutta l'app dentro il totem */
+function hash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return 'h'+h.toString(36); }
+function codiceVero(){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  return { hash: (db && db.codeHash) || hash('1234'), len: (db && db.codeLen) || 4 };
+}
+
 let PIN = '';
-function openPin(){ PIN = ''; drawPin(); document.getElementById('pinwrap').classList.add('on'); }
+function openPin(){
+  PIN = ''; drawPin();
+  document.getElementById('pinerr').textContent = '';
+  document.getElementById('pindots').classList.remove('err');
+  document.getElementById('pinwrap').classList.add('on');
+}
 function closePin(){ document.getElementById('pinwrap').classList.remove('on'); }
 function drawPin(){
+  const L = codiceVero().len;
   document.getElementById('pindots').innerHTML =
-    [0,1,2,3].map(i=> '<i class="' + (i < PIN.length ? 'f' : '') + '"></i>').join('');
+    Array.from({length:L}, (_,i)=> '<i class="' + (i < PIN.length ? 'f' : '') + '"></i>').join('');
 }
 (function buildPad(){
   document.getElementById('pinpad').innerHTML =
@@ -776,15 +798,22 @@ function drawPin(){
       '<div class="key" onclick="pinKey(\'' + k + '\')">' + k + '</div>').join('');
 })();
 function pinKey(k){
+  const C = codiceVero();
   if(k === '⌫'){ PIN = PIN.slice(0, -1); drawPin(); return; }
   if(k === '✓'){
-    document.getElementById('dbg').textContent =
-      PIN.length === 4 ? '→ qui si aprirebbe il gestionale, come lo vedi oggi sul tablet'
-                       : 'PROTOTIPO · codice incompleto';
-    closePin(); return;
+    if(PIN.length !== C.len) return;   /* incompleto: il tasto ✓ non fa nulla */
+    if(hash(PIN) === C.hash){
+      document.getElementById('dbg').textContent = '✓ codice corretto — apro il gestionale…';
+      setTimeout(()=> location.href = '../index.html', 350);
+    } else {
+      document.getElementById('pinerr').textContent = 'Codice errato — riprova';
+      document.getElementById('pindots').classList.add('err');
+      setTimeout(()=>{ PIN=''; drawPin(); document.getElementById('pindots').classList.remove('err'); }, 500);
+    }
+    return;
   }
-  if(PIN.length < 4){ PIN += k; drawPin(); }
-  if(PIN.length === 4) setTimeout(()=> pinKey('✓'), 260);
+  if(PIN.length < C.len){ PIN += k; drawPin(); }
+  if(PIN.length === C.len) setTimeout(()=> pinKey('✓'), 260);
 }
 </script>
 </body>
