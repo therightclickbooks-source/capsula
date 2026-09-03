@@ -110,8 +110,17 @@ html,body{height:100%; background:#000; overflow:hidden;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
   box-shadow:0 0 0 2px rgba(255,255,255,.14), 0 26px 70px rgba(122,73,108,.6);
   display:flex; align-items:center; justify-content:center;
-  font-size:92px; font-weight:800; color:#fff; letter-spacing:-.04em;
   animation:breathe 4.2s ease-in-out infinite}
+.orb .face{width:74%; height:74%}
+/* il battito di ciglia: le due ellissi bianche si schiacciano insieme,
+   ogni sei secondi — troppo regolare sembrerebbe un robot, ma per un
+   prototipo va benissimo */
+.orb .eye{transform-box:fill-box; transform-origin:50% 50%; animation:blink 6s ease-in-out infinite}
+@keyframes blink{0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(.08)}}
+.orb .pupil, .orb .hl{transition:transform .18s ease-out}
+/* la firma sotto l'avatar: il logo vero, leggermente più grande che nel
+   bozzetto approvato */
+.alogo{height:34px; margin-top:22px; opacity:.95}
 @keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-16px) scale(1.04)}}
 .orb::after{content:""; position:absolute; inset:-26px; border-radius:50%;
   border:2px solid rgba(169,119,154,.5); animation:halo 3s ease-out infinite}
@@ -157,8 +166,12 @@ html,body{height:100%; background:#000; overflow:hidden;
 .ask{position:absolute; inset:200px 64px 140px; display:flex; flex-direction:column; align-items:center}
 .ask .orbs{width:132px; height:132px; border-radius:50%; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
-  display:flex; align-items:center; justify-content:center; font-size:62px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
   box-shadow:0 18px 50px rgba(122,73,108,.55); animation:breathe 4.2s ease-in-out infinite}
+.ask .orbs .face{width:74%; height:74%}
+/* solo la riga dei due tasti si allarga per intero: gli altri figli
+   di .ask restano centrati al loro contenuto, com'è giusto che sia */
+.ask .navrow{align-self:stretch}
 .ask .say{margin-top:28px; font-size:34px; font-weight:800; text-align:center; line-height:1.3}
 .ask .shuf{margin-top:16px; display:inline-flex; align-items:center; gap:10px;
   background:rgba(79,184,221,.13); border:1.5px solid rgba(79,184,221,.4); color:#8fd3ec;
@@ -312,7 +325,8 @@ html,body{height:100%; background:#000; overflow:hidden;
   <section class="scene on" id="s-idle">
     <div id="roams"></div>
     <div class="avatar" id="avatar">
-      <div class="orb">Z</div>
+      <div class="orb"><svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g><g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g><ellipse class="cheek" cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><ellipse class="cheek" cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><path class="mouth" d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/></svg></div>
+      <img class="alogo" id="alogo" alt="Zenith">
       <div class="bubble" id="bub">Posso spiegarti cos'è Zenith<span class="mini">TOCCAMI</span></div>
     </div>
     <div class="cta">
@@ -329,7 +343,7 @@ html,body{height:100%; background:#000; overflow:hidden;
   <!-- ═══ 2 · L'AVATAR RISPONDE ═══ -->
   <section class="scene" id="s-ask">
     <div class="ask">
-      <div class="orbs">Z</div>
+      <div class="orbs"><svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g><g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g><ellipse class="cheek" cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><ellipse class="cheek" cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><path class="mouth" d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/></svg></div>
       <div class="say">Chiedimi quello che vuoi sapere</div>
       <div class="shuf" onclick="surprise()">🎲 Sorprendimi</div>
       <div class="ans" id="ansbox"></div>
@@ -417,6 +431,7 @@ addEventListener('resize', fit); fit();
 /* il logo bianco, lo stesso file del gestionale: scritto qui dentro e non
    caricato al volo, così compare anche aprendo il prototipo da un file */
 document.getElementById('logo').src = LOGO;
+document.getElementById('alogo').src = LOGO;
 
 /* ─────────── 1 · le frasi che girano ───────────
    Ognuna ha la sua ancora sullo schermo (p0…p4): non compaiono mai due
@@ -704,6 +719,26 @@ function reset(){
   D.nome = ''; D.cogn = ''; D.umore = ''; D.goal = ''; D.zone = [];
   QI = 0; drawName(); go('idle');
 }
+
+/* ─────────── lo sguardo segue il dito, di poco ───────────
+   Un piccolo spostamento delle pupille verso dove tocchi o muovi il
+   mouse: basta a far sembrare che l'avatar ti stia guardando, senza
+   nessuna animazione pesante — è solo un offset in pixel. */
+function seguiSguardo(x, y){
+  const orb = document.querySelector('#avatar .orb');
+  if(!orb) return;
+  const r = orb.getBoundingClientRect();
+  if(!r.width) return;
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const MAX = 4.5;
+  let dx = (x - cx) / (r.width/2), dy = (y - cy) / (r.height/2);
+  const d = Math.hypot(dx, dy) || 1;
+  if(d > 1){ dx/=d; dy/=d; }
+  const tx = (dx * MAX).toFixed(1), ty = (dy * MAX).toFixed(1);
+  document.querySelectorAll('#avatar .pupil, #avatar .hl').forEach(el=>
+    el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)');
+}
+addEventListener('pointermove', e=> seguiSguardo(e.clientX, e.clientY));
 
 /* ─────────── il ritorno automatico alla vetrina ───────────
    Un totem non deve mai restare fermo sui dati di qualcuno: se nessuno
