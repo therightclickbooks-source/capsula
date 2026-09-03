@@ -65,26 +65,43 @@ html,body{height:100%; background:#000; overflow:hidden;
 
 /* ── 1 · ATTRATTORE ─────────────────────────────────────────── */
 /* le frasi non compaiono mai nello stesso punto: ognuna ha la sua
-   ancora sullo schermo, e si alternano con un movimento diverso */
+   ancora sullo schermo, e si alternano con un movimento diverso.
+   Due famiglie di colore, come chiesto: VIOLA per il beneficio (il
+   dolore che risolviamo), ORO per le curiosità sul metodo. */
 .roam{position:absolute; opacity:0; pointer-events:none; max-width:760px;
   transition:opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1)}
 .roam.on{opacity:1}
+.roam .rtag{display:inline-block; font-size:14.5px; letter-spacing:.2em; font-weight:800;
+  padding:7px 18px; border-radius:999px; margin-bottom:18px}
+.roam.beneficio .rtag{background:rgba(122,73,108,.3); color:#d7b3c9; border:1px solid rgba(169,119,154,.55)}
+.roam.curiosita .rtag{background:rgba(212,175,55,.16); color:#e6c65c; border:1px solid rgba(212,175,55,.5)}
 .roam .ic{font-size:64px; display:block; margin-bottom:20px; filter:drop-shadow(0 6px 22px rgba(0,0,0,.5))}
 .roam .tx{font-size:52px; font-weight:800; line-height:1.16; letter-spacing:-.015em;
   text-shadow:0 4px 30px rgba(0,0,0,.6)}
-.roam .tx em{font-style:normal; color:#e6c65c}
+.roam.beneficio .tx em{font-style:normal; color:#e6a8cf}
+.roam.curiosita .tx em{font-style:normal; color:#e6c65c}
 .roam .sub{font-size:24px; color:rgba(255,255,255,.62); margin-top:18px; line-height:1.45}
-/* cinque ancore diverse */
-.p0{left:88px;  top:22%; text-align:left;   transform:translateX(-70px)}
+/* nove ancore diverse: mai la stessa dopo l'altra (le posizioni sono
+   assegnate a mano nell'elenco qui sotto, non a caso, cosi' e'
+   garantito e non solo probabile) */
+.p0{left:88px;  top:16%; text-align:left;   transform:translateX(-70px)}
 .p0.on{transform:none}
-.p1{right:88px; top:27%; text-align:right;  transform:translateX(70px)}
+.p1{right:88px; top:34%; text-align:right;  transform:translateX(70px)}
 .p1.on{transform:none}
-.p2{left:88px;  right:88px; top:21%; text-align:center; max-width:none; transform:scale(.9)}
+.p2{left:88px;  right:88px; top:14%; text-align:center; max-width:none; transform:scale(.9)}
 .p2.on{transform:none}
-.p3{left:110px; top:18%; text-align:left;   transform:translateY(60px)}
+.p3{left:110px; top:38%; text-align:left;   transform:translateY(60px)}
 .p3.on{transform:none}
-.p4{right:100px; top:31%; text-align:right; transform:translateY(-60px)}
+.p4{right:100px; top:19%; text-align:right; transform:translateY(-60px)}
 .p4.on{transform:none}
+.p5{left:96px;  top:29%; text-align:left;   transform:translateX(-60px)}
+.p5.on{transform:none}
+.p6{right:96px; top:15%; text-align:right;  transform:translateX(80px)}
+.p6.on{transform:none}
+.p7{left:88px;  right:88px; top:33%; text-align:center; max-width:none; transform:scale(.92)}
+.p7.on{transform:none}
+.p8{left:104px; top:24%; text-align:left;   transform:translateY(46px)}
+.p8.on{transform:none}
 
 /* l'avatar: la Z che respira */
 .avatar{position:absolute; left:50%; transform:translateX(-50%); bottom:29%; z-index:14;
@@ -132,27 +149,41 @@ html,body{height:100%; background:#000; overflow:hidden;
   border-radius:50%; border:3px solid rgba(255,255,255,.55); animation:tapring 2.2s ease-out infinite}
 @keyframes tapring{0%{transform:scale(.6); opacity:1} 100%{transform:scale(1.7); opacity:0}}
 
-/* ── 2 · L'AVATAR RISPONDE ──────────────────────────────────── */
+/* ── 2 · L'AVATAR RISPONDE ──────────────────────────────────────
+   Terzo colore, quello nuovo: l'AZZURRO del touchscreen della capsula,
+   riservato a questa schermata — "la domanda che tocchi, la risposta
+   che leggi". Le domande sono aumentate da quattro a otto e un dado le
+   mescola, cosi' anche qui qualcosa si muove. */
 .ask{position:absolute; inset:200px 64px 140px; display:flex; flex-direction:column; align-items:center}
 .ask .orbs{width:132px; height:132px; border-radius:50%; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
   display:flex; align-items:center; justify-content:center; font-size:62px; font-weight:800;
   box-shadow:0 18px 50px rgba(122,73,108,.55); animation:breathe 4.2s ease-in-out infinite}
 .ask .say{margin-top:28px; font-size:34px; font-weight:800; text-align:center; line-height:1.3}
-.ask .ans{margin-top:26px; background:rgba(23,20,29,.9); border:1px solid rgba(255,255,255,.12);
+.ask .shuf{margin-top:16px; display:inline-flex; align-items:center; gap:10px;
+  background:rgba(79,184,221,.13); border:1.5px solid rgba(79,184,221,.4); color:#8fd3ec;
+  border-radius:999px; padding:12px 22px; font-size:19px; font-weight:800; cursor:pointer;
+  transition:transform .15s, background .15s}
+.ask .shuf:active{transform:scale(.95); background:rgba(79,184,221,.24)}
+.ask .ans{margin-top:26px; background:rgba(23,20,29,.9); border:1px solid rgba(79,184,221,.28);
+  border-left:5px solid #4fb8dd;
   border-radius:26px; padding:32px 34px; font-size:26px; line-height:1.52;
   color:rgba(255,255,255,.9); min-height:230px; width:100%;
   opacity:0; transform:translateY(18px); transition:opacity .45s, transform .45s}
 .ask .ans.on{opacity:1; transform:none}
-.ask .ans b{color:#e6c65c}
-.qlist{width:100%; margin-top:30px; display:flex; flex-direction:column; gap:16px}
-.qbtn{background:rgba(255,255,255,.05); border:1.5px solid rgba(255,255,255,.14);
+.ask .ans b{color:#8fd3ec}
+.qlist{width:100%; margin-top:30px; display:flex; flex-direction:column; gap:16px;
+  max-height:640px; overflow-y:auto; padding-right:4px}
+.qbtn{background:rgba(255,255,255,.05); border:1.5px solid rgba(79,184,221,.22);
+  border-left:5px solid rgba(79,184,221,.55);
   border-radius:22px; padding:26px 30px; font-size:27px; font-weight:700; text-align:left;
   display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer;
-  transition:background .2s, border-color .2s, transform .2s}
+  opacity:0; transform:translateY(20px);
+  transition:background .2s, border-color .2s, transform .2s, opacity .4s}
+.qbtn.in{opacity:1; transform:none}
 .qbtn:active{transform:scale(.97)}
-.qbtn.sel{background:rgba(122,73,108,.35); border-color:#a9779a}
-.qbtn .ar{color:#e6c65c; font-size:24px}
+.qbtn.sel{background:rgba(79,184,221,.2); border-color:#4fb8dd}
+.qbtn .ar{color:#4fb8dd; font-size:24px}
 
 /* ── 3 · CHECK-IN: il nome ──────────────────────────────────── */
 .form{position:absolute; inset:210px 64px 120px; display:flex; flex-direction:column}
@@ -300,6 +331,7 @@ html,body{height:100%; background:#000; overflow:hidden;
     <div class="ask">
       <div class="orbs">Z</div>
       <div class="say">Chiedimi quello che vuoi sapere</div>
+      <div class="shuf" onclick="surprise()">🎲 Sorprendimi</div>
       <div class="ans" id="ansbox"></div>
       <div class="qlist" id="qlist"></div>
       <div class="navrow">
@@ -390,26 +422,46 @@ document.getElementById('logo').src = LOGO;
    Ognuna ha la sua ancora sullo schermo (p0…p4): non compaiono mai due
    volte di fila nello stesso punto, ed entrano ognuna con un movimento
    suo. Prima il dolore che il cliente riconosce, poi la promessa. */
+/* nove ancore (p0…p8), due colori (k: 'beneficio' viola, 'curiosita' oro).
+   Le posizioni sono scelte a mano cosi' che due frasi consecutive non
+   condividano mai la stessa ancora: 0,3,6,1,4,7,2,5,8 e poi da capo. */
 const ROAM = [
-  {p:0, ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.'},
-  {p:1, ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.'},
-  {p:2, ic:'📈', tx:'Zenith non indovina.<br><em>Misura.</em>',
+  {p:0, k:'beneficio', ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.'},
+  {p:3, k:'curiosita', ic:'📈', tx:'Zenith non indovina.<br><em>Misura.</em>',
        sub:'Battito e indice di fatica, prima e dopo la seduta. Coi tuoi numeri.'},
-  {p:3, ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.'},
-  {p:4, ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.'},
-  {p:2, ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
+  {p:6, k:'beneficio', ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.'},
+  {p:1, k:'curiosita', ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
        sub:'Il protocollo si costruisce su come stai oggi — non su come stavi il mese scorso.'},
-  {p:0, ic:'🏋️', tx:'Dopo l\'allenamento<br>servono <em>giorni</em>.'},
-  {p:1, ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
+  {p:4, k:'beneficio', ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.'},
+  {p:7, k:'curiosita', ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
+       sub:'Il tempo giusto, misurato: non un minuto di più.'},
+  {p:2, k:'beneficio', ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.'},
+  {p:5, k:'curiosita', ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
+       sub:'Il protocollo si aggiusta da solo, seduta dopo seduta.'},
+  {p:8, k:'beneficio', ic:'🏋️', tx:'Dopo l\'allenamento<br>servono <em>giorni</em>.'},
+  {p:0, k:'curiosita', ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
        sub:'Ogni nostro operatore supera la Scuola Zenith prima di condurre una seduta.'},
-  {p:4, ic:'🌙', tx:'Lo stress non resta<br>nella testa.',
+  {p:3, k:'beneficio', ic:'🌙', tx:'Lo stress non resta<br>nella testa.',
        sub:'Si deposita nei muscoli, e lì va sciolto.'},
+  {p:6, k:'curiosita', ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
+       sub:'Le gambe sopra il livello del cuore aiutano il ritorno dei liquidi.'},
+  {p:1, k:'beneficio', ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.'},
+  {p:4, k:'curiosita', ic:'📊', tx:'Prima e dopo,<br><em>sempre</em>.',
+       sub:'La misura fa parte del rituale: non è un extra, è la regola.'},
+  {p:7, k:'beneficio', ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.'},
+  {p:2, k:'curiosita', ic:'📲', tx:'Non è un pulsante<br>a caso.',
+       sub:'Ogni parametro sul touchscreen è scelto per te, seduta per seduta.'},
+  {p:5, k:'beneficio', ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.'},
+  {p:8, k:'curiosita', ic:'🔒', tx:'La stessa capsula.<br>Mai la stessa <em>seduta</em>.'},
 ];
+const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
 const BUBBLES = [
   'Posso spiegarti cos\'è Zenith',
   'Vuoi sapere cosa può fare per te?',
   'Curioso? Toccami',
-  'Ti spiego in trenta secondi'
+  'Ti spiego in trenta secondi',
+  'Ho otto risposte pronte per te',
+  'Una domanda, e ti dico tutto'
 ];
 let roamI = 0, roamTimer = null;
 function roamStep(){
@@ -417,8 +469,9 @@ function roamStep(){
   box.innerHTML = '';
   const m = ROAM[roamI % ROAM.length];
   const d = document.createElement('div');
-  d.className = 'roam p' + m.p;
-  d.innerHTML = '<span class="ic">' + m.ic + '</span><div class="tx">' + m.tx + '</div>'
+  d.className = 'roam p' + m.p + ' ' + m.k;
+  d.innerHTML = '<span class="rtag">' + RTAG[m.k] + '</span>'
+    + '<span class="ic">' + m.ic + '</span><div class="tx">' + m.tx + '</div>'
     + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '');
   box.appendChild(d);
   requestAnimationFrame(()=> requestAnimationFrame(()=> d.classList.add('on')));
@@ -426,7 +479,7 @@ function roamStep(){
   /* la bolla dell'avatar cambia insieme, ma più di rado */
   if(roamI % 3 === 0)
     document.getElementById('bub').innerHTML =
-      BUBBLES[(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
+      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
   roamI++;
 }
 function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, 5600); }
@@ -444,28 +497,51 @@ function go(n){
   idleReset();
 }
 
-/* ─────────── 2 · l'avatar risponde ─────────── */
+/* ─────────── 2 · l'avatar risponde ───────────
+   Otto domande, frasi corte e dirette — pensate per chi legge poco o
+   fatica a leggere: una domanda, una risposta, senza incisi. */
 const QA = [
   ['Cos\'è Zenith?',
-   'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai, e per venti o trenta minuti il corpo viene lavorato con compressione ad aria, calore e movimento — seguendo un protocollo scritto per te, oggi.'],
+   'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai. Per venti o trenta minuti il corpo viene lavorato con aria, calore e movimento. Il protocollo è scritto per te, oggi.'],
   ['Cosa può fare per me?',
-   'Dipende da cosa ti porta qui: <b>gambe pesanti, schiena rigida, sonno difficile, recupero dopo l\'allenamento</b>. Rispondi a tre domande al check-in e il protocollo si costruisce da solo.'],
+   'Dipende da cosa ti porta qui: <b>gambe pesanti, schiena rigida, sonno difficile, recupero dopo l\'allenamento</b>. Al check-in rispondi a tre domande. Il protocollo si costruisce da solo.'],
   ['Chi mi segue?',
-   'Un operatore <b>certificato dalla Scuola Zenith</b>. Non basta saper accendere la capsula: da noi si studia e si supera un esame prima di poter condurre una seduta. È una cosa nostra, non la trovi altrove.'],
+   'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo. È una cosa nostra: non la trovi altrove.'],
   ['Quanto dura?',
-   'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. Prima e dopo misuriamo battito e indice di fatica: il risultato lo <b>vedi</b>, non te lo raccontiamo soltanto.'],
+   'Dai <b>quindici ai trenta minuti</b>. Prima e dopo misuriamo battito e fatica. Il risultato lo <b>vedi</b>: non te lo raccontiamo soltanto.'],
+  ['Perché serve una Scuola apposta?',
+   'La capsula non è un elettrodomestico: <b>ogni parametro va scelto in base a te</b>. Un operatore che non ha studiato farebbe la stessa seduta a tutti. Noi vogliamo il contrario.'],
+  ['Cosa guarda l\'operatore sul touchscreen?',
+   'Intensità, profondità, compressione, calore: <b>ogni valore lo sceglie lui</b>, in base alle tue risposte. Niente è lasciato al caso.'],
+  ['Il protocollo cambia ogni volta?',
+   'Sì. <b>Tre risposte bastano</b>: come ti senti, cosa ti serve, dove lo senti di più. Una seduta diversa da quella di ieri, ogni volta.'],
+  ['Quanto ci metto a capire se fa per me?',
+   'Una seduta sola. <b>Misuriamo prima e dopo</b>: battito e indice di fatica. Il risultato lo vedi con i tuoi occhi.'],
 ];
-(function buildQ(){
+function buildQ(){
   document.getElementById('qlist').innerHTML = QA.map((q,i)=>
     '<div class="qbtn" onclick="answer(' + i + ',this)">' + q[0] + '<span class="ar">›</span></div>').join('');
-})();
+  [...document.querySelectorAll('.qbtn')].forEach((el,i)=>
+    setTimeout(()=> el.classList.add('in'), 80 + i * 90));
+}
+buildQ();
 function answer(i, el){
   document.querySelectorAll('.qbtn').forEach(b=> b.classList.remove('sel'));
   el.classList.add('sel');
+  el.scrollIntoView({block:'nearest', behavior:'smooth'});
   const box = document.getElementById('ansbox');
   box.classList.remove('on');
   setTimeout(()=>{ box.innerHTML = QA[i][1]; box.classList.add('on'); }, 160);
   idleReset();
+}
+/* il dado: sceglie una domanda diversa da quella APERTA ORA — non da
+   quella scelta l'ultima volta dal dado, che non è la stessa cosa se nel
+   frattempo il cliente ne ha toccata una a mano */
+function surprise(){
+  const bottoni = [...document.querySelectorAll('.qbtn')];
+  const aperta = bottoni.findIndex(b=> b.classList.contains('sel'));
+  let i; do{ i = Math.floor(Math.random() * QA.length); } while(i === aperta && QA.length > 1);
+  answer(i, bottoni[i]);
 }
 document.getElementById('avatar').onclick = ()=>{
   go('ask');
