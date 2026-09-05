@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<title>Zenith · Totem — prototipo</title>
+<title>Zenith · Chiosco — prototipo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0c0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,286 +19,306 @@
 html,body{height:100%; background:#000; overflow:hidden;
   font-family:Jak, system-ui, -apple-system, sans-serif; -webkit-font-smoothing:antialiased}
 
-/* Il totem è disegnato una volta sola a 1080×1920 e poi rimpicciolito per
-   stare in qualunque schermo: così quello che vedi sul telefono è
-   esattamente, proporzione per proporzione, quello che vedrai sui 50". */
+/* Il chiosco è disegnato una volta sola a 1080×1920 e poi rimpicciolito
+   per stare in qualunque schermo: quello che vedi sul telefono è
+   proporzionalmente identico a quello che vedrai sui 49 pollici. */
 #fit{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#000}
-/* flex:none è la riga che conta: senza, il contenitore restringeva il
-   foglio da 1080 alla larghezza del telefono e tutto finiva accavallato */
 #tot{width:1080px; height:1920px; flex:none; position:relative; overflow:hidden;
   transform-origin:center center; background:#0c0a0f; color:#fff}
 
 /* ═══════════ il fondo che respira ═══════════ */
-.aurora{position:absolute; inset:-20%; pointer-events:none}
-.aurora i{position:absolute; border-radius:50%; filter:blur(90px); opacity:.55}
-.a1{width:900px; height:900px; background:#7a496c; left:-180px; top:60px;  animation:drift1 26s ease-in-out infinite}
-.a2{width:760px; height:760px; background:#d4af37; right:-200px; top:520px; opacity:.16; animation:drift2 34s ease-in-out infinite}
-.a3{width:820px; height:820px; background:#4a2b42; left:120px; bottom:-160px; animation:drift3 30s ease-in-out infinite}
-@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(180px,120px) scale(1.15)}}
-@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-160px,180px) scale(1.2)}}
-@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(120px,-140px) scale(1.1)}}
+.aurora{position:absolute; inset:-25%; pointer-events:none}
+.aurora i{position:absolute; border-radius:50%; filter:blur(110px)}
+.a1{width:980px; height:980px; background:#7a496c; opacity:.5;  left:-220px; top:2%;  animation:drift1 30s ease-in-out infinite}
+.a2{width:820px; height:820px; background:#d4af37; opacity:.13; right:-240px; top:30%; animation:drift2 38s ease-in-out infinite}
+.a3{width:900px; height:900px; background:#4a2b42; opacity:.55; left:100px; bottom:-12%; animation:drift3 34s ease-in-out infinite}
+.a4{width:700px; height:700px; background:#2f7d99; opacity:.16; right:-160px; bottom:8%; animation:drift4 42s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(200px,140px) scale(1.16)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-180px,200px) scale(1.22)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(140px,-160px) scale(1.12)}}
+@keyframes drift4{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-120px,-180px) scale(1.18)}}
 .weave{position:absolute; inset:0; pointer-events:none; opacity:.5;
   background:repeating-linear-gradient(112deg, rgba(255,255,255,.022) 0 1px, transparent 1px 9px)}
 .vign{position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(120% 75% at 50% 42%, transparent 40%, rgba(12,10,15,.82) 100%)}
+  background:radial-gradient(125% 78% at 50% 40%, transparent 38%, rgba(12,10,15,.86) 100%)}
 
-/* ═══════════ testata ═══════════ */
-.head{position:absolute; top:74px; left:0; right:0; display:flex; flex-direction:column;
+/* ═══════════ testata — BANDA 1 · 3%→11% ═══════════ */
+.head{position:absolute; top:3.2%; left:0; right:0; display:flex; flex-direction:column;
   align-items:center; z-index:20}
-#logo{height:62px; opacity:.96; transition:transform .18s, filter .18s}
-#logo.press{transform:scale(.9); filter:drop-shadow(0 0 26px rgba(212,175,55,.8))}
-.head .ente{font-size:15px; letter-spacing:.44em; color:rgba(255,255,255,.42);
+#logo{height:70px; opacity:.97; transition:transform .18s, filter .18s}
+#logo.press{transform:scale(.9); filter:drop-shadow(0 0 30px rgba(212,175,55,.85))}
+.head .ente{font-size:16px; letter-spacing:.44em; color:rgba(255,255,255,.45);
   font-weight:700; margin-top:20px}
-/* l'anello che si riempie mentre si tiene premuto il logo */
-#lring{position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:150px; height:90px;
+#lring{position:absolute; top:-16px; left:50%; transform:translateX(-50%); width:170px; height:100px;
   pointer-events:none; opacity:0}
 #lring.on{opacity:1}
-#lring rect{fill:none; stroke:#d4af37; stroke-width:3; rx:16;
-  stroke-dasharray:460; stroke-dashoffset:460}
+#lring rect{fill:none; stroke:#d4af37; stroke-width:3; rx:18;
+  stroke-dasharray:520; stroke-dashoffset:520}
 #lring.on rect{animation:fillring 2s linear forwards}
 @keyframes fillring{to{stroke-dashoffset:0}}
 
 /* ═══════════ le schermate ═══════════ */
 .scene{position:absolute; inset:0; opacity:0; pointer-events:none;
-  transition:opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1); transform:translateY(24px)}
+  transition:opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1); transform:translateY(26px)}
 .scene.on{opacity:1; pointer-events:auto; transform:none}
 
-/* ── 1 · ATTRATTORE ─────────────────────────────────────────── */
-/* le frasi non compaiono mai nello stesso punto: ognuna ha la sua
-   ancora sullo schermo, e si alternano con un movimento diverso.
-   Due famiglie di colore, come chiesto: VIOLA per il beneficio (il
-   dolore che risolviamo), ORO per le curiosità sul metodo. */
-.roam{position:absolute; opacity:0; pointer-events:none; max-width:760px;
-  transition:opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1)}
-.roam.on{opacity:1}
-.roam .rtag{display:inline-block; font-size:14.5px; letter-spacing:.2em; font-weight:800;
-  padding:7px 18px; border-radius:999px; margin-bottom:18px}
-.roam.beneficio .rtag{background:rgba(122,73,108,.3); color:#d7b3c9; border:1px solid rgba(169,119,154,.55)}
-.roam.curiosita .rtag{background:rgba(212,175,55,.16); color:#e6c65c; border:1px solid rgba(212,175,55,.5)}
-.roam .ic{font-size:64px; display:block; margin-bottom:20px; filter:drop-shadow(0 6px 22px rgba(0,0,0,.5))}
-.roam .tx{font-size:52px; font-weight:800; line-height:1.16; letter-spacing:-.015em;
-  text-shadow:0 4px 30px rgba(0,0,0,.6)}
-.roam.beneficio .tx em{font-style:normal; color:#e6a8cf}
-.roam.curiosita .tx em{font-style:normal; color:#e6c65c}
-.roam .sub{font-size:24px; color:rgba(255,255,255,.62); margin-top:18px; line-height:1.45}
-/* nove ancore diverse: mai la stessa dopo l'altra (le posizioni sono
-   assegnate a mano nell'elenco qui sotto, non a caso, cosi' e'
-   garantito e non solo probabile) */
-.p0{left:88px;  top:16%; text-align:left;   transform:translateX(-70px)}
-.p0.on{transform:none}
-.p1{right:88px; top:34%; text-align:right;  transform:translateX(70px)}
-.p1.on{transform:none}
-.p2{left:88px;  right:88px; top:14%; text-align:center; max-width:none; transform:scale(.9)}
-.p2.on{transform:none}
-.p3{left:110px; top:38%; text-align:left;   transform:translateY(60px)}
-.p3.on{transform:none}
-.p4{right:100px; top:19%; text-align:right; transform:translateY(-60px)}
-.p4.on{transform:none}
-.p5{left:96px;  top:29%; text-align:left;   transform:translateX(-60px)}
-.p5.on{transform:none}
-.p6{right:96px; top:15%; text-align:right;  transform:translateX(80px)}
-.p6.on{transform:none}
-.p7{left:88px;  right:88px; top:33%; text-align:center; max-width:none; transform:scale(.92)}
-.p7.on{transform:none}
-.p8{left:104px; top:24%; text-align:left;   transform:translateY(46px)}
-.p8.on{transform:none}
+/* ══════════════════════════════════════════════════════════════
+   1 · VETRINA — bande esclusive: ogni cosa ha la sua fascia di
+   schermo, così due elementi non possono sovrapporsi nemmeno
+   volendo. Non è una speranza, è una garanzia di costruzione.
+   ══════════════════════════════════════════════════════════════ */
 
-/* l'avatar: la Z che respira */
-.avatar{position:absolute; left:50%; transform:translateX(-50%); bottom:29%; z-index:14;
-  display:flex; flex-direction:column; align-items:center; cursor:pointer}
-.orb{width:200px; height:200px; border-radius:50%; position:relative;
+/* ── BANDA 2 · la frase grande · 14%→40% ── */
+#roams{position:absolute; left:0; right:0; top:14%; height:26%; pointer-events:none;
+  display:grid; place-items:center; padding:0 70px}
+.roam{width:100%; opacity:0;
+  transition:opacity 1s ease, transform 1s cubic-bezier(.22,1,.36,1)}
+.roam.on{opacity:1; transform:none}
+.roam .rtag{display:inline-block; font-size:16px; letter-spacing:.2em; font-weight:800;
+  padding:8px 20px; border-radius:999px; margin-bottom:18px}
+.roam.beneficio .rtag{background:rgba(122,73,108,.32); color:#e2bdd4; border:1px solid rgba(169,119,154,.6)}
+.roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a; border:1px solid rgba(212,175,55,.55)}
+.roam .ic{font-size:60px; display:block; margin-bottom:16px; filter:drop-shadow(0 6px 22px rgba(0,0,0,.55))}
+.roam .tx{font-size:56px; font-weight:800; line-height:1.14; letter-spacing:-.015em;
+  text-shadow:0 4px 34px rgba(0,0,0,.7)}
+.roam.beneficio .tx em{font-style:normal; color:#f0aed6}
+.roam.curiosita .tx em{font-style:normal; color:#eed37a}
+.roam .sub{font-size:25px; color:rgba(255,255,255,.7); margin-top:16px; line-height:1.42;
+  text-shadow:0 2px 18px rgba(0,0,0,.7)}
+/* sei ancore, tutte dentro la banda: cambia il lato e il movimento
+   d'ingresso, ma nessuna può uscire dalla propria fascia */
+.q0{text-align:left;   transform:translateX(-80px)}
+.q1{text-align:right;  transform:translateX(80px)}
+.q2{text-align:center; transform:scale(.9)}
+.q3{text-align:left;   transform:translateY(70px)}
+.q4{text-align:right;  transform:translateY(-70px)}
+.q5{text-align:center; transform:translateY(60px) scale(.94)}
+
+/* ── BANDA 3 · le bolle-domanda che galleggiano · 42%→59% ── */
+.bolle{position:absolute; left:56px; right:56px; top:42%; height:17%;
+  display:flex; align-items:center; justify-content:center; gap:20px}
+.bolla{flex:1; min-width:0; height:100%; background:rgba(79,184,221,.09);
+  border:2px solid rgba(79,184,221,.38); border-radius:34px; padding:22px 18px;
+  text-align:center; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  transition:opacity .6s ease, background .2s, border-color .2s}
+.bolla:nth-child(1){animation:galleggia1 7s ease-in-out infinite}
+.bolla:nth-child(2){animation:galleggia2 8.4s ease-in-out infinite}
+.bolla:nth-child(3){animation:galleggia3 9.2s ease-in-out infinite}
+@keyframes galleggia1{0%,100%{transform:translateY(0)}   50%{transform:translateY(-13px)}}
+@keyframes galleggia2{0%,100%{transform:translateY(-9px)} 50%{transform:translateY(9px)}}
+@keyframes galleggia3{0%,100%{transform:translateY(6px)}  50%{transform:translateY(-11px)}}
+.bolla:active{background:rgba(79,184,221,.24)}
+.bolla .bi{font-size:36px; line-height:1}
+.bolla .bq{font-size:24px; font-weight:800; line-height:1.24; color:#fff}
+.bolla .bmini{font-size:13px; letter-spacing:.16em; font-weight:800; color:#7ecbe8}
+.bolla.via{opacity:0}
+
+/* ── BANDA 4 · la mascotte · 60%→77% ── */
+.avatar{position:absolute; left:0; right:0; top:60%; height:17%; z-index:14;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer}
+.orb{width:172px; height:172px; border-radius:50%; position:relative; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
-  box-shadow:0 0 0 2px rgba(255,255,255,.14), 0 26px 70px rgba(122,73,108,.6);
+  box-shadow:0 0 0 2px rgba(255,255,255,.16), 0 26px 70px rgba(122,73,108,.6);
   display:flex; align-items:center; justify-content:center;
-  animation:breathe 4.2s ease-in-out infinite}
+  animation:breathe 4.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.04)}}
+.orb::after{content:""; position:absolute; inset:-22px; border-radius:50%;
+  border:2px solid rgba(169,119,154,.5); animation:halo 3.2s ease-out infinite}
+.orb::before{content:""; position:absolute; inset:-22px; border-radius:50%;
+  border:2px solid rgba(212,175,55,.35); animation:halo 3.2s ease-out infinite 1.6s}
+@keyframes halo{0%{transform:scale(.86); opacity:.9} 100%{transform:scale(1.52); opacity:0}}
 .orb .face{width:74%; height:74%}
-/* il battito di ciglia: le due ellissi bianche si schiacciano insieme,
-   ogni sei secondi — troppo regolare sembrerebbe un robot, ma per un
-   prototipo va benissimo */
 .orb .eye{transform-box:fill-box; transform-origin:50% 50%; animation:blink 6s ease-in-out infinite}
 @keyframes blink{0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(.08)}}
 .orb .pupil, .orb .hl{transition:transform .18s ease-out}
-/* la firma sotto l'avatar: il logo vero, leggermente più grande che nel
-   bozzetto approvato */
-.alogo{height:34px; margin-top:22px; opacity:.95}
-@keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-16px) scale(1.04)}}
-.orb::after{content:""; position:absolute; inset:-26px; border-radius:50%;
-  border:2px solid rgba(169,119,154,.5); animation:halo 3s ease-out infinite}
-.orb::before{content:""; position:absolute; inset:-26px; border-radius:50%;
-  border:2px solid rgba(212,175,55,.35); animation:halo 3s ease-out infinite 1.5s}
-@keyframes halo{0%{transform:scale(.86); opacity:.9} 100%{transform:scale(1.5); opacity:0}}
-.bubble{margin-top:26px; background:rgba(23,20,29,.92); border:1px solid rgba(255,255,255,.14);
-  border-radius:24px; padding:20px 30px; font-size:26px; font-weight:700; text-align:center;
-  max-width:620px; line-height:1.34; backdrop-filter:blur(8px);
-  animation:bob 5s ease-in-out infinite}
-.bubble .mini{display:block; font-size:17px; color:#e6c65c; font-weight:800;
-  letter-spacing:.14em; margin-top:10px}
-@keyframes bob{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
+.alogo{height:30px; margin-top:14px; opacity:.95}
+.bubble{margin-top:12px; background:rgba(23,20,29,.94); border:1px solid rgba(255,255,255,.16);
+  border-radius:22px; padding:13px 26px; font-size:22px; font-weight:700; text-align:center;
+  line-height:1.3; backdrop-filter:blur(8px)}
+.bubble .mini{display:block; font-size:14px; color:#e6c65c; font-weight:800;
+  letter-spacing:.14em; margin-top:5px}
 
-/* il grande invito in fondo */
-.cta{position:absolute; left:64px; right:64px; bottom:8%; z-index:15}
-.cta .btn{height:196px; border-radius:34px; position:relative; overflow:hidden;
+/* ── BANDA 5 · l'invito · 79%→93% ── */
+.cta{position:absolute; left:64px; right:64px; top:79%; height:14%; z-index:15;
+  display:flex; flex-direction:column; justify-content:center}
+.cta .btn{height:172px; border-radius:34px; position:relative; overflow:hidden;
   background:linear-gradient(135deg,#a9779a,#7a496c 60%,#5c3550);
   box-shadow:0 26px 70px rgba(122,73,108,.5);
   display:flex; align-items:center; justify-content:center; gap:26px; cursor:pointer;
   animation:pulse 2.8s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 26px 70px rgba(122,73,108,.5)}
-  50%{box-shadow:0 26px 90px rgba(169,119,154,.85)}}
+  50%{box-shadow:0 26px 92px rgba(169,119,154,.88)}}
 .cta .btn::after{content:""; position:absolute; top:0; left:-60%; width:40%; height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-  animation:sheen 3.6s ease-in-out infinite}
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.17), transparent);
+  animation:sheen 3.8s ease-in-out infinite}
 @keyframes sheen{0%{left:-60%} 55%,100%{left:130%}}
-.cta .ic{font-size:66px; position:relative}
-.cta .tx{position:relative}
-.cta .tx{display:flex; flex-direction:column}
-.cta .t1{font-size:44px; font-weight:800; letter-spacing:.01em}
-.cta .t2{font-size:21px; color:rgba(255,255,255,.8); margin-top:6px; font-weight:600}
-.cta .hint{text-align:center; font-size:19px; color:rgba(255,255,255,.4); margin-top:22px}
-.tapdot{position:absolute; right:56px; top:50%; margin-top:-30px; width:60px; height:60px;
-  border-radius:50%; border:3px solid rgba(255,255,255,.55); animation:tapring 2.2s ease-out infinite}
-@keyframes tapring{0%{transform:scale(.6); opacity:1} 100%{transform:scale(1.7); opacity:0}}
+.cta .ic{font-size:60px; position:relative}
+.cta .tx{position:relative; display:flex; flex-direction:column}
+.cta .t1{font-size:43px; font-weight:800; letter-spacing:.01em}
+.cta .t2{font-size:20px; color:rgba(255,255,255,.82); margin-top:6px; font-weight:600}
+.cta .hint{text-align:center; font-size:19px; color:rgba(255,255,255,.42); margin-top:14px}
 
-/* ── 2 · L'AVATAR RISPONDE ──────────────────────────────────────
-   Terzo colore, quello nuovo: l'AZZURRO del touchscreen della capsula,
-   riservato a questa schermata — "la domanda che tocchi, la risposta
-   che leggi". Le domande sono aumentate da quattro a otto e un dado le
-   mescola, cosi' anche qui qualcosa si muove. */
-.ask{position:absolute; inset:200px 64px 140px; display:flex; flex-direction:column; align-items:center}
-.ask .orbs{width:132px; height:132px; border-radius:50%; flex:none;
+/* ══════════════════════════════════════════════════════════════
+   2 · LE DOMANDE — a tutta larghezza, non più una colonnina
+   ══════════════════════════════════════════════════════════════ */
+.ask{position:absolute; inset:12% 44px 3%; display:flex; flex-direction:column}
+.ask .capo{display:flex; align-items:center; gap:22px; flex:none}
+.ask .orbs{width:112px; height:112px; border-radius:50%; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 18px 50px rgba(122,73,108,.55); animation:breathe 4.2s ease-in-out infinite}
+  box-shadow:0 18px 50px rgba(122,73,108,.55); animation:breathe 4.4s ease-in-out infinite}
 .ask .orbs .face{width:74%; height:74%}
-/* solo la riga dei due tasti si allarga per intero: gli altri figli
-   di .ask restano centrati al loro contenuto, com'è giusto che sia */
-.ask .navrow{align-self:stretch}
-.ask .say{margin-top:28px; font-size:34px; font-weight:800; text-align:center; line-height:1.3}
-.ask .shuf{margin-top:16px; display:inline-flex; align-items:center; gap:10px;
-  background:rgba(79,184,221,.13); border:1.5px solid rgba(79,184,221,.4); color:#8fd3ec;
-  border-radius:999px; padding:12px 22px; font-size:19px; font-weight:800; cursor:pointer;
-  transition:transform .15s, background .15s}
-.ask .shuf:active{transform:scale(.95); background:rgba(79,184,221,.24)}
-.ask .ans{margin-top:26px; background:rgba(23,20,29,.9); border:1px solid rgba(79,184,221,.28);
-  border-left:5px solid #4fb8dd;
-  border-radius:26px; padding:32px 34px; font-size:26px; line-height:1.52;
-  color:rgba(255,255,255,.9); min-height:230px; width:100%;
-  opacity:0; transform:translateY(18px); transition:opacity .45s, transform .45s}
-.ask .ans.on{opacity:1; transform:none}
-.ask .ans b{color:#8fd3ec}
-.qlist{width:100%; margin-top:30px; display:flex; flex-direction:column; gap:16px;
-  max-height:640px; overflow-y:auto; padding-right:4px}
-.qbtn{background:rgba(255,255,255,.05); border:1.5px solid rgba(79,184,221,.22);
-  border-left:5px solid rgba(79,184,221,.55);
-  border-radius:22px; padding:26px 30px; font-size:27px; font-weight:700; text-align:left;
-  display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer;
-  opacity:0; transform:translateY(20px);
-  transition:background .2s, border-color .2s, transform .2s, opacity .4s}
-.qbtn.in{opacity:1; transform:none}
-.qbtn:active{transform:scale(.97)}
-.qbtn.sel{background:rgba(79,184,221,.2); border-color:#4fb8dd}
-.qbtn .ar{color:#4fb8dd; font-size:24px}
+.ask .capo .tit{font-size:38px; font-weight:800; line-height:1.2}
+.ask .capo .sot{font-size:21px; color:rgba(255,255,255,.55); margin-top:6px}
+.griglia{margin-top:26px; flex:1; min-height:0; overflow-y:auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:18px; align-content:start; padding-right:6px}
+.qcard{background:rgba(79,184,221,.08); border:2px solid rgba(79,184,221,.3);
+  border-radius:28px; padding:24px 22px; cursor:pointer; text-align:left;
+  display:flex; flex-direction:column; gap:10px; min-height:158px;
+  opacity:0; transform:translateY(24px);
+  transition:opacity .45s, transform .45s, background .2s, border-color .2s}
+.qcard.in{opacity:1; transform:none}
+.qcard:active{background:rgba(79,184,221,.2)}
+.qcard .qi{font-size:36px; line-height:1}
+.qcard .qt{font-size:24px; font-weight:800; line-height:1.26}
+.qcard .qm{font-size:14px; letter-spacing:.14em; font-weight:800; color:#7ecbe8; margin-top:auto}
 
-/* ── 3 · CHECK-IN: il nome ──────────────────────────────────── */
-.form{position:absolute; inset:210px 64px 120px; display:flex; flex-direction:column}
-.form .q{font-size:52px; font-weight:800; line-height:1.16; text-align:center}
-.form .qs{font-size:23px; color:rgba(255,255,255,.55); text-align:center; margin-top:16px}
-.fields{margin-top:44px; display:flex; flex-direction:column; gap:18px}
+/* la risposta prende tutto lo schermo: è lì che si legge, e va letta */
+.risp{position:absolute; inset:12% 44px 3%; display:none; flex-direction:column}
+.risp.on{display:flex}
+.risp .rq{font-size:44px; font-weight:800; line-height:1.16; flex:none;
+  padding-left:26px; border-left:7px solid #4fb8dd}
+.risp .rin{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center}
+.risp .rbody{margin-top:30px; flex:0 1 auto; min-height:0; overflow-y:auto;
+  background:rgba(23,20,29,.86); border:1px solid rgba(79,184,221,.24);
+  border-radius:32px; padding:38px 40px; font-size:30px; line-height:1.5;
+  color:rgba(255,255,255,.93)}
+.risp .rbody b{color:#8fd3ec}
+.risp .rbody .piu{display:block; margin-top:26px; padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.12); font-size:24px; color:rgba(255,255,255,.62)}
+
+/* ══════════════════════════════════════════════════════════════
+   3 · IL CHECK-IN — stessa sequenza del gestionale: prima chi ti
+   segue, poi le cinque domande, con le stesse parole e le stesse
+   scelte, ma grandi da chiosco.
+   ══════════════════════════════════════════════════════════════ */
+.prog{position:absolute; top:12%; left:64px; right:64px; height:10px;
+  background:rgba(255,255,255,.1); border-radius:5px; overflow:hidden; z-index:16}
+.prog i{display:block; height:100%; width:0; border-radius:5px;
+  background:linear-gradient(90deg,#a9779a,#e6c65c); transition:width .5s cubic-bezier(.22,1,.36,1)}
+.form{position:absolute; inset:15% 56px 3%; display:flex; flex-direction:column}
+.form .step{font-size:20px; letter-spacing:.24em; color:#e6c65c; font-weight:800; text-align:center; flex:none}
+.form .q{font-size:50px; font-weight:800; line-height:1.14; text-align:center; margin-top:16px;
+  letter-spacing:-.015em; flex:none}
+.form .qs{font-size:22px; color:rgba(255,255,255,.55); text-align:center; margin-top:12px; flex:none}
+.corpo{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center;
+  margin:20px 0; overflow-y:auto}
+
+/* la tastiera del nome */
+.fields{display:flex; flex-direction:column; gap:16px; flex:none}
 .fld{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14);
-  border-radius:20px; padding:26px 28px; font-size:34px; font-weight:700; min-height:96px;
+  border-radius:20px; padding:22px 26px; font-size:34px; font-weight:700; min-height:92px;
   display:flex; align-items:center; transition:border-color .2s, background .2s}
 .fld.act{border-color:#a9779a; background:rgba(122,73,108,.22)}
 .fld .ph{color:rgba(255,255,255,.3); font-weight:600}
 .caret{display:inline-block; width:3px; height:38px; background:#e6c65c; margin-left:4px;
-  animation:blink 1s step-end infinite; vertical-align:middle}
-@keyframes blink{50%{opacity:0}}
-.kb{margin-top:auto; display:flex; flex-direction:column; gap:12px}
-.kbrow{display:flex; gap:11px; justify-content:center}
-.key{flex:1; height:104px; border-radius:16px; background:rgba(255,255,255,.09);
+  animation:blink2 1s step-end infinite; vertical-align:middle}
+@keyframes blink2{50%{opacity:0}}
+.kb{display:flex; flex-direction:column; gap:11px; flex:none}
+.kbrow{display:flex; gap:10px; justify-content:center}
+.key{flex:1; height:96px; border-radius:16px; background:rgba(255,255,255,.09);
   border:1px solid rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center;
-  font-size:36px; font-weight:700; cursor:pointer; transition:transform .1s, background .1s}
+  font-size:34px; font-weight:700; cursor:pointer; transition:transform .1s, background .1s}
 .key:active{transform:scale(.93); background:rgba(169,119,154,.5)}
 .key.wide{flex:2.4}
-.key.go{background:linear-gradient(135deg,#a9779a,#7a496c); font-size:28px; font-weight:800}
+.key.go{background:linear-gradient(135deg,#a9779a,#7a496c); font-size:25px; font-weight:800}
 .key.dim{opacity:.45}
 
-/* ── 4 · LE DOMANDE ─────────────────────────────────────────── */
-.prog{position:absolute; top:210px; left:64px; right:64px; height:8px;
-  background:rgba(255,255,255,.1); border-radius:4px; overflow:hidden; z-index:16}
-.prog i{display:block; height:100%; width:0; border-radius:4px;
-  background:linear-gradient(90deg,#a9779a,#e6c65c); transition:width .5s cubic-bezier(.22,1,.36,1)}
-.quiz{position:absolute; inset:270px 64px 130px; display:flex; flex-direction:column}
-.quiz .step{font-size:19px; letter-spacing:.24em; color:#e6c65c; font-weight:800; text-align:center}
-.quiz .q{font-size:54px; font-weight:800; line-height:1.14; text-align:center; margin-top:20px;
-  letter-spacing:-.015em}
-/* lo spazio fra titolo e tasti è tutto delle risposte, e le risposte
-   stanno al centro: niente margini automatici, che lasciavano i tasti
-   a mezz'aria sopra il contenuto */
-.opts{flex:1; min-height:0; display:flex; flex-direction:column;
-  justify-content:center; gap:20px; width:100%}
-.opt{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.13); border-radius:26px;
-  padding:34px 34px; display:flex; align-items:center; gap:28px; cursor:pointer;
-  opacity:0; transform:translateY(30px);
-  transition:opacity .5s, transform .5s, border-color .2s, background .2s}
+/* gli operatori, come nel gestionale */
+.opgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.opcard{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14);
+  border-radius:26px; padding:26px 20px; display:flex; flex-direction:column; align-items:center;
+  gap:14px; cursor:pointer; transition:border-color .2s, background .2s;
+  opacity:0; transform:translateY(22px)}
+.opcard.in{opacity:1; transform:none}
+.opcard.sel{border-color:var(--oc,#a9779a); background:rgba(255,255,255,.09)}
+.opcard .av{width:118px; height:118px; border-radius:50%; background:var(--oc,#7a496c);
+  display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:800; color:#fff}
+.opcard .nm{font-size:30px; font-weight:800; text-align:center; line-height:1.2}
+
+/* le risposte a scelta */
+.opts{display:flex; flex-direction:column; gap:15px}
+.opts.due{display:grid; grid-template-columns:1fr 1fr}
+.opt{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14); border-radius:26px;
+  padding:30px 28px; display:flex; align-items:center; gap:22px; cursor:pointer;
+  opacity:0; transform:translateY(24px);
+  transition:opacity .45s, transform .45s, border-color .2s, background .2s}
 .opt.in{opacity:1; transform:none}
-.opt:active{transform:scale(.975)}
 .opt.sel{border-color:#e6c65c; background:rgba(212,175,55,.14);
-  box-shadow:0 0 0 4px rgba(212,175,55,.12), 0 18px 50px rgba(212,175,55,.18)}
-.opt .oi{font-size:62px; flex:none; width:86px; text-align:center}
-.opt .ot{font-size:34px; font-weight:800; line-height:1.22}
-.opt .od{font-size:20px; color:rgba(255,255,255,.55); margin-top:7px; line-height:1.4}
-.opt .ck{margin-left:auto; width:46px; height:46px; border-radius:50%; flex:none;
-  border:2px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center;
-  font-size:26px; color:#0c0a0f; background:transparent; transition:background .2s, border-color .2s}
+  box-shadow:0 0 0 4px rgba(212,175,55,.12)}
+.opt .oi{font-size:56px; flex:none; width:76px; text-align:center}
+.opt .ox{flex:1; min-width:0; display:flex; flex-direction:column}
+.opt .ot{font-size:31px; font-weight:800; line-height:1.2}
+.opt .od{font-size:19px; color:rgba(255,255,255,.56); margin-top:6px; line-height:1.32}
+.opt .ck{width:40px; height:40px; border-radius:50%; flex:none;
+  border:2px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center;
+  font-size:22px; color:#0c0a0f; background:transparent; transition:background .2s, border-color .2s}
 .opt.sel .ck{background:#e6c65c; border-color:#e6c65c}
 
-/* la sagoma del corpo, per la domanda sulle zone */
-.bodywrap{margin:auto; display:flex; gap:46px; align-items:center; justify-content:center}
-.bodyfig{width:236px; flex:none}
-.bodyfig .sil{fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.28); stroke-width:2}
+/* le zone del corpo, due sagome come nel gestionale */
+.zwrap{display:flex; gap:26px; justify-content:center; align-items:flex-start}
+.zfig{flex:1; max-width:400px}
+.zfig .et{text-align:center; font-size:18px; letter-spacing:.18em; font-weight:800;
+  color:rgba(255,255,255,.45); margin-bottom:10px}
+.zfig svg{width:100%; height:auto; display:block}
+.zfig .sil{fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.3); stroke-width:1.4}
 .bz{cursor:pointer}
-.bz rect{fill:transparent; stroke:rgba(255,255,255,.3); stroke-width:2; stroke-dasharray:6 5; rx:12;
-  transition:fill .2s, stroke .2s}
-.bz.on rect{fill:rgba(212,175,55,.55); stroke:#e6c65c; stroke-dasharray:none}
-.bz text{fill:rgba(255,255,255,.55); font-size:15px; font-weight:700; pointer-events:none}
+.bz rect{fill:transparent; stroke:rgba(255,255,255,.34); stroke-width:1.4; stroke-dasharray:4 3; rx:6}
+.bz.on rect{fill:rgba(212,175,55,.5); stroke:#e6c65c; stroke-dasharray:none}
+.bz text{fill:rgba(255,255,255,.62); font-size:6.2px; font-weight:700; pointer-events:none}
 .bz.on text{fill:#fff}
-.zlist{display:flex; flex-direction:column; gap:14px}
-.zpill{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.13);
-  border-radius:18px; padding:20px 26px; font-size:26px; font-weight:700; cursor:pointer;
+.zscelte{margin-top:18px; display:flex; flex-wrap:wrap; gap:11px; justify-content:center}
+.zpill{background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16);
+  border-radius:999px; padding:14px 24px; font-size:22px; font-weight:700; cursor:pointer;
   transition:background .2s, border-color .2s}
-.zpill.on{border-color:#e6c65c; background:rgba(212,175,55,.16)}
+.zpill.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
 
-.navrow{display:flex; gap:16px; margin-top:26px; flex:none}
-.nav{flex:1; height:118px; border-radius:24px; display:flex; align-items:center; justify-content:center;
-  font-size:30px; font-weight:800; cursor:pointer; transition:transform .12s, opacity .2s}
-.nav:active{transform:scale(.97)}
-.nav.back{flex:.55; background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
-  font-size:26px; color:rgba(255,255,255,.7)}
+.navrow{display:flex; gap:16px; flex:none; align-self:stretch}
+.nav{flex:1; height:112px; border-radius:24px; display:flex; align-items:center; justify-content:center;
+  font-size:29px; font-weight:800; cursor:pointer; transition:opacity .2s}
+.nav.back{flex:.5; background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
+  font-size:25px; color:rgba(255,255,255,.7)}
 .nav.next{background:linear-gradient(135deg,#a9779a,#7a496c); box-shadow:0 16px 44px rgba(122,73,108,.45)}
 .nav.next.off{opacity:.3; pointer-events:none; box-shadow:none}
 
-/* ── 5 · ACCOMODATI ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   4 · ACCOMODATI
+   ══════════════════════════════════════════════════════════════ */
 .done{position:absolute; inset:0; display:flex; flex-direction:column;
   align-items:center; justify-content:center; padding:0 80px; text-align:center}
-.done .ring{width:230px; height:230px; border-radius:50%; border:4px solid #e6c65c;
-  display:flex; align-items:center; justify-content:center; font-size:112px;
+.done .ring{width:210px; height:210px; border-radius:50%; border:4px solid #e6c65c;
+  display:flex; align-items:center; justify-content:center; font-size:104px;
   animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
 @keyframes pop{0%{transform:scale(.3); opacity:0} 100%{transform:scale(1); opacity:1}}
-.done .big{font-size:76px; font-weight:800; margin-top:52px; line-height:1.1; letter-spacing:-.02em}
+.done .big{font-size:70px; font-weight:800; margin-top:42px; line-height:1.1; letter-spacing:-.02em}
 .done .big span{color:#e6c65c}
-.done .sit{font-size:44px; font-weight:800; margin-top:34px; color:#fff}
-.done .msg{font-size:27px; color:rgba(255,255,255,.65); margin-top:26px; line-height:1.5; max-width:720px}
-.done .chips{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:44px}
-.done .chip{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15);
-  border-radius:999px; padding:16px 28px; font-size:23px; font-weight:700}
-.done .wait{margin-top:60px; font-size:21px; color:rgba(255,255,255,.35)}
+.done .sit{font-size:42px; font-weight:800; margin-top:28px}
+.done .msg{font-size:26px; color:rgba(255,255,255,.68); margin-top:22px; line-height:1.5; max-width:760px}
+.done .chips{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:34px}
+.done .chip{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16);
+  border-radius:999px; padding:14px 26px; font-size:22px; font-weight:700}
+.done .wait{margin-top:46px; font-size:20px; color:rgba(255,255,255,.35)}
 
-/* ── il codice dello staff ──────────────────────────────────── */
-.pinwrap{position:absolute; inset:0; background:rgba(8,7,10,.96); z-index:60;
+/* ══════════════════════════════════════════════════════════════
+   il codice riservato
+   ══════════════════════════════════════════════════════════════ */
+.pinwrap{position:absolute; inset:0; background:rgba(8,7,10,.97); z-index:60;
   display:none; flex-direction:column; align-items:center; justify-content:center; padding:0 90px}
 .pinwrap.on{display:flex}
 .pinwrap .pt{font-size:38px; font-weight:800}
 .pinwrap .ps{font-size:22px; color:rgba(255,255,255,.5); margin-top:14px; text-align:center}
-.pindots{display:flex; gap:20px; margin:48px 0 40px}
+.pindots{display:flex; gap:20px; margin:44px 0 18px}
 .pindots i{width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.3)}
 .pindots i.f{background:#e6c65c; border-color:#e6c65c}
 .pindots.err i{border-color:#e05a5a}
@@ -306,89 +326,90 @@ html,body{height:100%; background:#000; overflow:hidden;
 @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-14px)}
   75%{transform:translateX(14px)}}
 .pindots.err{animation:shake .4s ease-in-out}
-.pinerr{min-height:24px; color:#f28b8b; font-size:16px; font-weight:700; margin-top:-24px; margin-bottom:24px}
+.pinerr{min-height:26px; color:#f28b8b; font-size:17px; font-weight:700; margin-bottom:22px}
 .pinpad{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; width:100%; max-width:620px}
-.pinpad .key{height:130px; font-size:46px}
-.pinwrap .esc{margin-top:44px; font-size:22px; color:rgba(255,255,255,.4)}
+.pinpad .key{height:126px; font-size:44px}
+.pinwrap .esc{margin-top:38px; font-size:22px; color:rgba(255,255,255,.4)}
 
-.dbg{position:absolute; left:0; right:0; bottom:26px; text-align:center;
-  font-size:17px; color:rgba(255,255,255,.22); z-index:30; letter-spacing:.1em}
+.dbg{position:absolute; left:0; right:0; bottom:1.2%; text-align:center;
+  font-size:17px; color:rgba(255,255,255,.2); z-index:30; letter-spacing:.1em}
 </style>
 </head>
 <body>
 <div id="fit"><div id="tot">
 
-  <div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
   <div class="weave"></div><div class="vign"></div>
 
   <div class="head">
-    <svg id="lring" viewBox="0 0 150 90"><rect x="2" y="2" width="146" height="86"/></svg>
+    <svg id="lring" viewBox="0 0 170 100"><rect x="2" y="2" width="166" height="96"/></svg>
     <img id="logo" alt="Zenith">
     <div class="ente">CENTRO DI RECUPERO BIOMUSCOLARE · POMPEI</div>
   </div>
 
-  <!-- ═══ 1 · ATTRATTORE ═══ -->
+  <!-- ═══ 1 · VETRINA ═══ -->
   <section class="scene on" id="s-idle">
     <div id="roams"></div>
+    <div class="bolle" id="bolle"></div>
     <div class="avatar" id="avatar">
-      <div class="orb"><svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g><g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g><ellipse class="cheek" cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><ellipse class="cheek" cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><path class="mouth" d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/></svg></div>
+      <div class="orb" id="orb"></div>
       <img class="alogo" id="alogo" alt="Zenith">
-      <div class="bubble" id="bub">Posso spiegarti cos'è Zenith<span class="mini">TOCCAMI</span></div>
+      <div class="bubble" id="bub"></div>
     </div>
     <div class="cta">
       <div class="btn" id="gocheck">
         <span class="ic">👋</span>
         <span class="tx"><span class="t1">FAI IL CHECK-IN</span>
-          <span class="t2">sei pronto in due minuti</span></span>
-        <span class="tapdot"></span>
+          <span class="t2">bastano due minuti, lo fai da solo</span></span>
       </div>
-      <div class="hint">Il tuo operatore ti chiamerà appena la capsula è pronta</div>
+      <div class="hint">Poi ti chiama il tuo operatore, appena la capsula è pronta</div>
     </div>
   </section>
 
-  <!-- ═══ 2 · L'AVATAR RISPONDE ═══ -->
+  <!-- ═══ 2 · LE DOMANDE ═══ -->
   <section class="scene" id="s-ask">
-    <div class="ask">
-      <div class="orbs"><svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet"><g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g><g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/><circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/><circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g><ellipse class="cheek" cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><ellipse class="cheek" cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/><path class="mouth" d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/></svg></div>
-      <div class="say">Chiedimi quello che vuoi sapere</div>
-      <div class="shuf" onclick="surprise()">🎲 Sorprendimi</div>
-      <div class="ans" id="ansbox"></div>
-      <div class="qlist" id="qlist"></div>
-      <div class="navrow">
+    <div class="ask" id="askgrid">
+      <div class="capo">
+        <div class="orbs" id="orbs"></div>
+        <div>
+          <div class="tit">Chiedimi quello che vuoi sapere</div>
+          <div class="sot">Tocca una domanda: ti rispondo io</div>
+        </div>
+      </div>
+      <div class="griglia" id="griglia"></div>
+      <div class="navrow" style="margin-top:22px">
         <div class="nav back" onclick="go('idle')">‹ Indietro</div>
+        <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
+      </div>
+    </div>
+    <div class="risp" id="risp">
+      <div class="rin">
+        <div class="rq" id="rq"></div>
+        <div class="rbody" id="rbody"></div>
+      </div>
+      <div class="navrow" style="margin-top:26px">
+        <div class="nav back" onclick="chiudiRisposta()">‹ Altre domande</div>
         <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 3 · IL NOME ═══ -->
-  <section class="scene" id="s-name">
-    <div class="form">
-      <div class="q">Come ti chiami?</div>
-      <div class="qs">Scrivi nome e cognome per intero</div>
-      <div class="fields">
-        <div class="fld act" id="f-nome" onclick="setField('nome')"><span id="v-nome" class="ph">Nome</span></div>
-        <div class="fld" id="f-cogn" onclick="setField('cogn')"><span id="v-cogn" class="ph">Cognome</span></div>
-      </div>
-      <div class="kb" id="kb"></div>
-    </div>
-  </section>
-
-  <!-- ═══ 4 · LE DOMANDE ═══ -->
-  <section class="scene" id="s-quiz">
+  <!-- ═══ 3 · CHECK-IN ═══ -->
+  <section class="scene" id="s-form">
     <div class="prog"><i id="progbar"></i></div>
-    <div class="quiz">
-      <div class="step" id="qstep"></div>
-      <div class="q" id="qtitle"></div>
-      <div class="opts" id="qopts"></div>
+    <div class="form">
+      <div class="step" id="fstep"></div>
+      <div class="q" id="fq"></div>
+      <div class="qs" id="fqs"></div>
+      <div class="corpo" id="fcorpo"></div>
       <div class="navrow">
-        <div class="nav back" onclick="qBack()">‹ Indietro</div>
-        <div class="nav next off" id="qnext" onclick="qNext()">AVANTI ›</div>
+        <div class="nav back" onclick="passoIndietro()">‹ Indietro</div>
+        <div class="nav next off" id="fnext" onclick="passoAvanti()">AVANTI ›</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ 5 · ACCOMODATI ═══ -->
+  <!-- ═══ 4 · ACCOMODATI ═══ -->
   <section class="scene" id="s-done">
     <div class="done">
       <div class="ring">✓</div>
@@ -401,7 +422,7 @@ html,body{height:100%; background:#000; overflow:hidden;
     </div>
   </section>
 
-  <!-- ═══ il codice dello staff ═══ -->
+  <!-- ═══ il codice riservato ═══ -->
   <div class="pinwrap" id="pinwrap">
     <div class="pt">Codice Zenith</div>
     <div class="ps">Accesso riservato agli operatori del centro</div>
@@ -411,23 +432,18 @@ html,body{height:100%; background:#000; overflow:hidden;
     <div class="esc" onclick="closePin()">Annulla</div>
   </div>
 
-  <div class="dbg" id="dbg">PROTOTIPO · torna da solo alla vetrina dopo 45 s di inattività</div>
+  <div class="dbg" id="dbg">PROTOTIPO · torna da solo alla vetrina dopo 60 s di inattività</div>
 </div></div>
 
 <script>
 const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAFeCAYAAAAWrzWlAAAy1ElEQVR42u3dX2yUZ54n+sdnGLPDnxQI4gx/ioGo14zUhY4CyfaGorVJ6+z0pJQjldQXXZ1IIJ2LWHNRFm7JvvKlr2wpIHyxqr4zEkn1xUiWNirO7Fmls2qqs1kC0SpvpODTCjQF9ISMBW+D6caHUZ2LYJakCVTZheutqs9HailJV9mvn/d5/3zf53mfX9/WrVsDAAAA0F7/myYAAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABAAAAAR0AAAAEdAAAAEBABwAAAAEdAAAAENABAABAQAcAAAAEdAAAABDQAQAAAAEdAAAABHQAAABAQAcAAAABHQAAABDQAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAAAR0AAAAQEAHAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABgB6RyWTqWgEABHQAoI1SqdTR2dnZkE6nL2gNABDQAYA2GRoaOpZKpcLY2Nig1gCA1urbunWrVgAAniidTl84f/78g2C+f//+uVqttlfLAEBrGEEHABry7VFzo+gA0FpG0AGAJ/r26PkSo+gA0DpG0AGAJ/qu0fKJiQmj6AAgoAMAqyGdTl8oFAqP/P9yuVzIZrPKrgGAgA4APG1Petd8dHRUIwGAgA4APE2PGz1fks1mjaIDgIAOADxNja7UbhQdAAR0AOApaWT0fIlRdAAQ0AGAp6TZOudG0QFAQAcAWiyTydQbHT1fYhQdAAR0AKDFJiYmlvU9o+gAIKADAC2SzWbr2Wx2ud81ig4AAjoA0AorHQU3ig4AAjoAsEIrGT1/6GeEXC5nFB0AmtS3detWrQAAhBBCmJ2dXXFADyGEWq0W9u/f36dFAaBxRtABgBBCa0bPl6TT6VAoFIyiA4CADgA0q9Xvjo+NjWlUABDQAYBmtHL0fIlRdABojnfQAYCWvXv+bd5FB6DV0un0hX379g1mMplv/Pc4jkMURaFarXbsdWeN3QsAve1pjJ4/dBMVCoVCvVwuC+kArCiUDw0NDeZyuZBOp5/08XqlUgmnT58OnXb9MYIOAD3uV7/6Vf3boxCtZBQdgOVKpVJHJyYmjhUKhWVfg8bHx0OlUumI65B30AGghxUKhacazkPwLjoAy5PL5ernzp37RjiP4ziUy+VQLBZDPp8Pzz77bN+zzz7b973vfW8kn8+HqampEEXRN65BMzMzYWZmpp5KpY4m/W82gg4APez8+fP1BqYKrphRdACaUSgU6tPT09+4jkxOTjY8ZT2dTl8YGxsbfDjcR1EUisViiKIosdcjI+gA0MM3P6sRzu/fKBlFB6AhY2Nj3wjnpVIpvPrqqyPNvE9eq9X2FovFvnw+H2q1WgghhEwmE2ZnZ0OSR9KNoANAj1qt0fMlcRyHAwcOjMRxfFzrA/Ao3x45LxaLK17oLZVKHZ2dnT229EpXFEUhn88n8npkBB0AevQGaDXD+f0bpDA0NHRM6wPwKOl0+sLExERLw3kIIcRxfDyfz48svZueyWTC6OhoIq9HRtABoAet9uj5QzdJRtEBeKTZ2dkHZT9LpVIYHx9v6bviqVTq6Llz546lUqkQQgj5fD5xNdONoANAj2nH6PlDN0dG0QH4M9ls9kE4v18are9RAf6rr7565P9++9vf1mdmZuqPW+8kjuPjw8PDD/59dHQ0ce0goANAjxkbG2vr73/rrbdCJ5S6AWD1PLzaerFYbPr7qVQq5HK5MD09Haanp78zpFcqlb5qtbr0UCCk0+kLAjoA0K4boLaNnj98E2UUHYBHBfRarbbiaeeFQuGxlUPK5fKDfx4aGhoU0AGAtmj36PkSo+gALMnlcg/CdKlUavh7zz77bN/S/x4O3SGE8Nprr4XHBPS+OI5DCF+PogvoAEA7wnnbR8+XGEUHYMlS+bMQQliaft6s8fHxkW9fZx5n6fc8/LsFdABgtQLx0bfeeitR22QUHYAQQvj+97//4J+jKFrW9PZnnnnmH5r5/GefffbwA4K6gA4ArJqhoaFjTxpNaMNDA6PoADwY7V6adt6o+yu/13O5XP3kyZPfeJf89OnTj/3u5cuX/+z3J8Ea3QEAuv7GJ3Gj50veeuutUCqVjqqLDkAURU19fnZ29pH/vVarhXK5PPK479ZqtUS2gRF0AOhySRw9X5JKpcLExIRRdABasmBbFEXh1VdfHXnSg9+kvXsuoANAD0jy6PmSQqGQuDq0AKye5Y5mV6vVPxt1j+M4NDIr6+EH181OrRfQAYBlSfLo+cPGxsYG7S0AAT2bzTa8YFs+n+/L5/MjDwfsbDbb0M84ePDgg39e7sJ0AjoA0LBOGD1fYhQdoHc9XFrtcfXLHyWO4+O/+MUvvvHfRkdHn3h9XJpOv9yybgI6ANCUThk9X2IUHaBnA3rf0ih4Lpdr+vulUqmpUfTXXnvtwdonT1rtXUAHAFask0bPlxhFB+hdS0E5nU6HQqHQVF3yZkfRx8bGHvxzpVKZE9ABgKeq00bPH7ppMooO0IMmJyfnHg7QqVTqaDPff9QoeiaTqT/i+lhPp9MhhBDK5XKo1Wp7k9QOfVu3btUbAKCLpNPpC+fPn+/YoLt///65pN0wAfD0TU9P1wuFwoPwXCwWW7p4WyaTqc/Ozj5YwT2J1xsBHQC6TDabrTdSS/bgwYMtqTnbqFqtFsrl8hM/V61WQ7Va7bMnAXpLKpU6eu7cuQczwIrFYiiXy32t+tmzs7PHluqfT01NhcnJycRdawR0AOhRY2Nj9SetdNtK1Wo15PN5wRuA75TNZuuzs7MP/r0VQTqdTl84efLk4FI4j6IovPrqq4m8HnkHHQAAgESoVqt9xWLxwb+Pjo6GmZmZerPvpC/J5XL1X/3qV98I5/l8fiSpf7+ADgAAQGKUy+VvhPRcLhfOnTt3bGxsrOGgfn8kvj4zM/PgnfOlcB7H8fGk/u2muANAjzLFHYAky2Qy9ZMnT4alVdeXVCqV8Nlnn4VqtfqN/55Op0Mmkwm5XO7PvlMqlcL4+Hjir0Fr7HYAAACSJoqivldfffXo0NDQsbfeeuvBSHgulwu5XC408pC5Wq2Gqampjll81BR3AAAAEimO4+OTk5N9Bw4cGBkfHw9RFDXynVAul0M+nw/5fL6vkyqDGEEHAAAg8UG9VCodL5VKIYSv3zFPp9Nh165dDz5TrVbD5cuXE1fbXEBPsG+XDaA7Pfvss0/1Kd358+fr336vBh5lNd75TVp/HB8fD6VSyXvOdER/zefzqz7tcmZmpp7L5XSGLtaq8+D09HS9UCj09PEicyTn/vcR9zhd2RdMcV9lSTrJ0bknXOGcpMjlconrj6OjoyGTydTtHb4tk8n0/PkzlUodFc67X7lcHmlFX3HfCgJ6118UnehYKX2IJHnttdeSeK4N09PTdg5/ZmhoyDWkUDimJ3S3SqUSWlFC6rXXXtNXQEB3UYQnBA8PedAfG5DJZMLExIRRdL7RX5P4QGm1eUjR/X75y1/qKyCg02BA1wisiKfZJOycluj+ODQ0FLLZrJDOg/PnUnmeXmWKf/er1WqhUqn0taKvZDIZDQoCendfFJ3oaEXgAP2xcTMzMyGVSh21t/CQ3DWkF1QqFccLCOi4KLIaPOQhaf2xE0biUqlUmJmZMfOkx6XT6QvZbLan28AU/95QKpXmBHQQ0GmAiyIr5SEP+uPyZLPZMDQ0ZKp7b/fXQfchpvh3u2q1GlpR+7lQKNT1FRDQu5oTHS26udIIJEInjsRNTEwovdbb1+GebwMPebtfuVx2vICAjhMdq9SHPOQhMTp1JG56etr76D0ol8v1/PkznU5f8IpUd4vjOJTL5b5W9JVefx0EBPQeuCg60dGCgK4R0B9XKJPJhNHRUe+j95if/vSnPd8Gpvh3v9OnT7fk5/zsZz/TV0BA725OdKyUhzzojy0NKiGXy5nq3kP9NZfL9Xw7eMjb/Uqlkr4CAjpOdKwGD3lIWMDt+P544sSJkE6nL9ib3S+Xyw1qA1P8u10URSGKor5W9JVOqM4BAjpOdLSVhzzoj62VSqXC9PS0B189wMJopvj3glYtDmcxWhDQXRThCTzkIWn9sVtG4rLZbBgbGzPVvYtls9meP3+a4t8zAX1kpT8jlUodNSAAAnpXS6VSR10UWSkPedAfn57R0VGl17qYsOEVqR4J5yGO4+MtOF4soAkCetffGDjRsSIe8pAk3ToSd/LkSaXXuvT8KaB7SNErAb0VvA4CAnrXc6KjBTdWHvKQGN262FY6nQ4TExOOtS7z2muv9fw+NcW/+9VqtVCtVle8OFwmk9FXQEDvbk50tIKHPOiPq6NQKIRCoWCqu/7adf2a7mb0HAR0nOhYJR7ykCS9MBI3MTGh9FoXnT8zmUxPt4Ep/r3h3XffnWtFX7F6OwjoXX9RdKJjpTzkIUl64UY/lUqFkydPWlBLf+0Kpvh3v0qlEmq12t5W9JVuqc4BAjpOdDytoOAhD4nqj70SeDKZjNJrAnpX8JC3+50+fdrxAgI6LoqsBg95SFp/7KW/d3R0NGSzWSG9c8N5vdfPn6b4d784jkO5XF7x4nDpdPpCNpvVoCCgd690On3BRZGV8pAH/bG9pqenlV7r3IDumHUN6XotXBzOaz0goHf9RdGJjhXxkIck6dWRuHQ6HU6cOOEd3g48fxoNDMErUt2vVCrNteLn5HI5jQkCenfz5J6V8pAH57RkyOVySq91mJ/97GeDjllT/LtdFEUtWRwul8upFgMCetffzLkoIhChP3aRiYmJkMlkhHT9VRuQGKVSqSU/56c//anGBAG9uznRsVIe8pCwG/2e74+pVCpMT0/rDB1y/uz10UBT/LtfHMfh9OnTI63oK6a3Q3Kt0QSt8dlnn4XPPvtMQ6ySt956KyQ1PFQqlWVfeKemplpxk7bqoyjlcjnUajUdM4EuX768rO/VarWO7Y+tlMlkwsTERH18fLxPb0p2cOn1/ppKpQZb0QZJcfDgwbCaDxxqtVrLFl97mufzOI6Pt+JntaqvjI6OOgGBgJ5Mk5OTbt5WyfT0dGJH9srlcigWi8vqC9Vqta9ara54G7LZbL0dAb1arToGukgn98dWGxoaCqdPn67r4/prkkVR1BdFUdfs07GxsfpqBvTLly/3zL1crVbbOzk52aqA7jUgaDFT3Om4cJ7Um6dKpbLscA4k28zMjNJrAICADkvGxsYSG86jKArDw8Mj9hJ0p1QqpfQaACCgQwhfL1iV1PecoigK+Xx+pFXvhQHJlMvlwtDQkOmcAICATm+H86SupCycQ29Reg0AENARzoVzICGmp6e9jw4ACOgI58I50G6ZTCaMjo56Hx0AENARztstjuNw+PDhOeEcetfQ0FDI5XKmugMAAjrdLZPJ1CcmJhIbzvP5fKjVanvtKehtJ06cMNUdABDQ6e5wPjs7G1KpVGLDeRRFap0DIZVKhZmZGVPdAQABHeFcOAfaLZvNhrGxMVPdAQABHeFcOAfabXR0VOk1AEBARzhfDcI58CQnT570PjoAIKDT2VKp1NEkh/NisSicA0+UTqfDxMSE99EBAAGdjg7nx5IczsvlsnAONKRQKCi9BgAI6HRuOM9kMsI50DVOnDgR0un0BS0BAAjoCOfCOdDe81s4efLkoJYAAAR0hHPhHGizTCaj9BoAIKAjnK9EqVQSzoGWGB0dDdlsVkgHAAR0kmliYiKx4bxcLofx8XHhHLpAHMeJ2I7p6Wml1wAAAZ3kmZ6erhcKhcSG82KxKJxDlxgeHk7EdqTT6XDixAml1wAAAR3hXDiH3lSpVPrK5XIitiWXy4VCoWCqOwAgoCOcC+fQm8bHx0dqtVoitmViYkLpNQBAQEc4/y7ValU4hy4Wx/Hxw4cPJ2JblF4DAAR02mpoaCix4TyKonDkyJERewm6WxRFfVNTU4nYlkwmEyYmJkx1BwAEdFZXoVCoT0xMJDac5/P5kTiOj9tT0P0mJyf7qtVqIrZlaGhI6TUAQEBndcP59PS0cA4kxpEjR0aSUnptZmZG6TUAQEBHOBfOoTfFcXw8KaXXUqmU0msAgICOcC6cQ++qVCp9pVIpEduSy+XC0NCQqe4AgIDOU7nZTGw4j+M4FIvFIJwDU1NTI1EUJWJbRkdHQyaTEdIBAAGd1slkMvUTJ04kNpzn8/kQRZFyakCI4/h4sVhMxLakUqkwPT3tfXQAQECndeF8dnY2pFIp4RzoCFEU9Y2PjyflHBpGR0e9jw4ACOgI50BvKpVKfZVKJRHbMjQ0FHK5nKnuAEAIIYQ1mgDhnJUqFArqOzfo8uXLoVwu659tNjw8PJLNZo8l4Tx24sSJUK1Wj1orA8D9Rquk02mNIKAjnLffkSNHhPM2XTBpTLVaDeVyWUO0WRzHx48cOXJsdna27duSSqXCzMzMsXw+L6ADuN+gx5niTjM3kUdPnjyZ2HBeLBZDtVoVzoGGVKvVxJRey2azSq8BAAI6jYfz2dnZY0mdLlMsFk0bBpo2Pj7el5TSaxMTE0qvAYCADo2F80wmI5wDXadYLIY4jhOxLfdnKR21VwBAQAfhHOg5SSq9lk6nw8TEhNJrACCgg3AO9KZyuZyY0muFQkHpNQAQ0OGbkhzOy+WycA601PDw8EitVkvEtpw4cSKk0+kL9goACOgQpqen60kO58ViUTgHWiqO4+PFYjER25JKpcL09PSgvQIAAjrCeT2pdSaFc+BpqlarfVNTU4nYlmw2G8bGxkx1BwABHeFcOAd60+TkZGJKr42OjoZsNiukA4CAjnAunAO96fDhw3NJKb02PT2t9BoACOgI58lQrVaFc2BV1Wq1vcPDw4nYlnQ6HU6cOKH0GgAI6PSCoaGhxIbzKIrCkSNHRuwlYLVVKpW+crmciG3J5XKhUCiY6g4AAjrdrFAo1CcmJhIbzvP5/Egcx8ftKaAdxsfHE1N6bWJiQuk1ABDQ6eZwPj09LZwDfIc4jo8fPnw4EduSSqXCyZMnlV4DAAEd4Vw4B3pTFEWJKb2WyWSUXgMAAR3hXDgHetfk5GRftVpNxLYovQYAAjpdIpvNJjacx3EcisViEM6BJCoWi4kpvTYzM6P0GgAI6HSyTCZTn5mZSWw4z+fzIYoi5dSAREpS6bVUKqX0GgAI6HRyOJ+dnQ2pVEo4B1imSqXSVyqVErEtuVwuDA0NmeoOAAI6wrlwDvSmqampkSiKErEto6OjIZPJCOkAIKAjnAvnQO+J4/h4sVhMxLakUqmQ1HVFAAABnQ4J5yGEMDw8LJwDHSmKor7x8fGknOvDxMSEUXQAENBJqlQqdXR6ejqx4bxYLIZKpSKcAx2rVColpvTa0NBQyOVyQjoACOgkMZzPzs4ey2QyiQ3n5XJZOAc63pEjR0aSUnrtxIkTSq8BgICOcC6cA70pjuPjR44cScr5P8zMzCi9BgACOsK5cA70pmq1mpjSa9lsVuk1ABDQEc4fb3x8XDgHutb4+HhfUkqvTUxMKL0GAB1qjSboDjMzM4kN5+VyOZRKJeG8i+Xz+VCtVu1jelqxWAxJqZwxPT0d8vn80TiOj9szgPuN3pPNZuuzs7MaogMZQe8C09PT9Ww2m9hwXiwWnUiBrhdFUd/U1FQituV+6TXvowOAgM5qh/NCoSCcAyRAqVTqq1QqidiWQqGg9BoACOgI58I50LuGh4dHarVaIrblxIkTIZ1OX7BXAEBARzgH6DlxHB8vFouJ2JZUKhWmp6cH7RUAENDpwXAeRZFwDvS8arWamPfRs9lsGBsbM9UdAAR0Wq1QKCQ6nOfz+RF7CSCEycnJxJReGx0dVXoNAAR0Wh3Op6enEx3OlfQB+F8OHz48F8dxIrbl5MmTIZVKHbVXAEBARzgH6Dm1Wm3v+Ph4IrYlnU4rvQYAAjrCOUDvKpfLiSq9VigUTHUHAAGdbgvntVpNOAdoQJJKr01MTCi9BgACOs3KZrOJDedxHIfDhw8H4RygoXPm8cOHDydiW1KpVDh58qTSawAgoNOoTCZTn5mZSWw4z+fzIYoi5dQAGhRFUWJKr2UyGaXXACCB1miCZIbz2dnZkEqlhHOAJn311VdPNXhWq9WQz+eXdQ6cnJzsO3jwYD2bzba9nUZHR0O1WtVhACBBjKAL58I5QBOKxeLcSr+flNJrSXhQAAAI6MK5cA7QtKmpqVCr1fau5GfUarW9w8PDGhMAENCF8+UZHh4WzoGeVqvVwuTkZEvOg5VKpa9cLmtUAEBAT5pUKnV0eno6seG8WCyGSqUinAM9rVgstvTnjY+Pj0RRpGEBAAE9SeF8dnb2WCaTSewNablcFs6BnlYqlUK1Wm3puTCO4+OtDv0AgICOcA7QteI4DlNTUyNP42dHUdQ3Pj6ukQEAAV04F84BnmR4eDjEcXz8af38UqnUp9wZACCgC+ePNDU1JZwDhBAqlcqqrMFx5MiRkaSUXgMABPSecuLEicSG83K53LJVigE6WRzHYXx8fG6VftdxpdcAAAF9lU1PT9dzuVxiw3mxWBTOAUJrap43o1Kp9JVKJQ0PAAI6qxXOC4WCcA6QcNVqNZRKpVU/J46Pj/cpvQYAAjrCuXAO8L+Cctt+d7FYDN5HBwABHeEcoOdNTU2FKIradl6MoqhvamrKjgAAAZ1Wm5iYSGw4j6IojI+Pj9hLAF+r1WqJWCizVCr1VSoVOwQABHRapVAo1IeGhhIbzvP5/MjTrO0L0GmKxWJitmV4eFjpNQAQ0GlVOJ+enhbOATpEuVwO1Wo1Ma/8xHF8/MiRI3YMAAjoCOcAveN+zfPEvfJTrVa9jw4AAjrCOUDvGB4eDkk9N05OTiq9BgACOt0UzuM4Fs4BHqFarYZKpZLoahaHDx+e8z46AAjoNCiTySQ9nAfhHODPz4/FYnEu6dtZq9X2trM2OwCwOtZogtb41a9+ldhtS6VSS9tXt6dW5UY67N+/v6dqy8/OzupfCVWtVkM+n+/TEo82NTUVarXa3k7Y1nK53Pfaa6/Vc7mcHQcAXcoIOrT+JlojQAeIoiiUSqWOengxPDw8UqvV7DwAENCBRrz77rtzWgGSL0k1zxsVx/HxTtxuAKAxprhDC1UqlY6ZLgurFChDtVpd1ndTqVTIZDJPZbumpqZCFEUdOfX/fum1+ujoqA4GAAI68F1++ctfagR4SBRFffl8flnfzWaz9fvrG7RUrVYLpVJppJPbdXJysu/gwYP1bDarkwFAFzHFHVokjuPEl2oCvp7a3g1VLYrFotJrACCgA49icTjojOO0Wq12xYO0Wq22d3h42E4FAAEd+LZSqWRxOEiwOI7D+Pj4SDf9TZVKpc/DQQAQ0IGHRFFkcThIuPHx8a6Y2v6Iv0vpNQAQ0IElpVJJI0CCVavVUC6Xu3KNiDiOjx8+fNhOBgABHYjjOJw+fXpES0Byj9FisdjVr6BEUdQ3Pj5uZwOAgA697fTp0105bRa6xS9+8YueeAWlVCr1LbfmPAAgoEO33BRrBEioKIrC5ORkz5Q/PHLkyIjSawAgoENPqtVqIYoitc8hoYrFYk/9vXEcH1d6DQAEdOhJRs8h2cdnLz5Aq1Qqfc5NACCgQ88pl8sWh4MEqtVqYWpqqmePz6mpqZEoinQEABDQoTdUKhWLw0FCFYvFnj4+4zg+fr8NdAYAENCh+/3yl7/UCJBAlUolVKvVnl8bIoqivqmpKR0CAAR06G61Wi1UKhWLw0HCxHEchoeHvXpyX6lU6qtUKhoCAAR06F7lclkjQAKNj4979eRbhoeHlV4DAAEdute77747pxUgWarVaiiXy2a2fEscx8ePHDmiIQBAQIfuDAG1Wm2vloBEhdBQLBY9OPvu85bSawAgoEP3Mb0dkucXv/iFB2dPMD4+3qf0GgAI6NA14jg2hRYSJoqiMDk56bhswOHDh+e8jw4AAjp0hdOnT2sESJjx8XGN0KBarbZXewGAgA5dwTuckLxjUs3z5pTLZaXXAEBAh84WRVGIokgQgISo1WphampKzfNlGB4eHqnVahoCAAR06ExGzyFZ1DxfvjiOjxeLRQ0BAAmzRhO0Rj6f1whdLoqikU7Zznw+f8we434Q68q/q1KphEqlYkbLClSr1b5XX321nkql9Mc2nj875dqy2t599925arU6qG+6/3W8uB/sNX1bt27VCgAkTjabrc/Ozj7yRvrAgQMjRs8BgG5jijsAHWVqasrUdgBAQAeAdqpWq6FUKpnaDgAI6ADQTsVicU4rAAACOgC00dTUVKjVanu1BAAgoANAm0RRFCYnJ01tBwAEdABop/HxcY0AAAjoANBOpVIpVKtVo+cAgIAOAO0Sx3GYmpoa0RIAgIAOAG00PDys5jkA0DP+Yt26dVoBgMT5wx/+EEdR9JqWAAB6Rd/WrVu1AgAAALSZKe4AAAAgoAMAAAACOgAAAAjoAAAAgIAOAAAAAjoAAAAgoAMAAICADgAAAAjoAAAAIKADAAAAAjoAAAAI6AAAAICADgAAAAI6AAAA8DhrNEFrHNiRqXfidp+7GvUlaXsGt+ypb/w36x/7mVt/Wghz8xcTs93bNw78etszA4e6oR8nrW039K9/Y/vGgVNr1/xluHbr+rH5Ozd/nrQ268Q+++023vvsnlP66uq2+TNr1/9DCCF0wrnjwlcX37y9uPBOp57Xtm8c+PX9dj/0pGNVv+6s62rS7mF63do1/S/+TWrH2aXjbP7OzfjSjSub9OVkn+cX7y2G+Ts3z4QQwrVb13+oJwvo3RPQt2c6crvPXY2SFXae3RO2bxx47Geu3boe5uYvJmabtz0zcKhT93+S2/bAjkz9W+06cntxYeQ3lz9J1AW/E/vsw55Zu/4fOrH/JrlNv+umdffmHWHbxoGwdk1/R7X17/9w/R86KaBvWbfp7cGtz49s3zgQtqzbpF93oEavq0m7h+np++AdmXpmYPDb57fU7cWFetKu2+4RH2npIUL99uJC+JeFG+HSjavh2q3rHf2AVkAHaJHtGwd+/agL2ob+9eHvvnco9emXc/UPL583ckLig3nmucGzj7hp5SmdN/bvyBx60gMzoLXnuf/4vUNnv+u4c93uPBv614cN/evD7s07Qwjh1KUbV07NzV/q+dkQAjrQ0zLPDT52Oti+5wbD2jV/Wf/gi49c7Emk3Zt33vwPu/9dSjBvf0AAnt6x9/reH51tZKaK63ZHX8/C7s07U/N3btY/vHz+jGnwT59F4oDE2dbAjfbglj3hled/UNdaJM0rz/+g/nffOyScr4It6za9Xdj3unAObfAfv3fobDOvkQxu2RP2PTfout2559vw+t/+6NDLu/bX167pf1GLCOhAD2k02AjpJDGcD27ZoyFWKZy/vvdHIx6EwOrb99xgfTkPxvZvz4QN/evf0IIdve/D63t/dFZIF9ABhHSEc4RzaLO1a/pf3L/Mhc/WrukPB3e9cEordvw5WEgX0AGEdJJr9+adN4Xz1fPKnn8vnEObvLzrhbMrOf52b975oPwhnR/StYSADiCkkzgHd72Q0gqr48COTL3TyqdBt9i+ceDXrXgY+fKu/Ye0ZneE9AM7Mu69BHQAIZ1E9bv6hv71GmKV7N1qpgK0S6uC9ZZ1mywY1yUOWFeg5ZRZW0XnrkXh3NVIeYlu269Xo75zV6PWnux2ZOoHnvB+17Vb18N7n7+vPz0ipIcQlHJpsfc+f19ple+w76/3NvX5u/cWw+/iq2Huq4tn/nB34T/dXlx4Rys2ZvfmnTebfRhy7db1MPfVxXB7cUEfhpWc654bbOnslf3bM2Fu/tKLd+8tftzrbfuLs+W23rNsWbfp7Y1rN/xfW9ZtSu3etDM0u59f3Jk59cEXH7mWCegAQjrttXZN/4vN3MjM37kZ/un//fWbQvnybNs40NSrBB9ePh8+/XLOeQBacK5b7sJwj/mZYf/2zNkPL593jLbZ/J2bP5+/c/Pnl25cCeeuRmFD//o3XtyZOdXo6wyDW/aEj69Eb7i2tYYp7kDXhnTT3XnatvzVpmPNhPP3Lrz/khuYFbR3Ew9DPvjiI+EcWmSlC8N9l33PDYYt6za9rYWT5fbiwjsffPFR33ufv3/m7r3Fhr6zZ/MOq/ML6ABCOm0PjA2/j3nuWhSbyrkyjdZdnr9zM8zNXxTOoTXH3a+fZpWKl3ftH9HKyXTt1vUfvnfh/YYeRG9r8PyMgA4I6UI6T01/EyNKl25c2aTFVselm1c0ArQuQDe1MFyjI64PPQAIg1v2uE4n1Pydmz+fm7/4xM9tXLtBYwnoAEI6ADwty1kY7r0L7x+7vbjQ1Hde3JkJa9f0v6jFk+nSjavxkz6j/KWADiCk01HcfAKdds5qdmG4c9eiMH/n5s9/c/mTuJnvbehfHzLPDZ7V6sm0eG/xU60goAM81vydm0I6bXfrT42PEv1NaoebzxVqdFROrXRYuWYXhru9uBCiL+deCuHrV3qu3bre1O9TTzu5NvSvP6QVBHSAx7p080r44IuPhHTaHRjPNHGz6+Zzhf5wt7GAvqF/fTiwI+M4h2VazsJwH3zx0ZmHF8L84IuP3mz29x7c9YKVwBNo8Nkn94VmH8ggoANdaG7+Yp+QTjtdu3X9h40uiLR2TX/4yfd/fGr35p03tdzy/L6JG8AD2zPhled/UPdqATSv2YXhLt24Eq7duv7Dh//b7cWFd85di5r6vbs37wzbNw782h5Ijn3PDdYbqaCx2OTigHy3NZoA6PSQHkKov/L8D5oO6SGE+gdffKQUEyvyu/hqaHSkae2a/vB33zuUur24UL9442pY/NfF8Ps/XD+zmtt7918Xz87fufnzTmzrSzeuHDuwPTPSzHE+uGXP2Us3roT5P94Mt/600NSsh1aY/+PNEeX16LRA1syCX3fvLYbfXP7kkaPl0ZdzL+3duufshv71Df+8V57/waF3/ud/tiMS4MCOTP1Ag+sQXLpxVYMJ6ABCOgnof19dPDO4ZU9To00b+teHfc8Nfv0v28Nqv9t3KIQwMn/nZrh263qY+5cvjnVKYJ+/c/Pn125dH9neZL3d3Zt3ht2bdz7896+ms7cXF8K/LNwIl25cDb+Lr74ksJNUy1kYLro+F24vLrzzHeH9499c/iT+u+8dSjVzfjywI1M/dzVybW5TH/ib1I6zL+7MhGYerPwuvvqS1hPQO86B7ZlwYHv734m7dut6eO/z9530ENKF9Ia9/rc/OhRCaPv5673P3z/z7WmUCTin/vDarev1ZkNju21ZtylsWbcp7HtucGT+zs2RT//5wtJxlGjnr0Zntn/dHzvGhv71YUP/+rB7885w997i2d/FV8PHV6I3vyvUQLv8h93/rumF4Z4UpO8vGNfUOTIzMBiiL+de7JWHWe2e1t+/pn/flnWbUts2DoTlXMvm5i8GDx4FdAAhncT44IuP3vzJ9398qpkb26SF9Vee/0HY99d76x9c/O+JHlG/duv6Dy/duFJ/aES8o6xd0x8Gt+wJf5PacSq6PnfKKCFJConNHlcffPHRmQY/9+Yb//v/eaqZ4+TlXS+c7ZXr8usd9tDxYXfvLYaPr0RvOoJaxyJxQNeFdAvHsdpuLy688+HlTzr+79iyblP4yff/fmTfc4OJPhb+26X/8dJySi0mLagf2J4JP/n+31vIjkR45fkfNBUS5+YvhkZnNC1nwbjBLXssGNcBPrz8STAbSEAHENLpmn6XRC/v2p/oY+HuvcWP37vwfseH9BC+fihS2Pf62S3rNr3tKKJdDuzI1Jt53/juvcXw4eVPmnrn+NzVqO/24kJT27V/R0b97WRf9zri1SgBHUBIp4f73X/57Zn4bheUm0n6sbAU0ruh9u7aNf3h9b0/GtnQv/4NRxGrbUP/+jcyA4NNfef8tWhZ7xw3OiV+yfaNA2Fwyx7X5ISGc68GCugAQjqJd+nGlU3/+Nk/vdkNwfF+mbJkh/TP3+/78PL50OkPRdau6Q8//rc/PGW6O6vt4K4Xmlo/Y/7OzfDpl3PLCmb315Bo6jsv73ohOC6S5fbignAuoAMI6XTUzcs7733+ft97n79/ptmb0aR5edcLIekju59+OddX/vS9l859ParXsW29Zd2msH975qwjiNWynIXhPrx8/sxKfudvLn/yZjPH6do1/Y6LhNnQv9490lNkFXegJ0J6sLo7bXC/BFvY0L/+je0bB05tTw2ELX+1OWxZt6lj/oa1a/rDizszpz744qNELwJ0997ix+euRn3nrkZh9+adN7dtHEhtWbcpbPmrTaGTVtff99xg+PSfL7xh0SVWQ7MLw91eXAjbnhk4tO2ZgRWFs9uLd5o6Lh0XyeMeSUAHENLpWLcXF96Zm7/4ztz8xXaF7Be3/NWmYyGEsO2ZgUO7N+1s6iHB4JY94eMrUcfcHF+6cWVTO2cubFm36e21f9H/0ob+9Ye2pwbC36R2NBVGOuGBCJ2v2YXhQvh65PTA9ky7Hiaceu/z9x0XCQvp8ws36st95QEBve2u3boefp+AdxJv/WnBzkBIF9Kbbbtw6277zx1/uLvwn/Tk5t29t/jxUjmka7euh3NXo7Bl3aa3X961f2T7xoGGfsa+v9576sPL590cN+DhOvJz8xfD2jX9L2aeGzybGRhsKKjfD/QvLmcRLmgwaDe9MFy7bd84EHZv3nnz0o0rm+zB5Hh51/5w8cZVsxsE9M70+69vijxhAiG989rtq4tnGq13S+eEyPc+f//ng1v2NHQ87Nm8I3x4+byGW4al6fcXvrr4xo//7Q9PPWn2wto1/WHbxoH/KojwtDS7MFyCtjvV6et6PMp7n79/pp2/f9szA4f6/6I/bN84sKxXsMz6EdABhHRo4fGwds1f1l/etf+xn9vQv96o7grdXlx4570L78/95Ps/PvukqcXbNg50ZRCh/ZazMFxSbOhfHw7syNS7bcCr3Q/AH646snZN/4uDW3af3ffXe0Ojr0B02mtQSWcVd6BnQ4nV3eFrn34519dIWbil99hZvrv3Fj/+zeVP4ie2dQctJEhnaXZhuKTJDAwmvrJEp5+jPv1yru+d//mf+85dixr+3p7NO05pPQEdQEiHVh0PXz15AbsN/esPaamVu3TjyqYnlZla+xf9GoqWW87CcEmzVFnC3nz6zl2NGr5P2tbgeiYI6ABCOjTg9uLCE9+B3Phv1muoFpn/483H/v9G0Gm1TlwY7nHX4O0bB35tr67OfVIjFUg2rt2gsQR0gPaH9O2eGAPQATp1Ybjv8vKu/Wb0rJJLN656LUdAB+iMkA7don9N/z6tsHqeWfv42QhPmgIPzejkheEeFwj3PTdoJtsqWLy3+KlWWD1WcQd4KKSHZazuDt1g9+YdqSd9Zv7OzVhLrdyG/vVvPOk94CdNgYdmNLsw3LlrUVtKAx/Ykakf2J5p+PP7t2fC3Pwl1SWe/jnLbIVVZAQd4Fsh3Ug6vWbLuk1v3y8j+FhGUVrj4K4XTjXQ1hqKloXeZhaGu724EKIv515qx7aeuxr13V5caPjza9f0h/3bM2ft5afrxZ1PfmjSSCUQBHQAIR2efIP74it7/v1II59td63ebrDvucF6I1ONjaDTCstZGO6DLz46084R6Q+++OhMk8dU2LJu09v29tPxyvM/aOgBz/wd5ywBHUBIhxXZvnHg1z/5/o/PNrK4j9GRlVm7pv/FV57/Qf3lXfsb+vylG1fUnGfFml0Y7tKNK21/EHft1vUfXrpxpanvvLxr/4i9/TSuD39fb2R2VQgh/P7Wda9AtYh30AEeE9KDd9LpwqC4bePAf808N5hqpgrB75q8YeZrW9Ztentw6/Mjg1t2h0aD0u3FhTB/5+bPtR4rDVjNLAx3995i+M3lT95Mwrb/5vInb27bONDww4XtGwfC7s07b166cWWTPb+y89X2jQMjg1ufb2pV9tuLC0HbC+gAQvoqGnx2z6FtzwwkZrXcW39aWNo3ibgJ3vbMQKIX0Nl2P4iv/Yv+ZZXCuXtvMczNX3opCX/LgR2ZRK/avHHt+rA0HXTLX20KyylrdeFfLgY6ry/8/g/XzyTpNZBmF4aLrs+F24sL7yRh228vLrwTXZ871cyCcQd3vZD6/a3rHblg3Ot/+6O29uXlXhucswR0ACG9XQG9wSluq+Xarethbj4ZNwTbnhk41MxNZCeKrs+FpNz0dntb37232LYFujouoCesL5wL0aGkvAqynIXh2rFq+2Pb82rUt3vTznqjwXFD//qQeW7wbNL+jkY0M5spaebv3Ayd2OZJ5h10gAZDunfS6UVuvlbXf7v0P2Ilo1iJ5S4Ml8S/5cPL55vargPbM2FD//o39ILV88HF/269DAEdQEiH1XD33qKbr9U9x3iPkxVrdmG4ufmLia3QcO3W9R82O1uqkTKGtCicf/GR9TIEdID2h/Rz1yINQU/4f3575oybr9UL5x988ZGZCqzIchaG+/DyJ4l+peLDy5+8dPfeYsOf3715Z9i+ceDXesPTD+dJWQtGQAfoceeuRn1Jef8Znoa79xbDP372fx9T91w4p7M0uzDc+WtRSPorFXfvLX58vskH4822A81dH/7Lb8/EwrmADpAoH3zxUcMhfbGJJ//QbtduXQ//+Nk/vWnkfHVudD+8fF44pyWaXRhu/s7N8OmXcx3R9z79cq5v/s7Nhj+/oX992PfcYF2vaK1LN66Ef/zsn970Ks7TZRV3gBWE9Lv3/r/6vucevxjP/B9vaiwS7/biQvj4SmTK4iqZm78YPr4SvZmUslZ0tuUsDNfsAmzt9uHl82de/9sfNTwyvn97JszNX3rRooutCebRl3NnzKoS0AE64Yahb37hxmNLsF346uKbWook33hdunFVMF8FtxcXwsUbV8On/3xBMKelml0Y7tMv50Knha37C8bVGy37uXZNf3h51wtnzVBZdnuH3924Ei7euOp8JaB3bid+klt/WtBQT9DI9KVmpjh1qlt/Wnhin+rmdui042lu/mLf/B9vvP3yrv0j365leu5aFJJ8Ybv7r4tnr926fqgbzxVJOl6TZPHeYpj/480wf+dm/Ptb1/+PThtd6qS2Xuqrt+/eDtduXT/mtYHuPKbafV3a0L/+jf41/U212flr0Uud2Dc+vPzJSxv6159tom3C2jX9bRtF75S+fHtxIdy6uxBu/Wkh3F5cMFLeZn1bt27VCgAtvFHavnHg1No1f+mGHAAAAR0AAAA6jVXcAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAAAR0AAAAQEAHAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABAAAAAR0AAAAEdAAAAEBABwAAAAEdAAAAENABAABAQAcAAAAEdAAAABDQAQAAAAEdAAAABHQAAABAQAcAAAABHQAAABDQAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAADrY/w/23nG00CdIXAAAAABJRU5ErkJggg==";
 /* ══════════════════════════════════════════════════════════════
-   PROTOTIPO DEL TOTEM ZENITH — schermo verticale da 50"
-   Serve a decidere il movimento e il tono, non è ancora collegato
-   all'archivio del gestionale.
+   CHIOSCO ZENITH — schermo verticale da 49"
+   Prototipo: le domande e il check-in funzionano davvero, ma non
+   sono ancora collegati all'archivio del gestionale.
    ══════════════════════════════════════════════════════════════ */
 
-/* il foglio è disegnato a 1080×1920 e poi scalato: quello che vedi sul
-   telefono è proporzionalmente identico a quello che vedrai sui 50" */
 function fit(){
-  /* il foglio è sempre largo 1080; l'altezza segue la forma dello schermo,
-     con un minimo di 1920 (il totem vero). Così sul telefono, che è più
-     lungo, non restano bande nere, e sul totem il disegno è quello. */
   const H = Math.max(1920, Math.round(1080 * innerHeight / innerWidth));
   const t = document.getElementById('tot');
   t.style.height = H + 'px';
@@ -435,78 +451,206 @@ function fit(){
 }
 addEventListener('resize', fit); fit();
 
-/* il logo bianco, lo stesso file del gestionale: scritto qui dentro e non
-   caricato al volo, così compare anche aprendo il prototipo da un file */
 document.getElementById('logo').src = LOGO;
 document.getElementById('alogo').src = LOGO;
 
-/* ─────────── 1 · le frasi che girano ───────────
-   Ognuna ha la sua ancora sullo schermo (p0…p4): non compaiono mai due
-   volte di fila nello stesso punto, ed entrano ognuna con un movimento
-   suo. Prima il dolore che il cliente riconosce, poi la promessa. */
-/* nove ancore (p0…p8), due colori (k: 'beneficio' viola, 'curiosita' oro).
-   Le posizioni sono scelte a mano cosi' che due frasi consecutive non
-   condividano mai la stessa ancora: 0,3,6,1,4,7,2,5,8 e poi da capo. */
+/* ─────────── il volto della mascotte ─────────── */
+const VOLTO = '<svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">'
+  + '<g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/>'
+  + '<circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/>'
+  + '<circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g>'
+  + '<g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/>'
+  + '<circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/>'
+  + '<circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g>'
+  + '<ellipse cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/>'
+  + '<ellipse cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/>'
+  + '<path d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>'
+  + '</svg>';
+document.getElementById('orb').innerHTML = VOLTO;
+document.getElementById('orbs').innerHTML = VOLTO;
+
+/* ══════════ LE FRASI DELLA VETRINA ══════════
+   Trentadue, in due famiglie di colore: VIOLA il beneficio (il fastidio
+   che il cliente riconosce come suo), ORO la curiosità (i fatti veri del
+   metodo, presi dai protocolli e dai livelli del gestionale).
+   Le ancore (q0…q5) sono assegnate a mano perché due frasi consecutive
+   non condividano mai lo stesso punto dello schermo. */
 const ROAM = [
-  {p:0, k:'beneficio', ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.'},
-  {p:3, k:'curiosita', ic:'📈', tx:'Zenith non indovina.<br><em>Misura.</em>',
-       sub:'Battito e indice di fatica, prima e dopo la seduta. Coi tuoi numeri.'},
-  {p:6, k:'beneficio', ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.'},
-  {p:1, k:'curiosita', ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
-       sub:'Il protocollo si costruisce su come stai oggi — non su come stavi il mese scorso.'},
-  {p:4, k:'beneficio', ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.'},
-  {p:7, k:'curiosita', ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
-       sub:'Il tempo giusto, misurato: non un minuto di più.'},
-  {p:2, k:'beneficio', ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.'},
-  {p:5, k:'curiosita', ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
-       sub:'Il protocollo si aggiusta da solo, seduta dopo seduta.'},
-  {p:8, k:'beneficio', ic:'🏋️', tx:'Dopo l\'allenamento<br>servono <em>giorni</em>.'},
-  {p:0, k:'curiosita', ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
-       sub:'Ogni nostro operatore supera la Scuola Zenith prima di condurre una seduta.'},
-  {p:3, k:'beneficio', ic:'🌙', tx:'Lo stress non resta<br>nella testa.',
-       sub:'Si deposita nei muscoli, e lì va sciolto.'},
-  {p:6, k:'curiosita', ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
-       sub:'Le gambe sopra il livello del cuore aiutano il ritorno dei liquidi.'},
-  {p:1, k:'beneficio', ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.'},
-  {p:4, k:'curiosita', ic:'📊', tx:'Prima e dopo,<br><em>sempre</em>.',
-       sub:'La misura fa parte del rituale: non è un extra, è la regola.'},
-  {p:7, k:'beneficio', ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.'},
-  {p:2, k:'curiosita', ic:'📲', tx:'Non è un pulsante<br>a caso.',
-       sub:'Ogni parametro sul touchscreen è scelto per te, seduta per seduta.'},
-  {p:5, k:'beneficio', ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.'},
-  {p:8, k:'curiosita', ic:'🔒', tx:'La stessa capsula.<br>Mai la stessa <em>seduta</em>.'},
+  {a:0, k:'beneficio', ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.'},
+  {a:3, k:'curiosita', ic:'📈', tx:'Zenith non indovina.<br><em>Misura.</em>',
+        sub:'Battito e indice di fatica, prima e dopo la seduta. Coi tuoi numeri.'},
+  {a:1, k:'beneficio', ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.'},
+  {a:4, k:'curiosita', ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
+        sub:'Il protocollo nasce da come stai oggi, non da come stavi il mese scorso.'},
+  {a:2, k:'beneficio', ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.'},
+  {a:5, k:'curiosita', ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
+        sub:'Il tempo giusto, misurato: non un minuto di più.'},
+  {a:0, k:'beneficio', ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.'},
+  {a:3, k:'curiosita', ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
+        sub:'Se dici che era troppo leggera, la volta dopo parte già corretta.'},
+  {a:1, k:'beneficio', ic:'🏋️', tx:'Ti alleni bene.<br>Ma <em>recuperi male</em>.'},
+  {a:4, k:'curiosita', ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
+        sub:'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'},
+  {a:2, k:'beneficio', ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.'},
+  {a:5, k:'curiosita', ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
+        sub:'Ogni operatore supera la Scuola Zenith prima di condurre una seduta da solo.'},
+  {a:0, k:'beneficio', ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.'},
+  {a:3, k:'curiosita', ic:'🗂️', tx:'<em>Ventiquattro</em> programmi.<br>Oggi uno solo è il tuo.'},
+  {a:1, k:'beneficio', ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.'},
+  {a:4, k:'curiosita', ic:'🔥', tx:'Calore in fibra di carbone<br>lungo la <em>schiena</em>.',
+        sub:'Manovre lente e profonde là dove nasce la tensione, non dove si sente.'},
+  {a:2, k:'beneficio', ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.'},
+  {a:5, k:'curiosita', ic:'🌊', tx:'Compressione a onde,<br>dai <em>piedi verso l\'alto</em>.',
+        sub:'Come una spremitura dolce che accompagna i liquidi dove devono andare.'},
+  {a:0, k:'beneficio', ic:'🦶', tx:'Le caviglie gonfie<br>che a sera <em>non passano</em>.'},
+  {a:3, k:'curiosita', ic:'💎', tx:'Cinquantadue sedute in un anno.<br>Si chiama <em>Diamond</em>.',
+        sub:'Ogni seduta vale punti, e i punti non si azzerano mai.'},
+  {a:1, k:'beneficio', ic:'😣', tx:'Lo stress non resta<br>nella testa.',
+        sub:'Si deposita nei muscoli, e lì va sciolto.'},
+  {a:4, k:'curiosita', ic:'🫧', tx:'Airbag su spalle e braccia,<br>per chi <em>vive alla scrivania</em>.'},
+  {a:2, k:'beneficio', ic:'🌫️', tx:'Ti senti a pezzi<br>e non sai nemmeno <em>dove</em>.'},
+  {a:5, k:'curiosita', ic:'🌙', tx:'Manovre lentissime,<br>ioni e <em>dondolio</em>.',
+        sub:'Si abbassano i giri del sistema nervoso: è così che si prepara il sonno.'},
+  {a:0, k:'beneficio', ic:'⏳', tx:'Dopo l\'allenamento<br>servono <em>giorni</em> per tornare.'},
+  {a:3, k:'curiosita', ic:'🔢', tx:'Il codice della tua seduta<br>è <em>unico</em>.',
+        sub:'Una seduta riuscita si può ripetere identica, anche fra mesi.'},
+  {a:1, k:'beneficio', ic:'🌀', tx:'Ti muovi <em>meno</em><br>di quanto pensi.'},
+  {a:4, k:'curiosita', ic:'🕐', tx:'La prima volta<br>sono <em>quindici minuti</em>.',
+        sub:'Si parte piano, sempre: ogni sensazione te la spiegano prima che arrivi.'},
+  {a:2, k:'beneficio', ic:'🧗', tx:'Il weekend attivo,<br>e il lunedì <em>a pezzi</em>.'},
+  {a:5, k:'curiosita', ic:'🎚️', tx:'Cinque domande.<br>Un protocollo <em>su misura</em>.',
+        sub:'Cosa hai fatto oggi, dove, per cosa, come stai, che pressione vuoi.'},
+  {a:0, k:'beneficio', ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.'},
+  {a:3, k:'curiosita', ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
 ];
 const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
+
 const BUBBLES = [
   'Posso spiegarti cos\'è Zenith',
   'Vuoi sapere cosa può fare per te?',
+  'Ho venti risposte pronte',
   'Curioso? Toccami',
-  'Ti spiego in trenta secondi',
-  'Ho otto risposte pronte per te',
-  'Una domanda, e ti dico tutto'
+  'Chiedimi qualsiasi cosa',
+  'Ti spiego in trenta secondi'
 ];
+
+/* ══════════ LE VENTI DOMANDE ══════════
+   Frasi corte, per chi legge poco o legge male. I contenuti vengono dal
+   gestionale vero: famiglie di protocollo, livelli, rituale dell'Health
+   Check, Scuola Zenith, anamnesi. */
+const QA = [
+  {ic:'🧬', q:'Cos\'è Zenith?',
+   a:'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai. Per venti o trenta minuti il corpo viene lavorato con compressione ad aria, calore e movimento.',
+   piu:'Il protocollo non è uguale per tutti: viene scritto per te, oggi, in base a come stai.'},
+  {ic:'🎯', q:'Cosa può fare per me?',
+   a:'Dipende da cosa ti porta qui. <b>Gambe pesanti. Schiena rigida. Sonno difficile. Recupero dopo l\'allenamento.</b> Per ognuna c\'è una famiglia di protocolli diversa.',
+   piu:'Al check-in rispondi a cinque domande, e il protocollo si costruisce da solo.'},
+  {ic:'🎓', q:'Chi mi segue?',
+   a:'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo.',
+   piu:'È una cosa nostra: non la trovi in nessun altro centro.'},
+  {ic:'⏱️', q:'Quanto dura una seduta?',
+   a:'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. La prima volta sono sempre quindici: si parte piano.',
+   piu:'Dopo, almeno mezz\'ora di pausa sulla stessa zona. «Di più» non vuol dire «meglio».'},
+  {ic:'📈', q:'Cos\'è l\'Health Check?',
+   a:'Una <b>misura che facciamo prima e dopo</b>: appoggi il dito al sensore del bracciolo e leggiamo battito e indice di fatica.',
+   piu:'Alla fine confrontiamo i due valori con te. Il risultato lo vedi, non te lo raccontiamo soltanto.'},
+  {ic:'🦵', q:'Ho le gambe pesanti: cosa fate?',
+   a:'C\'è una famiglia dedicata: <b>Zenith Gambe Leggere</b>. Compressione a onde, rulli sotto i piedi e posizione a gravità zero.',
+   piu:'Le gambe stanno sopra il livello del cuore: è la posizione che aiuta i liquidi a tornare su.'},
+  {ic:'🔥', q:'Mi fa male la schiena: cosa fate?',
+   a:'La famiglia <b>Zenith Schiena</b>: calore in fibra di carbone più manovre lente e profonde lungo la colonna.',
+   piu:'Si lavora dove nasce la tensione, non solo dove si sente.'},
+  {ic:'💻', q:'Ho la cervicale da ufficio: serve?',
+   a:'Sì: <b>Zenith Collo & Spalle</b> è pensata esattamente per questo. Ore di scrivania o di guida induriscono trapezi e collo.',
+   piu:'Lavoro mirato sulla parte alta, con gli airbag che stringono spalle e braccia.'},
+  {ic:'🌙', q:'Dormo male. Può aiutarmi?',
+   a:'C\'è <b>Zenith Sonno & Relax</b>: manovre lentissime, ioni negativi, musica e dondolio.',
+   piu:'Serve ad abbassare i giri del sistema nervoso. Di sera dura anche mezz\'ora: il rilassamento profondo ha bisogno di tempo.'},
+  {ic:'💪', q:'Mi alleno. Quando dovrei venire?',
+   a:'<b>Subito dopo.</b> La famiglia Zenith Recupero trasforma la fatica in recupero: i muscoli che hai appena lavorato vengono defaticati.',
+   piu:'Dopo EMS, dopo i pesi, dopo la camminata in vuoto: per ognuno c\'è un protocollo diverso.'},
+  {ic:'☀️', q:'Posso venire anche senza allenarmi?',
+   a:'Certo. Molti vengono <b>solo per stare meglio</b>: relax, sonno, gambe leggere, oppure energia la mattina presto.',
+   piu:'C\'è anche una famiglia total body, per quando non c\'è una zona o un obiettivo preciso.'},
+  {ic:'🤔', q:'Fa male? Che pressione si sente?',
+   a:'No. E la pressione <b>la scegli tu</b>: fra le domande del check-in c\'è proprio «che pressione desideri oggi».',
+   piu:'Più dolce, come sempre, o più decisa. E se a fine seduta dici che era troppo, la volta dopo parte già corretta.'},
+  {ic:'👕', q:'Come mi devo vestire?',
+   a:'Abbigliamento comodo, <b>tasche vuote</b>, niente orologi né gioielli. Non serve spogliarsi.',
+   piu:'La schiena va appoggiata bene allo schienale: la scansione delle spalle parte da sola.'},
+  {ic:'📋', q:'Ci sono casi in cui non posso farlo?',
+   a:'Sì, ed è la prima cosa che controlliamo. Prima della seduta c\'è una <b>scheda anamnestica</b>: alcune condizioni escludono la capsula, altre richiedono il certificato del medico.',
+   piu:'La domanda non è «quale programma?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
+  {ic:'🔁', q:'Ogni quanto posso venire?',
+   a:'Anche <b>una volta a settimana</b>: è il ritmo che dà i risultati migliori senza esagerare.',
+   piu:'Cinquantadue sedute in un anno sono il livello Diamond. Ma già alla tredicesima si sente la differenza.'},
+  {ic:'🏅', q:'Cosa sono i punti e i livelli?',
+   a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
+   piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso.'},
+  {ic:'📲', q:'Cosa guarda l\'operatore sul touchscreen?',
+   a:'Intensità, profondità, forza dell\'aria, calore, durata. <b>Ogni valore lo sceglie lui</b>, in base alle tue risposte.',
+   piu:'Niente è lasciato al caso: ogni seduta ha un codice suo, che la rende ripetibile identica.'},
+  {ic:'🧭', q:'Il protocollo cambia ogni volta?',
+   a:'Sì. <b>Cinque risposte bastano</b>: cosa hai fatto oggi, dove lo senti, cosa ti serve, come ti senti, che pressione vuoi.',
+   piu:'La stessa capsula, mai la stessa seduta. È questo che la distingue da una poltrona.'},
+  {ic:'💨', q:'E se non voglio i rulli?',
+   a:'Si può fare <b>solo compressione ad aria</b>, stile pressoterapia: niente rulli, né sulla schiena né sotto i piedi.',
+   piu:'Più delicato, nessuna parte meccanica sul corpo. Basta dirlo all\'operatore.'},
+  {ic:'🚀', q:'Quanto ci metto a capire se fa per me?',
+   a:'<b>Una seduta sola.</b> Misuriamo prima e dopo: il confronto lo vedi coi tuoi occhi.',
+   piu:'E la prima volta è sempre dolce e breve, apposta per farti conoscere ogni sensazione.'},
+];
+
+/* ─────────── la vetrina che gira ───────────
+   Nove secondi e mezzo fra una frase e l'altra, otto e due di lettura:
+   il tempo di leggerla davvero anche camminando. */
+const DURATA = 9500, LETTURA = 8200;
 let roamI = 0, roamTimer = null;
+
 function roamStep(){
   const box = document.getElementById('roams');
   box.innerHTML = '';
   const m = ROAM[roamI % ROAM.length];
   const d = document.createElement('div');
-  d.className = 'roam p' + m.p + ' ' + m.k;
+  d.className = 'roam q' + m.a + ' ' + m.k;
   d.innerHTML = '<span class="rtag">' + RTAG[m.k] + '</span>'
     + '<span class="ic">' + m.ic + '</span><div class="tx">' + m.tx + '</div>'
     + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '');
   box.appendChild(d);
   requestAnimationFrame(()=> requestAnimationFrame(()=> d.classList.add('on')));
-  setTimeout(()=> d.classList.remove('on'), 4600);
-  /* la bolla dell'avatar cambia insieme, ma più di rado */
+  setTimeout(()=>{ if(d.parentNode) d.classList.remove('on'); }, LETTURA);
   if(roamI % 3 === 0)
     document.getElementById('bub').innerHTML =
       BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
   roamI++;
 }
-function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, 5600); }
+function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }
 function roamStop(){ clearInterval(roamTimer); roamTimer = null; }
-roamStart();
+
+/* ─────────── le tre bolle che galleggiano ───────────
+   Sono domande vere: toccandone una si va dritti alla sua risposta.
+   Cambiano ogni quattordici secondi, così chi passa non trova mai le
+   stesse tre. */
+let bolleI = 0, bolleTimer = null;
+function bolleStep(){
+  const box = document.getElementById('bolle');
+  const scelte = [0,1,2].map(k=> (bolleI + k) % QA.length);
+  box.innerHTML = scelte.map(i=>
+    '<div class="bolla" onclick="apriRisposta(' + i + ')">'
+    + '<span class="bi">' + QA[i].ic + '</span>'
+    + '<span class="bq">' + QA[i].q + '</span>'
+    + '<span class="bmini">TOCCA PER SAPERE</span></div>').join('');
+  bolleI = (bolleI + 3) % QA.length;
+}
+function bolleStart(){
+  bolleStep();
+  bolleTimer = setInterval(()=>{
+    const box = document.getElementById('bolle');
+    [...box.children].forEach(b=> b.classList.add('via'));
+    setTimeout(bolleStep, 650);
+  }, 14000);
+}
+function bolleStop(){ clearInterval(bolleTimer); bolleTimer = null; }
 
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
@@ -514,65 +658,168 @@ function go(n){
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
-  (n === 'idle') ? (roamTimer || roamStart()) : roamStop();
+  if(n === 'idle'){ if(!roamTimer) roamStart(); if(!bolleTimer) bolleStart(); }
+  else { roamStop(); bolleStop(); }
   document.querySelector('.head').style.opacity = (n === 'done') ? '0' : '1';
   idleReset();
 }
 
-/* ─────────── 2 · l'avatar risponde ───────────
-   Otto domande, frasi corte e dirette — pensate per chi legge poco o
-   fatica a leggere: una domanda, una risposta, senza incisi. */
-const QA = [
-  ['Cos\'è Zenith?',
-   'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai. Per venti o trenta minuti il corpo viene lavorato con aria, calore e movimento. Il protocollo è scritto per te, oggi.'],
-  ['Cosa può fare per me?',
-   'Dipende da cosa ti porta qui: <b>gambe pesanti, schiena rigida, sonno difficile, recupero dopo l\'allenamento</b>. Al check-in rispondi a tre domande. Il protocollo si costruisce da solo.'],
-  ['Chi mi segue?',
-   'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo. È una cosa nostra: non la trovi altrove.'],
-  ['Quanto dura?',
-   'Dai <b>quindici ai trenta minuti</b>. Prima e dopo misuriamo battito e fatica. Il risultato lo <b>vedi</b>: non te lo raccontiamo soltanto.'],
-  ['Perché serve una Scuola apposta?',
-   'La capsula non è un elettrodomestico: <b>ogni parametro va scelto in base a te</b>. Un operatore che non ha studiato farebbe la stessa seduta a tutti. Noi vogliamo il contrario.'],
-  ['Cosa guarda l\'operatore sul touchscreen?',
-   'Intensità, profondità, compressione, calore: <b>ogni valore lo sceglie lui</b>, in base alle tue risposte. Niente è lasciato al caso.'],
-  ['Il protocollo cambia ogni volta?',
-   'Sì. <b>Tre risposte bastano</b>: come ti senti, cosa ti serve, dove lo senti di più. Una seduta diversa da quella di ieri, ogni volta.'],
-  ['Quanto ci metto a capire se fa per me?',
-   'Una seduta sola. <b>Misuriamo prima e dopo</b>: battito e indice di fatica. Il risultato lo vedi con i tuoi occhi.'],
-];
-function buildQ(){
-  document.getElementById('qlist').innerHTML = QA.map((q,i)=>
-    '<div class="qbtn" onclick="answer(' + i + ',this)">' + q[0] + '<span class="ar">›</span></div>').join('');
-  [...document.querySelectorAll('.qbtn')].forEach((el,i)=>
-    setTimeout(()=> el.classList.add('in'), 80 + i * 90));
+/* ─────────── le domande e le risposte ─────────── */
+function buildGriglia(){
+  document.getElementById('griglia').innerHTML = QA.map((x,i)=>
+    '<div class="qcard" onclick="apriRisposta(' + i + ')">'
+    + '<span class="qi">' + x.ic + '</span>'
+    + '<span class="qt">' + x.q + '</span>'
+    + '<span class="qm">TOCCA PER LA RISPOSTA</span></div>').join('');
+  [...document.querySelectorAll('.qcard')].forEach((el,i)=>
+    setTimeout(()=> el.classList.add('in'), 60 + i * 45));
 }
-buildQ();
-function answer(i, el){
-  document.querySelectorAll('.qbtn').forEach(b=> b.classList.remove('sel'));
-  el.classList.add('sel');
-  el.scrollIntoView({block:'nearest', behavior:'smooth'});
-  const box = document.getElementById('ansbox');
-  box.classList.remove('on');
-  setTimeout(()=>{ box.innerHTML = QA[i][1]; box.classList.add('on'); }, 160);
+function apriRisposta(i){
+  go('ask');
+  document.getElementById('askgrid').style.display = 'none';
+  document.getElementById('rq').textContent = QA[i].q;
+  document.getElementById('rbody').innerHTML = QA[i].a
+    + (QA[i].piu ? '<span class="piu">' + QA[i].piu + '</span>' : '');
+  document.getElementById('risp').classList.add('on');
   idleReset();
 }
-/* il dado: sceglie una domanda diversa da quella APERTA ORA — non da
-   quella scelta l'ultima volta dal dado, che non è la stessa cosa se nel
-   frattempo il cliente ne ha toccata una a mano */
-function surprise(){
-  const bottoni = [...document.querySelectorAll('.qbtn')];
-  const aperta = bottoni.findIndex(b=> b.classList.contains('sel'));
-  let i; do{ i = Math.floor(Math.random() * QA.length); } while(i === aperta && QA.length > 1);
-  answer(i, bottoni[i]);
+function chiudiRisposta(){
+  document.getElementById('risp').classList.remove('on');
+  document.getElementById('askgrid').style.display = 'flex';
+  buildGriglia();
+  idleReset();
 }
 document.getElementById('avatar').onclick = ()=>{
   go('ask');
-  setTimeout(()=> document.querySelector('.qbtn').click(), 320);
+  document.getElementById('risp').classList.remove('on');
+  document.getElementById('askgrid').style.display = 'flex';
+  buildGriglia();
 };
 
-/* ─────────── 3 · il nome ─────────── */
-const D = {nome:'', cogn:'', umore:'', goal:'', zone:[]};
-let FIELD = 'nome';
+/* ══════════ IL CHECK-IN ══════════
+   Stessa sequenza del gestionale: prima chi ti segue, poi le cinque
+   domande con le stesse parole e le stesse scelte. */
+const D = {nome:'', cogn:'', op:null, activity:'', zones:[], goal:'', mood:'', pressione:''};
+
+const OPERATORI_FINTI = [
+  {id:'x1', nome:'Chiara', color:'#a9779a'},
+  {id:'x2', nome:'Marco',  color:'#4fb8dd'},
+  {id:'x3', nome:'Elena',  color:'#77b795'},
+  {id:'x4', nome:'Luca',   color:'#dcab63'},
+];
+function operatori(){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  const veri = (db && db.operators) || [];
+  return veri.length ? veri : OPERATORI_FINTI;
+}
+function iniziali(n){
+  return (n||'').trim().split(/\s+/).map(p=> p[0] || '').join('').slice(0,2).toUpperCase();
+}
+
+/* le cinque domande, copiate parola per parola dal gestionale */
+const PASSI = [
+  {k:'nome', step:'BENVENUTO', q:'Come ti chiami?', qs:'Scrivi nome e cognome per intero'},
+  {k:'op',   step:'PASSO 1 DI 6', q:'Chi ti segue oggi?', qs:'Tocca il tuo operatore'},
+  {k:'activity', step:'PASSO 2 DI 6', q:'Cosa hai fatto oggi?', due:true, opts:[
+    ['ems','⚡','EMS','elettrostimolazione'],
+    ['matrix','🏋️','Matrix','allenamento con pesi digitali'],
+    ['vacufit','💨','Vacutherm','camminata in vuototerapia'],
+    ['ems2','🌀','EMS2','elettrostimolazione in camminata veloce'],
+    ['riposo','😌','Nessun allenamento','giornata senza attività']]},
+  {k:'zones', step:'PASSO 3 DI 6', q:'Su quali zone lavoriamo?',
+   qs:'Tocca la figura, o le etichette qui sotto', zone:true},
+  {k:'goal', step:'PASSO 4 DI 6', q:'Qual è l\'obiettivo di questa sessione?', opts:[
+    ['recupero','💪','Recupero muscolare','defaticare e rigenerare dopo il lavoro fisico'],
+    ['sollievo','🎯','Sollievo mirato','tensioni o fastidi in una zona precisa'],
+    ['drenaggio','💧','Leggerezza & drenaggio','gambe leggere, contrasto al gonfiore'],
+    ['relax','🧘','Relax profondo','sciogliere corpo e mente'],
+    ['sonno','🌙','Verso il sonno','prepararsi a una notte migliore'],
+    ['energia','☀️','Energia','attivarsi e ripartire']]},
+  {k:'mood', step:'PASSO 5 DI 6', q:'Come ti senti in questo momento?', due:true, opts:[
+    ['sereno','🙂','Sereno','tutto nella norma'],
+    ['stanco','🥱','Stanco','giornata pesante'],
+    ['stressato','😣','Stressato','mente sotto pressione'],
+    ['dolorante','😖','Indolenzito','muscoli che si fanno sentire'],
+    ['carico','🔥','Carico','pieno di energia']]},
+  {k:'pressione', step:'PASSO 6 DI 6', q:'Che pressione desideri oggi?', due:true, opts:[
+    ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
+    ['solito','⚖️','Come sempre','le regolazioni abituali'],
+    ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità']]},
+];
+
+const ZONE = [
+  {v:'cervicale', t:'Collo & Spalle', lato:'f', x:34, y:30,  w:52, h:14},
+  {v:'braccia',   t:'Braccia',        lato:'f', x:18, y:50,  w:84, h:12},
+  {v:'gambe',     t:'Gambe',          lato:'f', x:38, y:112, w:44, h:44},
+  {v:'piedi',     t:'Piedi',          lato:'f', x:38, y:170, w:44, h:14},
+  {v:'dorsale',   t:'Dorsale',        lato:'d', x:34, y:48,  w:52, h:22},
+  {v:'lombare',   t:'Lombare',        lato:'d', x:34, y:74,  w:52, h:18},
+  {v:'glutei',    t:'Glutei',         lato:'d', x:34, y:96,  w:52, h:18},
+];
+
+let PASSO = 0, FIELD = 'nome';
+
+function startCheck(){ PASSO = 0; FIELD = 'nome'; go('form'); disegnaPasso(); }
+document.getElementById('gocheck').onclick = startCheck;
+
+function disegnaPasso(){
+  const P = PASSI[PASSO];
+  document.getElementById('fstep').textContent = P.step;
+  document.getElementById('fq').textContent = P.q;
+  const qs = document.getElementById('fqs');
+  qs.textContent = P.qs || '';
+  qs.style.display = P.qs ? 'block' : 'none';
+  document.getElementById('progbar').style.width = (PASSO / PASSI.length * 100) + '%';
+  const c = document.getElementById('fcorpo');
+
+  if(P.k === 'nome'){
+    c.innerHTML = '<div class="fields">'
+      + '<div class="fld act" id="f-nome" onclick="setField(\'nome\')"><span id="v-nome" class="ph">Nome</span></div>'
+      + '<div class="fld" id="f-cogn" onclick="setField(\'cogn\')"><span id="v-cogn" class="ph">Cognome</span></div>'
+      + '</div><div class="kb" id="kb" style="margin-top:24px"></div>';
+    buildKb(); drawName();
+  }
+  else if(P.k === 'op'){
+    c.innerHTML = '<div class="opgrid">' + operatori().map(o=>
+      '<div class="opcard' + (D.op === o.id ? ' sel' : '') + '" style="--oc:' + (o.color || '#7a496c') + '"'
+      + ' onclick="scegliOp(\'' + o.id + '\')">'
+      + '<span class="av">' + iniziali(o.nome) + '</span>'
+      + '<span class="nm">' + o.nome + '</span></div>').join('') + '</div>';
+    [...document.querySelectorAll('.opcard')].forEach((el,i)=>
+      setTimeout(()=> el.classList.add('in'), 70 + i * 90));
+  }
+  else if(P.zone){
+    c.innerHTML = '<div class="zwrap">' + ['f','d'].map(lato=>
+      '<div class="zfig"><div class="et">' + (lato === 'f' ? 'DAVANTI' : 'DIETRO') + '</div>'
+      + '<svg viewBox="0 0 120 196">'
+      + '<g class="sil"><circle cx="60" cy="16" r="11"/>'
+      + '<path d="M46 28 h28 c6 0 9 4 9 10 v40 l-7 24 h-5 l3 -28 v-12 h-4 v20 l-5 38 h4 l-2 50 h-9 '
+      + 'l-2 -50 h-4 l-2 50 h-9 l-2 -50 h4 l-5 -38 v-20 h-4 v12 l3 28 h-5 l-7 -24 v-40 c0 -6 3 -10 9 -10 z"/></g>'
+      + ZONE.filter(z=> z.lato === lato).map(z=>
+          '<g class="bz" data-z="' + z.v + '" onclick="tapZona(\'' + z.v + '\')">'
+          + '<rect x="' + z.x + '" y="' + z.y + '" width="' + z.w + '" height="' + z.h + '"/>'
+          + '<text x="60" y="' + (z.y + z.h/2 + 2.2) + '" text-anchor="middle">' + z.t + '</text></g>').join('')
+      + '</svg></div>').join('') + '</div>'
+      + '<div class="zscelte">' + ZONE.map(z=>
+          '<div class="zpill" data-z="' + z.v + '" onclick="tapZona(\'' + z.v + '\')">' + z.t + '</div>').join('')
+      + '</div>';
+    syncZone();
+  }
+  else {
+    c.innerHTML = '<div class="opts' + (P.due ? ' due' : '') + '">' + P.opts.map(o=>
+      '<div class="opt' + (D[P.k] === o[0] ? ' sel' : '') + '" data-v="' + o[0] + '"'
+      + ' onclick="scegli(\'' + P.k + '\',\'' + o[0] + '\')">'
+      + '<span class="oi">' + o[1] + '</span>'
+      + '<span class="ox"><span class="ot">' + o[2] + '</span><span class="od">' + o[3] + '</span></span>'
+      + '<span class="ck">✓</span></div>').join('') + '</div>';
+    [...document.querySelectorAll('.opt')].forEach((el,i)=>
+      setTimeout(()=> el.classList.add('in'), 70 + i * 80));
+  }
+  aggiornaAvanti();
+  idleReset();
+}
+
 function setField(f){
   FIELD = f;
   document.getElementById('f-nome').classList.toggle('act', f === 'nome');
@@ -580,23 +827,19 @@ function setField(f){
   drawName(); idleReset();
 }
 function drawName(){
-  for(const [k, id] of [['nome','v-nome'], ['cogn','v-cogn']]){
-    const el = document.getElementById(id);
-    const val = D[k];
-    if(val){
-      el.classList.remove('ph');
-      el.innerHTML = val + (FIELD === k ? '<span class="caret"></span>' : '');
-    } else {
-      el.classList.add('ph');
-      el.innerHTML = (k === 'nome' ? 'Nome' : 'Cognome')
-        + (FIELD === k ? '<span class="caret"></span>' : '');
-    }
+  for(const pair of [['nome','v-nome'], ['cogn','v-cogn']]){
+    const el = document.getElementById(pair[1]); if(!el) continue;
+    const val = D[pair[0]];
+    const cursore = FIELD === pair[0] ? '<span class="caret"></span>' : '';
+    if(val){ el.classList.remove('ph'); el.innerHTML = val + cursore; }
+    else { el.classList.add('ph'); el.innerHTML = (pair[0] === 'nome' ? 'Nome' : 'Cognome') + cursore; }
   }
+  aggiornaAvanti();
 }
-(function buildKb(){
+function buildKb(){
   const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
   let h = '';
-  rows.forEach((r, i)=>{
+  rows.forEach((r,i)=>{
     h += '<div class="kbrow">';
     if(i === 2) h += '<div class="key wide dim" onclick="kbDel()">⌫</div>';
     h += [...r].map(c=> '<div class="key" onclick="kbType(\'' + c + '\')">' + c + '</div>').join('');
@@ -605,135 +848,72 @@ function drawName(){
   });
   h += '<div class="kbrow"><div class="key wide" onclick="kbType(\' \')">spazio</div></div>';
   document.getElementById('kb').innerHTML = h;
-})();
-function kbType(c){
-  D[FIELD] += (D[FIELD] ? c.toLowerCase() : c);
-  drawName(); idleReset();
 }
+function kbType(c){ D[FIELD] += (D[FIELD] ? c.toLowerCase() : c); drawName(); idleReset(); }
 function kbDel(){ D[FIELD] = D[FIELD].slice(0, -1); drawName(); idleReset(); }
 function kbGo(){
   if(FIELD === 'nome' && D.nome.trim()){ setField('cogn'); return; }
-  if(D.nome.trim() && D.cogn.trim()) startQuiz();
+  if(D.nome.trim() && D.cogn.trim()) passoAvanti();
 }
-function startCheck(){ go('name'); setField('nome'); }
-document.getElementById('gocheck').onclick = startCheck;
-
-/* ─────────── 4 · le domande ─────────── */
-const STEPS = [
-  {k:'umore', step:'DOMANDA 1 DI 3', q:'Come ti senti oggi?', multi:false, opts:[
-    {v:'sereno',    ic:'🙂', t:'Bene',        d:'Sono qui per mantenermi in forma'},
-    {v:'dolorante', ic:'😖', t:'Indolenzito', d:'Ho qualcosa che tira o fa male'},
-    {v:'stressato', ic:'😮‍💨', t:'Scarico',     d:'Stanco, teso, poca energia'},
-  ]},
-  {k:'goal', step:'DOMANDA 2 DI 3', q:'Cosa ti serve oggi?', multi:false, opts:[
-    {v:'recupero',  ic:'🏋️', t:'Recuperare',   d:'Ho allenato e voglio ripartire prima'},
-    {v:'drenaggio', ic:'🦵', t:'Leggerezza',   d:'Gambe pesanti, gonfiore, circolazione'},
-    {v:'sollievo',  ic:'🎯', t:'Sollievo',     d:'Una zona precisa che devo sciogliere'},
-    {v:'relax',     ic:'🌙', t:'Staccare',     d:'Rilassarmi e dormire meglio'},
-  ]},
-  {k:'zone', step:'DOMANDA 3 DI 3', q:'Dove lo senti di più?', multi:true, body:true},
-];
-const ZONE = [
-  {v:'cervicale', t:'Collo e spalle', y:118, h:52},
-  {v:'dorsale',   t:'Schiena alta',   y:180, h:58},
-  {v:'lombare',   t:'Zona lombare',   y:246, h:52},
-  {v:'gambe',     t:'Gambe',          y:342, h:96},
-  {v:'piedi',     t:'Piedi',          y:448, h:44},
-];
-let QI = 0;
-function startQuiz(){ QI = 0; go('quiz'); paintQ(); }
-function paintQ(){
-  const s = STEPS[QI];
-  document.getElementById('qstep').textContent = s.step;
-  document.getElementById('qtitle').textContent = s.q;
-  document.getElementById('progbar').style.width = ((QI) / STEPS.length * 100) + '%';
-  const box = document.getElementById('qopts');
-
-  if(s.body){
-    box.innerHTML = '<div class="bodywrap">'
-      + '<svg class="bodyfig" viewBox="0 0 220 520">'
-      + '<g class="sil"><circle cx="110" cy="46" r="30"/>'
-      + '<path d="M110,80 C74,80 58,102 56,140 L50,250 C48,272 60,280 72,276 L78,330 '
-      + 'C78,392 74,452 70,500 L100,500 L106,360 L114,360 L120,500 L150,500 '
-      + 'C146,452 142,392 142,330 L148,276 C160,280 172,272 170,250 L164,140 '
-      + 'C162,102 146,80 110,80 Z"/></g>'
-      + ZONE.map(z=> '<g class="bz" data-z="' + z.v + '" onclick="tapZone(this)">'
-          + '<rect x="42" y="' + z.y + '" width="136" height="' + z.h + '"/>'
-          + '<text x="110" y="' + (z.y + z.h/2 + 5) + '" text-anchor="middle">' + z.t + '</text></g>').join('')
-      + '</svg>'
-      + '<div class="zlist">' + ZONE.map(z=>
-          '<div class="zpill" data-z="' + z.v + '" onclick="tapZone(this)">' + z.t + '</div>').join('')
-      + '</div></div>';
-    syncZone();
-  } else {
-    box.innerHTML = s.opts.map(o=>
-      '<div class="opt" data-v="' + o.v + '" onclick="pick(this)">'
-      + '<span class="oi">' + o.ic + '</span>'
-      + '<span><span class="ot">' + o.t + '</span><span class="od">' + o.d + '</span></span>'
-      + '<span class="ck">✓</span></div>').join('');
-    [...box.children].forEach((el, i)=> setTimeout(()=> el.classList.add('in'), 90 + i * 110));
-    [...box.children].forEach(el=> el.classList.toggle('sel', el.dataset.v === D[s.k]));
-  }
-  checkNext();
-  idleReset();
-}
-function pick(el){
-  const s = STEPS[QI];
-  el.parentNode.querySelectorAll('.opt').forEach(o=> o.classList.remove('sel'));
-  el.classList.add('sel');
-  D[s.k] = el.dataset.v;
-  checkNext(); idleReset();
-  setTimeout(qNext, 520);          /* scelto: si va avanti da solo */
-}
-function tapZone(el){
-  const z = el.dataset.z;
-  const i = D.zone.indexOf(z);
-  (i < 0) ? D.zone.push(z) : D.zone.splice(i, 1);
-  syncZone(); checkNext(); idleReset();
+function scegliOp(id){ D.op = id; disegnaPasso(); setTimeout(passoAvanti, 480); }
+function scegli(k, v){ D[k] = v; disegnaPasso(); setTimeout(passoAvanti, 480); }
+function tapZona(z){
+  const i = D.zones.indexOf(z);
+  (i < 0) ? D.zones.push(z) : D.zones.splice(i, 1);
+  syncZone(); aggiornaAvanti(); idleReset();
 }
 function syncZone(){
   document.querySelectorAll('[data-z]').forEach(el=>
-    el.classList.toggle('on', D.zone.includes(el.dataset.z)));
+    el.classList.toggle('on', D.zones.includes(el.dataset.z)));
 }
-function checkNext(){
-  const s = STEPS[QI];
-  const ok = s.multi ? D.zone.length > 0 : !!D[s.k];
-  document.getElementById('qnext').classList.toggle('off', !ok);
+function completo(){
+  const P = PASSI[PASSO];
+  if(P.k === 'nome')  return !!(D.nome.trim() && D.cogn.trim());
+  if(P.k === 'zones') return D.zones.length > 0;
+  return !!D[P.k];
 }
-function qNext(){
-  if(QI < STEPS.length - 1){ QI++; paintQ(); return; }
+function aggiornaAvanti(){
+  document.getElementById('fnext').classList.toggle('off', !completo());
+}
+function passoAvanti(){
+  if(!completo()) return;
+  if(PASSO < PASSI.length - 1){ PASSO++; disegnaPasso(); return; }
   document.getElementById('progbar').style.width = '100%';
-  finish();
+  finisci();
 }
-function qBack(){
-  if(QI > 0){ QI--; paintQ(); } else startCheck();
+function passoIndietro(){
+  if(PASSO > 0){ PASSO--; disegnaPasso(); } else go('idle');
 }
 
-/* ─────────── 5 · accomodati ─────────── */
-const NOMI = {sereno:'In forma', dolorante:'Indolenzito', stressato:'Scarico',
-  recupero:'Recupero', drenaggio:'Leggerezza', sollievo:'Sollievo mirato', relax:'Relax'};
-function finish(){
+/* ─────────── accomodati ─────────── */
+const NOMI = {
+  ems:'EMS', matrix:'Matrix', vacufit:'Vacutherm', ems2:'EMS2', riposo:'Nessun allenamento',
+  recupero:'Recupero muscolare', sollievo:'Sollievo mirato', drenaggio:'Leggerezza',
+  relax:'Relax profondo', sonno:'Verso il sonno', energia:'Energia',
+  sereno:'Sereno', stanco:'Stanco', stressato:'Stressato', dolorante:'Indolenzito', carico:'Carico',
+  dolce:'Pressione dolce', solito:'Pressione abituale', decisa:'Pressione decisa'
+};
+function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
-  const chips = [NOMI[D.umore], NOMI[D.goal]]
-    .concat(D.zone.map(z=> (ZONE.find(x=> x.v === z) || {}).t))
+  const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione]]
+    .concat(D.zones.map(z=>{ const t = ZONE.find(x=> x.v === z); return t ? t.t : null; }))
     .filter(Boolean);
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
   go('done');
-  setTimeout(reset, 14000);
+  setTimeout(reset, 16000);
 }
 function reset(){
-  D.nome = ''; D.cogn = ''; D.umore = ''; D.goal = ''; D.zone = [];
-  QI = 0; drawName(); go('idle');
+  D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.goal=''; D.mood=''; D.pressione='';
+  PASSO = 0; FIELD = 'nome';
+  document.getElementById('risp').classList.remove('on');
+  document.getElementById('askgrid').style.display = 'flex';
+  go('idle');
 }
 
-/* ─────────── lo sguardo segue il dito, di poco ───────────
-   Un piccolo spostamento delle pupille verso dove tocchi o muovi il
-   mouse: basta a far sembrare che l'avatar ti stia guardando, senza
-   nessuna animazione pesante — è solo un offset in pixel. */
+/* ─────────── lo sguardo segue il dito ─────────── */
 function seguiSguardo(x, y){
-  const orb = document.querySelector('#avatar .orb');
-  if(!orb) return;
+  const orb = document.getElementById('orb');
   const r = orb.getBoundingClientRect();
   if(!r.width) return;
   const cx = r.left + r.width/2, cy = r.top + r.height/2;
@@ -742,23 +922,22 @@ function seguiSguardo(x, y){
   const d = Math.hypot(dx, dy) || 1;
   if(d > 1){ dx/=d; dy/=d; }
   const tx = (dx * MAX).toFixed(1), ty = (dy * MAX).toFixed(1);
-  document.querySelectorAll('#avatar .pupil, #avatar .hl').forEach(el=>
+  orb.querySelectorAll('.pupil, .hl').forEach(el=>
     el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)');
 }
 addEventListener('pointermove', e=> seguiSguardo(e.clientX, e.clientY));
 
 /* ─────────── il ritorno automatico alla vetrina ───────────
-   Un totem non deve mai restare fermo sui dati di qualcuno: se nessuno
-   tocca per 45 secondi, torna alla vetrina e dimentica tutto. */
+   Un chiosco non deve mai restare fermo sui dati di qualcuno: se nessuno
+   tocca per un minuto, torna alla vetrina e dimentica tutto. */
 let idleT = null;
 function idleReset(){
   clearTimeout(idleT);
-  if(SCENE !== 'idle') idleT = setTimeout(reset, 45000);
+  if(SCENE !== 'idle') idleT = setTimeout(reset, 60000);
 }
 ['pointerdown','keydown'].forEach(e=> addEventListener(e, idleReset));
 
-/* ─────────── l'ingresso riservato: si tiene premuto il logo ───────────
-   Nessuna scritta, nessun tasto visibile: chi non lo sa, non lo trova. */
+/* ─────────── l'ingresso riservato ─────────── */
 let pressT = null;
 const logo = document.getElementById('logo'), ring = document.getElementById('lring');
 logo.addEventListener('pointerdown', ()=>{
@@ -770,15 +949,14 @@ logo.addEventListener('pointerdown', ()=>{
     clearTimeout(pressT); logo.classList.remove('press'); ring.classList.remove('on');
   }));
 
-/* lo stesso calcolo del gestionale, copiato qui: cosi' il confronto
-   funziona senza dover caricare tutta l'app dentro il totem */
+/* lo stesso calcolo del gestionale, copiato qui: così il confronto
+   funziona senza dover caricare tutta l'app dentro il chiosco */
 function hash(s){ let h=5381; for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return 'h'+h.toString(36); }
 function codiceVero(){
   let db = null;
   try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
   return { hash: (db && db.codeHash) || hash('1234'), len: (db && db.codeLen) || 4 };
 }
-
 let PIN = '';
 function openPin(){
   PIN = ''; drawPin();
@@ -801,7 +979,7 @@ function pinKey(k){
   const C = codiceVero();
   if(k === '⌫'){ PIN = PIN.slice(0, -1); drawPin(); return; }
   if(k === '✓'){
-    if(PIN.length !== C.len) return;   /* incompleto: il tasto ✓ non fa nulla */
+    if(PIN.length !== C.len) return;
     if(hash(PIN) === C.hash){
       document.getElementById('dbg').textContent = '✓ codice corretto — apro il gestionale…';
       setTimeout(()=> location.href = '../index.html', 350);
@@ -815,6 +993,11 @@ function pinKey(k){
   if(PIN.length < C.len){ PIN += k; drawPin(); }
   if(PIN.length === C.len) setTimeout(()=> pinKey('✓'), 260);
 }
+
+/* ─────────── si parte ─────────── */
+buildGriglia();
+roamStart();
+bolleStart();
 </script>
 </body>
 </html>
