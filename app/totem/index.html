@@ -203,17 +203,39 @@ html,body{height:100%; background:#000; overflow:hidden;
    segue, poi le cinque domande, con le stesse parole e le stesse
    scelte, ma grandi da chiosco.
    ══════════════════════════════════════════════════════════════ */
-.prog{position:absolute; top:12%; left:64px; right:64px; height:10px;
+.prog{position:absolute; top:11.2%; left:64px; right:64px; height:10px;
   background:rgba(255,255,255,.1); border-radius:5px; overflow:hidden; z-index:16}
 .prog i{display:block; height:100%; width:0; border-radius:5px;
   background:linear-gradient(90deg,#a9779a,#e6c65c); transition:width .5s cubic-bezier(.22,1,.36,1)}
-.form{position:absolute; inset:15% 56px 3%; display:flex; flex-direction:column}
-.form .step{font-size:20px; letter-spacing:.24em; color:#e6c65c; font-weight:800; text-align:center; flex:none}
-.form .q{font-size:50px; font-weight:800; line-height:1.14; text-align:center; margin-top:16px;
-  letter-spacing:-.015em; flex:none}
-.form .qs{font-size:22px; color:rgba(255,255,255,.55); text-align:center; margin-top:12px; flex:none}
-.corpo{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center;
-  margin:20px 0; overflow-y:auto}
+
+/* Anche le sei domande vivono a fasce fisse, come la vetrina: la
+   domanda sta sempre alla stessa altezza, le risposte sempre nella
+   stessa fascia, i tasti sempre sotto le dita. Cambia il contenuto,
+   non l'impaginazione — ed e' questo che le fa sembrare una cosa
+   sola invece di sei schermate diverse. */
+.form{position:absolute; inset:0}
+.fhead{position:absolute; left:56px; right:56px; top:13.4%; height:12.2%; text-align:center}
+.qsteps{display:flex; gap:9px; justify-content:center; margin-bottom:14px}
+.qsteps i{width:34px; height:6px; border-radius:3px; background:rgba(255,255,255,.16)}
+.qsteps i.fatto{background:rgba(230,198,92,.55)}
+.qsteps i.now{background:#e6c65c; box-shadow:0 0 14px rgba(230,198,92,.7)}
+.form .step{font-size:20px; letter-spacing:.24em; color:#e6c65c; font-weight:800}
+.form .q{font-size:50px; font-weight:800; line-height:1.14; margin-top:14px; letter-spacing:-.015em}
+.form .qs{font-size:22px; color:rgba(255,255,255,.55); margin-top:10px}
+
+/* il riepilogo di quello che ha gia' risposto: si tocca per tornarci */
+.qrecap{position:absolute; left:56px; right:56px; top:26.4%; height:5.4%;
+  display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; overflow:hidden}
+.rc{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
+  border-radius:999px; padding:10px 20px; font-size:19px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; gap:9px; white-space:nowrap}
+.rc em{font-style:normal; font-size:14px; letter-spacing:.14em; font-weight:800;
+  color:rgba(230,198,92,.85)}
+
+.corpo{position:absolute; left:56px; right:56px; top:32.4%; height:54.2%;
+  display:flex; flex-direction:column; justify-content:center; overflow-y:auto}
+.form .navrow{position:absolute; left:56px; right:56px; top:87.6%; height:6.6%}
+.form .nav{height:100%}
 
 /* la tastiera del nome */
 .fields{display:flex; flex-direction:column; gap:16px; flex:none}
@@ -236,22 +258,26 @@ html,body{height:100%; background:#000; overflow:hidden;
 .key.dim{opacity:.45}
 
 /* gli operatori, come nel gestionale */
-.opgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.opgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px; grid-auto-rows:212px}
 .opcard{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14);
   border-radius:26px; padding:26px 20px; display:flex; flex-direction:column; align-items:center;
   gap:14px; cursor:pointer; transition:border-color .2s, background .2s;
   opacity:0; transform:translateY(22px)}
 .opcard.in{opacity:1; transform:none}
 .opcard.sel{border-color:var(--oc,#a9779a); background:rgba(255,255,255,.09)}
-.opcard .av{width:118px; height:118px; border-radius:50%; background:var(--oc,#7a496c);
+.opcard .av{width:104px; height:104px; border-radius:50%; background:var(--oc,#7a496c);
   display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:800; color:#fff}
 .opcard .nm{font-size:30px; font-weight:800; text-align:center; line-height:1.2}
 
-/* le risposte a scelta */
-.opts{display:flex; flex-direction:column; gap:15px}
-.opts.due{display:grid; grid-template-columns:1fr 1fr}
+/* Le risposte a scelta: righe tutte della stessa altezza, e quando le
+   carte sono dispari l'ultima prende tutta la larghezza invece di
+   lasciare un buco — e' cosi' che il gestionale mette la pressione
+   media sotto le altre due. */
+.opts{display:grid; grid-template-columns:1fr; gap:16px; grid-auto-rows:156px}
+.opts.due{grid-template-columns:1fr 1fr}
+.opts.due .opt:last-child:nth-child(odd){grid-column:1 / -1}
 .opt{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14); border-radius:26px;
-  padding:30px 28px; display:flex; align-items:center; gap:22px; cursor:pointer;
+  padding:22px 28px; display:flex; align-items:center; gap:22px; cursor:pointer;
   opacity:0; transform:translateY(24px);
   transition:opacity .45s, transform .45s, border-color .2s, background .2s}
 .opt.in{opacity:1; transform:none}
@@ -266,23 +292,59 @@ html,body{height:100%; background:#000; overflow:hidden;
   font-size:22px; color:#0c0a0f; background:transparent; transition:background .2s, border-color .2s}
 .opt.sel .ck{background:#e6c65c; border-color:#e6c65c}
 
-/* le zone del corpo, due sagome come nel gestionale */
-.zwrap{display:flex; gap:26px; justify-content:center; align-items:flex-start}
-.zfig{flex:1; max-width:400px}
-.zfig .et{text-align:center; font-size:18px; letter-spacing:.18em; font-weight:800;
-  color:rgba(255,255,255,.45); margin-bottom:10px}
-.zfig svg{width:100%; height:auto; display:block}
-.zfig .sil{fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.3); stroke-width:1.4}
-.bz{cursor:pointer}
-.bz rect{fill:transparent; stroke:rgba(255,255,255,.34); stroke-width:1.4; stroke-dasharray:4 3; rx:6}
-.bz.on rect{fill:rgba(212,175,55,.5); stroke:#e6c65c; stroke-dasharray:none}
-.bz text{fill:rgba(255,255,255,.62); font-size:6.2px; font-weight:700; pointer-events:none}
-.bz.on text{fill:#fff}
-.zscelte{margin-top:18px; display:flex; flex-wrap:wrap; gap:11px; justify-content:center}
-.zpill{background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16);
-  border-radius:999px; padding:14px 24px; font-size:22px; font-weight:700; cursor:pointer;
+/* Le zone del corpo: la stessa sagoma del gestionale, disegno per
+   disegno — viso, capelli, riquadri e loro posizione — solo grande
+   quanto serve su un 49 pollici. Le stesse sette zone, sui due lati
+   esattamente dove le mette il gestionale, gli stessi tre gradini di
+   etichette, lo stesso limite di tre zone con la prima che guida. */
+.zwrap{display:flex; flex-direction:column; align-items:center; gap:20px}
+.zfigs{display:flex; gap:40px; justify-content:center}
+.bodyfig{display:flex; flex-direction:column; align-items:center}
+.bodyfig svg{height:420px; width:auto; display:block}
+.bodyfig .sil path, .bodyfig .sil circle{fill:rgba(255,255,255,.07);
+  stroke:rgba(255,255,255,.3); stroke-width:1.5}
+.bodyfig .face circle{fill:rgba(255,255,255,.5); stroke:none}
+.bodyfig .face path{stroke:rgba(255,255,255,.5); stroke-width:1.2; fill:none}
+.bodyfig .face path.hair{fill:rgba(255,255,255,.3); stroke:rgba(255,255,255,.3)}
+.bodyfig .bz rect{fill:transparent; stroke:rgba(255,255,255,.45); stroke-width:1;
+  stroke-dasharray:3 3; cursor:pointer; transition:fill .15s ease, stroke .15s ease}
+.bodyfig .bz.on rect{fill:#e6c65c; fill-opacity:.9; stroke:#fff; stroke-width:1.4;
+  stroke-dasharray:none; filter:drop-shadow(0 0 7px rgba(230,198,92,.9))}
+.bodylabel{font-size:19px; letter-spacing:.16em; font-weight:800;
+  color:rgba(255,255,255,.45); margin-top:10px}
+
+.zcols{display:flex; flex-direction:column; gap:14px; align-items:center}
+.ztier{display:flex; gap:16px; justify-content:center}
+.zchip{position:relative; background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16);
+  border-radius:22px; min-height:74px; padding:14px 18px; font-size:23px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; text-align:center; cursor:pointer;
   transition:background .2s, border-color .2s}
-.zpill.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
+.zchip.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
+.ztier.t1 .zchip{width:296px} .ztier.t2 .zchip{width:282px} .ztier.t3 .zchip{width:268px}
+.zn{position:absolute; top:-13px; right:-11px; width:38px; height:38px; border-radius:50%;
+  background:#e6c65c; color:#0c0a0f; font-size:21px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px #0c0a0f}
+
+.zapex{display:grid; grid-template-columns:1fr 1fr; gap:18px;
+  max-width:700px; margin:4px auto 0}
+.zquick{ background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.14); border-radius:22px; min-height:84px;
+  padding:14px 20px; display:flex; align-items:center; gap:14px; cursor:pointer;
+  transition:background .2s, border-color .2s}
+.zquick.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
+.zquick .zqi{font-size:34px; flex:none}
+.zquick .zqx{display:flex; flex-direction:column; min-width:0}
+.zquick .zql{font-size:23px; font-weight:800; line-height:1.2}
+.zquick .zqs{font-size:17px; color:rgba(255,255,255,.55); margin-top:4px}
+.zhint{text-align:center; font-size:20px; color:rgba(255,255,255,.5); margin-top:8px}
+.zhint b{color:#e6c65c}
+
+/* l'avviso quando si prova a prendere la quarta zona */
+.tost{position:absolute; left:50%; top:9%; transform:translate(-50%,-16px); z-index:70;
+  background:rgba(23,20,29,.97); border:1px solid rgba(230,198,92,.5); border-radius:20px;
+  padding:20px 34px; font-size:24px; font-weight:700; opacity:0; pointer-events:none;
+  transition:opacity .3s, transform .3s; white-space:nowrap}
+.tost.on{opacity:1; transform:translate(-50%,0)}
 
 .navrow{display:flex; gap:16px; flex:none; align-self:stretch}
 .nav{flex:1; height:112px; border-radius:24px; display:flex; align-items:center; justify-content:center;
@@ -398,9 +460,13 @@ html,body{height:100%; background:#000; overflow:hidden;
   <section class="scene" id="s-form">
     <div class="prog"><i id="progbar"></i></div>
     <div class="form">
-      <div class="step" id="fstep"></div>
-      <div class="q" id="fq"></div>
-      <div class="qs" id="fqs"></div>
+      <div class="fhead">
+        <div class="qsteps" id="fdots"></div>
+        <div class="step" id="fstep"></div>
+        <div class="q" id="fq"></div>
+        <div class="qs" id="fqs"></div>
+      </div>
+      <div class="qrecap" id="frecap"></div>
       <div class="corpo" id="fcorpo"></div>
       <div class="navrow">
         <div class="nav back" onclick="passoIndietro()">‹ Indietro</div>
@@ -431,6 +497,8 @@ html,body{height:100%; background:#000; overflow:hidden;
     <div class="pinpad" id="pinpad"></div>
     <div class="esc" onclick="closePin()">Annulla</div>
   </div>
+
+  <div class="tost" id="tost"></div>
 
   <div class="dbg" id="dbg">PROTOTIPO · torna da solo alla vetrina dopo 60 s di inattività</div>
 </div></div>
@@ -699,7 +767,8 @@ document.getElementById('avatar').onclick = ()=>{
 /* ══════════ IL CHECK-IN ══════════
    Stessa sequenza del gestionale: prima chi ti segue, poi le cinque
    domande con le stesse parole e le stesse scelte. */
-const D = {nome:'', cogn:'', op:null, activity:'', zones:[], goal:'', mood:'', pressione:''};
+const D = {nome:'', cogn:'', op:null, activity:'', zones:[], zmode:null,
+           goal:'', mood:'', pressione:''};
 
 const OPERATORI_FINTI = [
   {id:'x1', nome:'Chiara', color:'#a9779a'},
@@ -744,24 +813,77 @@ const PASSI = [
     ['carico','🔥','Carico','pieno di energia']]},
   {k:'pressione', step:'PASSO 6 DI 6', q:'Che pressione desideri oggi?', due:true, opts:[
     ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
-    ['solito','⚖️','Come sempre','le regolazioni abituali'],
-    ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità']]},
+    ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità'],
+    ['media','⚖️','Pressione media','la regolazione standard']]},
 ];
 
+/* Le sette zone, con lo stesso nome che portano nel gestionale. */
 const ZONE = [
-  {v:'cervicale', t:'Collo & Spalle', lato:'f', x:34, y:30,  w:52, h:14},
-  {v:'braccia',   t:'Braccia',        lato:'f', x:18, y:50,  w:84, h:12},
-  {v:'gambe',     t:'Gambe',          lato:'f', x:38, y:112, w:44, h:44},
-  {v:'piedi',     t:'Piedi',          lato:'f', x:38, y:170, w:44, h:14},
-  {v:'dorsale',   t:'Dorsale',        lato:'d', x:34, y:48,  w:52, h:22},
-  {v:'lombare',   t:'Lombare',        lato:'d', x:34, y:74,  w:52, h:18},
-  {v:'glutei',    t:'Glutei',         lato:'d', x:34, y:96,  w:52, h:18},
+  ['cervicale','Collo & Spalle'], ['braccia','Braccia'], ['dorsale','Dorsale'],
+  ['lombare','Lombare'], ['glutei','Glutei'], ['gambe','Gambe'], ['piedi','Piedi']
 ];
+const ZNOME = z => (ZONE.find(x=>x[0]===z) || [,z])[1];
+
+/* La sagoma: e' quella del gestionale, ricopiata tratto per tratto —
+   corpo, testa, viso di fronte, capelli di spalle — e gli stessi
+   riquadri delle zone, nelle stesse identiche posizioni. Sul davanti
+   quattro zone, di spalle tutte e sette, come nel gestionale. */
+const CORPO_PATH = 'M52 30 h16 l2 6 h14 c6 0 8 5 8 10 v46 l-8 26 h-6 l4 -30 v-14 h-4 v22 '
+  + 'l-6 40 h4 l-2 52 h6 l2 10 h-18 l-2 -10 -4 -44 -4 44 -2 10 h-18 l2 -10 h6 l-2 -52 h4 '
+  + 'l-6 -40 v-22 h-4 v14 l4 30 h-6 l-8 -26 v-46 c0 -5 2 -10 8 -10 h14 z';
+
+function sagoma(vista){
+  const z = (id, forma) =>
+    '<g class="bz' + (D.zones.includes(id) ? ' on' : '') + '" data-z="' + id
+    + '" onclick="tapZona(\'' + id + '\')">' + forma + '</g>';
+  const corpo = '<circle cx="60" cy="18" r="12"/><path d="' + CORPO_PATH + '"/>';
+  const sil = vista === 'front'
+    ? corpo + '<g class="face">'
+      + '<circle cx="55.5" cy="15.5" r="1.4"/><circle cx="64.5" cy="15.5" r="1.4"/>'
+      + '<path d="M60 17 l0 4 l1.5 0" fill="none"/>'
+      + '<path d="M55.5 23.5 Q60 26.5 64.5 23.5" fill="none"/>'
+      + '<path d="M49 12 Q54 6 60 6.5 Q66 6 71 12" fill="none"/></g>'
+    : corpo + '<g class="face">'
+      + '<path class="hair" d="M48.5 16 Q54 7 60 7 Q66 7 71.5 16 L71 20 Q60 15 49 20 Z"/>'
+      + '<path d="M56 29 Q60 27.5 64 29" fill="none"/></g>';
+  let zone = '';
+  if(vista === 'front'){
+    zone += z('cervicale','<rect x="34" y="30" width="52" height="14" rx="7"/>');
+    zone += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
+    zone += z('gambe','<rect x="40" y="110" width="16" height="80" rx="8"/><rect x="64" y="110" width="16" height="80" rx="8"/>');
+    zone += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
+  } else {
+    zone += z('cervicale','<rect x="34" y="30" width="52" height="12" rx="6"/>');
+    zone += z('dorsale','<rect x="38" y="44" width="44" height="32" rx="8"/>');
+    zone += z('lombare','<rect x="40" y="78" width="40" height="20" rx="8"/>');
+    zone += z('glutei','<rect x="38" y="99" width="44" height="20" rx="9"/>');
+    zone += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
+    zone += z('gambe','<rect x="40" y="122" width="16" height="68" rx="8"/><rect x="64" y="122" width="16" height="68" rx="8"/>');
+    zone += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
+  }
+  return '<div class="bodyfig"><svg viewBox="8 0 104 214">'
+    + '<g class="sil">' + sil + '</g>' + zone + '</svg>'
+    + '<div class="bodylabel">' + (vista === 'front' ? 'FRONTE' : 'RETRO') + '</div></div>';
+}
 
 let PASSO = 0, FIELD = 'nome';
 
 function startCheck(){ PASSO = 0; FIELD = 'nome'; go('form'); disegnaPasso(); }
 document.getElementById('gocheck').onclick = startCheck;
+
+/* le etichette del riepilogo, le stesse del gestionale */
+const QLBL = {nome:'Nome', op:'Operatore', activity:'Attività', zones:'Zone',
+              goal:'Obiettivo', mood:'Umore', pressione:'Pressione'};
+
+function rispostaDi(k){
+  if(k === 'nome') return D.nome ? (D.nome + ' ' + D.cogn).trim() : '';
+  if(k === 'op'){ const o = operatori().find(x=>x.id === D.op); return o ? o.nome : ''; }
+  if(k === 'zones') return D.zones.map(ZNOME).join(', ')
+    || (D.zmode === 'totale' ? 'Total body' : D.zmode === 'nessuna' ? 'Nessuna' : '');
+  const P = PASSI.find(x=>x.k === k);
+  const o = (P && P.opts || []).find(o=>o[0] === D[k]);
+  return o ? o[2] : '';
+}
 
 function disegnaPasso(){
   const P = PASSI[PASSO];
@@ -771,6 +893,13 @@ function disegnaPasso(){
   qs.textContent = P.qs || '';
   qs.style.display = P.qs ? 'block' : 'none';
   document.getElementById('progbar').style.width = (PASSO / PASSI.length * 100) + '%';
+  document.getElementById('fdots').innerHTML = PASSI.map((_,i)=>
+    '<i class="' + (i < PASSO ? 'fatto' : i === PASSO ? 'now' : '') + '"></i>').join('');
+  document.getElementById('frecap').innerHTML = PASSI.slice(0, PASSO).map((st,i)=>{
+    const v = rispostaDi(st.k);
+    return v ? '<div class="rc" onclick="vaiAlPasso(' + i + ')"><em>' + QLBL[st.k] + '</em>'
+      + v + '</div>' : '';
+  }).join('');
   const c = document.getElementById('fcorpo');
 
   if(P.k === 'nome'){
@@ -790,21 +919,30 @@ function disegnaPasso(){
       setTimeout(()=> el.classList.add('in'), 70 + i * 90));
   }
   else if(P.zone){
-    c.innerHTML = '<div class="zwrap">' + ['f','d'].map(lato=>
-      '<div class="zfig"><div class="et">' + (lato === 'f' ? 'DAVANTI' : 'DIETRO') + '</div>'
-      + '<svg viewBox="0 0 120 196">'
-      + '<g class="sil"><circle cx="60" cy="16" r="11"/>'
-      + '<path d="M46 28 h28 c6 0 9 4 9 10 v40 l-7 24 h-5 l3 -28 v-12 h-4 v20 l-5 38 h4 l-2 50 h-9 '
-      + 'l-2 -50 h-4 l-2 50 h-9 l-2 -50 h4 l-5 -38 v-20 h-4 v12 l3 28 h-5 l-7 -24 v-40 c0 -6 3 -10 9 -10 z"/></g>'
-      + ZONE.filter(z=> z.lato === lato).map(z=>
-          '<g class="bz" data-z="' + z.v + '" onclick="tapZona(\'' + z.v + '\')">'
-          + '<rect x="' + z.x + '" y="' + z.y + '" width="' + z.w + '" height="' + z.h + '"/>'
-          + '<text x="60" y="' + (z.y + z.h/2 + 2.2) + '" text-anchor="middle">' + z.t + '</text></g>').join('')
-      + '</svg></div>').join('') + '</div>'
-      + '<div class="zscelte">' + ZONE.map(z=>
-          '<div class="zpill" data-z="' + z.v + '" onclick="tapZona(\'' + z.v + '\')">' + z.t + '</div>').join('')
-      + '</div>';
-    syncZone();
+    /* gli stessi tre gradini di etichette del gestionale: tre sopra,
+       due in mezzo, due sotto — e il numero d'ordine sulla zona scelta,
+       perche' la prima e' quella che guida il programma */
+    const chip = id =>
+      '<div class="zchip' + (D.zones.includes(id) ? ' on' : '') + '" data-z="' + id
+      + '" onclick="tapZona(\'' + id + '\')">' + ZNOME(id)
+      + (D.zones.indexOf(id) >= 0
+          ? '<span class="zn">' + (D.zones.indexOf(id) + 1) + '</span>' : '') + '</div>';
+    const rapida = (m, ic, tit, sot) =>
+      '<div class="zquick' + (D.zmode === m ? ' on' : '') + '" onclick="zonaRapida(\'' + m + '\')">'
+      + '<span class="zqi">' + ic + '</span><span class="zqx">'
+      + '<span class="zql">' + tit + '</span><span class="zqs">' + sot + '</span></span></div>';
+    c.innerHTML = '<div class="zwrap">'
+      + '<div class="zfigs">' + sagoma('front') + sagoma('back') + '</div>'
+      + '<div class="zcols">'
+      +   '<div class="ztier t1">' + ['cervicale','braccia','dorsale'].map(chip).join('') + '</div>'
+      +   '<div class="ztier t2">' + ['lombare','glutei'].map(chip).join('') + '</div>'
+      +   '<div class="ztier t3">' + ['gambe','piedi'].map(chip).join('') + '</div>'
+      + '</div></div>'
+      + '<div class="zapex">'
+      +   rapida('totale', '🧍', 'Total body', 'tutto il corpo')
+      +   rapida('nessuna', '✨', 'Nessuna in particolare', 'decide Zenith')
+      + '</div>'
+      + '<div class="zhint">Fino a <b>3 zone</b> · la <b>prima</b> guida il programma</div>';
   }
   else {
     c.innerHTML = '<div class="opts' + (P.due ? ' due' : '') + '">' + P.opts.map(o=>
@@ -857,23 +995,39 @@ function kbGo(){
 }
 function scegliOp(id){ D.op = id; disegnaPasso(); setTimeout(passoAvanti, 480); }
 function scegli(k, v){ D[k] = v; disegnaPasso(); setTimeout(passoAvanti, 480); }
+let tostT = null;
+function tosta(msg){
+  const el = document.getElementById('tost');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(tostT); tostT = setTimeout(()=> el.classList.remove('on'), 2600);
+}
 function tapZona(z){
   const i = D.zones.indexOf(z);
-  (i < 0) ? D.zones.push(z) : D.zones.splice(i, 1);
-  syncZone(); aggiornaAvanti(); idleReset();
+  if(i >= 0) D.zones.splice(i, 1);
+  else {
+    if(D.zones.length >= 3){ tosta('Massimo 3 zone: togline una per aggiungerne un\'altra'); return; }
+    D.zones.push(z);
+  }
+  D.zmode = null;
+  disegnaPasso(); idleReset();
 }
-function syncZone(){
-  document.querySelectorAll('[data-z]').forEach(el=>
-    el.classList.toggle('on', D.zones.includes(el.dataset.z)));
+function zonaRapida(m){
+  D.zones = []; D.zmode = m;
+  aggiornaAvanti(); passoAvanti();
 }
+function vaiAlPasso(i){ PASSO = i; if(PASSI[i].k === 'nome') FIELD = 'nome'; disegnaPasso(); }
 function completo(){
   const P = PASSI[PASSO];
   if(P.k === 'nome')  return !!(D.nome.trim() && D.cogn.trim());
-  if(P.k === 'zones') return D.zones.length > 0;
+  if(P.k === 'zones') return D.zones.length > 0 || !!D.zmode;
   return !!D[P.k];
 }
 function aggiornaAvanti(){
-  document.getElementById('fnext').classList.toggle('off', !completo());
+  const P = PASSI[PASSO], b = document.getElementById('fnext');
+  b.classList.toggle('off', !completo());
+  b.textContent = (P.k === 'zones' && D.zones.length)
+    ? 'AVANTI (' + D.zones.length + (D.zones.length === 1 ? ' zona' : ' zone') + ') ›'
+    : 'AVANTI ›';
 }
 function passoAvanti(){
   if(!completo()) return;
@@ -891,12 +1045,14 @@ const NOMI = {
   recupero:'Recupero muscolare', sollievo:'Sollievo mirato', drenaggio:'Leggerezza',
   relax:'Relax profondo', sonno:'Verso il sonno', energia:'Energia',
   sereno:'Sereno', stanco:'Stanco', stressato:'Stressato', dolorante:'Indolenzito', carico:'Carico',
-  dolce:'Pressione dolce', solito:'Pressione abituale', decisa:'Pressione decisa'
+  dolce:'Pressione dolce', media:'Pressione media', decisa:'Pressione decisa'
 };
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
   const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione]]
-    .concat(D.zones.map(z=>{ const t = ZONE.find(x=> x.v === z); return t ? t.t : null; }))
+    .concat(D.zones.length ? D.zones.map(ZNOME)
+      : D.zmode === 'totale' ? ['Total body']
+      : D.zmode === 'nessuna' ? ['Nessuna zona in particolare'] : [])
     .filter(Boolean);
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
@@ -904,7 +1060,8 @@ function finisci(){
   setTimeout(reset, 16000);
 }
 function reset(){
-  D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.goal=''; D.mood=''; D.pressione='';
+  D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
+  D.goal=''; D.mood=''; D.pressione='';
   PASSO = 0; FIELD = 'nome';
   document.getElementById('risp').classList.remove('on');
   document.getElementById('askgrid').style.display = 'flex';
