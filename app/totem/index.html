@@ -355,10 +355,14 @@ html,body{height:100%; background:#000; overflow:hidden;
 .nav.next.off{opacity:.3; pointer-events:none; box-shadow:none}
 
 /* ══════════════════════════════════════════════════════════════
-   4 · ACCOMODATI
+   4 · ACCOMODATI · PREPARAZIONE · PROTOCOLLO
+   La schermata finale non è più una sola: sotto al saluto scorrono la
+   preparazione (per il cliente) e il protocollo proposto (per chi lo
+   accompagna al tablet).
    ══════════════════════════════════════════════════════════════ */
-.done{position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; padding:0 80px; text-align:center}
+.donewrap{position:absolute; inset:0; overflow-y:auto; padding-bottom:40px}
+.done{min-height:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:70px 80px; text-align:center}
 .done .ring{width:210px; height:210px; border-radius:50%; border:4px solid #e6c65c;
   display:flex; align-items:center; justify-content:center; font-size:104px;
   animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
@@ -371,6 +375,59 @@ html,body{height:100%; background:#000; overflow:hidden;
 .done .chip{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16);
   border-radius:999px; padding:14px 26px; font-size:22px; font-weight:700}
 .done .wait{margin-top:46px; font-size:20px; color:rgba(255,255,255,.35)}
+.giu{margin-top:30px; font-size:22px; font-weight:800; letter-spacing:.1em; color:#e6c65c;
+  animation:sciv 2.2s ease-in-out infinite}
+@keyframes sciv{0%,100%{transform:translateY(0); opacity:.7} 50%{transform:translateY(9px); opacity:1}}
+
+/* ── la preparazione, scritta per il cliente ── */
+.blocco{padding:0 56px 70px}
+.btit{font-size:20px; letter-spacing:.24em; font-weight:800; color:#e6c65c;
+  text-align:center; margin-bottom:10px}
+.bsot{font-size:24px; color:rgba(255,255,255,.55); text-align:center; margin-bottom:34px}
+.prep .riga{display:flex; align-items:center; gap:26px; background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.12); border-radius:26px; padding:24px 30px; margin-bottom:16px}
+.prep .pic{font-size:48px; flex:none; width:70px; text-align:center}
+.prep .ptx{flex:1; min-width:0; display:flex; flex-direction:column}
+.prep .pt1{display:block; font-size:30px; font-weight:800; line-height:1.2}
+.prep .pt2{display:block; font-size:20px; color:rgba(255,255,255,.55); margin-top:6px; line-height:1.35}
+
+/* ── il protocollo, per chi porta il cliente al tablet ── */
+.proto .scheda{background:rgba(23,20,29,.86); border:1px solid rgba(255,255,255,.14);
+  border-radius:32px; padding:36px 38px; margin-bottom:20px}
+.pfam{display:flex; align-items:center; gap:14px; font-size:26px; font-weight:800}
+.pfam .fd{width:20px; height:20px; border-radius:50%; flex:none}
+.pnome{font-size:48px; font-weight:800; line-height:1.12; margin-top:14px; letter-spacing:-.015em}
+.pdes{font-size:23px; color:rgba(255,255,255,.66); margin-top:12px; line-height:1.42}
+.pdes small{display:block; font-size:19px; color:rgba(255,255,255,.38); margin-top:8px}
+.pchips{display:flex; gap:12px; flex-wrap:wrap; margin-top:22px}
+.pchip{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16);
+  border-radius:999px; padding:12px 24px; font-size:21px; font-weight:700}
+.pchip.pro{background:rgba(212,175,55,.16); border-color:rgba(212,175,55,.5); color:#eed37a}
+.zcode{margin-top:24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.zcode .zv{background:rgba(212,175,55,.14); border:1px solid rgba(212,175,55,.5);
+  border-radius:16px; padding:14px 24px; font-size:28px; font-weight:800; color:#eed37a;
+  font-variant-numeric:tabular-nums; letter-spacing:.04em}
+.zcode .zk{font-size:18px; color:rgba(255,255,255,.42); line-height:1.4}
+.setgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:26px}
+.setcell{background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+  border-radius:20px; padding:18px 8px; text-align:center}
+.setcell .sv{font-size:34px; font-weight:800; line-height:1.1}
+.setcell .sv.sm{font-size:18px; line-height:1.5}
+.setcell .sl{font-size:16px; color:rgba(255,255,255,.45); margin-top:8px}
+.perche{background:rgba(122,73,108,.16); border:1px solid rgba(169,119,154,.4);
+  border-radius:26px; padding:30px 34px; margin-bottom:18px}
+.perche .tt{display:block; font-size:22px; font-weight:800; color:#e2bdd4;
+  letter-spacing:.06em; margin-bottom:16px}
+.perche li{font-size:22px; line-height:1.5; margin-left:24px; margin-bottom:10px;
+  color:rgba(255,255,255,.85)}
+.avvio{background:rgba(79,184,221,.09); border:1px solid rgba(79,184,221,.32);
+  border-radius:26px; padding:30px 34px; font-size:22px; line-height:1.5;
+  color:rgba(255,255,255,.85)}
+.avvio .tt{display:block; font-size:22px; font-weight:800; color:#8fd3ec;
+  letter-spacing:.06em; margin-bottom:14px}
+.avvio b{color:#8fd3ec}
+.nota{margin-top:18px; font-size:19px; color:rgba(255,255,255,.42); line-height:1.5;
+  text-align:center}
 
 /* ══════════════════════════════════════════════════════════════
    il codice riservato
@@ -477,6 +534,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 
   <!-- ═══ 4 · ACCOMODATI ═══ -->
   <section class="scene" id="s-done">
+   <div class="donewrap" id="donewrap">
     <div class="done">
       <div class="ring">✓</div>
       <div class="big">Perfetto,<br><span id="dnome">Giulia</span></div>
@@ -485,7 +543,31 @@ html,body{height:100%; background:#000; overflow:hidden;
         Da qui in avanti pensa a lui: tu devi solo rilassarti.</div>
       <div class="chips" id="dchips"></div>
       <div class="wait">Questa schermata si chiude da sola</div>
+      <div class="giu">SCORRI ↓</div>
     </div>
+
+    <div class="blocco prep">
+      <div class="btit">PRIMA DI ENTRARE NELLA CAPSULA</div>
+      <div class="bsot">Cinque cose, trenta secondi</div>
+      <div class="riga"><span class="pic">⌚</span><span class="ptx">
+        <span class="pt1">Togli orologio, bracciali, collane e anelli</span>
+        <span class="pt2">Gli airbag stringono braccia e spalle: un bracciale rigido dà fastidio e può segnare la pelle.</span></span></div>
+      <div class="riga"><span class="pic">👖</span><span class="ptx">
+        <span class="pt1">Svuota le tasche</span>
+        <span class="pt2">Chiavi, telefono, monete, portafoglio: lasciali fuori dalla capsula.</span></span></div>
+      <div class="riga"><span class="pic">👕</span><span class="ptx">
+        <span class="pt1">Abbigliamento comodo — non serve spogliarsi</span>
+        <span class="pt2">Meglio senza cinture, fibbie o zip rigide sulla schiena.</span></span></div>
+      <div class="riga"><span class="pic">🩴</span><span class="ptx">
+        <span class="pt1">Metti i calzari che trovi accanto alla capsula</span>
+        <span class="pt2">Si entra senza scarpe: sotto i piedi ci sono i rulli plantari.</span></span></div>
+      <div class="riga"><span class="pic">🪑</span><span class="ptx">
+        <span class="pt1">Siediti e appoggia bene la schiena allo schienale</span>
+        <span class="pt2">La scansione delle spalle parte da sola: è normale, dura pochi secondi.</span></span></div>
+    </div>
+
+    <div class="blocco proto" id="proto"></div>
+   </div>
   </section>
 
   <!-- ═══ il codice riservato ═══ -->
@@ -590,6 +672,12 @@ const ROAM = [
         sub:'Cosa hai fatto oggi, dove, per cosa, come stai, che pressione vuoi.'},
   {a:0, k:'beneficio', ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.'},
   {a:3, k:'curiosita', ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
+  {a:1, k:'beneficio', ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.'},
+  {a:4, k:'curiosita', ic:'🔢', tx:'<em>25,3 milioni</em><br>di combinazioni.',
+        sub:'Cinque risposte, e i parametri si compongono in un modo che non si ripete.'},
+  {a:2, k:'beneficio', ic:'🤲', tx:'Nessuno ti ha mai <em>chiesto</em><br>come stai, prima di un massaggio.'},
+  {a:5, k:'curiosita', ic:'✋', tx:'Due bracci, <em>3D e 4D</em>.<br>Come quattro mani.',
+        sub:'Non è una parte che si muove: sono due sistemi che lavorano insieme sul corpo.'},
 ];
 const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
 
@@ -667,6 +755,39 @@ const QA = [
   {ic:'🚀', q:'Quanto ci metto a capire se fa per me?',
    a:'<b>Una seduta sola.</b> Misuriamo prima e dopo: il confronto lo vedi coi tuoi occhi.',
    piu:'E la prima volta è sempre dolce e breve, apposta per farti conoscere ogni sensazione.'},
+  {ic:'🛋️', q:'Non è una poltrona massaggiante?',
+   a:'No, ed è la differenza più grande di tutte. <b>Una poltrona ha un tasto che si aziona.</b> Zenith ha <b>due bracci — uno 3D e uno 4D — che simulano un massaggio a quattro mani</b>: è un\'unicità di questo dispositivo. C\'è il calore che scioglie i muscoli. E soprattutto le funzioni vengono <b>programmate in base alle tue risposte</b>.',
+   piu:'Le combinazioni possibili sono <b>25,3 milioni</b>: vuol dire che ogni volta che entri in Zenith la seduta non sarà mai uguale a un\'altra. A meno che una seduta riuscita non venga salvata nei preferiti e ripresa apposta — ma allora è una scelta, non il caso.'},
+  {ic:'📅', q:'Come prenoto?',
+   a:'Come ti è più comodo: <b>su WhatsApp</b> al numero del centro, <b>sui nostri canali social</b>, oppure <b>di persona</b> qui in reception.',
+   piu:'Si entra solo su prenotazione, ed è per questo che non c\'è mai da aspettare.'},
+  {ic:'⏳', q:'Quando arrivo, quanto devo aspettare?',
+   a:'<b>Niente.</b> È tutto su prenotazione: quando arrivi la capsula è già libera e preparata per te.',
+   piu:'Il check-in che puoi fare qui serve proprio a questo: quando l\'operatore ti raggiunge ha già tutte le tue risposte.'},
+  {ic:'👟', q:'Devo togliere le scarpe? Posso venire truccata?',
+   a:'<b>Le scarpe sì</b>: si entra con i calzari, perché sotto i piedi ci sono i rulli plantari. <b>Il trucco non è un problema</b>: puoi venire come sei.',
+   piu:'Togli invece orologio, bracciali, collane e anelli, e svuota le tasche: gli airbag stringono braccia e spalle.'},
+  {ic:'🧼', q:'La capsula viene pulita fra un cliente e l\'altro?',
+   a:'Sì. <b>Viene igienizzata da un cliente all\'altro</b>, ogni volta, senza eccezioni.',
+   piu:'Fa parte del rituale della seduta, esattamente come la misura d\'ingresso e quella d\'uscita.'},
+  {ic:'🤫', q:'Posso parlare durante la seduta?',
+   a:'Puoi, e <b>puoi anche stare al telefono</b>. Ma il consiglio è un altro: lasciati andare alla <b>musica di sottofondo</b> e rilassati il più possibile.',
+   piu:'Il corpo si scioglie meglio quando la testa smette di lavorare. Sono venti minuti: vale la pena regalarseli.'},
+  {ic:'🎂', q:'C\'è un limite di età?',
+   a:'In alto <b>nessuno</b>. In basso <b>sedici anni</b>, con la firma di un genitore.',
+   piu:'Prima della prima seduta si compila comunque l\'anamnesi: è lì che si verifica che vada bene per te.'},
+  {ic:'🏃', q:'Meglio prima o dopo l\'allenamento?',
+   a:'<b>Dopo. Sempre dopo.</b> Ci si allena e poi si entra in capsula: è lì che lo sforzo si trasforma in recupero.',
+   piu:'Subito dopo il lavoro fisico Zenith defatica e aiuta le fibre muscolari. Prima non avrebbe senso: rilasserebbe muscoli che stai per far lavorare.'},
+  {ic:'☕', q:'Cosa faccio quando finisco?',
+   a:'Un <b>caffè in sala relax</b>, con calma. Poi decidi: prenoti la prossima seduta, oppure vai — senza fretta.',
+   piu:'Prima di uscire l\'operatore rifà l\'Health Check e ti mostra il confronto con la misura d\'ingresso.'},
+  {ic:'👯', q:'Posso venire con un\'amica?',
+   a:'Certo. In capsula si entra uno per volta, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
+   piu:'Potete anche prenotare due sedute di fila: una entra, l\'altra aspetta, e poi si scambiano.'},
+  {ic:'🏛️', q:'Cos\'è Zenith Fitness Lab?',
+   a:'È il nostro format. Un percorso che mette insieme <b>EMS, EMS2, Vacutherm e Matrix</b> — e alla fine <b>Zenith</b>, il nostro fiore all\'occhiello.',
+   piu:'Ogni macchina lascia qualcosa di diverso nel corpo, e Zenith è quella che chiude il cerchio: raccoglie il lavoro di tutte le altre e lo trasforma in recupero.'},
 ];
 
 /* ─────────── la vetrina che gira ───────────
@@ -728,7 +849,9 @@ function go(n){
   SCENE = n;
   if(n === 'idle'){ if(!roamTimer) roamStart(); if(!bolleTimer) bolleStart(); }
   else { roamStop(); bolleStop(); }
-  document.querySelector('.head').style.opacity = (n === 'done') ? '0' : '1';
+  const via = (n === 'done') ? '0' : '1';
+  document.querySelector('.head').style.opacity = via;
+  document.getElementById('dbg').style.opacity = via;
   idleReset();
 }
 
@@ -1056,9 +1179,220 @@ function finisci(){
     .filter(Boolean);
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
+  disegnaProtocollo();
+  document.getElementById('donewrap').scrollTop = 0;
   go('done');
-  setTimeout(reset, 16000);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   IL PROTOCOLLO PROPOSTO
+   Lo stesso motore del gestionale, ramo per ramo, con le stesse
+   parole. Quello che il chiosco NON puo' sapere - anamnesi, se e' la
+   prima seduta, la taratura personale costruita dai feedback, i
+   macro-parametri gia' salvati per quel cliente - qui vale il suo
+   valore neutro: il tablet completa la proposta con la storia del
+   cliente, ed e' scritto in fondo alla scheda.
+   ══════════════════════════════════════════════════════════════ */
+const PROGRAMMI = {
+  P01:{o:'Health Mode', d:'Percorso completo ed equilibrato dalla cervicale ai piedi'},
+  P02:{o:'Queen Bodycare', d:'Percorso femminile: manovre avvolgenti e compressione drenante'},
+  P03:{o:'Shoulder Care', d:'Concentrato su collo, trapezi e spalle'},
+  P04:{o:'Back Relieve', d:'Dorsali e lombari con calore e pressioni lente e profonde'},
+  P05:{o:'Buttock & Waist', d:'Vita, fianchi e glutei: l\'origine di molte tensioni lombari'},
+  P07:{o:'Soreness Improvement', d:'Anti-indolenzimento profondo per i DOMS del giorno dopo'},
+  P08:{o:'Leg & Foot Relief', d:'Gambe e piedi: compressione a onde, frizione polpacci e rulli plantari'},
+  P09:{o:'Upper Body', d:'Solo parte alta: cervicale, spalle, dorso e braccia'},
+  P10:{o:'Lower Body', d:'Solo dalla vita in giù: lombare basso, glutei, gambe e piedi'},
+  P11:{o:'TCM Massage', d:'Digitopressione lenta ispirata alla medicina tradizionale cinese'},
+  P12:{o:'Thai SPA', d:'Allungamenti e pressioni ampie in stile spa thailandese'},
+  P13:{o:'White-collar', d:'Per chi vive alla scrivania: collo, trapezi, lombare e avambracci'},
+  P14:{o:'Master Classic', d:'La sequenza classica del massaggiatore esperto'},
+  P15:{o:'Fresh Morning', d:'Ritmo vivace e tonificante per attivare corpo e circolazione'},
+  P16:{o:'Lunch Break', d:'Pausa rigenerante dolce di metà giornata'},
+  P17:{o:'Shake Sleeping', d:'Dondolio lento con stimolazione minima, come un\'amaca'},
+  P18:{o:'Sleep Aid at Night', d:'Rituale serale lentissimo che accompagna verso il sonno'},
+  P19:{o:'CEO Fitness', d:'Decontratturante collo/spalle + rilassamento profondo antistress'},
+  P21:{o:'Exercise Recovery', d:'Defaticamento profondo dei grandi gruppi muscolari dopo lo sforzo'},
+  P22:{o:'Gently Rub Soothing', d:'Il più delicato di tutti: sfregamento dolce a intensità minima'},
+  P23:{o:'Airbag Massage', d:'Solo compressione ad aria stile pressoterapia, senza rulli'}
+};
+const FAMIGLIE = {
+  Z1:{name:'Zenith Benvenuto',      color:'#c3cad4'},
+  Z2:{name:'Zenith Recupero',       color:'#b3799a'},
+  Z3:{name:'Zenith Gambe Leggere',  color:'#77b795'},
+  Z4:{name:'Zenith Schiena',        color:'#dcab63'},
+  Z5:{name:'Zenith Collo & Spalle', color:'#8fb2c9'},
+  Z6:{name:'Zenith Sonno & Relax',  color:'#7d7ce0'},
+  Z7:{name:'Zenith Energia',        color:'#e0997d'},
+  Z8:{name:'Zenith Total Body',     color:'#9aa66f'}
+};
+const MUSICHE = {
+  Mindful:'Mindful Relaxation', Motivation:'Motivation Mastermind', Morning:'Morning Energy',
+  Mental:'Mental Healing', Soothing:'Soothing Relief', Sweet:'Sweet Dreams'
+};
+const MACRO = {intensita:3, fourD:3, airbag:3, calore:true, ioni:false,
+               zerog:true, timer:20, plantari:2, polpacci:2};
+
+function costruisciProtocollo(q){
+  let S = Object.assign({}, MACRO);
+  let prog = null, fam = 'Z8', why = [], manualRef = null;
+  const zone = q.zones || [];
+  const has = z => zone.includes(z);
+  const painZone = has('dorsale') || has('lombare') || has('glutei') || has('cervicale');
+  const ora = new Date().getHours();
+  const when = ora < 12 ? 'mattina' : ora < 16 ? 'pranzo' : 'sera';
+
+  /* sollievo mirato / zone di tensione */
+  if(q.goal === 'sollievo' || (painZone && q.goal !== 'drenaggio' && q.goal !== 'energia')){
+    if(has('glutei') && !has('dorsale')){ prog='P05'; fam='Z4';
+      why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.');
+      manualRef = {zona:'glutei/zona lombare bassa', tecnica:'Kneading (impastamento)'}; }
+    else if(has('cervicale') && !has('dorsale') && !has('lombare')){
+      prog = q.activity === 'riposo' ? 'P13' : 'P03'; fam='Z5';
+      why.push('Focus su collo, trapezi e spalle, le zone indicate come tese.');
+      manualRef = {zona:'trapezi e base del collo', tecnica:'Shiatsu (digitopressione)'}; }
+    else if(has('braccia') && !painZone){ prog='P09'; fam='Z5';
+      why.push('Parte alta al centro: braccia e spalle indicate come zone del giorno.'); }
+    else { prog='P04'; fam='Z4';
+      why.push('Programma dedicato al tratto dorso-lombare con calore attivo.');
+      manualRef = {zona: has('lombare') && !has('dorsale') ? 'zona lombare' : 'tratto dorso-lombare',
+                   tecnica:'Kneading (impastamento)'}; }
+    S.intensita = Math.min(S.intensita, 3); S.calore = true;
+    if(manualRef) why.push('Rifinitura manuale inclusa: a metà sessione si lavora sul punto esatto ('
+      + manualRef.zona + ') con tecnica ' + manualRef.tecnica + '.');
+  }
+  /* l'attività di oggi */
+  else if(q.activity === 'ems'){
+    if(has('braccia') && !has('gambe')){ prog='P09'; fam='Z2';
+      why.push('EMS sulla parte alta: recupero mirato di spalle, dorso e braccia.'); }
+    else { prog = q.mood === 'dolorante' ? 'P07' : 'P21'; fam='Z2';
+      why.push(q.mood === 'dolorante'
+        ? 'DOMS da EMS: manovre lente e profonde anti-indolenzimento.'
+        : 'Dopo l\'EMS il recupero è parte del metodo: defaticamento completo.'); }
+  }
+  else if(q.activity === 'ems2'){
+    if(q.mood === 'dolorante'){ prog='P07'; fam='Z2';
+      why.push('EMS2 con muscoli indolenziti: prima si sciolgono le contrazioni dell\'elettrostimolazione, poi si alleggeriscono le gambe della camminata.'); }
+    else if(q.goal === 'recupero' && !has('gambe')){ prog='P21'; fam='Z2';
+      why.push('EMS2 con obiettivo recupero: defaticamento completo di tutti i gruppi che l\'elettrostimolazione ha fatto contrarre.'); }
+    else { prog='P08'; fam='Z3';
+      why.push('Dopo EMS2: gambe e piedi al centro, perché la camminata sotto elettrostimolazione è dove hanno lavorato di più.'); }
+    S.zerog = true; S.airbag = Math.max(S.airbag, 4);
+    S.plantari = Math.max(S.plantari, 2); S.polpacci = Math.max(S.polpacci, 2);
+  }
+  else if(q.activity === 'vacufit'){
+    fam='Z3'; prog='P08';
+    why.push('Gambe e piedi al centro: prolunga l\'effetto leggerezza del Vacutherm.');
+    S.zerog = true; S.airbag = Math.max(S.airbag, 4);
+    S.plantari = Math.max(S.plantari, 2); S.polpacci = Math.max(S.polpacci, 2);
+  }
+  else if(q.activity === 'matrix'){
+    fam='Z2';
+    if(has('gambe') || has('glutei')){ prog='P10'; why.push('Leg day: tutto il lavoro sulla parte bassa.'); }
+    else if(has('braccia')){ prog='P09'; why.push('Upper day: recupero mirato della parte alta.'); }
+    else if(q.goal === 'relax'){ prog='P12'; fam='Z8'; why.push('Total body + relax: stile Thai SPA, allunga e distende.'); }
+    else { prog='P21'; why.push('Allenamento completo in sala: defaticamento da professionisti.'); }
+  }
+  /* obiettivi senza allenamento */
+  if(!prog){
+    if(q.goal === 'drenaggio' || has('gambe') || has('piedi')){
+      prog='P08'; fam='Z3'; S.zerog = true; S.airbag = Math.max(S.airbag, 4);
+      why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
+    else if(q.goal === 'sonno' || (when === 'sera' && q.goal === 'relax')){
+      prog = q.mood === 'stressato' ? 'P17' : 'P18'; fam='Z6'; S.ioni = true;
+      S.intensita = Math.min(S.intensita, 2);
+      why.push('Rituale serale: prepara il corpo al sonno.'); }
+    else if(q.goal === 'relax'){
+      prog = when === 'pranzo' ? 'P16' : (q.mood === 'stressato' ? 'P19' : 'P11');
+      fam = when === 'pranzo' ? 'Z8' : 'Z6'; S.ioni = true;
+      why.push('Decompressione: trattamento lento e atmosfera rilassante.'); }
+    else if(q.goal === 'energia'){
+      prog='P15'; fam='Z7'; S.zerog = false; S.plantari = 3;
+      why.push('Ritmo tonificante che accende corpo e circolazione.'); }
+  }
+  if(!prog){ prog = q.mood === 'sereno' ? 'P14' : 'P01'; fam='Z8';
+    why.push('Riequilibrio completo dalla nuca ai piedi.'); }
+
+  /* la pressione chiesta oggi */
+  if(q.pressione === 'dolce'){
+    S.intensita = Math.max(0, S.intensita - 1); S.fourD = Math.max(0, S.fourD - 1);
+    why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.');
+  }
+  if(q.pressione === 'decisa'){
+    S.intensita = Math.min(6, S.intensita + 1); S.fourD = Math.min(6, S.fourD + 1);
+    why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.');
+  }
+
+  if(zone.length > 1) why.push('Zone selezionate oggi: ' + zone.map(ZNOME).join(', ')
+    + ' — la prima guida il programma, le altre si rifiniscono con airbag e regolazioni.');
+  if(D.zmode === 'totale') why.push('Nessuna zona indicata: Total body, riequilibrio dalla nuca ai piedi.');
+  if(D.zmode === 'nessuna') why.push('Nessuna zona in particolare: il programma è scelto dall\'obiettivo e da come sta oggi.');
+
+  /* la musica, come nel gestionale */
+  let mus = 'Soothing';
+  if(fam === 'Z2') mus = 'Mindful';
+  if(fam === 'Z3') mus = 'Soothing';
+  if(fam === 'Z6') mus = (q.goal === 'sonno' || when === 'sera') ? 'Sweet' : 'Mental';
+  if(fam === 'Z7') mus = q.mood === 'carico' ? 'Motivation' : 'Morning';
+  if(q.mood === 'stressato' && fam !== 'Z7') mus = 'Mental';
+  S.musica = mus;
+
+  /* la durata consigliata per famiglia */
+  let rec = 20, dwhy = 'Durata standard di 20 minuti.';
+  if(fam === 'Z7'){ rec = 15; dwhy = 'Energia: sessione breve e tonificante di 15 minuti — di più smorzerebbe l\'effetto sveglia.'; }
+  else if(fam === 'Z6'){ rec = q.goal === 'sonno' ? 30 : 25;
+    dwhy = 'Relax/sonno: sessione lunga di ' + rec + ' minuti — il rilassamento profondo ha bisogno di tempo.'; }
+  else if(fam === 'Z2'){ rec = 25; dwhy = 'Recupero post-allenamento: 25 minuti per un defaticamento completo dei gruppi muscolari.'; }
+  else if(fam === 'Z3'){ rec = 25; dwhy = 'Drenaggio: 25 minuti — la compressione a onde dà il meglio con la durata.'; }
+  else if(fam === 'Z4' || fam === 'Z5'){ rec = 20; dwhy = 'Sollievo mirato: 20 minuti concentrati sulla zona.'; }
+  S.timer = rec; why.push(dwhy);
+
+  const zCode = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
+    + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
+  return {prog, fam, S, why, zCode, manualRef};
+}
+
+function disegnaProtocollo(){
+  const pr = costruisciProtocollo(D);
+  const P = PROGRAMMI[pr.prog], F = FAMIGLIE[pr.fam], S = pr.S;
+  const cella = (v, l, piccolo) =>
+    '<div class="setcell"><div class="sv' + (piccolo ? ' sm' : '') + '">' + v + '</div>'
+    + '<div class="sl">' + l + '</div></div>';
+  document.getElementById('proto').innerHTML =
+    '<div class="btit">PROTOCOLLO PROPOSTO</div>'
+    + '<div class="bsot">Da confermare sul tablet, prima di avviare la capsula</div>'
+    + '<div class="scheda">'
+    +   '<div class="pfam"><span class="fd" style="background:' + F.color + '"></span>'
+    +     pr.fam + ' · ' + F.name + '</div>'
+    +   '<div class="pnome">' + pr.prog + ' · “' + P.o + '”</div>'
+    +   '<div class="pdes">' + P.d
+    +     '<small>“' + P.o + '” è il nome che leggi sul touchscreen della capsula</small></div>'
+    +   '<div class="pchips"><span class="pchip pro">⏱ ' + S.timer + ' min</span>'
+    +     '<span class="pchip">🌀 Massaggio completo</span>'
+    +     '<span class="pchip">🎵 ' + (MUSICHE[S.musica] || S.musica) + '</span></div>'
+    +   '<div class="zcode"><span class="zv">' + pr.zCode + '</span>'
+    +     '<span class="zk">Il codice della seduta: famiglia, programma e tutte le regolazioni<br>'
+    +     'I intensità · D profondità 4D · A airbag (0–6) · C calore attivo · G zero gravity attivo</span></div>'
+    +   '<div class="setgrid">'
+    +     cella(S.intensita, 'Intensità') + cella(S.fourD, '4D') + cella(S.airbag, 'Airbag')
+    +     cella(S.calore ? 'ON' : 'OFF', 'Calore') + cella(S.ioni ? 'ON' : 'OFF', 'Ioni')
+    +     cella(S.zerog ? 'ON' : 'OFF', 'Zero-G') + cella(S.timer + '′', 'Timer')
+    +     cella(S.plantari, 'Rulli piedi') + cella(S.polpacci, 'Polpacci')
+    +     cella(MUSICHE[S.musica] || S.musica, 'Musica', true)
+    +   '</div>'
+    + '</div>'
+    + '<div class="perche"><b class="tt">PERCHÉ QUESTO PROTOCOLLO</b><ul>'
+    +   pr.why.map(w=>'<li>' + w + '</li>').join('') + '</ul></div>'
+    + '<div class="avvio"><b class="tt">PRIMA DI AVVIARE</b>'
+    +   'Tasche vuote, niente orologi o gioielli · schiena bene aderente allo schienale · '
+    +   'la scansione spalle parte da sola: al <b>“DiDi”</b> correggi con <b>▲▼</b> e conferma <b>OK</b>.<br><br>'
+    +   'Poi sul tablet: <b>🟢 START</b> — Health Check d\'ingresso (indice sul sensore del bracciolo '
+    +   'destro, mano rilassata, senza premere), e il setup guidato si sblocca da solo.</div>'
+    + '<div class="nota">Questa è la proposta calcolata dalle sei risposte di oggi.<br>'
+    +   'Sul tablet il gestionale la completa con l\'anamnesi, la prima seduta e la taratura '
+    +   'personale del cliente — e resta sempre l\'operatore a confermarla.</div>';
+}
+
 function reset(){
   D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
   D.goal=''; D.mood=''; D.pressione='';
@@ -1090,7 +1424,9 @@ addEventListener('pointermove', e=> seguiSguardo(e.clientX, e.clientY));
 let idleT = null;
 function idleReset(){
   clearTimeout(idleT);
-  if(SCENE !== 'idle') idleT = setTimeout(reset, 60000);
+  /* sulla schermata finale c'e' da leggere la preparazione e il
+     protocollo: due minuti invece di uno, e ogni tocco li fa ripartire */
+  if(SCENE !== 'idle') idleT = setTimeout(reset, SCENE === 'done' ? 120000 : 60000);
 }
 ['pointerdown','keydown'].forEach(e=> addEventListener(e, idleReset));
 
