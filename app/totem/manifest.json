@@ -1,7 +1,7 @@
 {
-  "name": "Totem Zenith · prova",
-  "short_name": "Totem",
-  "description": "Prototipo della vetrina interattiva per il totem verticale",
+  "name": "Zenith · Totem",
+  "short_name": "Zenith Totem",
+  "description": "La vetrina interattiva e il check-in del cliente per il totem verticale del centro",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
