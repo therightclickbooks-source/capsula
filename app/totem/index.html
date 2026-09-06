@@ -1203,35 +1203,57 @@ function esc(t){ return String(t||'').replace(/[&<>"]/g, ch=>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
 
 /* le cinque domande, copiate parola per parola dal gestionale */
-const PASSI = [
+const PASSI_TUTTI = [
   {k:'nome', step:'BENVENUTO', q:'Come ti chiami?', qs:'Scrivi nome e cognome per intero'},
-  {k:'op',   step:'PASSO 1 DI 6', q:'Chi ti segue oggi?', qs:'Tocca il tuo operatore'},
-  {k:'activity', step:'PASSO 2 DI 6', q:'Cosa hai fatto oggi?', due:true, opts:[
+  {k:'op',   q:'Chi ti segue oggi?', qs:'Tocca il tuo operatore'},
+  {k:'activity', q:'Cosa hai fatto oggi?', due:true, opts:[
     ['ems','⚡','EMS','elettrostimolazione'],
     ['matrix','🏋️','Matrix','allenamento con pesi digitali'],
     ['vacufit','💨','Vacutherm','camminata in vuototerapia'],
     ['ems2','🌀','EMS2','elettrostimolazione in camminata veloce'],
     ['riposo','😌','Nessun allenamento','giornata senza attività']]},
-  {k:'zones', step:'PASSO 3 DI 6', q:'Su quali zone lavoriamo?',
+  {k:'zones', q:'Su quali zone lavoriamo?',
    qs:'Tocca la figura, o le etichette qui sotto', zone:true},
-  {k:'goal', step:'PASSO 4 DI 6', q:'Qual è l\'obiettivo di questa sessione?', opts:[
+  {k:'goal', q:'Qual è l\'obiettivo di questa sessione?', opts:[
     ['recupero','💪','Recupero muscolare','defaticare e rigenerare dopo il lavoro fisico'],
     ['sollievo','🎯','Sollievo mirato','tensioni o fastidi in una zona precisa'],
     ['drenaggio','💧','Leggerezza & drenaggio','gambe leggere, contrasto al gonfiore'],
     ['relax','🧘','Relax profondo','sciogliere corpo e mente'],
     ['sonno','🌙','Verso il sonno','prepararsi a una notte migliore'],
     ['energia','☀️','Energia','attivarsi e ripartire']]},
-  {k:'mood', step:'PASSO 5 DI 6', q:'Come ti senti in questo momento?', due:true, opts:[
+  {k:'mood', q:'Come ti senti in questo momento?', due:true, opts:[
     ['sereno','🙂','Sereno','tutto nella norma'],
     ['stanco','🥱','Stanco','giornata pesante'],
     ['stressato','😣','Stressato','mente sotto pressione'],
     ['dolorante','😖','Indolenzito','muscoli che si fanno sentire'],
     ['carico','🔥','Carico','pieno di energia']]},
-  {k:'pressione', step:'PASSO 6 DI 6', q:'Che pressione desideri oggi?', due:true, opts:[
+  {k:'pressione', q:'Che pressione desideri oggi?', due:true, opts:[
     ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
     ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità'],
     ['media','⚖️','Pressione media','la regolazione standard']]},
 ];
+
+/* ─── la prima volta ───────────────────────────────────────────────
+   Chi non ha ancora una scheda è per forza alla prima volta; e lo è anche
+   chi la scheda ce l'ha ma non ha mai fatto una seduta. Il gestionale ha
+   sempre trattato questo caso a parte: protocollo Benvenuto, 15 minuti,
+   tutto dolce, e la domanda sulla pressione NON si fa — la pressione si
+   impara dalle sedute successive, non si può chiedere a chi non sa ancora
+   che cosa si prova. Il chiosco deve fare esattamente lo stesso, se no
+   promette al cliente una seduta che poi sul tablet non è quella. */
+function primaVolta(){
+  if(!D.clienteId) return true;
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  return !((db && db.sessions) || []).some(x=> x.clientId === D.clienteId);
+}
+function passi(){
+  return primaVolta() ? PASSI_TUTTI.filter(p=> p.k !== 'pressione') : PASSI_TUTTI;
+}
+/* «PASSO 3 DI 5» o «DI 6» a seconda di quante domande ci sono davvero */
+function etichettaPasso(L, i){
+  return L[i].step || ('PASSO ' + i + ' DI ' + (L.length - 1));
+}
 
 /* Le sette zone, con lo stesso nome che portano nel gestionale. */
 const ZONE = [
@@ -1300,22 +1322,24 @@ function rispostaDi(k){
   if(k === 'op'){ const o = operatori().find(x=>x.id === D.op); return o ? o.nome : ''; }
   if(k === 'zones') return D.zones.map(ZNOME).join(', ')
     || (D.zmode === 'totale' ? 'Total body' : D.zmode === 'nessuna' ? 'Nessuna' : '');
-  const P = PASSI.find(x=>x.k === k);
+  const P = PASSI_TUTTI.find(x=>x.k === k);
   const o = (P && P.opts || []).find(o=>o[0] === D[k]);
   return o ? o[2] : '';
 }
 
 function disegnaPasso(){
-  const P = PASSI[PASSO];
-  document.getElementById('fstep').textContent = P.step;
+  const L = passi();
+  if(PASSO > L.length - 1) PASSO = L.length - 1;
+  const P = L[PASSO];
+  document.getElementById('fstep').textContent = etichettaPasso(L, PASSO);
   document.getElementById('fq').textContent = P.q;
   const qs = document.getElementById('fqs');
   qs.textContent = P.qs || '';
   qs.style.display = P.qs ? 'block' : 'none';
-  document.getElementById('progbar').style.width = (PASSO / PASSI.length * 100) + '%';
-  document.getElementById('fdots').innerHTML = PASSI.map((_,i)=>
+  document.getElementById('progbar').style.width = (PASSO / L.length * 100) + '%';
+  document.getElementById('fdots').innerHTML = L.map((_,i)=>
     '<i class="' + (i < PASSO ? 'fatto' : i === PASSO ? 'now' : '') + '"></i>').join('');
-  document.getElementById('frecap').innerHTML = PASSI.slice(0, PASSO).map((st,i)=>{
+  document.getElementById('frecap').innerHTML = L.slice(0, PASSO).map((st,i)=>{
     const v = rispostaDi(st.k);
     return v ? '<div class="rc" onclick="vaiAlPasso(' + i + ')"><em>' + QLBL[st.k] + '</em>'
       + v + '</div>' : '';
@@ -1477,9 +1501,9 @@ function zonaRapida(m){
   D.zones = []; D.zmode = m;
   aggiornaAvanti(); passoAvanti();
 }
-function vaiAlPasso(i){ PASSO = i; if(PASSI[i].k === 'nome') FIELD = 'nome'; disegnaPasso(); }
+function vaiAlPasso(i){ PASSO = i; if(passi()[i].k === 'nome') FIELD = 'nome'; disegnaPasso(); }
 function completo(){
-  const P = PASSI[PASSO];
+  const P = passi()[PASSO];
   /* Si va avanti se il totem ha riconosciuto la scheda, oppure se il
      cliente ha scritto nome e cognome per intero: la prima volta non
      c'è nessuna scheda da trovare, e non deve essere un ostacolo. */
@@ -1494,7 +1518,7 @@ function completo(){
   return !!D[P.k];
 }
 function aggiornaAvanti(){
-  const P = PASSI[PASSO], b = document.getElementById('fnext');
+  const P = passi()[PASSO], b = document.getElementById('fnext');
   b.classList.toggle('off', !completo());
   b.textContent = (P.k === 'zones' && D.zones.length)
     ? 'AVANTI (' + D.zones.length + (D.zones.length === 1 ? ' zona' : ' zone') + ') ›'
@@ -1502,7 +1526,7 @@ function aggiornaAvanti(){
 }
 function passoAvanti(){
   if(!completo()) return;
-  if(PASSO < PASSI.length - 1){ PASSO++; disegnaPasso(); return; }
+  if(PASSO < passi().length - 1){ PASSO++; disegnaPasso(); return; }
   document.getElementById('progbar').style.width = '100%';
   finisci();
 }
@@ -1539,6 +1563,9 @@ function salvaCheckin(){
     quando: new Date().toISOString(),
     clienteId: D.clienteId || null,
     nome: D.nome, cognome: D.cogn,
+    /* se ha scelto di riconoscersi col numero, quello serve all'operatore
+       per compilare la scheda: viaggia dentro al biglietto, non nel QR */
+    cell: D.cell || '',
     op: D.op || null,
     quiz: { activity:D.activity, zones:D.zones.slice(), zmode:D.zmode,
             goal:D.goal, mood:D.mood, pressione:D.pressione }
@@ -1618,9 +1645,19 @@ function costruisciProtocollo(q){
   const painZone = has('dorsale') || has('lombare') || has('glutei') || has('cervicale');
   const ora = new Date().getHours();
   const when = ora < 12 ? 'mattina' : ora < 16 ? 'pranzo' : 'sera';
+  const prima = primaVolta();
 
+  /* 1. prima sessione → profilo di benvenuto (identico al gestionale) */
+  if(prima){
+    const c = D.clienteId ? clienti().find(x=> x.id === D.clienteId) : null;
+    prog = (c && c.anamnesi && c.anamnesi.prefIntensita === 'deciso') ? 'P01' : 'P22';
+    fam = 'Z1';
+    S.intensita = Math.min(S.intensita, 2); S.fourD = Math.min(S.fourD, 2);
+    S.airbag = Math.min(S.airbag, 2);
+    why.push('Prima sessione in capsula: si parte dolcemente per far conoscere ogni sensazione.');
+  }
   /* sollievo mirato / zone di tensione */
-  if(q.goal === 'sollievo' || (painZone && q.goal !== 'drenaggio' && q.goal !== 'energia')){
+  else if(q.goal === 'sollievo' || (painZone && q.goal !== 'drenaggio' && q.goal !== 'energia')){
     if(has('glutei') && !has('dorsale')){ prog='P05'; fam='Z4';
       why.push('La tensione parte da glutei e zona lombare: si lavora all\'origine.');
       manualRef = {zona:'glutei/zona lombare bassa', tecnica:'Kneading (impastamento)'}; }
@@ -1690,12 +1727,12 @@ function costruisciProtocollo(q){
   if(!prog){ prog = q.mood === 'sereno' ? 'P14' : 'P01'; fam='Z8';
     why.push('Riequilibrio completo dalla nuca ai piedi.'); }
 
-  /* la pressione chiesta oggi */
-  if(q.pressione === 'dolce'){
+  /* la pressione chiesta oggi — alla prima volta la domanda non si fa */
+  if(!prima && q.pressione === 'dolce'){
     S.intensita = Math.max(0, S.intensita - 1); S.fourD = Math.max(0, S.fourD - 1);
     why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.');
   }
-  if(q.pressione === 'decisa'){
+  if(!prima && q.pressione === 'decisa'){
     S.intensita = Math.min(6, S.intensita + 1); S.fourD = Math.min(6, S.fourD + 1);
     why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.');
   }
@@ -1711,10 +1748,17 @@ function costruisciProtocollo(q){
   if(fam === 'Z3') mus = 'Soothing';
   if(fam === 'Z6') mus = (q.goal === 'sonno' || when === 'sera') ? 'Sweet' : 'Mental';
   if(fam === 'Z7') mus = q.mood === 'carico' ? 'Motivation' : 'Morning';
+  if(fam === 'Z1') mus = 'Mindful';
   if(q.mood === 'stressato' && fam !== 'Z7') mus = 'Mental';
   S.musica = mus;
 
-  /* la durata consigliata per famiglia */
+  /* la durata: la prima volta resta sempre una prova breve di 15 minuti */
+  if(prima){
+    S.timer = 15;
+    const zc0 = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
+      + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
+    return {prog, fam, S, why, zCode: zc0, manualRef};
+  }
   let rec = 20, dwhy = 'Durata standard di 20 minuti.';
   if(fam === 'Z7'){ rec = 15; dwhy = 'Energia: sessione breve e tonificante di 15 minuti — di più smorzerebbe l\'effetto sveglia.'; }
   else if(fam === 'Z6'){ rec = q.goal === 'sonno' ? 30 : 25;
@@ -1774,7 +1818,7 @@ function disegnaProtocollo(){
     +   '<div class="sh"><span class="sn">2</span>'
     +     '<span class="st">DA RICOPIARE SUL GESTIONALE</span></div>'
     +   '<div class="rgrid">'
-    +     ['op','activity','zones','goal','mood','pressione'].map((k,i)=>
+    +     passi().slice(1).map(p=>p.k).map((k,i)=>
             '<div class="rr"><span class="rn">' + i + '</span>'
             + '<span class="rk">' + QLBL[k] + '</span>'
             + '<span class="rv">' + (rispostaDi(k) || '—') + '</span></div>').join('')
