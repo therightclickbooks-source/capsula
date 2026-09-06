@@ -54,7 +54,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 #lring.on{opacity:1}
 #lring rect{fill:none; stroke:#d4af37; stroke-width:3; rx:18;
   stroke-dasharray:520; stroke-dashoffset:520}
-#lring.on rect{animation:fillring 2s linear forwards}
+#lring.on rect{animation:fillring 3s linear forwards}
 @keyframes fillring{to{stroke-dashoffset:0}}
 
 /* ═══════════ le schermate ═══════════ */
@@ -237,13 +237,90 @@ html,body{height:100%; background:#000; overflow:hidden;
 .form .navrow{position:absolute; left:56px; right:56px; top:87.6%; height:6.6%}
 .form .nav{height:100%}
 
-/* la tastiera del nome */
-.fields{display:flex; flex-direction:column; gap:16px; flex:none}
-.fld{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14);
-  border-radius:20px; padding:22px 26px; font-size:34px; font-weight:700; min-height:92px;
-  display:flex; align-items:center; transition:border-color .2s, background .2s}
-.fld.act{border-color:#a9779a; background:rgba(122,73,108,.22)}
-.fld .ph{color:rgba(255,255,255,.3); font-weight:600}
+/* ══════════════════════════════════════════════════════════════
+   IL NOME — il cliente scrive, e sotto compaiono tante righe quante
+   sono le schede che corrispondono. Coperte: la riga è una barra vuota,
+   dentro non c'è nessuna lettera. Quando una lettera rende il nome
+   unico, la barra sparisce e resta la sua scheda soltanto.
+   Non è uno sfocato: uno sfocato si fotografa e si ripulisce, una barra
+   vuota no. Su un 49 pollici in mezzo alla sala la differenza conta.
+   ══════════════════════════════════════════════════════════════ */
+.nwrap{display:flex; flex-direction:column; gap:18px}
+.nwrap .kb{gap:9px}
+.nwrap .kbrow{gap:9px}
+.nwrap .key{height:78px; font-size:31px; border-radius:14px}
+.nwrap .key.go{font-size:22px}
+.ncome{display:flex; gap:14px; justify-content:center}
+.ncome .nc{flex:1; max-width:300px; background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.14); border-radius:18px; padding:14px 10px;
+  text-align:center; font-size:22px; font-weight:800; letter-spacing:.06em;
+  color:rgba(255,255,255,.5); cursor:pointer; transition:border-color .2s, background .2s}
+.ncome .nc.on{border-color:#a9779a; background:rgba(122,73,108,.24); color:#fff}
+.fields{display:flex; flex-direction:row; gap:16px; flex:none}
+.fld{flex:1; min-width:0; background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.14); border-radius:20px; padding:16px 22px;
+  font-size:34px; font-weight:800; min-height:98px; display:flex; flex-direction:column;
+  justify-content:center; align-items:flex-start; cursor:pointer;
+  transition:border-color .2s, background .2s, box-shadow .2s}
+.fld > span{display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.fld .et{font-size:15px; letter-spacing:.18em; font-weight:800; color:rgba(255,255,255,.4);
+  margin-bottom:6px}
+.fld.act{border-color:#a9779a; background:rgba(122,73,108,.22);
+  box-shadow:0 0 0 5px rgba(169,119,154,.16)}
+.fld .ph{color:rgba(255,255,255,.28); font-weight:600}
+
+.match{background:rgba(23,20,29,.8); border:2px solid rgba(255,255,255,.12);
+  border-radius:26px; padding:22px 26px; min-height:198px;
+  display:flex; flex-direction:column; justify-content:center}
+.match.uno{border-color:rgba(230,198,92,.6); background:rgba(212,175,55,.08)}
+.match.zero{border-color:rgba(79,184,221,.4); background:rgba(79,184,221,.06)}
+.match.omo{border-color:rgba(245,158,11,.6); background:rgba(245,158,11,.07)}
+.mh{display:flex; align-items:center; gap:14px; margin-bottom:16px}
+.mn{width:52px; height:52px; border-radius:50%; flex:none; display:flex; align-items:center;
+  justify-content:center; font-size:24px; font-weight:800;
+  background:rgba(255,255,255,.09); color:#fff}
+.match.uno .mn{background:#e6c65c; color:#0c0a0f}
+.match.zero .mn{background:rgba(79,184,221,.25); color:#8fd3ec}
+.match.omo .mn{background:rgba(245,158,11,.25); color:#f5c469}
+.mt{flex:1; min-width:0; display:flex; flex-direction:column}
+.mt1{display:block; font-size:27px; font-weight:800; line-height:1.2}
+.mt2{display:block; font-size:19px; color:rgba(255,255,255,.5); margin-top:5px; line-height:1.35}
+.mt2 b{color:rgba(255,255,255,.8)}
+
+/* le righe coperte: dentro non c'è nessuna lettera, solo una barra */
+.velo{display:flex; flex-direction:column; gap:12px}
+.vr{height:52px; border-radius:14px; background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08); display:flex; align-items:center;
+  padding:0 18px; gap:16px}
+.vp{width:38px; height:38px; border-radius:50%; flex:none;
+  background:linear-gradient(100deg, rgba(255,255,255,.16), rgba(255,255,255,.06))}
+.vb{height:16px; border-radius:8px;
+  background:linear-gradient(100deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,.09) 45%,
+    rgba(255,255,255,.20) 100%);
+  filter:blur(2.5px)}
+
+/* la scheda scoperta */
+.trov{display:flex; align-items:center; gap:22px; background:rgba(255,255,255,.06);
+  border:2px solid #e6c65c; border-radius:22px; padding:20px 24px; cursor:pointer}
+.trov .av{width:72px; height:72px; border-radius:50%; flex:none; background:#7a496c;
+  display:flex; align-items:center; justify-content:center; font-size:29px; font-weight:800}
+.trov .tx{flex:1; min-width:0; display:flex; flex-direction:column}
+.trov .t1{display:block; font-size:38px; font-weight:800; line-height:1.15}
+.trov .t2{display:block; font-size:20px; color:rgba(255,255,255,.55); margin-top:7px}
+.trov .go{flex:none; background:linear-gradient(135deg,#a9779a,#7a496c); border-radius:16px;
+  padding:20px 30px; font-size:24px; font-weight:800}
+.trov.fatto{border-color:#5fd08a; background:rgba(95,208,138,.1)}
+.trov.fatto .go{background:rgba(95,208,138,.2); color:#5fd08a}
+
+/* le ultime cifre, quando due persone si chiamano uguale */
+.cifre{display:flex; gap:16px; justify-content:center; margin-top:6px}
+.cifre i{width:72px; height:88px; border-radius:18px; background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.16); display:flex; align-items:center;
+  justify-content:center; font-size:44px; font-weight:800; font-style:normal}
+.cifre i.f{border-color:#e6c65c; background:rgba(212,175,55,.14); color:#eed37a}
+
+.numpad{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.numpad .key{height:82px; font-size:34px}
 .caret{display:inline-block; width:3px; height:38px; background:#e6c65c; margin-left:4px;
   animation:blink2 1s step-end infinite; vertical-align:middle}
 @keyframes blink2{50%{opacity:0}}
@@ -881,7 +958,10 @@ document.getElementById('avatar').onclick = ()=>{
    Stessa sequenza del gestionale: prima chi ti segue, poi le cinque
    domande con le stesse parole e le stesse scelte. */
 const D = {nome:'', cogn:'', op:null, activity:'', zones:[], zmode:null,
-           goal:'', mood:'', pressione:''};
+           goal:'', mood:'', pressione:'',
+           /* chi è: la scheda riconosciuta in anagrafica, se c'è */
+           clienteId:null, cell:'', cifre:''};
+let MODO = 'nome';   /* 'nome' oppure 'cell' */
 
 const OPERATORI_FINTI = [
   {id:'x1', nome:'Chiara', color:'#a9779a'},
@@ -898,6 +978,142 @@ function operatori(){
 function iniziali(n){
   return (n||'').trim().split(/\s+/).map(p=> p[0] || '').join('').slice(0,2).toUpperCase();
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CHI SEI — il riconoscimento progressivo
+   Il cliente scrive, e il totem conta quante schede corrispondono.
+   Finché sono più di una, di quelle schede non si mostra NIENTE: solo
+   una riga per ognuna, vuota. Non è un nome sfocato — dentro non c'è
+   nessuna lettera, quindi non c'è niente da ripulire con una foto.
+   Quando la lettera in più ne lascia una sola, quella si scopre.
+   ══════════════════════════════════════════════════════════════ */
+function clienti(){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  return (db && db.clients) || [];
+}
+function norm(t){
+  return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+function cifreDi(t){ return String(t||'').replace(/\D/g,''); }
+function nomePieno(c){ return ((c.nome||'') + ' ' + (c.cognome||'')).trim(); }
+
+/* le schede che corrispondono a quello che ha scritto finora */
+function corrispondenze(){
+  const tutti = clienti();
+  if(MODO === 'cell'){
+    const d = cifreDi(D.cell);
+    if(d.length < 3) return null;              /* troppo poco: non si cerca */
+    return tutti.filter(c=> cifreDi(c.telefono).indexOf(d) >= 0);
+  }
+  const n = norm(D.nome), g = norm(D.cogn);
+  if(n.length + g.length < 2) return null;
+  let l = tutti.filter(c=> norm(c.nome).indexOf(n) === 0 && norm(c.cognome).indexOf(g) === 0);
+  /* omonimi: se il nome non basta più, filtra con le ultime cifre */
+  if(D.cifre) l = l.filter(c=> cifreDi(c.telefono).slice(-4).indexOf(D.cifre) === 0);
+  return l;
+}
+/* due o più schede con lo STESSO nome e cognome: scrivere altre lettere
+   non servirebbe a niente, e allora si chiede il cellulare */
+function omonimia(l){
+  return l && l.length > 1
+    && new Set(l.map(c=> norm(nomePieno(c)))).size === 1
+    && norm(D.nome).length >= 2 && norm(D.cogn).length >= 2;
+}
+function telMascherato(c){
+  const d = cifreDi(c.telefono);
+  return d.length >= 4 ? '••• ••• ' + d.slice(-4) : '';
+}
+function ultimaSeduta(c){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  const ss = ((db && db.sessions) || []).filter(x=> x.clientId === c.id);
+  if(!ss.length) return 'prima seduta';
+  const d = ss.map(x=> Date.parse(x.date)).sort((a,b)=> b-a)[0];
+  return 'ultima seduta ' + new Date(d).toLocaleDateString('it-IT',{day:'numeric', month:'short'});
+}
+
+/* la scheda scelta: da qui in poi il totem sa chi è */
+function scegliCliente(id){
+  const c = clienti().find(x=> x.id === id); if(!c) return;
+  D.clienteId = c.id; D.nome = c.nome || ''; D.cogn = c.cognome || '';
+  disegnaPasso(); idleReset();
+}
+function cambiaModo(m){
+  MODO = m; D.clienteId = null; D.cifre = '';
+  if(m === 'cell'){ FIELD = 'cell'; } else { FIELD = 'nome'; }
+  disegnaPasso(); idleReset();
+}
+
+/* il pannello che sta fra i campi e la tastiera */
+function pannelloNome(){
+  const l = corrispondenze();
+  if(D.clienteId){
+    const c = clienti().find(x=> x.id === D.clienteId);
+    if(c) return '<div class="match uno"><div class="mh"><span class="mn">✓</span>'
+      + '<span class="mt"><span class="mt1">Ciao ' + esc(c.nome) + '</span>'
+      + '<span class="mt2">Ti ho riconosciuto: tocca AVANTI e cominciamo</span></span></div>'
+      + '<div class="trov fatto"><span class="av">' + esc(iniziali(nomePieno(c))) + '</span>'
+      + '<span class="tx"><span class="t1">' + esc(nomePieno(c)) + '</span>'
+      + '<span class="t2">' + telMascherato(c) + ' · ' + ultimaSeduta(c) + '</span></span>'
+      + '<span class="go">✓ Sei tu</span></div></div>';
+  }
+  if(l === null) return '<div class="match"><div class="mh"><span class="mn">✎</span>'
+    + '<span class="mt"><span class="mt1">Comincia a scrivere</span>'
+    + '<span class="mt2">' + (MODO === 'cell'
+        ? 'Bastano poche cifre del tuo numero: ti riconosco da solo'
+        : 'Bastano poche lettere: ti riconosco da solo') + '</span></span></div></div>';
+
+  if(l.length === 1){
+    const c = l[0];
+    return '<div class="match uno"><div class="mh"><span class="mn">✓</span>'
+      + '<span class="mt"><span class="mt1">Sei tu?</span>'
+      + '<span class="mt2">Resta una scheda sola: tocca per confermare</span></span></div>'
+      + '<div class="trov" onclick="scegliCliente(\'' + c.id + '\')">'
+      + '<span class="av">' + esc(iniziali(nomePieno(c))) + '</span>'
+      + '<span class="tx"><span class="t1">' + esc(nomePieno(c)) + '</span>'
+      + '<span class="t2">' + telMascherato(c) + ' · ' + ultimaSeduta(c) + '</span></span>'
+      + '<span class="go">Sono io ›</span></div></div>';
+  }
+
+  if(omonimia(l)){
+    return '<div class="match omo"><div class="mh"><span class="mn">!</span>'
+      + '<span class="mt"><span class="mt1">' + (l.length === 2 ? 'Due persone' : l.length + ' persone')
+      + ' si chiamano così</span>'
+      + '<span class="mt2">Scrivi le ultime <b>4 cifre</b> del tuo cellulare: serve a non '
+      + 'prendere la scheda di un\'altra persona</span></span></div>'
+      + '<div class="cifre">' + [0,1,2,3].map(i=>
+          '<i class="' + (i < D.cifre.length ? 'f' : '') + '">'
+          + (D.cifre[i] || '') + '</i>').join('') + '</div></div>';
+  }
+
+  if(l.length === 0){
+    if(MODO === 'cell') return '<div class="match zero"><div class="mh"><span class="mn">?</span>'
+      + '<span class="mt"><span class="mt1">Non trovo questo numero</span>'
+      + '<span class="mt2">Controlla le cifre, oppure passa a <b>nome e cognome</b> '
+      + 'qui sopra</span></span></div></div>';
+    return '<div class="match zero"><div class="mh"><span class="mn">✦</span>'
+      + '<span class="mt"><span class="mt1">È la tua prima volta da noi</span>'
+      + '<span class="mt2">Nessuna scheda con questo nome — va benissimo: continua pure, '
+      + 'la tua scheda la prepara l\'operatore fra un minuto</span></span></div></div>';
+  }
+
+  /* più di una: si contano, non si mostrano */
+  const quante = ['','una','due','tre','quattro','cinque','sei','sette','otto','nove','dieci'];
+  const q = l.length <= 10 ? quante[l.length] : l.length;
+  const larghezze = l.slice(0,4).map((c,i)=> 210 + ((i*97) % 130));
+  return '<div class="match"><div class="mh"><span class="mn">' + l.length + '</span>'
+    + '<span class="mt"><span class="mt1">' + (q[0]||'').toUpperCase() + String(q).slice(1)
+    + ' sched' + (l.length === 1 ? 'a corrisponde' : 'e corrispondono') + '</span>'
+    + '<span class="mt2">Continua a scrivere: quando resta solo la tua, esce da sola</span></span></div>'
+    + '<div class="velo">' + larghezze.map(w=>
+        '<div class="vr"><span class="vp"></span><span class="vb" style="width:' + w + 'px"></span></div>'
+      ).join('') + (l.length > 4 ? '<div class="vr"><span class="vp"></span>'
+        + '<span class="vb" style="width:180px"></span></div>' : '') + '</div></div>';
+}
+function esc(t){ return String(t||'').replace(/[&<>"]/g, ch=>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
 
 /* le cinque domande, copiate parola per parola dal gestionale */
 const PASSI = [
@@ -981,7 +1197,11 @@ function sagoma(vista){
 
 let PASSO = 0, FIELD = 'nome';
 
-function startCheck(){ PASSO = 0; FIELD = 'nome'; go('form'); disegnaPasso(); }
+function startCheck(){
+  PASSO = 0; FIELD = 'nome'; MODO = 'nome';
+  D.clienteId = null; D.cell = ''; D.cifre = '';
+  go('form'); disegnaPasso();
+}
 document.getElementById('gocheck').onclick = startCheck;
 
 /* le etichette del riepilogo, le stesse del gestionale */
@@ -1016,11 +1236,28 @@ function disegnaPasso(){
   const c = document.getElementById('fcorpo');
 
   if(P.k === 'nome'){
-    c.innerHTML = '<div class="fields">'
-      + '<div class="fld act" id="f-nome" onclick="setField(\'nome\')"><span id="v-nome" class="ph">Nome</span></div>'
-      + '<div class="fld" id="f-cogn" onclick="setField(\'cogn\')"><span id="v-cogn" class="ph">Cognome</span></div>'
-      + '</div><div class="kb" id="kb" style="margin-top:24px"></div>';
-    buildKb(); drawName();
+    const l = corrispondenze();
+    const numeri = MODO === 'cell' || (!D.clienteId && omonimia(l));
+    const campo = (k, et, val, ph) =>
+      '<div class="fld' + (FIELD === k ? ' act' : '') + '" id="f-' + k + '"'
+      + ' onclick="setField(\'' + k + '\')">'
+      + '<span class="et">' + et + '</span>'
+      + '<span id="v-' + k + '"' + (val ? '' : ' class="ph"') + '>'
+      + (val ? esc(val) : ph) + (FIELD === k ? '<span class="caret"></span>' : '') + '</span></div>';
+    c.innerHTML = '<div class="nwrap">'
+      + '<div class="ncome">'
+      +   '<div class="nc' + (MODO === 'nome' ? ' on' : '') + '" onclick="cambiaModo(\'nome\')">NOME E COGNOME</div>'
+      +   '<div class="nc' + (MODO === 'cell' ? ' on' : '') + '" onclick="cambiaModo(\'cell\')">CELLULARE</div>'
+      + '</div>'
+      + '<div class="fields">'
+      +   (MODO === 'cell'
+            ? campo('cell', 'IL TUO CELLULARE', D.cell, '3•• ••• ••••')
+            : campo('nome', 'NOME', D.nome, 'Nome') + campo('cogn', 'COGNOME', D.cogn, 'Cognome'))
+      + '</div>'
+      + pannelloNome()
+      + (numeri ? '<div class="numpad" id="kb"></div>' : '<div class="kb" id="kb"></div>')
+      + '</div>';
+    numeri ? buildNum() : buildKb();
   }
   else if(P.k === 'op'){
     c.innerHTML = '<div class="opgrid">' + operatori().map(o=>
@@ -1071,21 +1308,28 @@ function disegnaPasso(){
   idleReset();
 }
 
-function setField(f){
-  FIELD = f;
-  document.getElementById('f-nome').classList.toggle('act', f === 'nome');
-  document.getElementById('f-cogn').classList.toggle('act', f === 'cogn');
-  drawName(); idleReset();
+function setField(f){ FIELD = f; disegnaPasso(); idleReset(); }
+
+function buildNum(){
+  document.getElementById('kb').innerHTML =
+    [1,2,3,4,5,6,7,8,9,'⌫',0,'✓'].map(k=>
+      '<div class="key' + (k === '⌫' ? ' dim' : '') + '" onclick="numType(\'' + k + '\')">'
+      + k + '</div>').join('');
 }
-function drawName(){
-  for(const pair of [['nome','v-nome'], ['cogn','v-cogn']]){
-    const el = document.getElementById(pair[1]); if(!el) continue;
-    const val = D[pair[0]];
-    const cursore = FIELD === pair[0] ? '<span class="caret"></span>' : '';
-    if(val){ el.classList.remove('ph'); el.innerHTML = val + cursore; }
-    else { el.classList.add('ph'); el.innerHTML = (pair[0] === 'nome' ? 'Nome' : 'Cognome') + cursore; }
+function numType(k){
+  const suCifre = (MODO === 'nome');   /* qui il tastierino serve solo alle ultime cifre */
+  if(k === '⌫'){
+    D.clienteId = null;
+    if(suCifre) D.cifre = D.cifre.slice(0, -1); else D.cell = D.cell.slice(0, -1);
+  } else if(k === '✓'){
+    const l = corrispondenze();
+    if(l && l.length === 1) scegliCliente(l[0].id);
+    return;
+  } else {
+    if(suCifre){ if(D.cifre.length < 4) D.cifre += k; }
+    else if(cifreDi(D.cell).length < 13) D.cell += k;
   }
-  aggiornaAvanti();
+  disegnaPasso(); idleReset();
 }
 function buildKb(){
   const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
@@ -1100,11 +1344,23 @@ function buildKb(){
   h += '<div class="kbrow"><div class="key wide" onclick="kbType(\' \')">spazio</div></div>';
   document.getElementById('kb').innerHTML = h;
 }
-function kbType(c){ D[FIELD] += (D[FIELD] ? c.toLowerCase() : c); drawName(); idleReset(); }
-function kbDel(){ D[FIELD] = D[FIELD].slice(0, -1); drawName(); idleReset(); }
+/* Ogni lettera cambia quante schede corrispondono: il pannello si
+   ridisegna, e quando ne resta una sola si scopre da sola. */
+function kbType(c){
+  if(D.clienteId) return;                    /* già riconosciuto: non si riscrive */
+  D[FIELD] += (D[FIELD] ? c.toLowerCase() : c);
+  disegnaPasso(); idleReset();
+}
+function kbDel(){
+  D.clienteId = null; D.cifre = '';
+  D[FIELD] = D[FIELD].slice(0, -1);
+  disegnaPasso(); idleReset();
+}
 function kbGo(){
+  const l = corrispondenze();
+  if(l && l.length === 1 && !D.clienteId){ scegliCliente(l[0].id); return; }
   if(FIELD === 'nome' && D.nome.trim()){ setField('cogn'); return; }
-  if(D.nome.trim() && D.cogn.trim()) passoAvanti();
+  if(completo()) passoAvanti();
 }
 function scegliOp(id){ D.op = id; disegnaPasso(); setTimeout(passoAvanti, 480); }
 function scegli(k, v){ D[k] = v; disegnaPasso(); setTimeout(passoAvanti, 480); }
@@ -1131,7 +1387,16 @@ function zonaRapida(m){
 function vaiAlPasso(i){ PASSO = i; if(PASSI[i].k === 'nome') FIELD = 'nome'; disegnaPasso(); }
 function completo(){
   const P = PASSI[PASSO];
-  if(P.k === 'nome')  return !!(D.nome.trim() && D.cogn.trim());
+  /* Si va avanti se il totem ha riconosciuto la scheda, oppure se il
+     cliente ha scritto nome e cognome per intero: la prima volta non
+     c'è nessuna scheda da trovare, e non deve essere un ostacolo. */
+  if(P.k === 'nome'){
+    if(D.clienteId) return true;
+    if(MODO === 'cell') return false;
+    const l = corrispondenze();
+    if(omonimia(l)) return false;            /* prima bisogna distinguersi */
+    return !!(D.nome.trim() && D.cogn.trim());
+  }
   if(P.k === 'zones') return D.zones.length > 0 || !!D.zmode;
   return !!D[P.k];
 }
@@ -1160,6 +1425,34 @@ const NOMI = {
   sereno:'Sereno', stanco:'Stanco', stressato:'Stressato', dolorante:'Indolenzito', carico:'Carico',
   dolce:'Pressione dolce', media:'Pressione media', decisa:'Pressione decisa'
 };
+/* ══════════════════════════════════════════════════════════════
+   IL CHECK-IN CHE ASPETTA
+   Il totem NON registra una seduta: una seduta nello storico vale dieci
+   punti, fa salire il livello e porta i flag dell'Health Check. Scriverla
+   da qui vorrebbe dire punti a chi poi non entra, sedute senza il
+   controllo dell'anamnesi e doppioni in anagrafica per un nome scritto
+   male al touch. Il totem lascia un biglietto: il gestionale lo trova, e
+   l'operatore apre il check-in con le risposte già dentro.
+   ══════════════════════════════════════════════════════════════ */
+function salvaCheckin(){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  if(!db) return;            /* su questo dispositivo il gestionale non c'è */
+  db.checkins = (db.checkins || [])
+    /* i biglietti di stamattina non servono stasera: dopo sei ore si buttano */
+    .filter(k=> Date.now() - Date.parse(k.quando) < 6*3600000);
+  db.checkins.push({
+    id: 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    quando: new Date().toISOString(),
+    clienteId: D.clienteId || null,
+    nome: D.nome, cognome: D.cogn,
+    op: D.op || null,
+    quiz: { activity:D.activity, zones:D.zones.slice(), zmode:D.zmode,
+            goal:D.goal, mood:D.mood, pressione:D.pressione }
+  });
+  try{ localStorage.setItem('zfl_app_v1', JSON.stringify(db)); }catch(e){}
+}
+
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
   const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione]]
@@ -1169,6 +1462,7 @@ function finisci(){
     .filter(Boolean);
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
+  salvaCheckin();
   disegnaProtocollo();
   document.getElementById('donewrap').scrollTop = 0;
   go('done');
@@ -1395,6 +1689,8 @@ function disegnaProtocollo(){
 function reset(){
   D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
   D.goal=''; D.mood=''; D.pressione='';
+  D.clienteId=null; D.cell=''; D.cifre='';
+  MODO = 'nome';
   PASSO = 0; FIELD = 'nome';
   document.getElementById('risp').classList.remove('on');
   document.getElementById('askgrid').style.display = 'flex';
@@ -1441,7 +1737,7 @@ logo.addEventListener('pointerdown', ()=>{
   pressT = setTimeout(()=>{
     document.getElementById('dbg').textContent = 'apro il gestionale…';
     location.href = '../index.html';
-  }, 2000);
+  }, 3000);
 });
 ['pointerup','pointerleave','pointercancel'].forEach(e=>
   logo.addEventListener(e, ()=>{
