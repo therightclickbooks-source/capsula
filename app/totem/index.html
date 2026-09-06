@@ -522,6 +522,19 @@ html,body{height:100%; background:#000; overflow:hidden;
 .avvio b{color:#8fd3ec}
 .nota{margin-top:18px; font-size:19px; color:rgba(255,255,255,.42); line-height:1.5;
   text-align:center}
+/* La via d'uscita per chi lavora. Il tocco lungo sul logo c'è sempre, ma
+   qui la testata è nascosta e un gesto che non si vede non è una via:
+   in fondo al protocollo ci vuole un tasto vero. */
+.algest{display:flex; align-items:center; gap:22px; margin-top:34px;
+  background:linear-gradient(135deg, rgba(169,119,154,.28), rgba(122,73,108,.22));
+  border:2px solid rgba(169,119,154,.55); border-radius:28px; padding:28px 32px;
+  cursor:pointer; transition:background .2s}
+.algest:active{background:rgba(169,119,154,.4)}
+.algest .ag-ic{font-size:38px; flex:none; color:#e2bdd4}
+.algest .ag-tx{flex:1; min-width:0; display:flex; flex-direction:column}
+.algest .ag-tx b{display:block; font-size:30px; font-weight:800; letter-spacing:.02em}
+.algest .ag-tx small{display:block; font-size:19px; color:rgba(255,255,255,.6); margin-top:6px}
+.algest .ag-go{font-size:40px; flex:none; color:rgba(255,255,255,.5)}
 
 .dbg{position:absolute; left:0; right:0; bottom:1.4%; text-align:center;
   font-size:17px; color:rgba(255,255,255,.2); z-index:30; letter-spacing:.1em; line-height:1.5}
@@ -661,10 +674,25 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAFeCAYAAAAWrzWl
    ══════════════════════════════════════════════════════════════ */
 
 function fit(){
+  const t = document.getElementById('tot'), f = document.getElementById('fit');
   const H = Math.max(1920, Math.round(1080 * innerHeight / innerWidth));
-  const t = document.getElementById('tot');
+  /* Su un monitor in orizzontale un foglio verticale, per entrarci tutto,
+     diventerebbe una strisciolina illeggibile in mezzo a due bande nere.
+     Lì conviene tenerlo grande e lasciarlo scorrere. Sul totem vero e sul
+     telefono in verticale non cambia niente: l'altezza basta sempre. */
+  const largo = innerWidth > innerHeight;
   t.style.height = H + 'px';
-  t.style.transform = 'scale(' + Math.min(innerWidth / 1080, innerHeight / H) + ')';
+  if(largo){
+    /* «zoom» invece di «scale»: rimpicciolisce anche lo spazio occupato,
+       e così la pagina scorre davvero invece di lasciare il vuoto sotto */
+    const s = Math.min(innerWidth * 0.54 / 1080, 1);
+    t.style.transform = 'none'; t.style.zoom = s;
+    f.style.alignItems = 'flex-start'; f.style.overflowY = 'auto';
+  } else {
+    t.style.zoom = ''; 
+    t.style.transform = 'scale(' + Math.min(innerWidth / 1080, innerHeight / H) + ')';
+    f.style.alignItems = 'center'; f.style.overflowY = 'hidden';
+  }
 }
 addEventListener('resize', fit); fit();
 
@@ -1682,8 +1710,13 @@ function disegnaProtocollo(){
     +   'Poi sul tablet: <b>🟢 START</b> — Health Check d\'ingresso (indice sul sensore del bracciolo '
     +   'destro, mano rilassata, senza premere), e il setup guidato si sblocca da solo.</div>'
     + '<div class="nota">Questa è la proposta calcolata dalle sei risposte di oggi.<br>'
-    +   'Sul tablet il gestionale la completa con l\'anamnesi, la prima seduta e la taratura '
-    +   'personale del cliente — e resta sempre l\'operatore a confermarla.</div>';
+    +   'Sul gestionale viene completata con l\'anamnesi, la prima seduta e la taratura '
+    +   'personale del cliente — e resta sempre l\'operatore a confermarla.</div>'
+    + '<div class="algest" onclick="vaiAlGestionale()">'
+    +   '<span class="ag-ic">▣</span>'
+    +   '<span class="ag-tx"><b>APRI IL GESTIONALE</b>'
+    +   '<small>per registrare la seduta: START, setup della capsula, END</small></span>'
+    +   '<span class="ag-go">›</span></div>';
 }
 
 function reset(){
@@ -1724,6 +1757,11 @@ function idleReset(){
   if(SCENE !== 'idle') idleT = setTimeout(reset, SCENE === 'done' ? 120000 : 60000);
 }
 ['pointerdown','keydown'].forEach(e=> addEventListener(e, idleReset));
+
+function vaiAlGestionale(){
+  document.getElementById('dbg').textContent = 'apro il gestionale…';
+  location.href = '../index.html';
+}
 
 /* ─────────── l'ingresso al gestionale ───────────
    Due secondi di dito sul logo e si passa dall'altra parte. Niente
