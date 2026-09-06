@@ -63,101 +63,166 @@ html,body{height:100%; background:#000; overflow:hidden;
 .scene.on{opacity:1; pointer-events:auto; transform:none}
 
 /* ══════════════════════════════════════════════════════════════
-   1 · VETRINA — bande esclusive: ogni cosa ha la sua fascia di
-   schermo, così due elementi non possono sovrapporsi nemmeno
-   volendo. Non è una speranza, è una garanzia di costruzione.
+   1 · VETRINA
+   Prima era una pila di fasce con dentro poca roba e un vuoto grande
+   in cima. Ora è una colonna sola, e ha un ordine che è anche il modo
+   in cui uno guarda: prima si ferma (la capsula e la frase grande),
+   poi capisce (i tre numeri), poi sa cosa fare (i tre passi), poi può
+   chiedere (la faccina e le domande), infine tocca (l'invito).
+   Non ci sono più posizioni assolute che si possono accavallare: è
+   una colonna, e in una colonna due cose non stanno mai nello stesso
+   posto per costruzione.
    ══════════════════════════════════════════════════════════════ */
+.vetr{position:absolute; left:58px; right:58px; top:11.6%; bottom:4.6%;
+  display:flex; flex-direction:column; z-index:12}
 
-/* ── BANDA 2 · la frase grande · 14%→40% ── */
-#roams{position:absolute; left:0; right:0; top:14%; height:26%; pointer-events:none;
-  display:grid; place-items:center; padding:0 70px}
-.roam{width:100%; opacity:0;
-  transition:opacity 1s ease, transform 1s cubic-bezier(.22,1,.36,1)}
+/* ── il manifesto: la frase che gira, e la capsula accanto ── */
+.hero{display:flex; align-items:center; gap:20px; flex:none}
+#roams{flex:1; min-width:0; pointer-events:none}
+.roam{opacity:0; transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
 .roam.on{opacity:1; transform:none}
-.roam .rtag{display:inline-block; font-size:16px; letter-spacing:.2em; font-weight:800;
-  padding:8px 20px; border-radius:999px; margin-bottom:18px}
-.roam.beneficio .rtag{background:rgba(122,73,108,.32); color:#e2bdd4; border:1px solid rgba(169,119,154,.6)}
-.roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a; border:1px solid rgba(212,175,55,.55)}
-.roam .ic{font-size:60px; display:block; margin-bottom:16px; filter:drop-shadow(0 6px 22px rgba(0,0,0,.55))}
-.roam .tx{font-size:56px; font-weight:800; line-height:1.14; letter-spacing:-.015em;
-  text-shadow:0 4px 34px rgba(0,0,0,.7)}
-.roam.beneficio .tx em{font-style:normal; color:#f0aed6}
-.roam.curiosita .tx em{font-style:normal; color:#eed37a}
-.roam .sub{font-size:25px; color:rgba(255,255,255,.7); margin-top:16px; line-height:1.42;
-  text-shadow:0 2px 18px rgba(0,0,0,.7)}
-/* sei ancore, tutte dentro la banda: cambia il lato e il movimento
-   d'ingresso, ma nessuna può uscire dalla propria fascia */
-.q0{text-align:left;   transform:translateX(-80px)}
-.q1{text-align:right;  transform:translateX(80px)}
-.q2{text-align:center; transform:scale(.9)}
-.q3{text-align:left;   transform:translateY(70px)}
-.q4{text-align:right;  transform:translateY(-70px)}
-.q5{text-align:center; transform:translateY(60px) scale(.94)}
+.roam .rtag{display:inline-flex; align-items:center; gap:11px; font-size:19px;
+  letter-spacing:.2em; font-weight:800; padding:10px 22px; border-radius:999px}
+.roam.beneficio .rtag{background:rgba(122,73,108,.32); color:#e2bdd4;
+  border:1px solid rgba(169,119,154,.6)}
+.roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a;
+  border:1px solid rgba(212,175,55,.55)}
+.roam .rtag i{font-style:normal; font-size:25px; line-height:1}
+.roam .tx{margin-top:24px; font-size:74px; font-weight:800; line-height:1.04;
+  letter-spacing:-.032em; text-shadow:0 4px 34px rgba(0,0,0,.7)}
+.roam .tx em{font-style:normal;
+  background:linear-gradient(100deg,#e8c2dc,#e6c65c); -webkit-background-clip:text;
+  background-clip:text; -webkit-text-fill-color:transparent}
+.roam .sub{margin-top:20px; font-size:25px; line-height:1.42;
+  color:rgba(255,255,255,.62); text-shadow:0 2px 18px rgba(0,0,0,.7)}
+/* la frase ha sempre lo stesso posto: cambia solo da che parte entra,
+   così l'occhio non deve cercarla ogni volta da capo */
+.q0,.q3{transform:translateX(-54px)}
+.q1,.q4{transform:translateY(44px)}
+.q2,.q5{transform:scale(.94)}
 
-/* ── BANDA 3 · le bolle-domanda che galleggiano · 42%→59% ── */
-.bolle{position:absolute; left:56px; right:56px; top:42%; height:17%;
-  display:flex; align-items:center; justify-content:center; gap:20px}
-.bolla{flex:1; min-width:0; height:100%; background:rgba(79,184,221,.09);
-  border:2px solid rgba(79,184,221,.38); border-radius:34px; padding:22px 18px;
-  text-align:center; cursor:pointer;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-  transition:opacity .6s ease, background .2s, border-color .2s}
-.bolla:nth-child(1){animation:galleggia1 7s ease-in-out infinite}
-.bolla:nth-child(2){animation:galleggia2 8.4s ease-in-out infinite}
-.bolla:nth-child(3){animation:galleggia3 9.2s ease-in-out infinite}
-@keyframes galleggia1{0%,100%{transform:translateY(0)}   50%{transform:translateY(-13px)}}
-@keyframes galleggia2{0%,100%{transform:translateY(-9px)} 50%{transform:translateY(9px)}}
-@keyframes galleggia3{0%,100%{transform:translateY(6px)}  50%{transform:translateY(-11px)}}
-.bolla:active{background:rgba(79,184,221,.24)}
-.bolla .bi{font-size:36px; line-height:1}
-.bolla .bq{font-size:24px; font-weight:800; line-height:1.24; color:#fff}
-.bolla .bmini{font-size:13px; letter-spacing:.16em; font-weight:800; color:#7ecbe8}
-.bolla.via{opacity:0}
+/* la capsula: è lei che ferma chi passa a dieci metri */
+.hp{width:346px; flex:none; position:relative; display:flex; align-items:center;
+  justify-content:center; height:474px}
+.anelli{position:absolute; inset:0; display:flex; align-items:center;
+  justify-content:center; pointer-events:none}
+.anelli i{position:absolute; border-radius:50%; display:block;
+  border:1px solid rgba(212,175,55,.18); animation:respira 7s ease-in-out infinite}
+.anelli .r2{width:430px; height:430px; border-color:rgba(169,119,154,.16);
+  animation-delay:.9s}
+.anelli .r1{width:330px; height:330px}
+.anelli .r3{width:452px; height:452px; border-color:rgba(255,255,255,.06);
+  animation-delay:1.8s}
+@keyframes respira{0%,100%{transform:scale(1); opacity:.9} 50%{transform:scale(1.05); opacity:.5}}
+.pod{position:relative; width:296px; height:454px}
+.pod svg{display:block; filter:drop-shadow(0 30px 70px rgba(122,73,108,.7))}
+.pod .glow{position:absolute; inset:-50px; border-radius:50%; z-index:-1;
+  background:radial-gradient(ellipse at 50% 44%, rgba(212,175,55,.30), transparent 62%);
+  animation:respira 5.5s ease-in-out infinite}
+.pill{position:absolute; display:flex; align-items:center; gap:11px; padding:12px 20px;
+  border-radius:999px; background:rgba(14,10,18,.86); border:1px solid rgba(255,255,255,.16);
+  font-size:21px; font-weight:800; white-space:nowrap; z-index:3}
+.pill span{font-size:25px}
+.pb1{left:14px; top:-2px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
+.pb2{right:-32px; bottom:54px; border-color:rgba(212,175,55,.5); color:#eed37a}
 
-/* ── BANDA 4 · la mascotte · 60%→77% ── */
-.avatar{position:absolute; left:0; right:0; top:60%; height:17%; z-index:14;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer}
-.orb{width:172px; height:172px; border-radius:50%; position:relative; flex:none;
+/* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
+.numeri{margin-top:30px; flex:none; display:flex; padding:24px 0;
+  border-top:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid rgba(255,255,255,.12)}
+.nb{flex:1; padding:0 24px; display:flex; flex-direction:column; justify-content:center}
+.nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
+.nb .nv{font-size:54px; font-weight:800; line-height:1; letter-spacing:-.03em;
+  white-space:nowrap}
+.nb .nv small{font-size:24px; font-weight:800; letter-spacing:0}
+.nb .nl{margin-top:10px; font-size:19px; line-height:1.35; color:rgba(255,255,255,.55)}
+.nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec}
+
+/* ── i tre passi: cosa succede adesso ── */
+.sez{margin-top:30px; flex:none}
+.sezt{font-size:20px; letter-spacing:.22em; font-weight:800;
+  color:rgba(255,255,255,.4); margin-bottom:16px}
+.passi{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+.pz{background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.14); border-radius:26px; padding:22px 22px 20px;
+  display:flex; flex-direction:column; gap:13px}
+.pz .n{width:64px; height:64px; border-radius:20px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:33px; font-weight:800;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2)}
+.pz .t1{display:block; font-size:27px; font-weight:800; line-height:1.2}
+.pz .t2{display:block; font-size:19px; line-height:1.38; color:rgba(255,255,255,.55)}
+.pz.uno{border-color:rgba(230,198,92,.45)}
+.pz.uno .n{background:rgba(230,198,92,.18); border-color:rgba(230,198,92,.5); color:#eed37a}
+.pz.due{border-color:rgba(169,119,154,.5)}
+.pz.due .n{background:rgba(169,119,154,.24); border-color:rgba(169,119,154,.55); color:#e2bdd4}
+.pz.tre{border-color:rgba(79,184,221,.4)}
+.pz.tre .n{background:rgba(79,184,221,.2); border-color:rgba(79,184,221,.45); color:#8fd3ec}
+
+/* ── la faccina, che adesso parla su una riga sola ── */
+.avatar{margin-top:28px; flex:none; display:flex; align-items:center; gap:22px;
+  padding:16px 30px 16px 20px; border-radius:999px; cursor:pointer;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.13)}
+.avatar:active{background:rgba(255,255,255,.1)}
+.orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
-  box-shadow:0 0 0 2px rgba(255,255,255,.16), 0 26px 70px rgba(122,73,108,.6);
+  box-shadow:0 0 0 2px rgba(255,255,255,.16), 0 14px 34px rgba(122,73,108,.6);
   display:flex; align-items:center; justify-content:center;
   animation:breathe 4.4s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.04)}}
-.orb::after{content:""; position:absolute; inset:-22px; border-radius:50%;
-  border:2px solid rgba(169,119,154,.5); animation:halo 3.2s ease-out infinite}
-.orb::before{content:""; position:absolute; inset:-22px; border-radius:50%;
-  border:2px solid rgba(212,175,55,.35); animation:halo 3.2s ease-out infinite 1.6s}
-@keyframes halo{0%{transform:scale(.86); opacity:.9} 100%{transform:scale(1.52); opacity:0}}
+@keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-6px) scale(1.03)}}
+.orb::after{content:""; position:absolute; inset:-9px; border-radius:50%;
+  border:2px solid rgba(169,119,154,.45); animation:halo 3.2s ease-out infinite}
+@keyframes halo{0%{transform:scale(.9); opacity:.8} 100%{transform:scale(1.28); opacity:0}}
 .orb .face{width:74%; height:74%}
 .orb .eye{transform-box:fill-box; transform-origin:50% 50%; animation:blink 6s ease-in-out infinite}
 @keyframes blink{0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(.08)}}
 .orb .pupil, .orb .hl{transition:transform .18s ease-out}
-.alogo{height:30px; margin-top:14px; opacity:.95}
-.bubble{margin-top:12px; background:rgba(23,20,29,.94); border:1px solid rgba(255,255,255,.16);
-  border-radius:22px; padding:13px 26px; font-size:22px; font-weight:700; text-align:center;
-  line-height:1.3; backdrop-filter:blur(8px)}
-.bubble .mini{display:block; font-size:14px; color:#e6c65c; font-weight:800;
-  letter-spacing:.14em; margin-top:5px}
+.alogo{display:none}
+.bubble{flex:1; min-width:0; font-size:27px; font-weight:800; line-height:1.22}
+.bubble .mini{display:block; font-size:19px; font-weight:800; letter-spacing:.14em;
+  color:#e6c65c; margin-top:7px}
 
-/* ── BANDA 5 · l'invito · 79%→93% ── */
-.cta{position:absolute; left:64px; right:64px; top:79%; height:14%; z-index:15;
-  display:flex; flex-direction:column; justify-content:center}
-.cta .btn{height:172px; border-radius:34px; position:relative; overflow:hidden;
-  background:linear-gradient(135deg,#a9779a,#7a496c 60%,#5c3550);
-  box-shadow:0 26px 70px rgba(122,73,108,.5);
-  display:flex; align-items:center; justify-content:center; gap:26px; cursor:pointer;
+/* ── le tre domande che girano ── */
+.bolle{margin-top:20px; flex:none; display:grid; grid-template-columns:repeat(3,1fr);
+  gap:16px}
+.bolla{background:rgba(79,184,221,.055); border:1px solid rgba(79,184,221,.3);
+  border-radius:24px; padding:24px 24px 22px; cursor:pointer;
+  display:flex; flex-direction:column; gap:11px;
+  transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1)}
+.bolla:nth-child(1){animation:galleggia1 7s ease-in-out infinite}
+.bolla:nth-child(2){animation:galleggia2 8.4s ease-in-out infinite}
+.bolla:nth-child(3){animation:galleggia3 9.2s ease-in-out infinite}
+@keyframes galleggia1{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
+@keyframes galleggia2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)}}
+@keyframes galleggia3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}}
+.bolla:active{background:rgba(79,184,221,.24)}
+.bolla .bi{font-size:31px; line-height:1}
+.bolla .bq{font-size:26px; font-weight:800; line-height:1.22; color:#fff; flex:1}
+.bolla .bmini{font-size:16px; letter-spacing:.1em; font-weight:800; color:#7ecbe8;
+  white-space:nowrap}
+.bolla.via{opacity:0; transform:translateY(-16px)}
+
+/* ── l'invito ── */
+.cta{margin-top:auto; flex:none; display:flex; flex-direction:column}
+.cta .btn{border-radius:34px; position:relative; overflow:hidden;
+  background:linear-gradient(110deg,#8a5779 0%,#a9779a 45%,#6f4267 100%);
+  box-shadow:0 26px 70px -22px rgba(122,73,108,.95);
+  display:flex; align-items:center; gap:26px; padding:28px 40px; cursor:pointer;
   animation:pulse 2.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 26px 70px rgba(122,73,108,.5)}
-  50%{box-shadow:0 26px 92px rgba(169,119,154,.88)}}
+@keyframes pulse{0%,100%{box-shadow:0 26px 70px -22px rgba(122,73,108,.9)}
+  50%{box-shadow:0 26px 92px -18px rgba(169,119,154,.95)}}
 .cta .btn::after{content:""; position:absolute; top:0; left:-60%; width:40%; height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.17), transparent);
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.19), transparent);
   animation:sheen 3.8s ease-in-out infinite}
 @keyframes sheen{0%{left:-60%} 55%,100%{left:130%}}
-.cta .ic{font-size:60px; position:relative}
-.cta .tx{position:relative; display:flex; flex-direction:column}
-.cta .t1{font-size:43px; font-weight:800; letter-spacing:.01em}
-.cta .t2{font-size:20px; color:rgba(255,255,255,.82); margin-top:6px; font-weight:600}
-.cta .hint{text-align:center; font-size:19px; color:rgba(255,255,255,.42); margin-top:14px}
+.cta .ic{font-size:58px; position:relative; flex:none}
+.cta .tx{position:relative; flex:1; min-width:0; display:flex; flex-direction:column}
+.cta .t1{display:block; font-size:56px; font-weight:800; letter-spacing:.01em;
+  line-height:1.04; white-space:nowrap}
+.cta .t2{display:block; font-size:23px; color:rgba(255,255,255,.85); margin-top:9px;
+  font-weight:600}
+.cta .go{font-size:54px; color:rgba(255,255,255,.7); flex:none; position:relative}
+.cta .hint{text-align:center; font-size:19px; color:rgba(255,255,255,.4); margin-top:14px}
+
 
 /* ══════════════════════════════════════════════════════════════
    2 · LE DOMANDE — a tutta larghezza, non più una colonnina
@@ -616,20 +681,98 @@ html,body{height:100%; background:#000; overflow:hidden;
 
   <!-- ═══ 1 · VETRINA ═══ -->
   <section class="scene on" id="s-idle">
-    <div id="roams"></div>
-    <div class="bolle" id="bolle"></div>
-    <div class="avatar" id="avatar">
-      <div class="orb" id="orb"></div>
-      <img class="alogo" id="alogo" alt="Zenith">
-      <div class="bubble" id="bub"></div>
-    </div>
-    <div class="cta">
-      <div class="btn" id="gocheck">
-        <span class="ic">👋</span>
-        <span class="tx"><span class="t1">FAI IL CHECK-IN</span>
-          <span class="t2">bastano due minuti, lo fai da solo</span></span>
+    <div class="vetr">
+
+      <!-- il manifesto: la frase che gira, e la capsula che ferma l'occhio -->
+      <div class="hero">
+        <div id="roams"></div>
+        <div class="hp">
+          <div class="anelli"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
+        <div class="pod"><div class="glow"></div>
+          <svg width="296" height="454" viewBox="0 0 404 620" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="capSh" x1=".1" y1="0" x2=".9" y2="1">
+                <stop offset="0" stop-color="#4a3550"/><stop offset=".5" stop-color="#241a2c"/>
+                <stop offset="1" stop-color="#100b16"/></linearGradient>
+              <linearGradient id="capCp" x1=".1" y1="0" x2=".9" y2="1">
+                <stop offset="0" stop-color="#e0b8d4"/><stop offset=".55" stop-color="#a9779a"/>
+                <stop offset="1" stop-color="#5f3654"/></linearGradient>
+              <radialGradient id="capIn" cx=".5" cy=".35" r=".75">
+                <stop offset="0" stop-color="#f7e2a6" stop-opacity=".92"/>
+                <stop offset=".55" stop-color="#d8a06f" stop-opacity=".45"/>
+                <stop offset="1" stop-color="#7a496c" stop-opacity=".12"/></radialGradient>
+            </defs>
+            <ellipse cx="202" cy="574" rx="150" ry="26" fill="#000" opacity=".55"/>
+            <rect x="76" y="530" width="252" height="34" rx="17" fill="#2b1f33"/>
+            <rect x="106" y="512" width="192" height="28" rx="14" fill="#1a1220"/>
+            <path d="M202 116c92 0 148 52 148 150v184c0 54-48 88-148 88S54 504 54 450V266c0-98 56-150 148-150z"
+                  fill="url(#capSh)" stroke="#6b4460" stroke-width="3"/>
+            <path d="M202 168c72 0 116 30 116 92v168c0 38-42 60-116 60S86 466 86 428V260c0-62 44-92 116-92z"
+                  fill="url(#capIn)"/>
+            <circle cx="202" cy="286" r="34" fill="#160f1c" opacity=".82"/>
+            <path d="M202 330c48 0 80 26 80 66v82c0 18-36 28-80 28s-80-10-80-28v-82c0-40 32-66 80-66z"
+                  fill="#160f1c" opacity=".82"/>
+            <path d="M202 14c96 0 152 54 152 132 0 12-10 20-22 15-36-16-80-25-130-25s-94 9-130 25
+                     c-12 5-22-3-22-15C50 68 106 14 202 14z" fill="url(#capCp)"/>
+            <path d="M202 14c96 0 152 54 152 132 0 12-10 20-22 15-36-16-80-25-130-25s-94 9-130 25
+                     c-12 5-22-3-22-15C50 68 106 14 202 14z"
+                  fill="none" stroke="#f0d0e6" stroke-opacity=".55" stroke-width="3"/>
+            <path d="M96 122c12-42 44-70 86-80" stroke="#fff" stroke-opacity=".45"
+                  stroke-width="8" stroke-linecap="round"/>
+            <path d="M322 300v112" stroke="#fff" stroke-opacity=".13" stroke-width="6"
+                  stroke-linecap="round"/>
+          </svg>
+        </div>
+          <div class="pill pb1"><span>🪶</span>Zero gravità</div>
+          <div class="pill pb2"><span>🖐️</span>Come 4 mani</div>
+        </div>
       </div>
-      <div class="hint">Poi ti chiama il tuo operatore, appena la capsula è pronta</div>
+
+      <!-- che cos'è Zenith, in tre numeri -->
+      <div class="numeri">
+        <div class="nb o"><div class="nv">25,3<small> mln</small></div>
+          <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
+        <div class="nb p"><div class="nv">15–30<small> min</small></div>
+          <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
+        <div class="nb b"><div class="nv">4<small> mani</small></div>
+          <div class="nl">due bracci, uno in 3D e uno in 4D, che lavorano insieme</div></div>
+      </div>
+
+      <!-- cosa succede adesso -->
+      <div class="sez">
+        <div class="sezt">COSA SUCCEDE ADESSO · TRE COSE, DUE MINUTI</div>
+        <div class="passi">
+          <div class="pz uno"><span class="n">1</span>
+            <span class="t1">Dimmi come<br>ti chiami</span>
+            <span class="t2">Se sei già stato da noi ti riconosco da poche lettere</span></div>
+          <div class="pz due"><span class="n">2</span>
+            <span class="t1">Rispondi a<br>sei domande</span>
+            <span class="t2">Cosa hai fatto oggi, dove tira, come ti senti</span></div>
+          <div class="pz tre"><span class="n">3</span>
+            <span class="t1">Accomodati:<br>ti chiamo io</span>
+            <span class="t2">Il tuo operatore trova già pronto il programma giusto</span></div>
+        </div>
+      </div>
+
+      <!-- la faccina, e le domande che girano -->
+      <div class="avatar" id="avatar">
+        <div class="orb" id="orb"></div>
+        <img class="alogo" id="alogo" alt="Zenith">
+        <div class="bubble" id="bub"></div>
+      </div>
+      <div class="bolle" id="bolle"></div>
+
+      <!-- l'invito -->
+      <div class="cta">
+        <div class="btn" id="gocheck">
+          <span class="ic">👋</span>
+          <span class="tx"><span class="t1">FAI IL CHECK-IN</span>
+            <span class="t2">Due minuti, lo fai da solo · poi ti chiamo io</span></span>
+          <span class="go">›</span>
+        </div>
+        <div class="hint">Poi ti chiama il tuo operatore, appena la capsula è pronta</div>
+      </div>
+
     </div>
   </section>
 
@@ -955,15 +1098,17 @@ function roamStep(){
   const m = ROAM[roamI % ROAM.length];
   const d = document.createElement('div');
   d.className = 'roam q' + m.a + ' ' + m.k;
-  d.innerHTML = '<span class="rtag">' + RTAG[m.k] + '</span>'
-    + '<span class="ic">' + m.ic + '</span><div class="tx">' + m.tx + '</div>'
+  /* l'emoji entra nella targhetta invece di stare per conto suo: nella
+     colonna nuova una riga in più di icona rubava spazio alla frase */
+  d.innerHTML = '<span class="rtag"><i>' + m.ic + '</i>' + RTAG[m.k] + '</span>'
+    + '<div class="tx">' + m.tx + '</div>'
     + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '');
   box.appendChild(d);
   requestAnimationFrame(()=> requestAnimationFrame(()=> d.classList.add('on')));
   setTimeout(()=>{ if(d.parentNode) d.classList.remove('on'); }, LETTURA);
   if(roamI % 3 === 0)
     document.getElementById('bub').innerHTML =
-      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
+      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI ›</span>';
   roamI++;
 }
 function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }
@@ -981,7 +1126,7 @@ function bolleStep(){
     '<div class="bolla" onclick="apriRisposta(' + i + ')">'
     + '<span class="bi">' + QA[i].ic + '</span>'
     + '<span class="bq">' + QA[i].q + '</span>'
-    + '<span class="bmini">TOCCA PER SAPERE</span></div>').join('');
+    + '<span class="bmini">TOCCA PER SAPERE ›</span></div>').join('');
   bolleI = (bolleI + 3) % QA.length;
 }
 function bolleStart(){
