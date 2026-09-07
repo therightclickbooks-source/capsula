@@ -57,6 +57,33 @@ html,body{height:100%; background:#000; overflow:hidden;
 #lring.on rect{animation:fillring 3s linear forwards}
 @keyframes fillring{to{stroke-dashoffset:0}}
 
+/* ══════════════════════════════════════════════════════════════
+   COSA SI TOCCA E COSA NO
+   Su un vetro da 49 pollici la domanda vera di chi passa non è «è
+   bello»: è «dove devo mettere il dito?». Prima ogni riquadro aveva
+   la stessa forma — bordo, angoli tondi, fondo chiaro — e quindi
+   nessuno diceva niente: si toccava a caso.
+   Da qui in poi vale una regola sola, dappertutto:
+   · quello che SI TOCCA ha il bordo pieno, il fondo un po' più chiaro
+     e, in basso a destra, una PASTIGLIA TONDA con la freccia. La
+     pastiglia è il segnale: se c'è, il dito serve;
+   · quello che SI LEGGE E BASTA non ha bordo, non ha pastiglia e sta
+     su un fondo appena accennato.
+   Non c'è da impararla: dopo il primo tocco uno la sa.
+   ══════════════════════════════════════════════════════════════ */
+.tocca{position:relative; cursor:pointer;
+  border:2px solid var(--tc, rgba(255,255,255,.3));
+  background:var(--tb, rgba(255,255,255,.07));
+  transition:transform .13s cubic-bezier(.32,.72,0,1), background .18s}
+.tocca:active{transform:scale(.985); background:var(--tp, rgba(255,255,255,.16))}
+.frecc{position:absolute; right:18px; bottom:18px; width:46px; height:46px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:27px; font-weight:800; line-height:1; padding-bottom:4px;
+  color:var(--tc, #fff); background:rgba(255,255,255,.1);
+  border:1.6px solid var(--tc, rgba(255,255,255,.4))}
+/* quello che si legge soltanto: piatto, senza cornice e senza freccia */
+.info{border:0 !important; background:rgba(255,255,255,.038) !important}
+
 /* ═══════════ le schermate ═══════════ */
 .scene{position:absolute; inset:0; opacity:0; pointer-events:none;
   transition:opacity .55s ease, transform .55s cubic-bezier(.22,1,.36,1); transform:translateY(26px)}
@@ -143,26 +170,27 @@ html,body{height:100%; background:#000; overflow:hidden;
 .sezt{font-size:20px; letter-spacing:.22em; font-weight:800;
   color:rgba(255,255,255,.4); margin-bottom:16px}
 .passi{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
-.pz{background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
-  border:1px solid rgba(255,255,255,.14); border-radius:26px; padding:22px 22px 20px;
-  display:flex; flex-direction:column; gap:13px}
+/* i tre passi RACCONTANO, non si toccano: niente cornice, niente
+   pastiglia, fondo appena accennato. Prima avevano il bordo colorato e
+   sembravano tre tasti — ed era il motivo per cui la gente ci provava. */
+.pz{background:rgba(255,255,255,.038); border:0; border-radius:26px;
+  padding:22px 22px 20px; display:flex; flex-direction:column; gap:13px}
 .pz .n{width:64px; height:64px; border-radius:20px; flex:none; display:flex;
   align-items:center; justify-content:center; font-size:33px; font-weight:800;
   background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2)}
 .pz .t1{display:block; font-size:27px; font-weight:800; line-height:1.2}
 .pz .t2{display:block; font-size:19px; line-height:1.38; color:rgba(255,255,255,.55)}
-.pz.uno{border-color:rgba(230,198,92,.45)}
+/* il numero resta colorato: dice l'ordine, non invita a premere */
 .pz.uno .n{background:rgba(230,198,92,.18); border-color:rgba(230,198,92,.5); color:#eed37a}
-.pz.due{border-color:rgba(169,119,154,.5)}
 .pz.due .n{background:rgba(169,119,154,.24); border-color:rgba(169,119,154,.55); color:#e2bdd4}
-.pz.tre{border-color:rgba(79,184,221,.4)}
 .pz.tre .n{background:rgba(79,184,221,.2); border-color:rgba(79,184,221,.45); color:#8fd3ec}
 
 /* ── la faccina, che adesso parla su una riga sola ── */
-.avatar{margin-top:28px; flex:none; display:flex; align-items:center; gap:22px;
-  padding:16px 30px 16px 20px; border-radius:999px; cursor:pointer;
-  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.13)}
-.avatar:active{background:rgba(255,255,255,.1)}
+.avatar{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.2);
+  margin-top:28px; flex:none; display:flex; align-items:center; gap:22px;
+  padding:16px 26px 16px 20px; border-radius:999px}
+/* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
+.avatar .frecc{position:static; flex:none}
 .orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none;
   background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
   box-shadow:0 0 0 2px rgba(255,255,255,.16), 0 14px 34px rgba(122,73,108,.6);
@@ -184,8 +212,8 @@ html,body{height:100%; background:#000; overflow:hidden;
 /* ── le tre domande che girano ── */
 .bolle{margin-top:20px; flex:none; display:grid; grid-template-columns:repeat(3,1fr);
   gap:16px}
-.bolla{background:rgba(79,184,221,.055); border:1px solid rgba(79,184,221,.3);
-  border-radius:24px; padding:24px 24px 22px; cursor:pointer;
+.bolla{--tc:#7ecbe8; --tb:rgba(79,184,221,.09); --tp:rgba(79,184,221,.24);
+  border-radius:24px; padding:24px 76px 22px 24px;
   display:flex; flex-direction:column; gap:11px;
   transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1)}
 .bolla:nth-child(1){animation:galleggia1 7s ease-in-out infinite}
@@ -194,7 +222,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 @keyframes galleggia1{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
 @keyframes galleggia2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)}}
 @keyframes galleggia3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}}
-.bolla:active{background:rgba(79,184,221,.24)}
+
 .bolla .bi{font-size:31px; line-height:1}
 .bolla .bq{font-size:26px; font-weight:800; line-height:1.22; color:#fff; flex:1}
 .bolla .bmini{font-size:16px; letter-spacing:.1em; font-weight:800; color:#7ecbe8;
@@ -236,30 +264,92 @@ html,body{height:100%; background:#000; overflow:hidden;
 .ask .orbs .face{width:74%; height:74%}
 .ask .capo .tit{font-size:38px; font-weight:800; line-height:1.2}
 .ask .capo .sot{font-size:21px; color:rgba(255,255,255,.55); margin-top:6px}
-.griglia{margin-top:26px; flex:1; min-height:0; overflow-y:auto;
-  display:grid; grid-template-columns:1fr 1fr; gap:18px; align-content:start; padding-right:6px}
-.qcard{background:rgba(79,184,221,.08); border:2px solid rgba(79,184,221,.3);
-  border-radius:28px; padding:24px 22px; cursor:pointer; text-align:left;
-  display:flex; flex-direction:column; gap:10px; min-height:158px;
+/* ── la ricerca e i filtri ──
+   Il campo non apre la tastiera del sistema: su un totem quella non
+   esiste o copre mezzo schermo. Si apre la NOSTRA, la stessa del
+   check-in, dentro la pagina, e la griglia si stringe per farle posto. */
+/* il campo su una riga sua e i filtri sotto: messi in fila, i quattro
+   filtri si prendevano tutta la larghezza e del campo restava un
+   quadratino col solo lentino dentro */
+.cerca{margin-top:20px; flex:none; display:flex; flex-direction:column; gap:12px}
+.cbox{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.18);
+  border-radius:22px; padding:0 22px; height:86px;
+  display:flex; align-items:center; gap:16px}
+.cbox.on{box-shadow:0 0 0 4px rgba(230,198,92,.18)}
+.cbox .cic{font-size:30px; flex:none}
+.cbox .ctx{flex:1; min-width:0; font-size:26px; font-weight:700;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cbox .ctx.ph{color:rgba(255,255,255,.35); font-weight:600}
+.cbox .cx{flex:none; width:46px; height:46px; border-radius:50%; display:flex;
+  align-items:center; justify-content:center; font-size:24px;
+  background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.25)}
+.filtri{display:flex; gap:10px; flex:none}
+.filt{--tc:rgba(255,255,255,.24); --tb:rgba(255,255,255,.05);
+  flex:1; min-width:0; border-radius:20px; padding:0 14px; height:74px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px; letter-spacing:.06em; font-weight:800; white-space:nowrap;
+  color:rgba(255,255,255,.6)}
+.filt.on{color:#0c0a0f; background:var(--fc); border-color:var(--fc)}
+.filt .pallino{width:14px; height:14px; border-radius:50%; background:var(--fc);
+  margin-right:11px; flex:none}
+.filt.on .pallino{background:rgba(0,0,0,.35)}
+
+/* Due colonne fatte con FLEX, non con GRID.
+   Con la griglia le righe restavano alte quanto il minimo della carta e
+   una domanda su due righe usciva dal bordo: la scritta «TOCCA PER LA
+   RISPOSTA» finiva sotto la cornice, e ci sono voluti tre tentativi per
+   accorgersene davvero invece che a occhio. Con flex-wrap una riga è
+   alta quanto la carta più alta che contiene — sempre, senza doverlo
+   chiedere. */
+.griglia{margin-top:20px; flex:1; min-height:0; overflow-y:auto;
+  display:flex; flex-wrap:wrap; gap:18px; align-content:flex-start;
+  padding-right:6px}
+.griglia .qcard{width:calc(50% - 9px)}
+.griglia .vuoto{width:100%}
+/* ogni domanda porta il colore del suo tema: chi apre una risposta
+   azzurra sa che le altre azzurre parlano della stessa cosa */
+.qcard{border-radius:28px; padding:24px 76px 22px 22px; text-align:left;
+  display:flex; flex-direction:column; gap:10px; min-height:178px;
   opacity:0; transform:translateY(24px);
   transition:opacity .45s, transform .45s, background .2s, border-color .2s}
 .qcard.in{opacity:1; transform:none}
-.qcard:active{background:rgba(79,184,221,.2)}
 .qcard .qi{font-size:36px; line-height:1}
-.qcard .qt{font-size:24px; font-weight:800; line-height:1.26}
-.qcard .qm{font-size:14px; letter-spacing:.14em; font-weight:800; color:#7ecbe8; margin-top:auto}
+.qcard .qtema{font-size:14px; letter-spacing:.16em; font-weight:800; color:var(--tc)}
+.qcard .qt{font-size:25px; font-weight:800; line-height:1.26}
+.qcard .qm{font-size:14px; letter-spacing:.14em; font-weight:800; color:var(--tc);
+  margin-top:auto}
+.qcard .top{position:absolute; right:20px; top:20px; font-size:14px; font-weight:800;
+  letter-spacing:.12em; color:#0c0a0f; background:#e6c65c; border-radius:999px;
+  padding:6px 14px}
+.vuoto{grid-column:1 / -1; text-align:center; padding:60px 30px;
+  color:rgba(255,255,255,.5); font-size:26px; line-height:1.5}
+.vuoto b{display:block; font-size:32px; color:#fff; margin-bottom:14px}
+
+/* la tastiera della ricerca: la stessa del check-in, un po' più bassa */
+.ckb{flex:none; margin-top:18px; display:none; flex-direction:column; gap:10px}
+.ckb.on{display:flex}
+.ckb .kbrow{display:flex; gap:10px; justify-content:center}
+.ckb .key{height:78px; font-size:32px; border-radius:16px}
+.ckb .key.wide{flex:2.4}
+.ckb .key.go{font-size:22px}
 
 /* la risposta prende tutto lo schermo: è lì che si legge, e va letta */
 .risp{position:absolute; inset:12% 44px 6%; display:none; flex-direction:column}
 .risp.on{display:flex}
 .risp .rq{font-size:44px; font-weight:800; line-height:1.16; flex:none;
-  padding-left:26px; border-left:7px solid #4fb8dd}
+  padding-left:26px; border-left:7px solid var(--tc, #4fb8dd)}
+.risp .rtema{flex:none; display:inline-flex; align-items:center; gap:11px;
+  align-self:flex-start; margin-bottom:20px; padding:9px 20px; border-radius:999px;
+  font-size:17px; letter-spacing:.16em; font-weight:800; color:var(--tc);
+  background:rgba(255,255,255,.06); border:1.5px solid var(--tc)}
+.risp .rtema i{width:13px; height:13px; border-radius:50%; background:var(--tc);
+  display:block}
 .risp .rin{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center}
 .risp .rbody{margin-top:30px; flex:0 1 auto; min-height:0; overflow-y:auto;
-  background:rgba(23,20,29,.86); border:1px solid rgba(79,184,221,.24);
+  background:rgba(23,20,29,.86); border:1px solid var(--tb2, rgba(79,184,221,.24));
   border-radius:32px; padding:38px 40px; font-size:30px; line-height:1.5;
   color:rgba(255,255,255,.93)}
-.risp .rbody b{color:#8fd3ec}
+.risp .rbody b{color:var(--tc, #8fd3ec)}
 .risp .rbody .piu{display:block; margin-top:26px; padding-top:22px;
   border-top:1px solid rgba(255,255,255,.12); font-size:24px; color:rgba(255,255,255,.62)}
 
@@ -499,6 +589,11 @@ html,body{height:100%; background:#000; overflow:hidden;
   font-size:29px; font-weight:800; cursor:pointer; transition:opacity .2s}
 .nav.back{flex:.5; background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
   font-size:25px; color:rgba(255,255,255,.7)}
+/* la via di casa: da una risposta si deve poter tornare alla vetrina
+   senza passare per l'elenco. Prima l'unica strada era «‹ Altre
+   domande», e chi voleva uscire restava dentro. */
+.nav.casa{flex:.5; background:rgba(230,198,92,.12); border:1.5px solid rgba(230,198,92,.45);
+  font-size:25px; color:#eed37a}
 .nav.next{background:linear-gradient(135deg,#a9779a,#7a496c); box-shadow:0 16px 44px rgba(122,73,108,.45)}
 .nav.next.off{opacity:.3; pointer-events:none; box-shadow:none}
 
@@ -755,10 +850,11 @@ html,body{height:100%; background:#000; overflow:hidden;
       </div>
 
       <!-- la faccina, e le domande che girano -->
-      <div class="avatar" id="avatar">
+      <div class="avatar tocca" id="avatar">
         <div class="orb" id="orb"></div>
         <img class="alogo" id="alogo" alt="Zenith">
         <div class="bubble" id="bub"></div>
+        <span class="frecc">›</span>
       </div>
       <div class="bolle" id="bolle"></div>
 
@@ -783,22 +879,34 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="orbs" id="orbs"></div>
         <div>
           <div class="tit">Chiedimi quello che vuoi sapere</div>
-          <div class="sot">Tocca una domanda: ti rispondo io</div>
+          <div class="sot">Scrivi la tua domanda, o toccane una qui sotto</div>
         </div>
       </div>
+      <div class="cerca">
+        <div class="cbox tocca" id="cbox" onclick="apriRicerca()">
+          <span class="cic">🔎</span>
+          <span class="ctx ph" id="ctesto">Scrivi cosa vuoi sapere…</span>
+          <span class="cx" id="cx" style="display:none"
+                onclick="pulisciRicerca(event)">✕</span>
+        </div>
+        <div class="filtri" id="filtri"></div>
+      </div>
       <div class="griglia" id="griglia"></div>
-      <div class="navrow" style="margin-top:22px">
+      <div class="ckb" id="ckb"></div>
+      <div class="navrow" style="margin-top:20px">
         <div class="nav back" onclick="go('idle')">‹ Indietro</div>
         <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
       </div>
     </div>
     <div class="risp" id="risp">
       <div class="rin">
+        <div class="rtema" id="rtema"></div>
         <div class="rq" id="rq"></div>
         <div class="rbody" id="rbody"></div>
       </div>
       <div class="navrow" style="margin-top:26px">
         <div class="nav back" onclick="chiudiRisposta()">‹ Altre domande</div>
+        <div class="nav casa" onclick="tornaACasa()">⌂ Torna alla home</div>
         <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
       </div>
     </div>
@@ -1029,100 +1137,115 @@ const BUBBLES = [
    gestionale vero: famiglie di protocollo, livelli, rituale dell'Health
    Check, Scuola Zenith, anamnesi. */
 const QA = [
-  {ic:'🧬', q:'Cos\'è Zenith?',
+  {ic:'🧬', t:'capire', q:'Cos\'è Zenith?',
    a:'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai. Per venti o trenta minuti il corpo viene lavorato con compressione ad aria, calore e movimento.',
    piu:'Il protocollo non è uguale per tutti: viene scritto per te, oggi, in base a come stai.'},
-  {ic:'🎯', q:'Cosa può fare per me?',
+  {ic:'🎯', t:'capire', q:'Cosa può fare per me?',
    a:'Dipende da cosa ti porta qui. <b>Gambe pesanti. Schiena rigida. Sonno difficile. Recupero dopo l\'allenamento.</b> Per ognuna c\'è una famiglia di protocolli diversa.',
    piu:'Al check-in rispondi a cinque domande, e il protocollo si costruisce da solo.'},
-  {ic:'🎓', q:'Chi mi segue?',
+  {ic:'🎓', t:'capire', q:'Chi mi segue?',
    a:'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo.',
    piu:'È una cosa nostra: non la trovi in nessun altro centro.'},
-  {ic:'⏱️', q:'Quanto dura una seduta?',
+  {ic:'⏱️', t:'seduta', alt:'minuti tempo durata lunga breve', q:'Quanto dura una seduta?',
    a:'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. La prima volta sono sempre quindici: si parte piano.',
    piu:'Dopo, almeno mezz\'ora di pausa sulla stessa zona. «Di più» non vuol dire «meglio».'},
-  {ic:'📈', q:'Cos\'è l\'Health Check?',
+  {ic:'📈', t:'capire', alt:'battito misura sensore dito indice fatica misurazione numeri', q:'Cos\'è l\'Health Check?',
    a:'Una <b>misura che facciamo prima e dopo</b>: appoggi il dito al sensore del bracciolo e leggiamo battito e indice di fatica.',
    piu:'Alla fine confrontiamo i due valori con te. Il risultato lo vedi, non te lo raccontiamo soltanto.'},
-  {ic:'🦵', q:'Ho le gambe pesanti: cosa fate?',
+  {ic:'🦵', t:'problema', alt:'gonfie gonfiore caviglie ritenzione circolazione drenaggio vene polpacci piedi', q:'Ho le gambe pesanti: cosa fate?',
    a:'C\'è una famiglia dedicata: <b>Zenith Gambe Leggere</b>. Compressione a onde, rulli sotto i piedi e posizione a gravità zero.',
    piu:'Le gambe stanno sopra il livello del cuore: è la posizione che aiuta i liquidi a tornare su.'},
-  {ic:'🔥', q:'Mi fa male la schiena: cosa fate?',
+  {ic:'🔥', t:'problema', alt:'lombare lombari dorsale dorso lombalgia reni colonna schiena', q:'Mi fa male la schiena: cosa fate?',
    a:'La famiglia <b>Zenith Schiena</b>: calore in fibra di carbone più manovre lente e profonde lungo la colonna.',
    piu:'Si lavora dove nasce la tensione, non solo dove si sente.'},
-  {ic:'💻', q:'Ho la cervicale da ufficio: serve?',
+  {ic:'💻', t:'problema', alt:'collo trapezi spalle scrivania computer pc guida torcicollo', q:'Ho la cervicale da ufficio: serve?',
    a:'Sì: <b>Zenith Collo & Spalle</b> è pensata esattamente per questo. Ore di scrivania o di guida induriscono trapezi e collo.',
    piu:'Lavoro mirato sulla parte alta, con gli airbag che stringono spalle e braccia.'},
-  {ic:'🌙', q:'Dormo male. Può aiutarmi?',
+  {ic:'🌙', t:'problema', alt:'insonnia notte riposo sonno dormire sveglio addormentarmi', q:'Dormo male. Può aiutarmi?',
    a:'C\'è <b>Zenith Sonno & Relax</b>: manovre lentissime, ioni negativi, musica e dondolio.',
    piu:'Serve ad abbassare i giri del sistema nervoso. Di sera dura anche mezz\'ora: il rilassamento profondo ha bisogno di tempo.'},
-  {ic:'💪', q:'Mi alleno. Quando dovrei venire?',
+  {ic:'💪', t:'problema', alt:'doms indolenzito indolenzimento recupero muscoli ems ems2 matrix vacutherm palestra sport allenamento', q:'Mi alleno. Quando dovrei venire?',
    a:'<b>Subito dopo.</b> La famiglia Zenith Recupero trasforma la fatica in recupero: i muscoli che hai appena lavorato vengono defaticati.',
    piu:'Dopo EMS, dopo i pesi, dopo la camminata in vuoto: per ognuno c\'è un protocollo diverso.'},
-  {ic:'☀️', q:'Posso venire anche senza allenarmi?',
+  {ic:'☀️', t:'problema', alt:'senza allenamento riposo ufficio sedentario nulla', q:'Posso venire anche senza allenarmi?',
    a:'Certo. Molti vengono <b>solo per stare meglio</b>: relax, sonno, gambe leggere, oppure energia la mattina presto.',
    piu:'C\'è anche una famiglia total body, per quando non c\'è una zona o un obiettivo preciso.'},
-  {ic:'🤔', q:'Fa male? Che pressione si sente?',
+  {ic:'🤔', t:'seduta', alt:'dolore doloroso fastidio forte intensita pressione delicato paura', q:'Fa male? Che pressione si sente?',
    a:'No. E la pressione <b>la scegli tu</b>: fra le domande del check-in c\'è proprio «che pressione desideri oggi».',
    piu:'Più dolce, come sempre, o più decisa. E se a fine seduta dici che era troppo, la volta dopo parte già corretta.'},
-  {ic:'👕', q:'Come mi devo vestire?',
+  {ic:'👕', t:'seduta', alt:'abbigliamento vestito vestita tuta gioielli orologio anelli collane tasche', q:'Come mi devo vestire?',
    a:'Abbigliamento comodo, <b>tasche vuote</b>, niente orologi né gioielli. Non serve spogliarsi.',
    piu:'La schiena va appoggiata bene allo schienale: la scansione delle spalle parte da sola.'},
-  {ic:'📋', q:'Ci sono casi in cui non posso farlo?',
+  {ic:'📋', t:'pratica', alt:'incinta gravidanza pacemaker protesi cuore medico certificato anamnesi controindicazioni rischi sicuro pericoloso malattia', q:'Ci sono casi in cui non posso farlo?',
    a:'Sì, ed è la prima cosa che controlliamo. Prima della seduta c\'è una <b>scheda anamnestica</b>: alcune condizioni escludono la capsula, altre richiedono il certificato del medico.',
    piu:'La domanda non è «quale programma?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
-  {ic:'🔁', q:'Ogni quanto posso venire?',
+  {ic:'🔁', t:'pratica', alt:'frequenza settimana volte spesso quante', q:'Ogni quanto posso venire?',
    a:'Anche <b>una volta a settimana</b>: è il ritmo che dà i risultati migliori senza esagerare.',
    piu:'Cinquantadue sedute in un anno sono il livello Diamond. Ma già alla tredicesima si sente la differenza.'},
-  {ic:'🏅', q:'Cosa sono i punti e i livelli?',
+  {ic:'🏅', t:'pratica', alt:'punteggio livello premi medaglia gold classifica', q:'Cosa sono i punti e i livelli?',
    a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
    piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso.'},
-  {ic:'📲', q:'Cosa guarda l\'operatore sul touchscreen?',
+  {ic:'📲', t:'capire', q:'Cosa guarda l\'operatore sul touchscreen?',
    a:'Intensità, profondità, forza dell\'aria, calore, durata. <b>Ogni valore lo sceglie lui</b>, in base alle tue risposte.',
    piu:'Niente è lasciato al caso: ogni seduta ha un codice suo, che la rende ripetibile identica.'},
-  {ic:'🧭', q:'Il protocollo cambia ogni volta?',
+  {ic:'🧭', t:'capire', q:'Il protocollo cambia ogni volta?',
    a:'Sì. <b>Cinque risposte bastano</b>: cosa hai fatto oggi, dove lo senti, cosa ti serve, come ti senti, che pressione vuoi.',
    piu:'La stessa capsula, mai la stessa seduta. È questo che la distingue da una poltrona.'},
-  {ic:'💨', q:'E se non voglio i rulli?',
+  {ic:'💨', t:'seduta', alt:'airbag pressoterapia aria meccanico rulli massaggio delicato', q:'E se non voglio i rulli?',
    a:'Si può fare <b>solo compressione ad aria</b>, stile pressoterapia: niente rulli, né sulla schiena né sotto i piedi.',
    piu:'Più delicato, nessuna parte meccanica sul corpo. Basta dirlo all\'operatore.'},
-  {ic:'🚀', q:'Quanto ci metto a capire se fa per me?',
+  {ic:'🚀', t:'problema', alt:'prova provare risultati quando funziona sedute', q:'Quanto ci metto a capire se fa per me?',
    a:'<b>Una seduta sola.</b> Misuriamo prima e dopo: il confronto lo vedi coi tuoi occhi.',
    piu:'E la prima volta è sempre dolce e breve, apposta per farti conoscere ogni sensazione.'},
-  {ic:'🛋️', q:'Non è una poltrona massaggiante?',
+  {ic:'🛋️', t:'capire', alt:'poltrona massaggiante differenza uguale sedia', q:'Non è una poltrona massaggiante?',
    a:'No, ed è la differenza più grande di tutte. <b>Una poltrona ha un tasto che si aziona.</b> Zenith ha <b>due bracci — uno 3D e uno 4D — che simulano un massaggio a quattro mani</b>: è un\'unicità di questo dispositivo. C\'è il calore che scioglie i muscoli. E soprattutto le funzioni vengono <b>programmate in base alle tue risposte</b>.',
    piu:'Le combinazioni possibili sono <b>25,3 milioni</b>: vuol dire che ogni volta che entri in Zenith la seduta non sarà mai uguale a un\'altra. A meno che una seduta riuscita non venga salvata nei preferiti e ripresa apposta — ma allora è una scelta, non il caso.'},
-  {ic:'📅', q:'Come prenoto?',
+  {ic:'📅', t:'pratica', alt:'prenotazione prenotare appuntamento orario whatsapp telefono social', q:'Come prenoto?',
    a:'Come ti è più comodo: <b>su WhatsApp</b> al numero del centro, <b>sui nostri canali social</b>, oppure <b>di persona</b> qui in reception.',
    piu:'Si entra solo su prenotazione, ed è per questo che non c\'è mai da aspettare.'},
-  {ic:'⏳', q:'Quando arrivo, quanto devo aspettare?',
+  {ic:'⏳', t:'pratica', alt:'attesa aspetto fila coda arrivo puntuale', q:'Quando arrivo, quanto devo aspettare?',
    a:'<b>Niente.</b> È tutto su prenotazione: quando arrivi la capsula è già libera e preparata per te.',
    piu:'Il check-in che puoi fare qui serve proprio a questo: quando l\'operatore ti raggiunge ha già tutte le tue risposte.'},
-  {ic:'👟', q:'Devo togliere le scarpe? Posso venire truccata?',
+  {ic:'👟', t:'seduta', alt:'calzari ciabatte ciabattine calze scarpe trucco truccata makeup piedi', q:'Devo togliere le scarpe? Posso venire truccata?',
    a:'<b>Le scarpe sì</b>: si entra con i calzari, perché sotto i piedi ci sono i rulli plantari. <b>Il trucco non è un problema</b>: puoi venire come sei.',
    piu:'Togli invece orologio, bracciali, collane e anelli, e svuota le tasche: gli airbag stringono braccia e spalle.'},
-  {ic:'🧼', q:'La capsula viene pulita fra un cliente e l\'altro?',
+  {ic:'🧼', t:'seduta', alt:'igiene sanificazione disinfezione sudore pulizia pulita sporca', q:'La capsula viene pulita fra un cliente e l\'altro?',
    a:'Sì. <b>Viene igienizzata da un cliente all\'altro</b>, ogni volta, senza eccezioni.',
    piu:'Fa parte del rituale della seduta, esattamente come la misura d\'ingresso e quella d\'uscita.'},
-  {ic:'🤫', q:'Posso parlare durante la seduta?',
+  {ic:'🤫', t:'seduta', alt:'parlare silenzio musica chiacchierare telefono', q:'Posso parlare durante la seduta?',
    a:'Puoi, e <b>puoi anche stare al telefono</b>. Ma il consiglio è un altro: lasciati andare alla <b>musica di sottofondo</b> e rilassati il più possibile.',
    piu:'Il corpo si scioglie meglio quando la testa smette di lavorare. Sono venti minuti: vale la pena regalarseli.'},
-  {ic:'🎂', q:'C\'è un limite di età?',
+  {ic:'🎂', t:'pratica', alt:'anni minorenne minorenni bambini ragazzi giovani anziani vecchio', q:'C\'è un limite di età?',
    a:'In alto <b>nessuno</b>. In basso <b>sedici anni</b>, con la firma di un genitore.',
    piu:'Prima della prima seduta si compila comunque l\'anamnesi: è lì che si verifica che vada bene per te.'},
-  {ic:'🏃', q:'Meglio prima o dopo l\'allenamento?',
+  {ic:'🏃', t:'problema', alt:'prima dopo allenamento palestra ems workout', q:'Meglio prima o dopo l\'allenamento?',
    a:'<b>Dopo. Sempre dopo.</b> Ci si allena e poi si entra in capsula: è lì che lo sforzo si trasforma in recupero.',
    piu:'Subito dopo il lavoro fisico Zenith defatica e aiuta le fibre muscolari. Prima non avrebbe senso: rilasserebbe muscoli che stai per far lavorare.'},
-  {ic:'☕', q:'Cosa faccio quando finisco?',
+  {ic:'☕', t:'seduta', alt:'dopo fine finita caffe relax uscita', q:'Cosa faccio quando finisco?',
    a:'Un <b>caffè in sala relax</b>, con calma. Poi decidi: prenoti la prossima seduta, oppure vai — senza fretta.',
    piu:'Prima di uscire l\'operatore rifà l\'Health Check e ti mostra il confronto con la misura d\'ingresso.'},
-  {ic:'👯', q:'Posso venire con un\'amica?',
+  {ic:'👯', t:'pratica', alt:'amico amica insieme accompagna compagnia due', q:'Posso venire con un\'amica?',
    a:'Certo. In capsula si entra uno per volta, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
    piu:'Potete anche prenotare due sedute di fila: una entra, l\'altra aspetta, e poi si scambiano.'},
-  {ic:'🏛️', q:'Cos\'è Zenith Fitness Lab?',
+  {ic:'🏛️', t:'capire', q:'Cos\'è Zenith Fitness Lab?',
    a:'È il nostro format. Un percorso che mette insieme <b>EMS, EMS2, Vacutherm e Matrix</b> — e alla fine <b>Zenith</b>, il nostro fiore all\'occhiello.',
    piu:'Ogni macchina lascia qualcosa di diverso nel corpo, e Zenith è quella che chiude il cerchio: raccoglie il lavoro di tutte le altre e lo trasforma in recupero.'},
 ];
+
+/* ─────────── i temi delle domande ───────────
+   Quattro famiglie, ognuna col suo colore. Non è decorazione: chi apre
+   una risposta e la trova azzurra sa che tutte le altre azzurre parlano
+   della stessa cosa — com'è stare dentro la capsula — e può continuare
+   da lì senza rileggere trentuno titoli.
+   Quattro e non sei: con sei colori l'occhio non li distingue più e la
+   regola smette di valere. */
+const TEMI = {
+  capire:   {n:'COS\'È ZENITH',    c:'#e2bdd4', r:'169,119,154'},
+  problema: {n:'IL MIO CASO',      c:'#eed37a', r:'230,198,92'},
+  seduta:   {n:'LA SEDUTA',        c:'#8fd3ec', r:'79,184,221'},
+  pratica:  {n:'PRIMA DI VENIRE',  c:'#88d9ae', r:'95,208,138'}
+};
+const ORDINE_TEMI = ['capire','problema','seduta','pratica'];
 
 /* ─────────── la vetrina che gira ───────────
    Nove secondi e mezzo fra una frase e l'altra, otto e due di lettura:
@@ -1146,7 +1269,7 @@ function roamStep(){
   setTimeout(()=>{ if(d.parentNode) d.classList.remove('on'); }, LETTURA);
   if(roamI % 3 === 0)
     document.getElementById('bub').innerHTML =
-      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI ›</span>';
+      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
   roamI++;
 }
 function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }
@@ -1161,10 +1284,11 @@ function bolleStep(){
   const box = document.getElementById('bolle');
   const scelte = [0,1,2].map(k=> (bolleI + k) % QA.length);
   box.innerHTML = scelte.map(i=>
-    '<div class="bolla" onclick="apriRisposta(' + i + ')">'
+    '<div class="bolla tocca" onclick="apriRisposta(' + i + ')">'
     + '<span class="bi">' + QA[i].ic + '</span>'
     + '<span class="bq">' + QA[i].q + '</span>'
-    + '<span class="bmini">TOCCA PER SAPERE ›</span></div>').join('');
+    + '<span class="bmini">TOCCA PER SAPERE</span>'
+    + '<span class="frecc">›</span></div>').join('');
   bolleI = (bolleI + 3) % QA.length;
 }
 function bolleStart(){
@@ -1184,6 +1308,7 @@ function go(n){
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
   if(n === 'idle'){ if(!roamTimer) roamStart(); if(!bolleTimer) bolleStart(); }
+  if(n !== 'ask' && typeof chiudiRicerca === 'function') chiudiRicerca();
   else { roamStop(); bolleStop(); }
   const via = (n === 'done') ? '0' : '1';
   document.querySelector('.head').style.opacity = via;
@@ -1192,29 +1317,196 @@ function go(n){
 }
 
 /* ─────────── le domande e le risposte ─────────── */
-function buildGriglia(){
-  document.getElementById('griglia').innerHTML = QA.map((x,i)=>
-    '<div class="qcard" onclick="apriRisposta(' + i + ')">'
-    + '<span class="qi">' + x.ic + '</span>'
-    + '<span class="qt">' + x.q + '</span>'
-    + '<span class="qm">TOCCA PER LA RISPOSTA</span></div>').join('');
-  [...document.querySelectorAll('.qcard')].forEach((el,i)=>
-    setTimeout(()=> el.classList.add('in'), 60 + i * 45));
+/* ═══════════════════════════════════════════════════════════════
+   TROVARE LA PROPRIA DOMANDA
+   Trentuno riquadri tutti uguali sono un elenco, non una risposta: chi
+   ha una domanda precisa in testa la cerca a occhio e spesso rinuncia.
+   Qui ci sono due strade, e si possono usare insieme:
+   · i quattro TEMI, che tagliano l'elenco in quattro pezzi leggibili;
+   · la RICERCA, dove uno scrive con parole sue.
+   La ricerca non cerca solo dentro il titolo: ogni domanda porta con sé
+   i modi in cui la gente la direbbe davvero — «collo» per la cervicale,
+   «gonfie» per le gambe, «incinta» per le controindicazioni. È lì che
+   sta la differenza fra un elenco filtrato e una risposta trovata.
+   ═══════════════════════════════════════════════════════════════ */
+
+function normQ(t){
+  return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
 }
+/* l'indice si costruisce una volta sola: trentuno righe di testo già
+   pulite, con i sinonimi cuciti dentro */
+let INDICE = null;
+function costruisciIndice(){
+  INDICE = QA.map((x,i)=>{
+    return {i:i, q:normQ(x.q), a:normQ(x.a + ' ' + (x.piu||'')),
+            extra: normQ(x.alt || '')};
+  });
+}
+/* Il punteggio, in chiaro: una parola nel titolo vale cinque volte la
+   stessa parola sepolta nella risposta. È il titolo che uno riconosce.
+   Il confronto è per PAROLE INTERE, non per pezzi di testo: cercando
+   «collo» il primo risultato era «Il protoCOLLO cambia ogni volta?»,
+   che con il collo non c'entra niente. Un pezzo di parola dentro
+   un'altra parola non è una corrispondenza, è un caso. */
+function haParola(campo, w){
+  const parole = campo.split(' ');
+  if(parole.indexOf(w) >= 0) return 2;                        /* uguale */
+  if(w.length >= 3 && parole.some(x=> x.indexOf(w) === 0)) return 1;  /* inizia così */
+  return 0;
+}
+/* Parole che ci sono in mezzo a tutto e non dicono di che si parla. Se
+   una domanda corrisponde SOLO per queste, non corrisponde: cercando
+   «quanto costa» veniva fuori «Quanto dura una seduta?», che è un'altra
+   cosa — e mandare uno sulla risposta sbagliata è peggio che dirgli
+   «questa non la so, chiedi all'operatore». */
+const VUOTE = ['quanto','quanta','come','cosa','che','chi','dove','quando','perche',
+  'posso','devo','serve','fare','faccio','sono','essere','una','uno','del','della',
+  'per','con','non','mi','ho','si','ci','da','di','il','la','le','lo','gli','un','in',
+  'ed','al','alla','sul','sulla'];
+
+function cercaDomande(testo){
+  const t = normQ(testo);
+  const parole = t.split(' ').filter(w=> w.length >= 2);
+  if(!parole.length) return null;                 /* null = nessuna ricerca */
+  const punti = INDICE.map(r=>{
+    let p = 0, forte = 0;
+    for(const w of parole){
+      let q = 0;
+      const nq = haParola(r.q, w);
+      if(nq) q += (nq === 2 ? 12 : 8);
+      const ne = haParola(r.extra, w);
+      if(ne) q += (ne === 2 ? 12 : 8);
+      if(haParola(r.a, w)) q += 2;
+      p += q;
+      if(q && VUOTE.indexOf(w) < 0) forte += q;
+    }
+    /* chi scrive «fa male» vuole «Fa male? Che pressione si sente?», non
+       «Mi fa male la schiena»: se la domanda comincia proprio così, conta */
+    if(r.q.indexOf(t) === 0) p += 9;
+    return {i:r.i, p:p, forte:forte};
+  }).filter(x=> x.forte > 0);
+  punti.sort((a,b)=> b.p - a.p || a.i - b.i);
+  return punti.map(x=> x.i);
+}
+
+let RICERCA = '', TEMA = null, TASTIERA = false;
+
+function elencoDomande(){
+  const trovate = cercaDomande(RICERCA);
+  let l = trovate === null ? QA.map((_,i)=> i) : trovate;
+  if(TEMA) l = l.filter(i=> QA[i].t === TEMA);
+  return {lista:l, cercato: trovate !== null};
+}
+
+function buildFiltri(){
+  const box = document.getElementById('filtri');
+  if(!box) return;
+  box.innerHTML = ORDINE_TEMI.map(k=>
+    '<div class="filt tocca' + (TEMA === k ? ' on' : '') + '"'
+    + ' style="--fc:' + TEMI[k].c + '" onclick="filtraTema(\'' + k + '\')">'
+    + '<span class="pallino"></span>' + TEMI[k].n + '</div>').join('');
+}
+function filtraTema(k){
+  TEMA = (TEMA === k) ? null : k;
+  buildFiltri(); buildGriglia(); idleReset();
+}
+
+function buildGriglia(){
+  const g = document.getElementById('griglia');
+  const {lista, cercato} = elencoDomande();
+  if(!lista.length){
+    g.innerHTML = '<div class="vuoto"><b>Non ho una risposta pronta per questo</b>'
+      + 'Chiedilo al tuo operatore: te la dà lui, e la aggiungiamo qui.</div>';
+    return;
+  }
+  g.innerHTML = lista.map((i,n)=>{
+    const x = QA[i], T = TEMI[x.t] || TEMI.capire;
+    return '<div class="qcard tocca" style="--tc:' + T.c
+      + '; --tb:rgba(' + T.r + ',.08); --tp:rgba(' + T.r + ',.22)"'
+      + ' onclick="apriRisposta(' + i + ')">'
+      + (cercato && n === 0 ? '<span class="top">PIÙ VICINA</span>' : '')
+      + '<span class="qi">' + x.ic + '</span>'
+      + '<span class="qtema">' + T.n + '</span>'
+      + '<span class="qt">' + x.q + '</span>'
+      + '<span class="qm">TOCCA PER LA RISPOSTA</span>'
+      + '<span class="frecc">›</span></div>';
+  }).join('');
+  [...document.querySelectorAll('.qcard')].forEach((el,i)=>
+    setTimeout(()=> el.classList.add('in'), 50 + i * 32));
+}
+
+/* ── la ricerca, con la tastiera del chiosco ── */
+function apriRicerca(){
+  TASTIERA = true;
+  document.getElementById('ckb').classList.add('on');
+  document.getElementById('cbox').classList.add('on');
+  buildTastieraRicerca();
+  idleReset();
+}
+function chiudiRicerca(){
+  TASTIERA = false;
+  document.getElementById('ckb').classList.remove('on');
+  document.getElementById('cbox').classList.remove('on');
+  idleReset();
+}
+function pulisciRicerca(ev){
+  if(ev) ev.stopPropagation();
+  RICERCA = ''; disegnaRicerca(); buildGriglia(); idleReset();
+}
+function disegnaRicerca(){
+  const t = document.getElementById('ctesto');
+  t.textContent = RICERCA || 'Scrivi cosa vuoi sapere…';
+  t.classList.toggle('ph', !RICERCA);
+  document.getElementById('cx').style.display = RICERCA ? 'flex' : 'none';
+}
+function buildTastieraRicerca(){
+  const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+  let h = '';
+  rows.forEach((r,i)=>{
+    h += '<div class="kbrow">';
+    if(i === 2) h += '<div class="key wide dim" onclick="ricType(\'\\b\')">⌫</div>';
+    h += [...r].map(c=> '<div class="key" onclick="ricType(\'' + c + '\')">' + c + '</div>').join('');
+    if(i === 2) h += '<div class="key wide go" onclick="chiudiRicerca()">CHIUDI</div>';
+    h += '</div>';
+  });
+  h += '<div class="kbrow"><div class="key wide" onclick="ricType(\' \')">spazio</div></div>';
+  document.getElementById('ckb').innerHTML = h;
+}
+function ricType(c){
+  if(c === '\b') RICERCA = RICERCA.slice(0, -1);
+  else if(RICERCA.length < 40) RICERCA += (RICERCA ? c.toLowerCase() : c);
+  disegnaRicerca(); buildGriglia(); idleReset();
+}
+
 function apriRisposta(i){
   go('ask');
+  chiudiRicerca();
   document.getElementById('askgrid').style.display = 'none';
-  document.getElementById('rq').textContent = QA[i].q;
-  document.getElementById('rbody').innerHTML = QA[i].a
-    + (QA[i].piu ? '<span class="piu">' + QA[i].piu + '</span>' : '');
-  document.getElementById('risp').classList.add('on');
+  const x = QA[i], T = TEMI[x.t] || TEMI.capire;
+  const r = document.getElementById('risp');
+  r.style.setProperty('--tc', T.c);
+  r.style.setProperty('--tb2', 'rgba(' + T.r + ',.28)');
+  document.getElementById('rtema').innerHTML = '<i></i>' + T.n;
+  document.getElementById('rq').textContent = x.q;
+  document.getElementById('rbody').innerHTML = x.a
+    + (x.piu ? '<span class="piu">' + x.piu + '</span>' : '');
+  r.classList.add('on');
   idleReset();
 }
 function chiudiRisposta(){
   document.getElementById('risp').classList.remove('on');
   document.getElementById('askgrid').style.display = 'flex';
-  buildGriglia();
+  buildFiltri(); buildGriglia();
   idleReset();
+}
+/* dalla risposta si torna alla vetrina in un tocco, e si riparte pulito */
+function tornaACasa(){
+  document.getElementById('risp').classList.remove('on');
+  document.getElementById('askgrid').style.display = 'flex';
+  RICERCA = ''; TEMA = null; chiudiRicerca(); disegnaRicerca();
+  buildFiltri(); buildGriglia();
+  go('idle');
 }
 document.getElementById('avatar').onclick = ()=>{
   go('ask');
@@ -2118,7 +2410,10 @@ function rigaBackup(){
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
+costruisciIndice();
+buildFiltri();
 buildGriglia();
+disegnaRicerca();
 roamStart();
 bolleStart();
 </script>
