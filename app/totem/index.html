@@ -172,7 +172,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .orb::after{content:""; position:absolute; inset:-9px; border-radius:50%;
   border:2px solid rgba(169,119,154,.45); animation:halo 3.2s ease-out infinite}
 @keyframes halo{0%{transform:scale(.9); opacity:.8} 100%{transform:scale(1.28); opacity:0}}
-.orb .face{width:74%; height:74%}
+.orb .face{width:84%; height:84%}
 .orb .eye{transform-box:fill-box; transform-origin:50% 50%; animation:blink 6s ease-in-out infinite}
 @keyframes blink{0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(.08)}}
 .orb .pupil, .orb .hl{transition:transform .18s ease-out}
@@ -901,16 +901,54 @@ document.getElementById('logo').src = LOGO;
 document.getElementById('alogo').src = LOGO;
 
 /* ─────────── il volto della mascotte ─────────── */
+/* ─────────── il volto ───────────
+   L'occhio non è più un punto nero su un tondo bianco. Ha un'iride vera,
+   con l'oro che sfuma nel prugna del marchio, e DUE riflessi: uno grande
+   in alto e uno piccolo in basso. È il secondo che conta — è quello che
+   fa sembrare un occhio bagnato, cioè vivo; con uno solo resta un
+   disegno. Sotto, una linea d'ombra fa la palpebra inferiore: dà
+   profondità senza appesantire il tratto.
+   La bocca è un sorriso chiuso, con l'angolo destro appena più alto:
+   uno spalancato è simpatico, uno accennato è sicuro di sé.
+   Le guance non sono più due macchie rosa ma tre puntini d'oro per
+   parte — non lentiggini: una costellazione.
+   Iride, pupilla e riflessi si muovono insieme quando lo sguardo segue
+   il dito: se si muovesse la sola pupilla, l'occhio si scucirebbe. */
 const VOLTO = '<svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">'
-  + '<g class="eye eyeL"><ellipse cx="71" cy="88" rx="13" ry="16" fill="#fff"/>'
-  + '<circle class="pupil" cx="74" cy="91" r="7" fill="#221e29"/>'
-  + '<circle class="hl" cx="76" cy="89" r="2.6" fill="#fff"/></g>'
-  + '<g class="eye eyeR"><ellipse cx="129" cy="88" rx="13" ry="16" fill="#fff"/>'
-  + '<circle class="pupil" cx="132" cy="91" r="7" fill="#221e29"/>'
-  + '<circle class="hl" cx="134" cy="89" r="2.6" fill="#fff"/></g>'
-  + '<ellipse cx="54" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/>'
-  + '<ellipse cx="146" cy="122" rx="15" ry="9" fill="#e6a8cf" opacity=".35"/>'
-  + '<path d="M71,124 Q100,145 129,124" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/>'
+  + '<defs>'
+  +   '<radialGradient id="zIride" cx=".38" cy=".32" r=".78">'
+  +     '<stop offset="0" stop-color="#f6d98f"/>'
+  +     '<stop offset=".5" stop-color="#c98fb4"/>'
+  +     '<stop offset="1" stop-color="#4a2b42"/></radialGradient>'
+  +   '<radialGradient id="zGuancia" cx=".5" cy=".5" r=".5">'
+  +     '<stop offset="0" stop-color="#e6c65c" stop-opacity=".22"/>'
+  +     '<stop offset="1" stop-color="#e6c65c" stop-opacity="0"/></radialGradient>'
+  + '</defs>'
+  + '<ellipse cx="50" cy="120" rx="22" ry="15" fill="url(#zGuancia)"/>'
+  + '<ellipse cx="150" cy="120" rx="22" ry="15" fill="url(#zGuancia)"/>'
+  + '<g class="eye eyeL">'
+  +   '<ellipse cx="71" cy="88" rx="17" ry="19" fill="#fbf6ef"/>'
+  +   '<circle class="pupil" cx="72.5" cy="89" r="11" fill="url(#zIride)"/>'
+  +   '<circle class="pupil" cx="72.5" cy="89" r="5.2" fill="#1d1520"/>'
+  +   '<circle class="hl" cx="76" cy="84.5" r="4.2" fill="#fff"/>'
+  +   '<circle class="hl" cx="68" cy="94.5" r="2.1" fill="#fff" opacity=".8"/>'
+  +   '<path d="M56 98 Q71 107 86 98" fill="none" stroke="#7a496c" stroke-opacity=".45"'
+  +     ' stroke-width="2.6" stroke-linecap="round"/></g>'
+  + '<g class="eye eyeR">'
+  +   '<ellipse cx="129" cy="88" rx="17" ry="19" fill="#fbf6ef"/>'
+  +   '<circle class="pupil" cx="130.5" cy="89" r="11" fill="url(#zIride)"/>'
+  +   '<circle class="pupil" cx="130.5" cy="89" r="5.2" fill="#1d1520"/>'
+  +   '<circle class="hl" cx="134" cy="84.5" r="4.2" fill="#fff"/>'
+  +   '<circle class="hl" cx="126" cy="94.5" r="2.1" fill="#fff" opacity=".8"/>'
+  +   '<path d="M114 98 Q129 107 144 98" fill="none" stroke="#7a496c" stroke-opacity=".45"'
+  +     ' stroke-width="2.6" stroke-linecap="round"/></g>'
+  + '<g fill="#e6c65c" opacity=".55">'
+  +   '<circle cx="43" cy="112" r="2"/><circle cx="52" cy="119" r="1.6"/>'
+  +   '<circle cx="40" cy="123" r="1.4"/>'
+  +   '<circle cx="157" cy="112" r="2"/><circle cx="148" cy="119" r="1.6"/>'
+  +   '<circle cx="160" cy="123" r="1.4"/></g>'
+  + '<path d="M75 130 Q100 147 127 127" fill="none" stroke="#fbf6ef" stroke-width="6.4"'
+  +   ' stroke-linecap="round"/>'
   + '</svg>';
 document.getElementById('orb').innerHTML = VOLTO;
 document.getElementById('orbs').innerHTML = VOLTO;
