@@ -218,25 +218,53 @@ html,body{height:100%; background:#000; overflow:hidden;
 .bubble .mini{display:block; font-size:19px; font-weight:800; letter-spacing:.14em;
   color:#e6c65c; margin-top:7px}
 
-/* ── le tre domande che girano ── */
-.bolle{margin-top:20px; flex:none; display:grid; grid-template-columns:repeat(3,1fr);
-  gap:16px}
-.bolla{--tc:#7ecbe8; --tb:rgba(79,184,221,.09); --tp:rgba(79,184,221,.24);
-  border-radius:24px; padding:24px 76px 22px 24px;
-  display:flex; flex-direction:column; gap:11px;
-  transition:opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1)}
-.bolla:nth-child(1){animation:galleggia1 7s ease-in-out infinite}
-.bolla:nth-child(2){animation:galleggia2 8.4s ease-in-out infinite}
-.bolla:nth-child(3){animation:galleggia3 9.2s ease-in-out infinite}
-@keyframes galleggia1{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
-@keyframes galleggia2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)}}
-@keyframes galleggia3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}}
-
-.bolla .bi{font-size:31px; line-height:1}
-.bolla .bq{font-size:26px; font-weight:800; line-height:1.22; color:#fff; flex:1}
-.bolla .bmini{font-size:16px; letter-spacing:.1em; font-weight:800; color:#7ecbe8;
-  white-space:nowrap}
-.bolla.via{opacity:0; transform:translateY(-16px)}
+/* ══ COSA FAI QUI · le cinque porte ══
+   Prima qui giravano tre domande a caso fra le trentuno, sempre
+   diverse: bello da vedere, ma nessuno capiva perche' proprio quelle
+   tre, e la cosa piu' naturale da chiedersi entrando — «io oggi ho
+   fatto la tal cosa, che c'entra Zenith?» — non ci stava.
+   Adesso la fascia e' fissa e dice una cosa sola: tocca quello che hai
+   fatto, e ti spiego perche' ti serve anche Zenith. Fluttua come
+   fluttuavano le bolle di prima — ferma non sembrerebbe piu' viva di
+   un cartello — e ogni tanto una carta si accende da sola: un invito
+   silenzioso, non un lampeggio che disturba. */
+.centro{margin-top:18px; flex:none}
+.centro .ct{font-size:19px; letter-spacing:.2em; font-weight:800;
+  color:rgba(255,255,255,.42); margin-bottom:12px; text-align:center}
+.cfila{display:flex; gap:14px}
+.ccard{border-radius:22px; padding:15px 12px 30px; display:flex; flex-direction:column;
+  align-items:center; gap:5px; text-align:center; flex:1; min-width:0; position:relative;
+  cursor:pointer;
+  border:2px solid var(--mc); background:color-mix(in srgb, var(--mc) 9%, transparent);
+  transition:transform .13s cubic-bezier(.32,.72,0,1), background .3s ease,
+    box-shadow .5s ease, border-color .5s ease}
+.ccard:active{transform:scale(.97); background:color-mix(in srgb, var(--mc) 20%, transparent)}
+.ccard:nth-child(1){animation:galleggiaC1 7s ease-in-out infinite}
+.ccard:nth-child(2){animation:galleggiaC2 8.2s ease-in-out infinite}
+.ccard:nth-child(3){animation:galleggiaC3 6.6s ease-in-out infinite}
+.ccard:nth-child(4){animation:galleggiaC4 9s ease-in-out infinite}
+.ccard:nth-child(5){animation:galleggiaC5 7.6s ease-in-out infinite}
+@keyframes galleggiaC1{0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}}
+@keyframes galleggiaC2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
+@keyframes galleggiaC3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)}}
+@keyframes galleggiaC4{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
+@keyframes galleggiaC5{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
+.ccard .cci{width:46px; height:46px; border-radius:15px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:22px; line-height:1;
+  background:color-mix(in srgb, var(--mc) 22%, transparent);
+  border:1px solid color-mix(in srgb, var(--mc) 48%, transparent)}
+.ccard .ccn{font-size:18.5px; font-weight:800; line-height:1.15; white-space:nowrap}
+.ccard .ccs{font-size:13px; color:rgba(255,255,255,.52); line-height:1.2; white-space:nowrap}
+.ccard .cfr{position:absolute; right:10px; bottom:10px; width:26px; height:26px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
+  background:rgba(255,255,255,.08); border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
+/* l'invito periodico: una carta alla volta si accende da sola, a
+   turno — non tutte insieme, o smetterebbe di dire «guarda proprio
+   questa» e tornerebbe rumore come tutto il resto */
+.ccard.spot{box-shadow:0 0 0 5px color-mix(in srgb, var(--mc) 24%, transparent),
+  0 18px 36px -14px color-mix(in srgb, var(--mc) 75%, transparent)}
+.ccard.spot .cci{background:color-mix(in srgb, var(--mc) 36%, transparent)}
 
 /* ── l'invito ── */
 .cta{margin-top:auto; flex:none; display:flex; flex-direction:column}
@@ -361,6 +389,38 @@ html,body{height:100%; background:#000; overflow:hidden;
 .risp .rbody b{color:var(--tc, #8fd3ec)}
 .risp .rbody .piu{display:block; margin-top:26px; padding-top:22px;
   border-top:1px solid rgba(255,255,255,.12); font-size:24px; color:rgba(255,255,255,.62)}
+
+/* ── il tuo caso: le cinque porte, una aperta ──
+   Stessa lingua della risposta singola qui sopra — stessa targhetta,
+   stesso titolo con la barra colorata a sinistra — ma sotto non c'e'
+   una risposta sola: ci sono tutti e cinque i macchinari in fila, e
+   quello toccato si apre. Vederli tutti e cinque, anche quelli che
+   oggi non c'entrano, e' quello che fa capire che Zenith non risponde
+   a UN allenamento: risponde a qualunque cosa uno abbia fatto. */
+.caso{position:absolute; inset:12% 44px 6%; display:flex; flex-direction:column}
+.caso .ctema{flex:none; display:inline-flex; align-items:center; gap:11px;
+  align-self:flex-start; margin-bottom:18px; padding:9px 20px; border-radius:999px;
+  font-size:17px; letter-spacing:.16em; font-weight:800; color:var(--mc);
+  background:rgba(255,255,255,.06); border:1.5px solid var(--mc)}
+.caso .ctema i{width:13px; height:13px; border-radius:50%; background:var(--mc); display:block}
+.caso .cq{font-size:42px; font-weight:800; line-height:1.2; flex:none;
+  padding-left:26px; border-left:7px solid var(--mc)}
+.clista{margin-top:28px; flex:1; min-height:0; overflow-y:auto; display:flex;
+  flex-direction:column; gap:14px; padding-right:6px}
+.crow{display:flex; gap:20px; align-items:flex-start; padding:22px 26px;
+  border-radius:26px; background:rgba(255,255,255,.045); border:1.5px solid rgba(255,255,255,.13);
+  transition:background .3s ease, border-color .3s ease}
+.crow.on{background:color-mix(in srgb, var(--rc) 12%, transparent);
+  border-color:color-mix(in srgb, var(--rc) 55%, transparent)}
+.crow .cri{width:60px; height:60px; border-radius:18px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:28px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.13)}
+.crow.on .cri{background:color-mix(in srgb, var(--rc) 30%, transparent);
+  border-color:color-mix(in srgb, var(--rc) 60%, transparent)}
+.crow .crx{flex:1; min-width:0}
+.crow .crn{font-size:25px; font-weight:800; display:block}
+.crow .crd{font-size:19px; line-height:1.42; color:rgba(255,255,255,.56); margin-top:6px; display:block}
+.crow.on .crd{color:rgba(255,255,255,.9)}
 
 /* ══════════════════════════════════════════════════════════════
    3 · IL CHECK-IN — stessa sequenza del gestionale: prima chi ti
@@ -585,7 +645,8 @@ html,body{height:100%; background:#000; overflow:hidden;
 .mac .mhd{display:flex; flex-direction:row; align-items:center; gap:16px}
 .mac .mfi{width:64px; height:64px; border-radius:20px; flex:none; display:flex;
   align-items:center; justify-content:center; font-size:34px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12)}
+  background:color-mix(in srgb, var(--mc, rgba(255,255,255,.4)) 16%, transparent);
+  border:1.6px solid color-mix(in srgb, var(--mc, rgba(255,255,255,.4)) 55%, transparent)}
 .mac .mfn{font-size:30px; font-weight:800}
 .mac .mfd{font-size:19px; line-height:1.42; color:rgba(255,255,255,.58); margin-top:12px}
 .mac .mfz{font-size:19px; line-height:1.42; margin-top:11px; padding-left:20px;
@@ -960,7 +1021,7 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="bubble" id="bub"></div>
         <span class="frecc">›</span>
       </div>
-      <div class="bolle" id="bolle"></div>
+      <div class="centro" id="centro"></div>
 
       <!-- l'invito -->
       <div class="cta">
@@ -1011,6 +1072,19 @@ html,body{height:100%; background:#000; overflow:hidden;
       <div class="navrow" style="margin-top:26px">
         <div class="nav back" onclick="chiudiRisposta()">‹ Altre domande</div>
         <div class="nav casa" onclick="tornaACasa()">⌂ Torna alla home</div>
+        <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2b · IL TUO CASO — dalla fascia «cosa fai qui» in home ═══ -->
+  <section class="scene" id="s-caso">
+    <div class="caso">
+      <div class="ctema" id="casoTema"></div>
+      <div class="cq" id="casoQ"></div>
+      <div class="clista" id="casoLista"></div>
+      <div class="navrow" style="margin-top:26px">
+        <div class="nav casa" onclick="go('idle')">⌂ Torna alla home</div>
         <div class="nav next" onclick="startCheck()">FAI IL CHECK-IN</div>
       </div>
     </div>
@@ -1241,13 +1315,17 @@ const ROAM = [
 ];
 const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
 
+/* prima diceva solo «ti spiego cos'e' Zenith»: chi aveva gia' capito
+   cos'e' Zenith e voleva solo curiosare pensava che non fosse per lui.
+   Adesso le frasi dicono le due cose insieme — una domanda precisa, o
+   il gusto di guardarsi in giro — cosi' nessuno si sente escluso. */
 const BUBBLES = [
-  'Posso spiegarti cos\'è Zenith',
-  'Vuoi sapere cosa può fare per te?',
-  'Ho venti risposte pronte',
-  'Curioso? Toccami',
-  'Chiedimi qualsiasi cosa',
-  'Ti spiego in trenta secondi'
+  'Hai una domanda? O vuoi solo curiosare',
+  'Le risposte sono qui. O esplora e basta',
+  'Chiedimi tutto. O guarda e scopri da solo',
+  'Domande precise, o solo per capire meglio',
+  'Qui trovi le risposte. O ti va di guardare?',
+  'Chiedi quello che vuoi, oppure esplora'
 ];
 
 /* ══════════ LE VENTI DOMANDE ══════════
@@ -1393,31 +1471,46 @@ function roamStep(){
 function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }
 function roamStop(){ clearInterval(roamTimer); roamTimer = null; }
 
-/* ─────────── le tre bolle che galleggiano ───────────
-   Sono domande vere: toccandone una si va dritti alla sua risposta.
-   Cambiano ogni quattordici secondi, così chi passa non trova mai le
-   stesse tre. */
-let bolleI = 0, bolleTimer = null;
-function bolleStep(){
-  const box = document.getElementById('bolle');
-  const scelte = [0,1,2].map(k=> (bolleI + k) % QA.length);
-  box.innerHTML = scelte.map(i=>
-    '<div class="bolla tocca" onclick="apriRisposta(' + i + ')">'
-    + '<span class="bi">' + QA[i].ic + '</span>'
-    + '<span class="bq">' + QA[i].q + '</span>'
-    + '<span class="bmini">TOCCA PER SAPERE</span>'
-    + '<span class="frecc">›</span></div>').join('');
-  bolleI = (bolleI + 3) % QA.length;
+/* ─────────── cosa fai qui: la fascia fissa ───────────
+   Le cinque porte sono sempre le stesse — le cinque risposte della
+   prima domanda del check-in — cosi' chi la incrocia gia' una volta
+   la riconosce anche la seconda. Quello che cambia e' quale delle
+   cinque si accende da sola, a turno: e' l'invito a toccare, spostato
+   dalla frase (prima erano le bolle a suggerirlo) all'oggetto stesso. */
+const ORDINE_CENTRO = ['ems','matrix','vacufit','ems2','riposo'];
+/* qui la carta e' larga un quinto della vetrina: le descrizioni lunghe
+   della domanda del check-in ci vanno a capo due volte. Un titolo e un
+   sottotitolo corti, su una riga sola, si leggono anche camminando —
+   la frase intera resta nel foglio dei macchinari e ne «il tuo caso» */
+const BAND_LABEL = {riposo:'A riposo'};
+const BAND_SUB = {ems:'elettrostimolazione', matrix:'pesi digitali',
+  vacufit:'vuototerapia', ems2:'impulsi in camminata', riposo:'vengo e basta'};
+function centroBuild(){
+  const box = document.getElementById('centro');
+  if(!box) return;
+  box.innerHTML = '<div class="ct">E TU, COSA FAI QUI DENTRO?</div><div class="cfila">'
+    + ORDINE_CENTRO.map(k=>{
+        const m = MAC_DI(k);
+        return '<div class="ccard tocca" style="--mc:' + COL_MAC[k] + '"'
+          + ' onclick="apriRispostaCaso(\'' + k + '\')">'
+          + '<span class="cci">' + m[0] + '</span>'
+          + '<span class="ccn">' + (BAND_LABEL[k] || m[1]) + '</span>'
+          + '<span class="ccs">' + BAND_SUB[k] + '</span>'
+          + '<span class="cfr">›</span></div>';
+      }).join('') + '</div>';
 }
-function bolleStart(){
-  bolleStep();
-  bolleTimer = setInterval(()=>{
-    const box = document.getElementById('bolle');
-    [...box.children].forEach(b=> b.classList.add('via'));
-    setTimeout(bolleStep, 650);
-  }, 14000);
+let centroI = 0, centroTimer = null;
+function centroSpotStep(){
+  const carte = [...document.querySelectorAll('#centro .ccard')];
+  carte.forEach(c=> c.classList.remove('spot'));
+  if(carte.length) carte[centroI % carte.length].classList.add('spot');
+  centroI++;
 }
-function bolleStop(){ clearInterval(bolleTimer); bolleTimer = null; }
+function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, 4200); }
+function centroSpotStop(){
+  clearInterval(centroTimer); centroTimer = null;
+  document.querySelectorAll('#centro .ccard').forEach(c=> c.classList.remove('spot'));
+}
 
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
@@ -1426,9 +1519,9 @@ function go(n){
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
-  if(n === 'idle'){ if(!roamTimer) roamStart(); if(!bolleTimer) bolleStart(); }
+  if(n === 'idle'){ if(!roamTimer) roamStart(); if(!centroTimer) centroSpotStart(); }
   if(n !== 'ask' && typeof chiudiRicerca === 'function') chiudiRicerca();
-  else { roamStop(); bolleStop(); }
+  else { roamStop(); centroSpotStop(); }
   const via = (n === 'done') ? '0' : '1';
   document.querySelector('.head').style.opacity = via;
   document.getElementById('dbg').style.opacity = via;
@@ -1620,6 +1713,28 @@ function chiudiRisposta(){
   idleReset();
 }
 /* dalla risposta si torna alla vetrina in un tocco, e si riparte pulito */
+/* ── il tuo caso: si apre toccando una delle cinque porte in home ── */
+function apriRispostaCaso(k){
+  go('caso');
+  const m = MAC_DI(k), col = COL_MAC[k];
+  const attivita = PASSI_TUTTI.find(p=> p.k === 'activity').opts;
+  const sub = kk => (attivita.find(o=> o[0] === kk) || [,,,''])[3];
+  document.getElementById('s-caso').style.setProperty('--mc', col);
+  document.getElementById('casoTema').style.setProperty('--mc', col);
+  document.getElementById('casoTema').innerHTML = '<i></i>IL TUO CASO';
+  document.getElementById('casoQ').textContent = k === 'riposo'
+    ? 'Non ti alleni? Zenith ti serve comunque.'
+    : 'Fai ' + (k === 'ems' || k === 'ems2' ? 'l\'' : 'il ') + m[1]
+      + '. Ecco perché ti serve anche Zenith.';
+  document.getElementById('casoLista').innerHTML = ORDINE_CENTRO.map(kk=>{
+    const mm = MAC_DI(kk), acceso = kk === k;
+    return '<div class="crow' + (acceso ? ' on' : '') + '" style="--rc:' + COL_MAC[kk] + '">'
+      + '<span class="cri">' + mm[0] + '</span>'
+      + '<span class="crx"><span class="crn">' + mm[1] + '</span>'
+      + '<span class="crd">' + (acceso ? mm[3] : sub(kk)) + '</span></span></div>';
+  }).join('');
+  idleReset();
+}
 function tornaACasa(){
   document.getElementById('risp').classList.remove('on');
   document.getElementById('askgrid').style.display = 'flex';
@@ -1914,6 +2029,14 @@ function sagoma(vista){
    riscritta per chi la legge qui: non «cosa lascia nel corpo del
    cliente», «cosa lascia nel TUO corpo». E senza le sigle delle
    famiglie: a chi sta per entrare non dicono niente. */
+/* ogni macchinario ha una chiave — la stessa della domanda «cosa hai
+   fatto oggi» — e un colore suo. Non e' decorazione: e' lo stesso
+   principio dei quattro temi delle domande (v107) applicato qui. Chi
+   vede lo stesso alone in tre punti diversi del totem (la carta in
+   home, il foglio dei macchinari, la domanda del check-in) impara a
+   riconoscerli senza dover rileggere il nome ogni volta. */
+const COL_MAC = {ems:'#e6c65c', ems2:'#6c9bf5', vacufit:'#4fd1c5',
+                  matrix:'#ef8a5c', riposo:'#b98adf'};
 const MACCHINE = [
   ['⚡','EMS',
    'Impulsi elettrici fanno contrarre i muscoli senza caricare le articolazioni: '
@@ -1921,33 +2044,34 @@ const MACCHINE = [
    + 'e spesso l\'indolenzimento arriva il giorno dopo.',
    'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato. '
    + 'Se sei già indolenzito passa al programma <b>anti-DOMS</b>; se oggi hai '
-   + 'lavorato le braccia, al recupero della parte alta.'],
+   + 'lavorato le braccia, al recupero della parte alta.', 'ems'],
   ['🌀','EMS2',
    'Gli stessi impulsi, ma mentre cammini veloce sul tapis roulant: muscoli e '
    + 'fiato insieme, con gambe e piedi sotto carico per tutta la seduta.',
    'Zenith alza la <b>compressione degli airbag</b>, accende la <b>posizione a '
    + 'gravità zero</b> e i <b>rulli su polpacci e piedi</b>: è lì che hai '
-   + 'lavorato di più.'],
+   + 'lavorato di più.', 'ems2'],
   ['💨','Vacutherm',
    'Cammini dentro una cabina in depressione, che richiama il sangue verso gambe '
    + 'e glutei. Lavoro dolce, ma tutto concentrato sulla parte bassa.',
    'Zenith mette <b>gambe e piedi al centro</b> per far durare la leggerezza, '
-   + 'con airbag alti, gravità zero e rulli sotto la pianta.'],
+   + 'con airbag alti, gravità zero e rulli sotto la pianta.', 'vacufit'],
   ['🏋️','Matrix',
    'Pesi digitali: carichi controllati elettronicamente, serie e ripetizioni. '
    + 'È l\'allenamento che affatica di più i gruppi che hai scelto.',
    'Zenith sceglie in base alla zona: <b>gambe</b> se hai lavorato gambe o '
    + 'glutei, <b>parte alta</b> per le braccia, <b>allungamento in stile Thai</b> '
-   + 'se cerchi il relax.'],
+   + 'se cerchi il relax.', 'matrix'],
   ['😌','Nessun allenamento',
    'Nessun carico da smaltire: oggi la seduta non serve a recuperare da uno '
    + 'sforzo, ma a rispondere a come stai adesso.',
    'Zenith segue l\'<b>obiettivo che scegli</b> alla terza domanda: leggerezza, '
-   + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più.']
+   + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più.', 'riposo']
 ];
+const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
 function apriMacchine(){
   document.getElementById('mlist').innerHTML = MACCHINE.map(m=>
-    '<div class="mac"><div class="mhd"><span class="mfi">' + m[0] + '</span>'
+    '<div class="mac"><div class="mhd"><span class="mfi" style="--mc:' + COL_MAC[m[4]] + '">' + m[0] + '</span>'
     + '<span class="mfn">' + m[1] + '</span></div>'
     + '<div class="mfd">' + m[2] + '</div>'
     + '<div class="mfz">' + m[3] + '</div></div>').join('');
@@ -2601,7 +2725,8 @@ buildFiltri();
 buildGriglia();
 disegnaRicerca();
 roamStart();
-bolleStart();
+centroBuild();
+centroSpotStart();
 </script>
 </body>
 </html>
