@@ -104,7 +104,13 @@ html,body{height:100%; background:#000; overflow:hidden;
   display:flex; flex-direction:column; z-index:12}
 
 /* ── il manifesto: la frase che gira, e la capsula accanto ── */
-.hero{display:flex; align-items:center; gap:20px; flex:none}
+/* L'altezza è fissa apposta. Le frasi girano ogni nove secondi e mezzo
+   e non sono lunghe uguali: se il manifesto si adattasse alla frase, a
+   ogni cambio tutta la vetrina — numeri, passi, faccina, tasto — si
+   alzerebbe e si abbasserebbe. Qui invece si muove solo la frase, e
+   dentro una casella che non cambia mai: 508 è la più alta delle
+   trentasei, misurata. */
+.hero{display:flex; align-items:center; gap:20px; flex:none; min-height:508px}
 #roams{flex:1; min-width:0; pointer-events:none}
 .roam{opacity:0; transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
 .roam.on{opacity:1; transform:none}
@@ -115,7 +121,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a;
   border:1px solid rgba(212,175,55,.55)}
 .roam .rtag i{font-style:normal; font-size:25px; line-height:1}
-.roam .tx{margin-top:24px; font-size:74px; font-weight:800; line-height:1.04;
+.roam .tx{margin-top:24px; font-size:66px; font-weight:800; line-height:1.04;
   letter-spacing:-.032em; text-shadow:0 4px 34px rgba(0,0,0,.7)}
 .roam .tx em{font-style:normal;
   background:linear-gradient(100deg,#e8c2dc,#e6c65c); -webkit-background-clip:text;
@@ -128,30 +134,33 @@ html,body{height:100%; background:#000; overflow:hidden;
 .q1,.q4{transform:translateY(44px)}
 .q2,.q5{transform:scale(.94)}
 
-/* la capsula: è lei che ferma chi passa a dieci metri */
-.hp{width:346px; flex:none; position:relative; display:flex; align-items:center;
-  justify-content:center; height:474px}
-.anelli{position:absolute; inset:0; display:flex; align-items:center;
-  justify-content:center; pointer-events:none}
-.anelli i{position:absolute; border-radius:50%; display:block;
-  border:1px solid rgba(212,175,55,.18); animation:respira 7s ease-in-out infinite}
-.anelli .r2{width:430px; height:430px; border-color:rgba(169,119,154,.16);
-  animation-delay:.9s}
-.anelli .r1{width:330px; height:330px}
-.anelli .r3{width:452px; height:452px; border-color:rgba(255,255,255,.06);
-  animation-delay:1.8s}
+/* ══ la capsula: è lei che ferma chi passa a dieci metri ══
+   Prima era un baccello verticale, e non era la nostra. Adesso è il
+   profilo: di fianco la capsula è una curva sola — piede, seduta,
+   schienale, cupola — e una curva sola si ricorda. Due colori soli, oro
+   sul buio, con la luce che le corre lungo il bordo. Accanto, in piedi,
+   tre pittogrammi: una persona vicino a una macchina è un utente, tre
+   sono tutti. È il modo in cui si dice «toccasana per la vita di tutti»
+   senza scriverlo. Il disegno è orizzontale, quindi la sua casella è
+   larga e bassa, e sta in mezzo all'altezza della frase. */
+.hp{width:432px; flex:none; position:relative; display:flex; align-items:center;
+  justify-content:center; padding:34px 0}
 @keyframes respira{0%,100%{transform:scale(1); opacity:.9} 50%{transform:scale(1.05); opacity:.5}}
-.pod{position:relative; width:296px; height:454px}
-.pod svg{display:block; filter:drop-shadow(0 30px 70px rgba(122,73,108,.7))}
-.pod .glow{position:absolute; inset:-50px; border-radius:50%; z-index:-1;
-  background:radial-gradient(ellipse at 50% 44%, rgba(212,175,55,.30), transparent 62%);
+.pod{position:relative; width:432px; height:206px}
+.pod svg{display:block; width:432px; height:206px;
+  filter:drop-shadow(0 24px 54px rgba(122,73,108,.7))}
+.pod .glow{position:absolute; inset:-64px -26px; border-radius:50%; z-index:-1;
+  background:radial-gradient(ellipse at 38% 58%, rgba(212,175,55,.26), transparent 64%);
   animation:respira 5.5s ease-in-out infinite}
-.pill{position:absolute; display:flex; align-items:center; gap:11px; padding:12px 20px;
+.pill{position:absolute; display:flex; align-items:center; gap:11px; padding:11px 19px;
   border-radius:999px; background:rgba(14,10,18,.86); border:1px solid rgba(255,255,255,.16);
   font-size:21px; font-weight:800; white-space:nowrap; z-index:3}
 .pill span{font-size:25px}
-.pb1{left:14px; top:-2px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
-.pb2{right:-32px; bottom:54px; border-color:rgba(212,175,55,.5); color:#eed37a}
+.pb1{left:2px; top:-24px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
+/* «4 mani» non torna qui: è già uno dei tre numeri qui sotto. Al suo
+   posto la pastiglia dice quello che dice il disegno — la fila di
+   persone accanto alla capsula. */
+.pb2{right:2px; bottom:-22px; border-color:rgba(212,175,55,.5); color:#eed37a}
 
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
 .numeri{margin-top:30px; flex:none; display:flex; padding:24px 0;
@@ -782,44 +791,70 @@ html,body{height:100%; background:#000; overflow:hidden;
       <div class="hero">
         <div id="roams"></div>
         <div class="hp">
-          <div class="anelli"><i class="r1"></i><i class="r2"></i><i class="r3"></i></div>
-        <div class="pod"><div class="glow"></div>
-          <svg width="296" height="454" viewBox="0 0 404 620" fill="none" aria-hidden="true">
+          <div class="pod"><div class="glow"></div>
+          <svg width="432" height="206" viewBox="0 0 880 420" fill="none" aria-hidden="true">
             <defs>
-              <linearGradient id="capSh" x1=".1" y1="0" x2=".9" y2="1">
-                <stop offset="0" stop-color="#4a3550"/><stop offset=".5" stop-color="#241a2c"/>
-                <stop offset="1" stop-color="#100b16"/></linearGradient>
-              <linearGradient id="capCp" x1=".1" y1="0" x2=".9" y2="1">
-                <stop offset="0" stop-color="#e0b8d4"/><stop offset=".55" stop-color="#a9779a"/>
-                <stop offset="1" stop-color="#5f3654"/></linearGradient>
-              <radialGradient id="capIn" cx=".5" cy=".35" r=".75">
-                <stop offset="0" stop-color="#f7e2a6" stop-opacity=".92"/>
-                <stop offset=".55" stop-color="#d8a06f" stop-opacity=".45"/>
-                <stop offset="1" stop-color="#7a496c" stop-opacity=".12"/></radialGradient>
+              <linearGradient id="zco" x1="0" y1="0" x2="1" y2=".4">
+                <stop offset="0" stop-color="#9a7530"/><stop offset=".45" stop-color="#f7e2a4"/>
+                <stop offset="1" stop-color="#b48a35"/></linearGradient>
+              <linearGradient id="zcc" x1=".25" y1="0" x2=".8" y2="1">
+                <stop offset="0" stop-color="#3f3149"/><stop offset=".55" stop-color="#170f1f"/>
+                <stop offset="1" stop-color="#090610"/></linearGradient>
+              <radialGradient id="zcg" cx=".5" cy=".62" r=".5">
+                <stop offset="0" stop-color="#4fb8dd" stop-opacity=".34"/>
+                <stop offset="1" stop-color="#4fb8dd" stop-opacity="0"/></radialGradient>
+              <linearGradient id="zcb" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#bdf0ff"/><stop offset="1" stop-color="#2f93c8"/></linearGradient>
+              <!-- la fila di persone è illuminata da sinistra, cioè dalla
+                   capsula: il bordo chiaro non è un contorno disegnato, è la
+                   luce che le arriva -->
+              <linearGradient id="zcf" gradientUnits="userSpaceOnUse"
+                              x1="590" y1="0" x2="812" y2="0">
+                <stop offset="0" stop-color="#f7e2a4"/><stop offset=".55" stop-color="#8a7048"/>
+                <stop offset="1" stop-color="#3a2c46"/></linearGradient>
             </defs>
-            <ellipse cx="202" cy="574" rx="150" ry="26" fill="#000" opacity=".55"/>
-            <rect x="76" y="530" width="252" height="34" rx="17" fill="#2b1f33"/>
-            <rect x="106" y="512" width="192" height="28" rx="14" fill="#1a1220"/>
-            <path d="M202 116c92 0 148 52 148 150v184c0 54-48 88-148 88S54 504 54 450V266c0-98 56-150 148-150z"
-                  fill="url(#capSh)" stroke="#6b4460" stroke-width="3"/>
-            <path d="M202 168c72 0 116 30 116 92v168c0 38-42 60-116 60S86 466 86 428V260c0-62 44-92 116-92z"
-                  fill="url(#capIn)"/>
-            <circle cx="202" cy="286" r="34" fill="#160f1c" opacity=".82"/>
-            <path d="M202 330c48 0 80 26 80 66v82c0 18-36 28-80 28s-80-10-80-28v-82c0-40 32-66 80-66z"
-                  fill="#160f1c" opacity=".82"/>
-            <path d="M202 14c96 0 152 54 152 132 0 12-10 20-22 15-36-16-80-25-130-25s-94 9-130 25
-                     c-12 5-22-3-22-15C50 68 106 14 202 14z" fill="url(#capCp)"/>
-            <path d="M202 14c96 0 152 54 152 132 0 12-10 20-22 15-36-16-80-25-130-25s-94 9-130 25
-                     c-12 5-22-3-22-15C50 68 106 14 202 14z"
-                  fill="none" stroke="#f0d0e6" stroke-opacity=".55" stroke-width="3"/>
-            <path d="M96 122c12-42 44-70 86-80" stroke="#fff" stroke-opacity=".45"
-                  stroke-width="8" stroke-linecap="round"/>
-            <path d="M322 300v112" stroke="#fff" stroke-opacity=".13" stroke-width="6"
-                  stroke-linecap="round"/>
+            <ellipse cx="308" cy="286" rx="266" ry="140" fill="url(#zcg)"/>
+            <g stroke="#e6c65c" fill="none" opacity=".16">
+              <path d="M300 336 A216 216 0 0 0 84 120" stroke-width="1.6"/>
+              <path d="M300 336 A262 262 0 0 0 38 74" stroke-width="1.6"/>
+            </g>
+            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" fill="url(#zcc)"/>
+            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" stroke="url(#zco)" stroke-width="3.6" stroke-linejoin="round"/>
+            <path d="M126 246 C138 190 180 142 238 114 C296 86 368 80 432 96" stroke="url(#zco)" stroke-width="3" stroke-linecap="round"
+                  opacity=".42"/>
+            <path d="M124 250 C144 226 178 218 212 224" stroke="#fff" stroke-opacity=".38"
+                  stroke-width="5.4" stroke-linecap="round"/>
+            <path d="M406 152 C424 130 446 114 470 114" stroke="#fff" stroke-opacity=".34"
+                  stroke-width="5.4" stroke-linecap="round"/>
+            <path d="M452 206 L444 260 L476 288" stroke="url(#zcb)" stroke-width="5.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="310" cy="338" rx="212" ry="14" fill="#000" opacity=".6"/>
+            <path d="M92 340 h770" stroke="url(#zco)" stroke-width="3.2" stroke-linecap="round"
+                  opacity=".6"/>
+            <g transform="translate(710 340) scale(2.06)">
+          <g transform="translate(-58 0) scale(0.88)" opacity="0.55">
+            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
+            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
+                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
+                  fill="url(#zcf)" stroke-linejoin="round"/>
+          </g>
+          <g transform="translate(0 0) scale(1.06)" opacity="1">
+            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
+            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
+                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
+                  fill="url(#zcf)" stroke-linejoin="round"/>
+          </g>
+          <g transform="translate(52 0) scale(0.8)" opacity="0.48">
+            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
+            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
+                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
+                  fill="url(#zcf)" stroke-linejoin="round"/>
+          </g>
+            </g>
           </svg>
-        </div>
           <div class="pill pb1"><span>🪶</span>Zero gravità</div>
-          <div class="pill pb2"><span>🖐️</span>Come 4 mani</div>
+          <div class="pill pb2"><span>👥</span>Per tutti</div>
+        </div>
         </div>
       </div>
 
