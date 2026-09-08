@@ -253,7 +253,7 @@ html,body{height:100%; background:#000; overflow:hidden;
    letto tutti e cinque i motivi per cui gli conviene entrare.
    Cresce con lo schermo: su un 49 pollici 16:9 sta nei suoi 188 punti,
    su un monitor piu' alto si allarga da sola e la frase respira. */
-.pens{margin-top:12px; flex:1 1 auto; min-height:162px; display:flex;
+.pens{margin-top:12px; flex:1 1 auto; min-height:160px; display:flex;
   align-items:center; gap:24px; padding:20px 28px; border-radius:26px;
   cursor:pointer; position:relative; overflow:hidden;
   background:color-mix(in srgb, var(--mc) 8%, rgba(255,255,255,.028));
@@ -476,7 +476,18 @@ html,body{height:100%; background:#000; overflow:hidden;
 .crow .crx{flex:1; min-width:0}
 .crow .crn{font-size:25px; font-weight:800; display:block}
 .crow .crd{font-size:19px; line-height:1.42; color:rgba(255,255,255,.56); margin-top:6px; display:block}
-.crow.on .crd{color:rgba(255,255,255,.9)}
+.crow.on .crd, .crow.on .crz{color:rgba(255,255,255,.9)}
+.crow .crz{display:block; font-size:19px; line-height:1.42; margin-top:14px;
+  padding-top:13px; border-top:1px solid rgba(255,255,255,.12)}
+.crow.on em{display:block; font-style:normal; font-size:14.5px; letter-spacing:.16em;
+  font-weight:800; margin-bottom:6px; color:var(--rc)}
+.crow.on .crz b{color:#fff}
+.crow .crfr{width:34px; height:34px; border-radius:50%; flex:none; align-self:center;
+  display:flex; align-items:center; justify-content:center; font-size:19px;
+  font-weight:800; line-height:1; padding-bottom:2px; color:var(--rc);
+  background:rgba(255,255,255,.07);
+  border:1.4px solid color-mix(in srgb, var(--rc) 55%, transparent)}
+.crow.on .crfr{display:none}
 
 /* ══════════════════════════════════════════════════════════════
    3 · IL CHECK-IN — stessa sequenza del gestionale: prima chi ti
@@ -1078,7 +1089,7 @@ html,body{height:100%; background:#000; overflow:hidden;
         <span class="frecc">›</span>
       </div>
       <div class="sezione porte">
-        <div class="sezt"><i></i>E TU, COSA FAI QUI DENTRO?</div>
+        <div class="sezt"><i></i>COSA HAI FATTO OGGI, QUI DA NOI?</div>
         <div class="centro" id="centro"></div>
         <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
       </div>
@@ -1245,8 +1256,13 @@ function fit(){
   t.style.height = H + 'px';
   if(largo){
     /* «zoom» invece di «scale»: rimpicciolisce anche lo spazio occupato,
-       e così la pagina scorre davvero invece di lasciare il vuoto sotto */
-    const s = Math.min(innerWidth * 0.54 / 1080, 1);
+       e così la pagina scorre davvero invece di lasciare il vuoto sotto.
+       E prende TUTTA la larghezza, non piu' metà: su un tablet in mano,
+       in orizzontale, il foglio stretto in mezzo a due bande vuote non
+       fa vedere niente di come sarà sul totem. Meglio largo quanto lo
+       schermo e scorrevole — la proporzione fra le cose resta quella
+       vera, che è l'unica ragione per guardarlo su un altro schermo. */
+    const s = Math.min(innerWidth / 1080, 1.3);
     t.style.transform = 'none'; t.style.zoom = s;
     f.style.alignItems = 'flex-start'; f.style.overflowY = 'auto';
   } else {
@@ -1813,12 +1829,25 @@ function apriRispostaCaso(k){
     ? 'Non ti alleni? Zenith ti serve comunque.'
     : 'Fai ' + (k === 'ems' || k === 'ems2' ? 'l\'' : 'il ') + m[1]
       + '. Ecco perché ti serve anche Zenith.';
+  /* Tutte e cinque si toccano, non solo quella aperta: chi ha appena
+     letto del suo macchinario e' esattamente la persona che vuole
+     sapere cosa succede con gli altri. Prima erano righe morte e chi ci
+     provava sopra non otteneva niente. */
   document.getElementById('casoLista').innerHTML = ORDINE_CENTRO.map(kk=>{
     const mm = MAC_DI(kk), acceso = kk === k;
-    return '<div class="crow' + (acceso ? ' on' : '') + '" style="--rc:' + COL_MAC[kk] + '">'
+    return '<div class="crow tocca' + (acceso ? ' on' : '') + '" style="--rc:' + COL_MAC[kk] + '"'
+      + ' onclick="apriRispostaCaso(\'' + kk + '\')">'
       + '<span class="cri">' + mm[0] + '</span>'
       + '<span class="crx"><span class="crn">' + mm[1] + '</span>'
-      + '<span class="crd">' + (acceso ? mm[3] : sub(kk)) + '</span></span></div>';
+      + (acceso
+          /* aperta: prima che cosa ha fatto davvero al corpo, poi che
+             cosa ci aggiunge Zenith e perché. In quest'ordine — il
+             consiglio senza il fatto è una pubblicità, il fatto senza il
+             consiglio è una lezione di fisiologia */
+          ? '<span class="crd"><em>Che cosa hai fatto davvero</em>' + mm[2] + '</span>'
+            + '<span class="crz"><em>Perché ti conviene anche Zenith</em>' + mm[3] + '</span>'
+          : '<span class="crd">' + sub(kk) + '</span>')
+      + '</span><span class="crfr">›</span></div>';
   }).join('');
   idleReset();
 }
@@ -2175,26 +2204,26 @@ const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
    una vetrina che dice a uno che ha appena finito di allenarsi che ha
    fatto poco, lo perde — e ha pure ragione lui. */
 const PENSIERI = {
-  ems: {t:'Hai fatto EMS oggi. Ottimo lavoro.',
-    f:'Venti minuti di EMS valgono un allenamento lungo il doppio: hai chiesto ai '
-    + 'muscoli un lavoro serio. Zenith riparte da lì — pressione sui gruppi che hai '
-    + 'contratto, calore, gambe sopra il cuore — e <b>te lo fa rendere di più</b>.'},
-  matrix: {t:'Hai fatto Matrix oggi. Bel lavoro.',
-    f:'Carichi controllati, serie e ripetizioni: il muscolo cresce così, e oggi l\'hai '
-    + 'fatto crescere. Zenith arriva dopo e lo riapre proprio dove hai caricato: '
-    + '<b>lo stesso allenamento, con meno rigidità domani</b>.'},
-  vacufit: {t:'Hai fatto Vacutherm oggi. Ottimo.',
-    f:'Camminare in vuototerapia è un gran lavoro sulle gambe, e le hai lasciate '
-    + 'leggere. Zenith prende quella leggerezza — airbag a onde, gravità zero, rulli '
-    + 'sotto la pianta — e <b>te la fa durare molto più a lungo</b>.'},
-  ems2: {t:'Hai fatto EMS2 oggi. Complimenti.',
-    f:'Impulsi e camminata insieme: è la seduta che chiede di più a gambe e piedi, e '
-    + 'tu l\'hai portata a casa. Zenith scarica esattamente lì, compressione alta e '
-    + 'gravità zero: <b>lo stesso lavoro, e te ne vai leggero</b>.'},
+  ems: {t:'Hai fatto EMS. Ottimo lavoro.',
+    f:'Migliaia di contrazioni in venti minuti: un lavoro che a mano libera non si '
+    + 'ottiene. Adesso quelle fibre chiedono sangue nuovo per ricostruirsi. '
+    + '<b>Zenith glielo porta: il risultato di oggi lo senti, invece di pagarlo domani.</b>'},
+  matrix: {t:'Hai fatto Matrix. Bel lavoro.',
+    f:'Serie e ripetizioni: hai creato le micro-lesioni da cui il muscolo cresce più '
+    + 'forte. Ma cresce nelle ore dopo, non sotto il carico. <b>Zenith apre e drena la '
+    + 'zona che hai lavorato: è lì che l\'allenamento diventa risultato.</b>'},
+  vacufit: {t:'Hai fatto Vacutherm. Ottimo.',
+    f:'Hai camminato con la depressione che tirava il sangue verso gambe e glutei: '
+    + 'circolo acceso, gambe leggere. È un effetto vero, e dura finché il circolo '
+    + 'resta acceso. <b>Zenith lo tiene acceso per ore, non per dieci minuti.</b>'},
+  ems2: {t:'Hai fatto EMS2. Complimenti.',
+    f:'Impulsi e camminata insieme: è la seduta che chiede di più, e l\'hai portata a '
+    + 'casa. Gambe e piedi hanno lavorato sotto carico dal primo minuto. <b>Zenith '
+    + 'scarica esattamente lì, e domani riparti invece di recuperare.</b>'},
   riposo: {t:'Oggi non ti alleni? Va benissimo.',
-    f:'Anche senza allenamento il corpo lavora: otto ore su una sedia chiedono alla '
-    + 'schiena più di quanto sembri. Qui il programma nasce da come stai adesso — '
-    + 'leggerezza, sonno, decompressione, energia. <b>Mezz\'ora tutta per te</b>.'}
+    f:'Il corpo lavora lo stesso: otto ore su una sedia comprimono la colonna più di '
+    + 'un\'ora di pesi, e non te ne accorgi finché non tira. <b>Zenith è la mezz\'ora '
+    + 'in cui la schiena torna al suo posto — anche senza palestra.</b>'}
 };
 function apriMacchine(){
   document.getElementById('mlist').innerHTML = MACCHINE.map(m=>
@@ -2810,14 +2839,25 @@ function vaiAlGestionale(){
    codice: il totem sta nel centro, e chi ci lavora deve fare un gesto
    solo. L'anello d'oro che si chiude attorno al logo dice quanto manca,
    così non è un gesto al buio. */
-let pressT = null;
+let pressT = null, pressLungo = false;
 const logo = document.getElementById('logo'), ring = document.getElementById('lring');
 logo.addEventListener('pointerdown', ()=>{
+  pressLungo = false;
   logo.classList.add('press'); ring.classList.add('on');
   pressT = setTimeout(()=>{
+    pressLungo = true;
     document.getElementById('dbg').textContent = 'apro il gestionale…';
     location.href = '../index.html';
   }, 3000);
+});
+/* Il tocco corto sul logo riporta alla vetrina, da qualunque schermata —
+   e la riporta PULITA: chi tocca il logo mentre un altro stava a metà
+   del check-in non deve trovarsi il nome di quell'altro sullo schermo.
+   Il tocco lungo resta quello che era: tre secondi e si passa dall'altra
+   parte. Sono due gesti diversi sullo stesso posto, ed e' giusto cosi':
+   il logo e' l'unica cosa che sta ferma in cima a tutte le schermate. */
+logo.addEventListener('pointerup', ()=>{
+  if(!pressLungo && SCENE !== 'idle') reset();
 });
 ['pointerup','pointerleave','pointercancel'].forEach(e=>
   logo.addEventListener(e, ()=>{
