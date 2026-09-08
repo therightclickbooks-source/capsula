@@ -163,32 +163,47 @@ html,body{height:100%; background:#000; overflow:hidden;
 .pb2{right:2px; bottom:-22px; border-color:rgba(212,175,55,.5); color:#eed37a}
 
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
-.numeri{margin-top:30px; flex:none; display:flex; padding:24px 0;
-  border-top:1px solid rgba(255,255,255,.12);
-  border-bottom:1px solid rgba(255,255,255,.12)}
+.numeri{margin-top:26px; flex:none; display:flex; padding:16px 0;
+  border-top:1px solid rgba(255,255,255,.12)}
 .nb{flex:1; padding:0 24px; display:flex; flex-direction:column; justify-content:center}
 .nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
-.nb .nv{font-size:54px; font-weight:800; line-height:1; letter-spacing:-.03em;
+.nb .nv{font-size:46px; font-weight:800; line-height:1; letter-spacing:-.03em;
   white-space:nowrap}
-.nb .nv small{font-size:24px; font-weight:800; letter-spacing:0}
-.nb .nl{margin-top:10px; font-size:19px; line-height:1.35; color:rgba(255,255,255,.55)}
+.nb .nv small{font-size:21px; font-weight:800; letter-spacing:0}
+.nb .nl{margin-top:8px; font-size:17.5px; line-height:1.3; color:rgba(255,255,255,.55)}
 .nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec}
 
-/* ── i tre passi: cosa succede adesso ── */
-.sez{margin-top:30px; flex:none}
-.sezt{font-size:20px; letter-spacing:.22em; font-weight:800;
-  color:rgba(255,255,255,.4); margin-bottom:16px}
-.passi{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
-/* i tre passi RACCONTANO, non si toccano: niente cornice, niente
-   pastiglia, fondo appena accennato. Prima avevano il bordo colorato e
-   sembravano tre tasti — ed era il motivo per cui la gente ci provava. */
-.pz{background:rgba(255,255,255,.038); border:0; border-radius:26px;
-  padding:22px 22px 20px; display:flex; flex-direction:column; gap:13px}
-.pz .n{width:64px; height:64px; border-radius:20px; flex:none; display:flex;
-  align-items:center; justify-content:center; font-size:33px; font-weight:800;
+/* ══ LE SEZIONI DELLA VETRINA ══
+   La colonna adesso e' divisa a occhio, non solo a spazi: sopra ogni
+   parte che ha bisogno di essere presentata c'e' un filo che attraversa
+   tutta la larghezza e, appoggiata sopra, la sua targhetta. Il filo dice
+   «qui comincia un'altra cosa» prima ancora che uno legga la targhetta.
+   Le parti che si presentano da sole — il manifesto, la faccina, il
+   tasto — il filo non ce l'hanno: sarebbe rumore. */
+.sezione{margin-top:26px; flex:none; padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.1)}
+.sezt{font-size:17px; letter-spacing:.22em; font-weight:800;
+  color:rgba(255,255,255,.34); margin-bottom:12px;
+  display:flex; align-items:center; gap:11px}
+.sezt i{width:22px; height:2px; border-radius:2px; background:rgba(230,198,92,.6);
+  flex:none; display:block}
+
+/* ── i tre passi: adesso raccontano in una riga ──
+   Erano tre schede alte con titolo e descrizione: 290 punti per dire
+   «dimmi come ti chiami, rispondi, accomodati». Sono la spiegazione di
+   una cosa che dura due minuti, non il contenuto della vetrina, e
+   prendevano piu' spazio del manifesto. Adesso sono tre righe basse:
+   dicono la stessa cosa, ma stanno al loro posto. */
+.passi{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.pz{background:rgba(255,255,255,.035); border:0; border-radius:20px;
+  padding:12px 16px; display:flex; align-items:center; gap:14px}
+.pz .n{width:44px; height:44px; border-radius:14px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:23px; font-weight:800;
   background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2)}
-.pz .t1{display:block; font-size:27px; font-weight:800; line-height:1.2}
-.pz .t2{display:block; font-size:19px; line-height:1.38; color:rgba(255,255,255,.55)}
+.pz .tx{min-width:0; display:flex; flex-direction:column}
+.pz .t1{display:block; font-size:21px; font-weight:800; line-height:1.18}
+.pz .t2{display:block; font-size:15.5px; line-height:1.3; color:rgba(255,255,255,.5);
+  margin-top:3px}
 /* il numero resta colorato: dice l'ordine, non invita a premere */
 .pz.uno .n{background:rgba(230,198,92,.18); border-color:rgba(230,198,92,.5); color:#eed37a}
 .pz.due .n{background:rgba(169,119,154,.24); border-color:rgba(169,119,154,.55); color:#e2bdd4}
@@ -196,8 +211,8 @@ html,body{height:100%; background:#000; overflow:hidden;
 
 /* ── la faccina, che adesso parla su una riga sola ── */
 .avatar{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.2);
-  margin-top:28px; flex:none; display:flex; align-items:center; gap:22px;
-  padding:16px 26px 16px 20px; border-radius:999px}
+  margin-top:24px; flex:none; display:flex; align-items:center; gap:22px;
+  padding:12px 26px 12px 16px; border-radius:999px}
 /* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
 .avatar .frecc{position:static; flex:none}
 .orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none;
@@ -228,10 +243,41 @@ html,body{height:100%; background:#000; overflow:hidden;
    fluttuavano le bolle di prima — ferma non sembrerebbe piu' viva di
    un cartello — e ogni tanto una carta si accende da sola: un invito
    silenzioso, non un lampeggio che disturba. */
-.centro{margin-top:18px; flex:none}
-.centro .ct{font-size:19px; letter-spacing:.2em; font-weight:800;
-  color:rgba(255,255,255,.42); margin-bottom:12px; text-align:center}
+.centro{flex:none}
 .cfila{display:flex; gap:14px}
+
+/* ══ IL PENSIERO, SOTTO LE CINQUE PORTE ══
+   Il riflettore da solo dice «guarda questa», ma non dice PERCHE'. Qui
+   sotto compare, nello stesso momento, quello che si leggerebbe
+   toccandola: chi passa e non tocca niente, in venti secondi si e'
+   letto tutti e cinque i motivi per cui gli conviene entrare.
+   Cresce con lo schermo: su un 49 pollici 16:9 sta nei suoi 188 punti,
+   su un monitor piu' alto si allarga da sola e la frase respira. */
+.pens{margin-top:12px; flex:1 1 auto; min-height:162px; display:flex;
+  align-items:center; gap:24px; padding:20px 28px; border-radius:26px;
+  cursor:pointer; position:relative; overflow:hidden;
+  background:color-mix(in srgb, var(--mc) 8%, rgba(255,255,255,.028));
+  border:1.5px solid color-mix(in srgb, var(--mc) 34%, transparent);
+  transition:background .55s ease, border-color .55s ease,
+    transform .13s cubic-bezier(.32,.72,0,1)}
+.pens:active{transform:scale(.992)}
+.pens .pi{width:76px; height:76px; border-radius:23px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:37px; line-height:1;
+  background:color-mix(in srgb, var(--mc) 22%, transparent);
+  border:1.5px solid color-mix(in srgb, var(--mc) 50%, transparent);
+  transition:background .55s ease, border-color .55s ease}
+.pens .px{flex:1; min-width:0; transition:opacity .3s ease}
+.pens.cambia .px{opacity:0}
+.pens .pt{display:block; font-size:27px; font-weight:800; line-height:1.16;
+  color:var(--mc)}
+.pens .pf{display:block; font-size:21px; line-height:1.44; margin-top:9px;
+  color:rgba(255,255,255,.72)}
+.pens .pf b{color:#fff}
+.pens .pfr{position:absolute; right:18px; bottom:16px; width:30px; height:30px;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:17px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
+  background:rgba(255,255,255,.08);
+  border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
 .ccard{border-radius:22px; padding:15px 12px 30px; display:flex; flex-direction:column;
   align-items:center; gap:5px; text-align:center; flex:1; min-width:0; position:relative;
   cursor:pointer;
@@ -267,26 +313,36 @@ html,body{height:100%; background:#000; overflow:hidden;
 .ccard.spot .cci{background:color-mix(in srgb, var(--mc) 36%, transparent)}
 
 /* ── l'invito ── */
-.cta{margin-top:auto; flex:none; display:flex; flex-direction:column}
-.cta .btn{border-radius:34px; position:relative; overflow:hidden;
-  background:linear-gradient(110deg,#8a5779 0%,#a9779a 45%,#6f4267 100%);
-  box-shadow:0 26px 70px -22px rgba(122,73,108,.95);
-  display:flex; align-items:center; gap:26px; padding:28px 40px; cursor:pointer;
-  animation:pulse 2.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 26px 70px -22px rgba(122,73,108,.9)}
-  50%{box-shadow:0 26px 92px -18px rgba(169,119,154,.95)}}
-.cta .btn::after{content:""; position:absolute; top:0; left:-60%; width:40%; height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.19), transparent);
-  animation:sheen 3.8s ease-in-out infinite}
-@keyframes sheen{0%{left:-60%} 55%,100%{left:130%}}
-.cta .ic{font-size:58px; position:relative; flex:none}
+/* ── l'invito ──
+   Prima era un blocco rosa pieno che pulsava e aveva pure il riflesso
+   che scorreva sopra: gridava piu' della capsula. Su un totem in una
+   sala d'attesa non serve gridare — serve essere l'unica cosa che ha
+   la forma di un tasto, ed esserlo con eleganza. Adesso il fondo e'
+   scuro e appena velato di viola, il filo intorno e' chiaro, la
+   freccia sta dentro una pastiglia piena: si vede da dieci metri
+   perche' e' largo e ha il bordo acceso, non perche' lampeggia.
+   E il margine sopra e' fisso: non si attacca mai a quello che lo
+   precede, nemmeno quando lo schermo e' cortissimo. */
+.cta{margin-top:28px; flex:none; display:flex; flex-direction:column}
+.cta .btn{border-radius:30px; position:relative; overflow:hidden;
+  background:linear-gradient(110deg, rgba(138,87,121,.42), rgba(90,52,80,.26));
+  border:1.5px solid rgba(226,189,212,.42);
+  box-shadow:0 18px 52px -26px rgba(122,73,108,.9);
+  display:flex; align-items:center; gap:24px; padding:18px 32px; cursor:pointer;
+  transition:transform .13s cubic-bezier(.32,.72,0,1), background .2s}
+.cta .btn:active{transform:scale(.99); background:linear-gradient(110deg,
+  rgba(169,119,154,.55), rgba(122,73,108,.4))}
+.cta .ic{font-size:46px; position:relative; flex:none}
 .cta .tx{position:relative; flex:1; min-width:0; display:flex; flex-direction:column}
-.cta .t1{display:block; font-size:56px; font-weight:800; letter-spacing:.01em;
+.cta .t1{display:block; font-size:52px; font-weight:800; letter-spacing:.01em;
   line-height:1.04; white-space:nowrap}
-.cta .t2{display:block; font-size:23px; color:rgba(255,255,255,.85); margin-top:9px;
+.cta .t2{display:block; font-size:20px; color:rgba(255,255,255,.72); margin-top:8px;
   font-weight:600}
-.cta .go{font-size:54px; color:rgba(255,255,255,.7); flex:none; position:relative}
-.cta .hint{text-align:center; font-size:19px; color:rgba(255,255,255,.4); margin-top:14px}
+.cta .go{width:58px; height:58px; border-radius:50%; flex:none; position:relative;
+  display:flex; align-items:center; justify-content:center; padding-bottom:5px;
+  font-size:34px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg,#a9779a,#7a496c)}
+.cta .hint{text-align:center; font-size:18px; color:rgba(255,255,255,.38); margin-top:10px}
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -999,18 +1055,18 @@ html,body{height:100%; background:#000; overflow:hidden;
       </div>
 
       <!-- cosa succede adesso -->
-      <div class="sez">
-        <div class="sezt">COSA SUCCEDE ADESSO · TRE COSE, DUE MINUTI</div>
+      <div class="sez sezione">
+        <div class="sezt"><i></i>COSA SUCCEDE ADESSO · DUE MINUTI</div>
         <div class="passi">
-          <div class="pz uno"><span class="n">1</span>
-            <span class="t1">Dimmi come<br>ti chiami</span>
-            <span class="t2">Se sei già stato da noi ti riconosco da poche lettere</span></div>
-          <div class="pz due"><span class="n">2</span>
-            <span class="t1">Rispondi a<br>sei domande</span>
-            <span class="t2">Cosa hai fatto oggi, dove tira, come ti senti</span></div>
-          <div class="pz tre"><span class="n">3</span>
-            <span class="t1">Accomodati:<br>ti chiamo io</span>
-            <span class="t2">Il tuo operatore trova già pronto il programma giusto</span></div>
+          <div class="pz uno"><span class="n">1</span><span class="tx">
+            <span class="t1">Dimmi come ti chiami</span>
+            <span class="t2">Ti riconosco da poche lettere</span></span></div>
+          <div class="pz due"><span class="n">2</span><span class="tx">
+            <span class="t1">Rispondi a sei domande</span>
+            <span class="t2">Cosa hai fatto, dove tira, come stai</span></span></div>
+          <div class="pz tre"><span class="n">3</span><span class="tx">
+            <span class="t1">Accomodati: ti chiamo io</span>
+            <span class="t2">L'operatore trova già tutto pronto</span></span></div>
         </div>
       </div>
 
@@ -1021,7 +1077,11 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="bubble" id="bub"></div>
         <span class="frecc">›</span>
       </div>
-      <div class="centro" id="centro"></div>
+      <div class="sezione porte">
+        <div class="sezt"><i></i>E TU, COSA FAI QUI DENTRO?</div>
+        <div class="centro" id="centro"></div>
+        <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
+      </div>
 
       <!-- l'invito -->
       <div class="cta">
@@ -1488,7 +1548,7 @@ const BAND_SUB = {ems:'elettrostimolazione', matrix:'pesi digitali',
 function centroBuild(){
   const box = document.getElementById('centro');
   if(!box) return;
-  box.innerHTML = '<div class="ct">E TU, COSA FAI QUI DENTRO?</div><div class="cfila">'
+  box.innerHTML = '<div class="cfila">'
     + ORDINE_CENTRO.map(k=>{
         const m = MAC_DI(k);
         return '<div class="ccard tocca" style="--mc:' + COL_MAC[k] + '"'
@@ -1499,14 +1559,41 @@ function centroBuild(){
           + '<span class="cfr">›</span></div>';
       }).join('') + '</div>';
 }
-let centroI = 0, centroTimer = null;
+/* ── il riflettore, e il pensiero che lo segue ──
+   Si accendono insieme: la porta si illumina e sotto compare, con un
+   cambio morbido, quello che si leggerebbe toccandola. Il pensiero e'
+   anche lui un tasto: porta alla stessa scheda della porta accesa. */
+let centroI = 0, centroTimer = null, CENTRO_ACCESO = ORDINE_CENTRO[0];
 function centroSpotStep(){
   const carte = [...document.querySelectorAll('#centro .ccard')];
-  carte.forEach(c=> c.classList.remove('spot'));
-  if(carte.length) carte[centroI % carte.length].classList.add('spot');
+  if(!carte.length) return;
+  const k = ORDINE_CENTRO[centroI % ORDINE_CENTRO.length];
+  carte.forEach(c=> c.classList.toggle('spot',
+    c.getAttribute('onclick').indexOf("'" + k + "'") >= 0));
+  CENTRO_ACCESO = k;
+  disegnaPensiero(k);
   centroI++;
 }
-function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, 4200); }
+function disegnaPensiero(k){
+  const box = document.getElementById('pens');
+  if(!box) return;
+  const m = MAC_DI(k), p = PENSIERI[k];
+  box.style.setProperty('--mc', COL_MAC[k]);
+  const scrivi = ()=>{
+    box.innerHTML = '<span class="pi">' + m[0] + '</span>'
+      + '<span class="px"><span class="pt">' + p.t + '</span>'
+      + '<span class="pf">' + p.f + '</span></span>'
+      + '<span class="pfr">›</span>';
+    box.classList.remove('cambia');
+  };
+  /* la prima volta si scrive e basta; dopo si sfuma, si cambia, si
+     riaccende — se no le parole si sostituiscono di scatto */
+  if(!box.innerHTML.trim()){ scrivi(); return; }
+  box.classList.add('cambia');
+  setTimeout(scrivi, 300);
+}
+function apriCasoAcceso(){ apriRispostaCaso(CENTRO_ACCESO); }
+function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, 5200); }
 function centroSpotStop(){
   clearInterval(centroTimer); centroTimer = null;
   document.querySelectorAll('#centro .ccard').forEach(c=> c.classList.remove('spot'));
@@ -2035,8 +2122,16 @@ function sagoma(vista){
    vede lo stesso alone in tre punti diversi del totem (la carta in
    home, il foglio dei macchinari, la domanda del check-in) impara a
    riconoscerli senza dover rileggere il nome ogni volta. */
-const COL_MAC = {ems:'#e6c65c', ems2:'#6c9bf5', vacufit:'#4fd1c5',
-                  matrix:'#ef8a5c', riposo:'#b98adf'};
+/* I quattro colori sono quelli che i macchinari hanno gia' nell'agenda
+   dell'altro gestionale: turchese, arancione, magenta, rosso-rosa. Non
+   li ho scelti io ed e' giusto cosi' — chi lavora qui li ha gia' in
+   testa da mesi, e due sistemi che chiamano lo stesso macchinario con
+   due colori diversi si contraddicono a vicenda.
+   «A riposo» non e' un macchinario e di la' non esiste: quello e'
+   l'unico che ho scelto io, viola — l'unico porpora freddo che non si
+   confonde con gli altri quattro ne' con l'oro degli inviti. */
+const COL_MAC = {ems:'#2FC4C4', matrix:'#F5851F', vacufit:'#DC1E78',
+                  ems2:'#EE3355', riposo:'#B98ADF'};
 const MACCHINE = [
   ['⚡','EMS',
    'Impulsi elettrici fanno contrarre i muscoli senza caricare le articolazioni: '
@@ -2069,6 +2164,38 @@ const MACCHINE = [
    + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più.', 'riposo']
 ];
 const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
+
+/* ── IL PENSIERO CHE ACCOMPAGNA IL RIFLETTORE ──
+   Regola che vale per tutte e cinque, e non e' una preferenza di stile:
+   NON SI SMINUISCE MAI CHI FA SOLO IL MACCHINARIO. Chi ha fatto EMS ha
+   fatto un allenamento serio, punto — e la frase glielo dice per prima
+   cosa, con parole sue. Solo dopo arriva Zenith, e non come la parte
+   che mancava: come la cosa che fa RENDERE DI PIU' quella che ha gia'
+   fatto. «Non basta», «a metà», «incompleto» qui dentro non esistono:
+   una vetrina che dice a uno che ha appena finito di allenarsi che ha
+   fatto poco, lo perde — e ha pure ragione lui. */
+const PENSIERI = {
+  ems: {t:'Hai fatto EMS oggi. Ottimo lavoro.',
+    f:'Venti minuti di EMS valgono un allenamento lungo il doppio: hai chiesto ai '
+    + 'muscoli un lavoro serio. Zenith riparte da lì — pressione sui gruppi che hai '
+    + 'contratto, calore, gambe sopra il cuore — e <b>te lo fa rendere di più</b>.'},
+  matrix: {t:'Hai fatto Matrix oggi. Bel lavoro.',
+    f:'Carichi controllati, serie e ripetizioni: il muscolo cresce così, e oggi l\'hai '
+    + 'fatto crescere. Zenith arriva dopo e lo riapre proprio dove hai caricato: '
+    + '<b>lo stesso allenamento, con meno rigidità domani</b>.'},
+  vacufit: {t:'Hai fatto Vacutherm oggi. Ottimo.',
+    f:'Camminare in vuototerapia è un gran lavoro sulle gambe, e le hai lasciate '
+    + 'leggere. Zenith prende quella leggerezza — airbag a onde, gravità zero, rulli '
+    + 'sotto la pianta — e <b>te la fa durare molto più a lungo</b>.'},
+  ems2: {t:'Hai fatto EMS2 oggi. Complimenti.',
+    f:'Impulsi e camminata insieme: è la seduta che chiede di più a gambe e piedi, e '
+    + 'tu l\'hai portata a casa. Zenith scarica esattamente lì, compressione alta e '
+    + 'gravità zero: <b>lo stesso lavoro, e te ne vai leggero</b>.'},
+  riposo: {t:'Oggi non ti alleni? Va benissimo.',
+    f:'Anche senza allenamento il corpo lavora: otto ore su una sedia chiedono alla '
+    + 'schiena più di quanto sembri. Qui il programma nasce da come stai adesso — '
+    + 'leggerezza, sonno, decompressione, energia. <b>Mezz\'ora tutta per te</b>.'}
+};
 function apriMacchine(){
   document.getElementById('mlist').innerHTML = MACCHINE.map(m=>
     '<div class="mac"><div class="mhd"><span class="mfi" style="--mc:' + COL_MAC[m[4]] + '">' + m[0] + '</span>'
