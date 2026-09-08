@@ -520,45 +520,107 @@ html,body{height:100%; background:#000; overflow:hidden;
    carte sono dispari l'ultima prende tutta la larghezza invece di
    lasciare un buco — e' cosi' che il gestionale mette la pressione
    media sotto le altre due. */
-.opts{display:grid; grid-template-columns:1fr; gap:16px; grid-auto-rows:156px}
-.opts.due{grid-template-columns:1fr 1fr}
-.opts.due .opt:last-child:nth-child(odd){grid-column:1 / -1}
+/* Una colonna sola, come nel gestionale. Su due colonne le descrizioni
+   andavano a capo — «allenamento con pesi / digitali» — e due colonne
+   di carte alte obbligano l'occhio a fare avanti e indietro. In colonna
+   si scende e basta. */
+.opts{display:grid; grid-template-columns:1fr; gap:14px; grid-auto-rows:134px}
 .opt{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14); border-radius:26px;
-  padding:22px 28px; display:flex; align-items:center; gap:22px; cursor:pointer;
+  padding:18px 26px; display:flex; align-items:center; gap:24px; cursor:pointer;
   opacity:0; transform:translateY(24px);
   transition:opacity .45s, transform .45s, border-color .2s, background .2s}
 .opt.in{opacity:1; transform:none}
 .opt.sel{border-color:#e6c65c; background:rgba(212,175,55,.14);
   box-shadow:0 0 0 4px rgba(212,175,55,.12)}
-.opt .oi{font-size:56px; flex:none; width:76px; text-align:center}
+/* L'icona sta dentro una piastrella, come nel gestionale. Prima le
+   emoji galleggiavano nel vuoto e ognuna aveva la sua misura: cinque
+   icone di cinque grandezze diverse, e la colonna non stava dritta.
+   Dentro la piastrella sono tutte uguali, e la fila di piastrelle fa
+   da guida all'occhio che scende. */
+.opt .oi{font-size:44px; width:92px; height:92px; flex:none; border-radius:26px;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.13);
+  transition:background .2s, border-color .2s}
+.opt.sel .oi{background:rgba(212,175,55,.2); border-color:rgba(230,198,92,.6)}
 .opt .ox{flex:1; min-width:0; display:flex; flex-direction:column}
-.opt .ot{font-size:31px; font-weight:800; line-height:1.2}
-.opt .od{font-size:19px; color:rgba(255,255,255,.56); margin-top:6px; line-height:1.32}
-.opt .ck{width:40px; height:40px; border-radius:50%; flex:none;
-  border:2px solid rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center;
-  font-size:22px; color:#0c0a0f; background:transparent; transition:background .2s, border-color .2s}
-.opt.sel .ck{background:#e6c65c; border-color:#e6c65c}
+.opt .ot{font-size:30px; font-weight:800; line-height:1.2}
+.opt .od{font-size:19px; color:rgba(255,255,255,.56); margin-top:5px; line-height:1.32}
+/* La spunta compare solo su quella scelta. Prima c'erano sei cerchietti
+   vuoti in colonna, e sei cerchietti vuoti sembrano sei caselle da
+   riempire tutte. */
+.opt .ck{width:46px; height:46px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:25px; font-weight:800; color:#0c0a0f; background:#e6c65c;
+  opacity:0; transform:scale(.5); transition:opacity .22s, transform .22s}
+.opt.sel .ck{opacity:1; transform:none}
 
-/* Le zone del corpo: la stessa sagoma del gestionale, disegno per
-   disegno — viso, capelli, riquadri e loro posizione — solo grande
-   quanto serve su un 49 pollici. Le stesse sette zone, sui due lati
-   esattamente dove le mette il gestionale, gli stessi tre gradini di
-   etichette, lo stesso limite di tre zone con la prima che guida. */
+/* ── la parte in piu' sotto la prima domanda ──
+   E' quella del gestionale, ma scritta per chi la legge qui: non «cosa
+   lascia nel corpo del cliente», «cosa lascia nel TUO corpo». */
+.qinfo{margin:20px auto 0; max-width:840px; padding:20px 30px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:16px;
+  background:rgba(255,255,255,.04); border:2px dashed rgba(255,255,255,.2);
+  border-radius:24px; font-size:22px; font-weight:700; color:rgba(255,255,255,.74);
+  transition:transform .14s cubic-bezier(.32,.72,0,1), border-color .2s, color .2s}
+.qinfo:active{transform:scale(.985); border-color:#e6c65c; color:#eed37a}
+.qinfo .ii{width:46px; height:46px; border-radius:50%; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:26px; font-weight:800;
+  border:2px solid rgba(230,198,92,.55); color:#eed37a}
+
+/* il foglio che sale dal basso: i macchinari del centro */
+.velo{position:absolute; inset:0; z-index:80; background:rgba(6,4,9,.84);
+  display:none; align-items:flex-end; justify-content:center}
+.velo.on{display:flex}
+.foglio{width:100%; max-height:95%; background:#14101a;
+  border-top:2px solid rgba(230,198,92,.4); border-radius:46px 46px 0 0;
+  padding:44px 58px 40px; display:flex; flex-direction:column;
+  animation:sale .38s cubic-bezier(.22,1,.36,1)}
+@keyframes sale{from{transform:translateY(70px); opacity:0}}
+.foglio .ft{font-size:44px; font-weight:800; letter-spacing:-.02em}
+.foglio .fs{font-size:23px; color:rgba(255,255,255,.6); margin-top:10px; line-height:1.42}
+.mlist{margin-top:24px; flex:1; min-height:0; overflow-y:auto; display:flex;
+  flex-direction:column; gap:14px; padding-right:10px}
+.mac{background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.12);
+  border-radius:28px; padding:20px 26px}
+.mac .mhd{display:flex; flex-direction:row; align-items:center; gap:16px}
+.mac .mfi{width:64px; height:64px; border-radius:20px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:34px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12)}
+.mac .mfn{font-size:30px; font-weight:800}
+.mac .mfd{font-size:19px; line-height:1.42; color:rgba(255,255,255,.58); margin-top:12px}
+.mac .mfz{font-size:19px; line-height:1.42; margin-top:11px; padding-left:20px;
+  border-left:3px solid rgba(230,198,92,.6); color:rgba(255,255,255,.88)}
+.mac .mfz b{color:#eed37a}
+
+/* ══ LE ZONE DEL CORPO — LA SAGOMA RIFATTA DA CAPO ══
+   Prima era la sagoma del gestionale ingrandita: un corpo intero, e
+   sopra i riquadri delle zone appoggiati uno addosso all'altro. Le
+   braccia toccavano il busto, il collo toccava le spalle, e a due
+   metri da un 49 pollici non si capiva dove finisse una zona e dove
+   cominciasse l'altra.
+   Adesso il corpo E' fatto dei suoi pezzi — testa, spalle, dorso,
+   lombi, bacino, due braccia, due gambe, due piedi — staccati uno
+   dall'altro. Ogni zona e' un pezzo intero, e lo stacco fra un pezzo e
+   l'altro non e' un dettaglio del disegno: e' il disegno. Piu' grande
+   di prima di un terzo, perche' si tocca da lontano. */
 .zwrap{display:flex; flex-direction:column; align-items:center; gap:20px}
-.zfigs{display:flex; gap:40px; justify-content:center}
+.zfigs{display:flex; gap:56px; justify-content:center}
 .bodyfig{display:flex; flex-direction:column; align-items:center}
-.bodyfig svg{height:420px; width:auto; display:block}
-.bodyfig .sil path, .bodyfig .sil circle{fill:rgba(255,255,255,.07);
-  stroke:rgba(255,255,255,.3); stroke-width:1.5}
+.bodyfig svg{height:540px; width:auto; display:block; overflow:visible}
+.bodyfig .parte{fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.2);
+  stroke-width:1.3}
 .bodyfig .face circle{fill:rgba(255,255,255,.5); stroke:none}
-.bodyfig .face path{stroke:rgba(255,255,255,.5); stroke-width:1.2; fill:none}
+.bodyfig .face path{stroke:rgba(255,255,255,.5); stroke-width:1.4; fill:none}
 .bodyfig .face path.hair{fill:rgba(255,255,255,.3); stroke:rgba(255,255,255,.3)}
-.bodyfig .bz rect{fill:transparent; stroke:rgba(255,255,255,.45); stroke-width:1;
-  stroke-dasharray:3 3; cursor:pointer; transition:fill .15s ease, stroke .15s ease}
-.bodyfig .bz.on rect{fill:#e6c65c; fill-opacity:.9; stroke:#fff; stroke-width:1.4;
-  stroke-dasharray:none; filter:drop-shadow(0 0 7px rgba(230,198,92,.9))}
-.bodylabel{font-size:19px; letter-spacing:.16em; font-weight:800;
-  color:rgba(255,255,255,.45); margin-top:10px}
+/* un pezzo che si puo' toccare si vede che si puo' toccare: filo
+   tratteggiato e fondo un po' piu' chiaro degli altri */
+.bodyfig .bz rect{fill:rgba(255,255,255,.1); stroke:rgba(255,255,255,.42);
+  stroke-width:1.6; stroke-dasharray:5 3.5; cursor:pointer;
+  transition:fill .16s ease, stroke .16s ease}
+.bodyfig .bz.on rect{fill:#e6c65c; fill-opacity:.92; stroke:#fff; stroke-width:1.8;
+  stroke-dasharray:none; filter:drop-shadow(0 0 8px rgba(230,198,92,.9))}
+.bodylabel{font-size:20px; letter-spacing:.16em; font-weight:800;
+  color:rgba(255,255,255,.45); margin-top:14px}
 
 .zcols{display:flex; flex-direction:column; gap:14px; align-items:center}
 .ztier{display:flex; gap:16px; justify-content:center}
@@ -574,14 +636,21 @@ html,body{height:100%; background:#000; overflow:hidden;
 
 .zapex{display:grid; grid-template-columns:1fr 1fr; gap:18px;
   max-width:700px; margin:4px auto 0}
-.zquick{ background:rgba(255,255,255,.05);
-  border:2px solid rgba(255,255,255,.14); border-radius:22px; min-height:84px;
-  padding:14px 20px; display:flex; align-items:center; gap:14px; cursor:pointer;
+/* ── le due scorciatoie ──
+   Chi non sa quale zona scegliere — ed e' quasi sempre chi entra la
+   prima volta — deve trovarle senza cercarle. Non gridano: il fondo
+   appena caldo, il filo d'oro un po' piu' presente, la piastrella
+   dell'icona accesa. Basta questo perche' l'occhio ci cada. */
+.zquick{background:linear-gradient(150deg, rgba(230,198,92,.11), rgba(255,255,255,.035));
+  border:2px solid rgba(230,198,92,.34); border-radius:22px; min-height:92px;
+  padding:14px 22px; display:flex; align-items:center; gap:18px; cursor:pointer;
   transition:background .2s, border-color .2s}
-.zquick.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
-.zquick .zqi{font-size:34px; flex:none}
+.zquick.on{border-color:#e6c65c; background:rgba(212,175,55,.2)}
+.zquick .zqi{font-size:30px; flex:none; width:60px; height:60px; border-radius:18px;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+  background:rgba(230,198,92,.14); border:1px solid rgba(230,198,92,.34)}
 .zquick .zqx{display:flex; flex-direction:column; min-width:0}
-.zquick .zql{font-size:23px; font-weight:800; line-height:1.2}
+.zquick .zql{font-size:24px; font-weight:800; line-height:1.2; color:#f4e7c4}
 .zquick .zqs{font-size:17px; color:rgba(255,255,255,.55); margin-top:4px}
 .zhint{text-align:center; font-size:20px; color:rgba(255,255,255,.5); margin-top:8px}
 .zhint b{color:#e6c65c}
@@ -1004,6 +1073,20 @@ html,body{height:100%; background:#000; overflow:hidden;
    </div>
   </section>
 
+  <!-- la parte in piu' della prima domanda: cosa lascia nel corpo
+       ogni macchinario del centro, e cosa ci fa Zenith -->
+  <div class="velo" id="velo" onclick="chiudiMacchine(event)">
+    <div class="foglio" onclick="event.stopPropagation()">
+      <div class="ft">I macchinari del centro</div>
+      <div class="fs">Ognuno lascia nel corpo una cosa diversa. Zenith parte da lì:
+        è per questo che la prima domanda è cosa hai fatto oggi.</div>
+      <div class="mlist" id="mlist"></div>
+      <div class="navrow" style="margin-top:26px">
+        <div class="nav next" onclick="chiudiMacchine()">HO CAPITO ›</div>
+      </div>
+    </div>
+  </div>
+
   <div class="tost" id="tost"></div>
 
   <div class="dbg" id="dbg"></div>
@@ -1339,6 +1422,7 @@ function bolleStop(){ clearInterval(bolleTimer); bolleTimer = null; }
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
 function go(n){
+  chiudiMacchine();
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
@@ -1772,46 +1856,109 @@ const ZONE = [
 ];
 const ZNOME = z => (ZONE.find(x=>x[0]===z) || [,z])[1];
 
-/* La sagoma: e' quella del gestionale, ricopiata tratto per tratto —
-   corpo, testa, viso di fronte, capelli di spalle — e gli stessi
-   riquadri delle zone, nelle stesse identiche posizioni. Sul davanti
-   quattro zone, di spalle tutte e sette, come nel gestionale. */
-const CORPO_PATH = 'M52 30 h16 l2 6 h14 c6 0 8 5 8 10 v46 l-8 26 h-6 l4 -30 v-14 h-4 v22 '
-  + 'l-6 40 h4 l-2 52 h6 l2 10 h-18 l-2 -10 -4 -44 -4 44 -2 10 h-18 l2 -10 h6 l-2 -52 h4 '
-  + 'l-6 -40 v-22 h-4 v14 l4 30 h-6 l-8 -26 v-46 c0 -5 2 -10 8 -10 h14 z';
+/* ══ LA SAGOMA, RIFATTA DA CAPO ══
+   La prima era quella del gestionale ingrandita: un corpo solo, e sopra
+   i riquadri delle zone appoggiati uno addosso all'altro. Su uno schermo
+   da telefono, con il dito a venti centimetri, funziona. Su un 49
+   pollici, a due metri, no: le braccia toccavano il busto, il collo
+   toccava le spalle, e non si capiva dove finisse una zona e dove
+   cominciasse l'altra.
+   Adesso il corpo E' fatto dei suoi pezzi, staccati fra loro, e ogni
+   zona e' un pezzo intero. Lo stacco fra un pezzo e l'altro — sei unita'
+   dappertutto, dodici fra le due gambe — non e' un dettaglio del
+   disegno: e' quello che rende leggibile il disegno. Chi guarda non deve
+   capire una figura umana: deve capire dove mettere il dito. */
+const PEZZI = {
+  cervicale: '<rect x="99" y="58" width="22" height="18" rx="8"/>'
+           + '<rect x="64" y="80" width="92" height="34" rx="16"/>',
+  dorsale:   '<rect x="70" y="120" width="80" height="46" rx="18"/>',
+  lombare:   '<rect x="74" y="172" width="72" height="38" rx="16"/>',
+  glutei:    '<rect x="68" y="216" width="84" height="44" rx="20"/>',
+  braccia:   '<rect x="34" y="86" width="24" height="116" rx="12"/>'
+           + '<rect x="162" y="86" width="24" height="116" rx="12"/>',
+  gambe:     '<rect x="76" y="266" width="28" height="96" rx="14"/>'
+           + '<rect x="116" y="266" width="28" height="96" rx="14"/>',
+  piedi:     '<rect x="70" y="368" width="38" height="22" rx="10"/>'
+           + '<rect x="112" y="368" width="38" height="22" rx="10"/>'
+};
+/* Davanti si toccano quattro zone, di spalle tutte e sette: le stesse
+   del gestionale, e nello stesso ordine. I pezzi che da quel lato non
+   sono una zona restano disegnati — un corpo a cui manca la schiena non
+   e' un corpo — ma spenti e non si toccano. */
+const ATTIVE = {
+  front: ['cervicale','braccia','gambe','piedi'],
+  back:  ['cervicale','dorsale','lombare','glutei','braccia','gambe','piedi']
+};
+const ORDINE = ['cervicale','dorsale','lombare','glutei','braccia','gambe','piedi'];
 
 function sagoma(vista){
-  const z = (id, forma) =>
-    '<g class="bz' + (D.zones.includes(id) ? ' on' : '') + '" data-z="' + id
-    + '" onclick="tapZona(\'' + id + '\')">' + forma + '</g>';
-  const corpo = '<circle cx="60" cy="18" r="12"/><path d="' + CORPO_PATH + '"/>';
-  const sil = vista === 'front'
-    ? corpo + '<g class="face">'
-      + '<circle cx="55.5" cy="15.5" r="1.4"/><circle cx="64.5" cy="15.5" r="1.4"/>'
-      + '<path d="M60 17 l0 4 l1.5 0" fill="none"/>'
-      + '<path d="M55.5 23.5 Q60 26.5 64.5 23.5" fill="none"/>'
-      + '<path d="M49 12 Q54 6 60 6.5 Q66 6 71 12" fill="none"/></g>'
-    : corpo + '<g class="face">'
-      + '<path class="hair" d="M48.5 16 Q54 7 60 7 Q66 7 71.5 16 L71 20 Q60 15 49 20 Z"/>'
-      + '<path d="M56 29 Q60 27.5 64 29" fill="none"/></g>';
-  let zone = '';
-  if(vista === 'front'){
-    zone += z('cervicale','<rect x="34" y="30" width="52" height="14" rx="7"/>');
-    zone += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
-    zone += z('gambe','<rect x="40" y="110" width="16" height="80" rx="8"/><rect x="64" y="110" width="16" height="80" rx="8"/>');
-    zone += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
-  } else {
-    zone += z('cervicale','<rect x="34" y="30" width="52" height="12" rx="6"/>');
-    zone += z('dorsale','<rect x="38" y="44" width="44" height="32" rx="8"/>');
-    zone += z('lombare','<rect x="40" y="78" width="40" height="20" rx="8"/>');
-    zone += z('glutei','<rect x="38" y="99" width="44" height="20" rx="9"/>');
-    zone += z('braccia','<rect x="20" y="46" width="12" height="46" rx="6"/><rect x="88" y="46" width="12" height="46" rx="6"/>');
-    zone += z('gambe','<rect x="40" y="122" width="16" height="68" rx="8"/><rect x="64" y="122" width="16" height="68" rx="8"/>');
-    zone += z('piedi','<rect x="38" y="192" width="20" height="14" rx="6"/><rect x="62" y="192" width="20" height="14" rx="6"/>');
-  }
-  return '<div class="bodyfig"><svg viewBox="8 0 104 214">'
-    + '<g class="sil">' + sil + '</g>' + zone + '</svg>'
+  const viva = ATTIVE[vista];
+  const pezzi = ORDINE.map(id=> viva.indexOf(id) >= 0
+    ? '<g class="bz' + (D.zones.includes(id) ? ' on' : '') + '" data-z="' + id
+      + '" onclick="tapZona(\'' + id + '\')">' + PEZZI[id] + '</g>'
+    : '<g class="parte">' + PEZZI[id] + '</g>').join('');
+  const viso = vista === 'front'
+    ? '<g class="face"><circle cx="101" cy="32" r="3"/><circle cx="119" cy="32" r="3"/>'
+      + '<path d="M110 34 v9 h4"/><path d="M100 46 Q110 53 120 46"/>'
+      + '<path d="M88 27 Q99 13 110 14 Q121 13 132 27"/></g>'
+    : '<g class="face">'
+      + '<path class="hair" d="M87 34 Q97 11 110 11 Q123 11 133 34 L132 43 Q110 31 88 43 Z"/>'
+      + '<path d="M101 55 Q110 52 119 55"/></g>';
+  return '<div class="bodyfig"><svg viewBox="0 0 220 396">'
+    + '<circle class="parte" cx="110" cy="36" r="26"/>' + pezzi + viso + '</svg>'
     + '<div class="bodylabel">' + (vista === 'front' ? 'FRONTE' : 'RETRO') + '</div></div>';
+}
+
+/* ─── i macchinari del centro ───
+   E' la stessa scheda che ha il gestionale sotto la prima domanda, ma
+   riscritta per chi la legge qui: non «cosa lascia nel corpo del
+   cliente», «cosa lascia nel TUO corpo». E senza le sigle delle
+   famiglie: a chi sta per entrare non dicono niente. */
+const MACCHINE = [
+  ['⚡','EMS',
+   'Impulsi elettrici fanno contrarre i muscoli senza caricare le articolazioni: '
+   + 'un lavoro intenso ma breve. Ti lascia i muscoli in debito di recupero, '
+   + 'e spesso l\'indolenzimento arriva il giorno dopo.',
+   'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato. '
+   + 'Se sei già indolenzito passa al programma <b>anti-DOMS</b>; se oggi hai '
+   + 'lavorato le braccia, al recupero della parte alta.'],
+  ['🌀','EMS2',
+   'Gli stessi impulsi, ma mentre cammini veloce sul tapis roulant: muscoli e '
+   + 'fiato insieme, con gambe e piedi sotto carico per tutta la seduta.',
+   'Zenith alza la <b>compressione degli airbag</b>, accende la <b>posizione a '
+   + 'gravità zero</b> e i <b>rulli su polpacci e piedi</b>: è lì che hai '
+   + 'lavorato di più.'],
+  ['💨','Vacutherm',
+   'Cammini dentro una cabina in depressione, che richiama il sangue verso gambe '
+   + 'e glutei. Lavoro dolce, ma tutto concentrato sulla parte bassa.',
+   'Zenith mette <b>gambe e piedi al centro</b> per far durare la leggerezza, '
+   + 'con airbag alti, gravità zero e rulli sotto la pianta.'],
+  ['🏋️','Matrix',
+   'Pesi digitali: carichi controllati elettronicamente, serie e ripetizioni. '
+   + 'È l\'allenamento che affatica di più i gruppi che hai scelto.',
+   'Zenith sceglie in base alla zona: <b>gambe</b> se hai lavorato gambe o '
+   + 'glutei, <b>parte alta</b> per le braccia, <b>allungamento in stile Thai</b> '
+   + 'se cerchi il relax.'],
+  ['😌','Nessun allenamento',
+   'Nessun carico da smaltire: oggi la seduta non serve a recuperare da uno '
+   + 'sforzo, ma a rispondere a come stai adesso.',
+   'Zenith segue l\'<b>obiettivo che scegli</b> alla terza domanda: leggerezza, '
+   + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più.']
+];
+function apriMacchine(){
+  document.getElementById('mlist').innerHTML = MACCHINE.map(m=>
+    '<div class="mac"><div class="mhd"><span class="mfi">' + m[0] + '</span>'
+    + '<span class="mfn">' + m[1] + '</span></div>'
+    + '<div class="mfd">' + m[2] + '</div>'
+    + '<div class="mfz">' + m[3] + '</div></div>').join('');
+  document.getElementById('velo').classList.add('on');
+  idleReset();
+}
+function chiudiMacchine(e){
+  if(e && e.target !== e.currentTarget) return;
+  const v = document.getElementById('velo');
+  if(v) v.classList.remove('on');
+  idleReset();
 }
 
 let PASSO = 0, FIELD = 'nome';
@@ -1927,7 +2074,11 @@ function disegnaPasso(){
       + ' onclick="scegli(\'' + P.k + '\',\'' + o[0] + '\')">'
       + '<span class="oi">' + o[1] + '</span>'
       + '<span class="ox"><span class="ot">' + o[2] + '</span><span class="od">' + o[3] + '</span></span>'
-      + '<span class="ck">✓</span></div>').join('') + '</div>';
+      + '<span class="ck">✓</span></div>').join('') + '</div>'
+      + (P.k === 'activity'
+          ? '<div class="qinfo" onclick="apriMacchine()"><span class="ii">i</span>'
+            + 'Cosa lascia ogni macchinario nel tuo corpo, e cosa fa Zenith</div>'
+          : '');
     [...document.querySelectorAll('.opt')].forEach((el,i)=>
       setTimeout(()=> el.classList.add('in'), 70 + i * 80));
   }
