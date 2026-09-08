@@ -804,14 +804,23 @@ html,body{height:100%; background:#000; overflow:hidden;
 .nav.next.off{opacity:.3; pointer-events:none; box-shadow:none}
 
 /* ══════════════════════════════════════════════════════════════
-   4 · ACCOMODATI · PREPARAZIONE · PROTOCOLLO
-   La schermata finale non è più una sola: sotto al saluto scorrono la
-   preparazione (per il cliente) e il protocollo proposto (per chi lo
-   accompagna al tablet).
+   4 · LA SEDUTA, RACCONTATA A CHI LA FA
+   La schermata finale non dà istruzioni: racconta al cliente la sua
+   seduta dal primo all'ultimo minuto — adesso, quando entri, alla fine
+   — e solo dopo, dichiarandolo, mette la parte che serve all'operatore.
+   L'ordine è quello dell'importanza per chi legge, e chi legge è lui.
+   Due regole imparate qui:
+   · non si dice «accomodati» prima di aver detto cosa fare. Dire
+     «siediti» e poi «svuota le tasche» fa alzare di nuovo chi si era
+     appena seduto;
+   · niente «tablet»: qui esistono il touchscreen della capsula e il
+     gestionale, che gira su questo stesso totem.
    ══════════════════════════════════════════════════════════════ */
 .donewrap{position:absolute; inset:0; overflow-y:auto; padding-bottom:40px}
-.done{min-height:100%; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; padding:70px 80px; text-align:center}
+/* alto quanto il suo contenuto, non quanto lo schermo: prima sotto al
+   saluto restava mezzo metro di nero per niente */
+.done{display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:74px 80px 34px; text-align:center}
 .done .ring{width:210px; height:210px; border-radius:50%; border:4px solid #e6c65c;
   display:flex; align-items:center; justify-content:center; font-size:104px;
   animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
@@ -828,19 +837,60 @@ html,body{height:100%; background:#000; overflow:hidden;
   animation:sciv 2.2s ease-in-out infinite}
 @keyframes sciv{0%,100%{transform:translateY(0); opacity:.7} 50%{transform:translateY(9px); opacity:1}}
 
-/* ── la preparazione, scritta per il cliente ── */
+/* ── IL PERCORSO ──
+   Una linea sola, tre fermate, e il colore che cambia mano a mano che
+   si va avanti: azzurro adesso, rosa quando entri, verde alla fine.
+   La linea non è decorazione — è la risposta alla sola domanda che uno
+   si fa mentre aspetta: «e adesso che succede?». */
+.filo{margin:0 56px 46px; position:relative; padding-left:104px}
+.filo::before{content:""; position:absolute; left:39px; top:26px; bottom:34px; width:3px;
+  border-radius:2px;
+  background:linear-gradient(180deg,#7ecbe8, #e2bdd4 52%, #88d9ae)}
+.tappa{position:relative; margin-bottom:40px}
+.tappa:last-child{margin-bottom:0}
+/* la fermata porta il suo numero, come le sezioni del protocollo:
+   in tutta l'app un blocco che comincia si presenta con un numero */
+.tappa .bo{position:absolute; left:-104px; top:0; width:80px; height:80px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800;
+  background:#0c0a0f; border:3px solid var(--sc); color:var(--sc)}
+.tappa .qua{display:block; font-size:17px; letter-spacing:.22em; font-weight:800;
+  color:var(--sc); margin-bottom:9px}
+.tappa .tt{display:block; font-size:36px; font-weight:800; line-height:1.14;
+  letter-spacing:-.01em}
+.tappa .td{display:block; font-size:22px; color:rgba(255,255,255,.62); margin-top:9px;
+  line-height:1.4}
+.tappa .cose{margin-top:20px; display:flex; flex-direction:column; gap:12px}
+.tappa .co{display:flex; align-items:center; gap:18px;
+  background:color-mix(in srgb, var(--sc) 7%, rgba(255,255,255,.03));
+  border:1px solid color-mix(in srgb, var(--sc) 24%, transparent);
+  border-radius:22px; padding:17px 22px}
+.tappa .co .ci{font-size:34px; flex:none; width:50px; text-align:center}
+.tappa .co .cx{flex:1; min-width:0}
+.tappa .co .c1{display:block; font-size:25px; font-weight:800; line-height:1.2}
+.tappa .co .c2{display:block; font-size:18.5px; color:rgba(255,255,255,.55);
+  margin-top:5px; line-height:1.32}
+
+/* ── la parte che è per l'operatore, e lo dice ──
+   Il cliente la legge lo stesso: dirgli che non è per lui lo
+   tranquillizza invece di confonderlo, e gli fa vedere quanto lavoro
+   c'è dietro alla sua seduta. */
 .blocco{padding:0 56px 70px}
+.perOp{margin:0 56px 26px; border-radius:30px; overflow:hidden;
+  border:1.5px solid rgba(255,255,255,.13); background:rgba(255,255,255,.028)}
+.perOp .oh{display:flex; align-items:center; gap:20px; padding:24px 32px;
+  background:rgba(255,255,255,.045)}
+.perOp .oi{width:58px; height:58px; border-radius:19px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:26px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16);
+  color:rgba(255,255,255,.7)}
+.perOp .ot2{display:block; font-size:29px; font-weight:800; line-height:1.15;
+  color:rgba(255,255,255,.82)}
+.perOp .os2{display:block; font-size:20px; color:rgba(255,255,255,.5); margin-top:5px}
 .btit{font-size:20px; letter-spacing:.24em; font-weight:800; color:#e6c65c;
   text-align:center; margin-bottom:10px}
 .bsot{font-size:24px; color:rgba(255,255,255,.55); text-align:center; margin-bottom:34px}
-.prep .riga{display:flex; align-items:center; gap:26px; background:rgba(255,255,255,.05);
-  border:2px solid rgba(255,255,255,.12); border-radius:26px; padding:24px 30px; margin-bottom:16px}
-.prep .pic{font-size:48px; flex:none; width:70px; text-align:center}
-.prep .ptx{flex:1; min-width:0; display:flex; flex-direction:column}
-.prep .pt1{display:block; font-size:30px; font-weight:800; line-height:1.2}
-.prep .pt2{display:block; font-size:20px; color:rgba(255,255,255,.55); margin-top:6px; line-height:1.35}
 
-/* ── il protocollo, per chi porta il cliente al tablet ──
+/* ── il protocollo, per chi porta il cliente alla capsula ──
    Quattro sezioni, non un muro di testo: ognuna con il suo numero, il suo
    colore e un vuoto vero fra una e l'altra, cosi' l'occhio sa sempre dove
    sta e cosa ha gia' fatto. */
@@ -1180,40 +1230,76 @@ html,body{height:100%; background:#000; overflow:hidden;
     </div>
   </section>
 
-  <!-- ═══ 4 · ACCOMODATI ═══ -->
+  <!-- ═══ 4 · LA TUA SEDUTA, DAL PRIMO ALL'ULTIMO MINUTO ═══ -->
   <section class="scene" id="s-done">
    <div class="donewrap" id="donewrap">
     <div class="done">
       <div class="ring">✓</div>
-      <div class="big">Perfetto,<br><span id="dnome">Giulia</span></div>
-      <div class="sit">Accomodati pure.</div>
-      <div class="msg">Il tuo operatore ha già tutto quello che serve e ti raggiunge tra pochissimo.
-        Da qui in avanti pensa a lui: tu devi solo rilassarti.</div>
+      <div class="big">Ci siamo,<br><span id="dnome">Giulia</span></div>
+      <div class="sit">La tua seduta è pronta.</div>
+      <div class="msg">Ho passato tutto al tuo operatore: la capsula ti aspetta
+        già impostata su di te. Adesso tocca a te — e non c'è niente di difficile.</div>
       <div class="chips" id="dchips"></div>
       <div class="wait">Questa schermata si chiude da sola</div>
-      <div class="giu">SCORRI ↓</div>
+      <div class="giu">ECCO COME VA ↓</div>
     </div>
 
-    <div class="blocco prep">
-      <div class="btit">PRIMA DI ENTRARE NELLA CAPSULA</div>
-      <div class="bsot">Cinque cose, trenta secondi</div>
-      <div class="riga"><span class="pic">⌚</span><span class="ptx">
-        <span class="pt1">Togli orologio, bracciali, collane e anelli</span>
-        <span class="pt2">Gli airbag stringono braccia e spalle: un bracciale rigido dà fastidio e può segnare la pelle.</span></span></div>
-      <div class="riga"><span class="pic">👖</span><span class="ptx">
-        <span class="pt1">Svuota le tasche</span>
-        <span class="pt2">Chiavi, telefono, monete, portafoglio: lasciali fuori dalla capsula.</span></span></div>
-      <div class="riga"><span class="pic">👕</span><span class="ptx">
-        <span class="pt1">Abbigliamento comodo — non serve spogliarsi</span>
-        <span class="pt2">Meglio senza cinture, fibbie o zip rigide sulla schiena.</span></span></div>
-      <div class="riga"><span class="pic">🩴</span><span class="ptx">
-        <span class="pt1">Metti i calzari che trovi accanto alla capsula</span>
-        <span class="pt2">Si entra senza scarpe: sotto i piedi ci sono i rulli plantari.</span></span></div>
-      <div class="riga"><span class="pic">🪑</span><span class="ptx">
-        <span class="pt1">Siediti e appoggia bene la schiena allo schienale</span>
-        <span class="pt2">La scansione delle spalle parte da sola: è normale, dura pochi secondi.</span></span></div>
+    <div class="filo">
+      <div class="tappa" style="--sc:#7ecbe8">
+        <span class="bo">1</span>
+        <span class="qua">ADESSO</span>
+        <span class="tt">Quattro cose, trenta secondi</span>
+        <span class="td">Sono le uniche che devi fare tu.</span>
+        <span class="cose">
+          <span class="co"><span class="ci">⌚</span><span class="cx">
+            <span class="c1">Togli orologio, bracciali e collane</span>
+            <span class="c2">Gli airbag stringono braccia e spalle: un bracciale rigido dà fastidio e può segnare.</span></span></span>
+          <span class="co"><span class="ci">👖</span><span class="cx">
+            <span class="c1">Svuota le tasche</span>
+            <span class="c2">Chiavi, telefono, monete: lasciali fuori. Lì dentro non ti servono.</span></span></span>
+          <span class="co"><span class="ci">👕</span><span class="cx">
+            <span class="c1">Resta vestito, comodo</span>
+            <span class="c2">Non serve spogliarsi. Meglio senza cinture o zip rigide sulla schiena.</span></span></span>
+          <span class="co"><span class="ci">🩴</span><span class="cx">
+            <span class="c1">Metti i calzari accanto alla capsula</span>
+            <span class="c2">Si entra senza scarpe: sotto i piedi ci sono i rulli plantari.</span></span></span>
+        </span>
+      </div>
+
+      <div class="tappa" style="--sc:#e2bdd4">
+        <span class="bo">2</span>
+        <span class="qua">QUANDO ENTRI</span>
+        <span class="tt">Ti siedi, e basta</span>
+        <span class="td">Alla capsula ci pensa il tuo operatore: tu non devi toccare niente.</span>
+        <span class="cose">
+          <span class="co"><span class="ci">🪑</span><span class="cx">
+            <span class="c1">Siediti e appoggia la schiena allo schienale</span>
+            <span class="c2">La capsula misura le tue spalle da sola: dura pochi secondi, è normale.</span></span></span>
+          <span class="co"><span class="ci">🫱</span><span class="cx">
+            <span class="c1">Appoggia l'indice al sensore del bracciolo</span>
+            <span class="c2">Battito e livello di fatica, prima e dopo: è la misura della tua seduta.</span></span></span>
+          <span class="co"><span class="ci">😌</span><span class="cx">
+            <span class="c1">Poi non fai più niente</span>
+            <span class="c2">Chiudi gli occhi. Da lì in avanti lavora la capsula, e tu ti godi la seduta.</span></span></span>
+        </span>
+      </div>
+
+      <div class="tappa" style="--sc:#88d9ae">
+        <span class="bo">3</span>
+        <span class="qua">ALLA FINE</span>
+        <span class="tt">Ti rialzi, e senti la differenza</span>
+        <span class="td">Rimisuriamo battito e fatica e ti mostriamo il confronto con
+          l'ingresso: il risultato lo vedi, non te lo raccontiamo. Poi un caffè in
+          sala relax, con calma.</span>
+      </div>
     </div>
 
+    <div class="perOp">
+      <div class="oh"><span class="oi">▣</span><span>
+        <span class="ot2">Questa parte è per il tuo operatore</span>
+        <span class="os2">Il programma uscito dalle tue risposte, con tutte le regolazioni</span>
+      </span></div>
+    </div>
     <div class="blocco proto" id="proto"></div>
    </div>
   </section>
@@ -1609,7 +1695,13 @@ function disegnaPensiero(k){
   setTimeout(scrivi, 300);
 }
 function apriCasoAcceso(){ apriRispostaCaso(CENTRO_ACCESO); }
-function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, 5200); }
+/* Undici secondi, non più cinque: la frase sotto le porte è un pensiero
+   intero da leggere, non un'insegna che lampeggia. E undici non è un
+   multiplo dei nove e mezzo del manifesto — così le due cose non
+   cambiano mai insieme, che sarebbe uno scatto solo, più forte di
+   tutt'e due. */
+const CENTRO_GIRO = 11000;
+function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, CENTRO_GIRO); }
 function centroSpotStop(){
   clearInterval(centroTimer); centroTimer = null;
   document.querySelectorAll('#centro .ccard').forEach(c=> c.classList.remove('spot'));
@@ -2065,7 +2157,7 @@ const PASSI_TUTTI = [
    tutto dolce, e la domanda sulla pressione NON si fa — la pressione si
    impara dalle sedute successive, non si può chiedere a chi non sa ancora
    che cosa si prova. Il chiosco deve fare esattamente lo stesso, se no
-   promette al cliente una seduta che poi sul tablet non è quella. */
+   promette al cliente una seduta che poi sulla capsula non è quella. */
 function primaVolta(){
   if(!D.clienteId) return true;
   let db = null;
@@ -2535,7 +2627,7 @@ function finisci(){
    parole. Quello che il chiosco NON puo' sapere - anamnesi, se e' la
    prima seduta, la taratura personale costruita dai feedback, i
    macro-parametri gia' salvati per quel cliente - qui vale il suo
-   valore neutro: il tablet completa la proposta con la storia del
+   valore neutro: il gestionale completa la proposta con la storia del
    cliente, ed e' scritto in fondo alla scheda.
    ══════════════════════════════════════════════════════════════ */
 const PROGRAMMI = {
@@ -2722,7 +2814,7 @@ function disegnaProtocollo(){
     + '<div class="sl">' + l + '</div></div>';
   document.getElementById('proto').innerHTML =
     '<div class="btit">PROTOCOLLO PROPOSTO</div>'
-    + '<div class="bsot">Da confermare sul tablet, prima di avviare la capsula</div>'
+    + '<div class="bsot">Da impostare sul touchscreen della capsula, prima di avviare</div>'
     + (D.clienteId ? '' :
         '<div class="primav"><div class="pv-h"><span class="pv-i">✦</span>'
         + '<span class="pv-t">Prima volta: serve la scheda anamnestica</span></div>'
@@ -2775,7 +2867,7 @@ function disegnaProtocollo(){
     +     '<span class="st">PRIMA DI AVVIARE</span></div>'
     +   'Tasche vuote, niente orologi o gioielli · schiena bene aderente allo schienale · '
     +   'la scansione spalle parte da sola: al <b>“DiDi”</b> correggi con <b>▲▼</b> e conferma <b>OK</b>.<br><br>'
-    +   'Poi sul tablet: <b>🟢 START</b> — Health Check d\'ingresso (indice sul sensore del bracciolo '
+    +   'Poi sul gestionale, qui sul totem: <b>🟢 START</b> — Health Check d\'ingresso (indice sul sensore del bracciolo '
     +   'destro, mano rilassata, senza premere), e il setup guidato si sblocca da solo.</div>'
     + '<div class="nota">Questa è la proposta calcolata dalle sei risposte di oggi.<br>'
     +   'Sul gestionale viene completata con l\'anamnesi, la prima seduta e la taratura '
