@@ -870,6 +870,98 @@ html,body{height:100%; background:#000; overflow:hidden;
 .tappa .co .c2{display:block; font-size:18.5px; color:rgba(255,255,255,.55);
   margin-top:5px; line-height:1.32}
 
+/* ══ LA TARGA DEL PROTOCOLLO ══
+   Un codice non è un'etichetta: è la firma di questa seduta e di
+   nessun'altra. Sta in chiaro, grande, in carattere da strumento —
+   perché questa schermata resta accesa per tutta la mezz'ora in cui
+   l'operatore imposta la capsula, e da un metro si deve leggere. */
+.targa{display:flex; align-items:stretch; border-radius:30px; overflow:hidden;
+  border:1.5px solid rgba(230,198,92,.42); background:rgba(230,198,92,.055)}
+.targa .tsx{padding:28px 32px; border-right:1.5px solid rgba(230,198,92,.3);
+  display:flex; flex-direction:column; justify-content:center; flex:none}
+.targa .codk{font-size:16px; letter-spacing:.18em; font-weight:800;
+  color:rgba(230,198,92,.6); margin-bottom:10px}
+.targa .cod{font-family:ui-monospace,Menlo,monospace; font-size:44px; font-weight:800;
+  letter-spacing:.04em; color:#eed37a; line-height:1}
+.targa .tdx{flex:1; min-width:0; padding:26px 32px; display:flex;
+  flex-direction:column; justify-content:center}
+.targa .fam{display:flex; align-items:center; gap:11px; font-size:21px; font-weight:700;
+  color:rgba(255,255,255,.66)}
+.targa .fam i{width:12px; height:12px; border-radius:50%; display:block; flex:none}
+.targa .nom{font-size:36px; font-weight:800; line-height:1.14; margin-top:8px;
+  letter-spacing:-.01em}
+.targa .rig{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+.targa .pil{font-size:19px; font-weight:800; padding:9px 18px; border-radius:999px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14)}
+.targa .pil.oro{background:rgba(230,198,92,.14); border-color:rgba(230,198,92,.45); color:#eed37a}
+
+/* ── le tre fasi: il rituale della seduta ──
+   Non sono decorazione: sono esattamente quello che l'operatore fa
+   mentre questa schermata resta accesa — misura, lavoro, misura. */
+.fasi{margin-top:26px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.fase{border-radius:26px; padding:24px 24px 22px;
+  border:1.5px solid color-mix(in srgb, var(--fc) 34%, transparent);
+  background:color-mix(in srgb, var(--fc) 8%, transparent)}
+.fase .fq{font-size:17px; letter-spacing:.2em; font-weight:800; color:var(--fc)}
+.fase .fm{font-size:38px; font-weight:800; line-height:1.05; margin-top:10px}
+.fase .fd{font-size:19px; color:rgba(255,255,255,.6); margin-top:10px; line-height:1.38}
+.fase .fa{margin-top:14px; font-size:19px; font-weight:800; color:var(--fc);
+  padding-top:12px; border-top:1px solid color-mix(in srgb, var(--fc) 26%, transparent)}
+
+/* ── il perché, firmato col nome di chi conduce ── */
+.pens2{margin-top:26px; border-radius:30px; padding:30px 34px;
+  border:1.5px solid rgba(169,119,154,.4); background:rgba(169,119,154,.09)}
+.pens2 .ph{display:flex; align-items:center; gap:16px; margin-bottom:18px}
+.pens2 .pn{width:52px; height:52px; border-radius:17px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:24px; font-weight:800;
+  background:rgba(226,189,212,.2); border:1px solid rgba(226,189,212,.5); color:#e2bdd4}
+.pens2 .pk{font-size:20px; letter-spacing:.2em; font-weight:800; color:#e2bdd4}
+.pens2 .pt3{font-size:27px; line-height:1.45; color:rgba(255,255,255,.9)}
+.pens2 .pt3 b{color:#fff}
+.pens2 ul{margin:20px 0 0; padding-left:26px}
+.pens2 li{font-size:21px; line-height:1.5; color:rgba(255,255,255,.66); margin-bottom:9px}
+.pens2 .coda{margin-top:20px; padding-top:18px; border-top:1px solid rgba(255,255,255,.13);
+  font-size:21px; color:rgba(255,255,255,.7)}
+.pens2 .coda b{color:#e2bdd4}
+
+/* ══ LA PARTE PER IL CLIENTE ══
+   Qui si smette di parlare all'operatore. Gli si dice la cosa che
+   nessuno gli dice mai: che alla fine tocca a lui, e che quello che
+   dirà non si perde. E gliela si insegna con LE STESSE TRE PAROLE che
+   l'operatore troverà sul gestionale a fine seduta — «troppo forte»,
+   «perfetta», «troppo leggera» — nello stesso ordine e con gli stessi
+   colori. Se qui dicessimo «blanda/normale/forte», l'operatore
+   dovrebbe tradurre a mente una parola in un'altra, e per giunta con
+   gli estremi invertiti: «blanda» sta a «troppo leggera». Un tocco
+   sbagliato lì non è una nota storta — sposta la taratura del cliente
+   dalla parte opposta per le sedute successive. */
+.perTe{margin-top:26px; border-radius:30px; padding:30px 34px;
+  border:1.5px solid rgba(230,198,92,.4);
+  background:linear-gradient(150deg, rgba(230,198,92,.1), rgba(169,119,154,.07))}
+.perTe .th{display:flex; align-items:center; gap:16px; margin-bottom:18px}
+.perTe .tn{width:54px; height:54px; border-radius:18px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:25px;
+  background:rgba(230,198,92,.18); border:1px solid rgba(230,198,92,.5); color:#eed37a}
+.perTe .tk{display:block; font-size:20px; letter-spacing:.2em; font-weight:800; color:#eed37a}
+.perTe .ts{display:block; font-size:19px; color:rgba(255,255,255,.5); margin-top:4px}
+.perTe .tp{font-size:26px; line-height:1.46; color:rgba(255,255,255,.88)}
+.perTe .tp + .tp{margin-top:18px}
+.perTe .tp b{color:#fff}
+.perTe .oro{color:#eed37a}
+.scala{display:flex; gap:12px; margin-top:22px}
+.grad{flex:1; border-radius:22px; padding:18px 16px; text-align:center;
+  border:1.5px solid color-mix(in srgb, var(--gc) 42%, transparent);
+  background:color-mix(in srgb, var(--gc) 10%, transparent)}
+.grad .gi{font-size:34px; line-height:1}
+.grad .gn{display:block; font-size:23px; font-weight:800; margin-top:8px; color:var(--gc)}
+.grad .gd{display:block; font-size:17px; color:rgba(255,255,255,.55); margin-top:5px;
+  line-height:1.3}
+.memo{margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.14);
+  display:flex; align-items:center; gap:18px}
+.memo .mi2{font-size:34px; flex:none}
+.memo .mt2{flex:1; min-width:0; font-size:21px; line-height:1.42; color:rgba(255,255,255,.72)}
+.memo .mt2 b{color:#eed37a}
+
 /* ── la parte che è per l'operatore, e lo dice ──
    Il cliente la legge lo stesso: dirgli che non è per lui lo
    tranquillizza invece di confonderlo, e gli fa vedere quanto lavoro
@@ -2806,72 +2898,110 @@ function costruisciProtocollo(q){
   return {prog, fam, S, why, zCode, manualRef};
 }
 
+/* ── le frasi che compongono il pensiero ──
+   Nessun aggettivo che si accorda col cliente: il check-in non chiede
+   il sesso, e sbagliarlo a chi sta per accomodarsi è peggio che non
+   nominarlo. Quindi «arriva con la stanchezza addosso», non «stanca». */
+const F_ATT = {ems:'ha fatto EMS', ems2:'ha fatto EMS2', vacufit:'ha fatto il Vacutherm',
+  matrix:'ha fatto Matrix', riposo:'oggi non ha fatto allenamento'};
+const F_UMORE = {sereno:'e arriva senza pesi particolari',
+  stanco:'e arriva con la stanchezza addosso',
+  stressato:'e arriva con la testa sotto pressione',
+  dolorante:'e arriva con i muscoli che si fanno sentire',
+  carico:'e arriva con l\'energia alta'};
+const F_OBIETT = {recupero:'vuole recuperare', sollievo:'cerca sollievo dove tira',
+  drenaggio:'vuole gambe leggere', relax:'vuole staccare',
+  sonno:'punta a dormire meglio', energia:'vuole ripartire'};
+const F_PRESS = {dolce:'più dolce del solito', decisa:'più decisa',
+  media:'la media', abituale:'quella che fa sempre'};
+function nomeZone(){
+  if(D.zones.length) return D.zones.map(ZNOME).join(' e ').toLowerCase();
+  if(D.zmode === 'totale') return 'tutto il corpo';
+  return 'nessuna zona in particolare';
+}
+
 function disegnaProtocollo(){
   const pr = costruisciProtocollo(D);
   const P = PROGRAMMI[pr.prog], F = FAMIGLIE[pr.fam], S = pr.S;
-  const cella = (v, l, piccolo) =>
-    '<div class="setcell"><div class="sv' + (piccolo ? ' sm' : '') + '">' + v + '</div>'
-    + '<div class="sl">' + l + '</div></div>';
-  document.getElementById('proto').innerHTML =
-    '<div class="btit">PROTOCOLLO PROPOSTO</div>'
-    + '<div class="bsot">Da impostare sul touchscreen della capsula, prima di avviare</div>'
-    + (D.clienteId ? '' :
-        '<div class="primav"><div class="pv-h"><span class="pv-i">✦</span>'
-        + '<span class="pv-t">Prima volta: serve la scheda anamnestica</span></div>'
-        + '<p>Questa persona <b>non è ancora in anagrafica</b>. Il programma qui sotto è '
-        + 'già scelto — è uscito dalle risposte di oggi fra <b>25,3 milioni di combinazioni</b> '
-        + '— ma da solo non basta.</p>'
-        + '<p>Prima di far accomodare in capsula, sul gestionale va aperta la scheda e '
-        + 'compilata la <b>scheda anamnestica</b> insieme al cliente. La seduta si può fare '
-        + '<b>solo se l\'esito è positivo</b>.</p></div>')
-    + '<div class="scheda">'
-    +   '<div class="sh"><span class="sn">1</span>'
-    +     '<span class="st">LA SEDUTA DA IMPOSTARE</span></div>'
-    +   '<div class="pfam"><span class="fd" style="background:' + F.color + '"></span>'
+  const op = (operatori().find(o=> o.id === D.op) || {}).nome || 'Operatore';
+  const nome = D.nome || 'il cliente';
+
+  const targa =
+    '<div class="targa">'
+    + '<div class="tsx"><div class="codk">CODICE SEDUTA</div>'
+    +   '<div class="cod">' + pr.zCode + '</div></div>'
+    + '<div class="tdx">'
+    +   '<div class="fam"><i style="background:' + F.color + '"></i>'
     +     pr.fam + ' · ' + F.name + '</div>'
-    +   '<div class="pnome">' + pr.prog + ' · “' + P.o + '”</div>'
-    +   '<div class="pdes">' + P.d
-    +     '<small>“' + P.o + '” è il nome che leggi sul touchscreen della capsula</small></div>'
-    +   '<div class="pchips"><span class="pchip pro">⏱ ' + S.timer + ' min</span>'
-    +     '<span class="pchip">🌀 Massaggio completo</span>'
-    +     '<span class="pchip">🎵 ' + (MUSICHE[S.musica] || S.musica) + '</span></div>'
-    +   '<div class="sdiv"></div>'
-    +   '<div class="zcode"><span class="zv">' + pr.zCode + '</span>'
-    +     '<span class="zk">Il codice della seduta: famiglia, programma e tutte le regolazioni<br>'
-    +     'I intensità · D profondità 4D · A airbag (0–6) · C calore attivo · G zero gravity attivo</span></div>'
-    +   '<div class="setgrid">'
-    +     cella(S.intensita, 'Intensità') + cella(S.fourD, '4D') + cella(S.airbag, 'Airbag')
-    +     cella(S.calore ? 'ON' : 'OFF', 'Calore') + cella(S.ioni ? 'ON' : 'OFF', 'Ioni')
-    +     cella(S.zerog ? 'ON' : 'OFF', 'Zero-G') + cella(S.timer + '′', 'Timer')
-    +     cella(S.plantari, 'Rulli piedi') + cella(S.polpacci, 'Polpacci')
-    +     cella(MUSICHE[S.musica] || S.musica, 'Musica', true)
-    +   '</div>'
-    + '</div>'
-    + '<div class="ricopia">'
-    +   '<div class="sh"><span class="sn">2</span>'
-    +     '<span class="st">DA RICOPIARE SUL GESTIONALE</span></div>'
-    +   '<div class="rgrid">'
-    +     passi().slice(1).map(p=>p.k).map((k,i)=>
-            '<div class="rr"><span class="rn">' + i + '</span>'
-            + '<span class="rk">' + QLBL[k] + '</span>'
-            + '<span class="rv">' + (rispostaDi(k) || '—') + '</span></div>').join('')
-    +   '</div>'
-    +   '<div class="rnome">Cliente: <b>' + ((D.nome + ' ' + D.cogn).trim() || '—') + '</b></div>'
-    + '</div>'
-    + '<div class="perche">'
-    +   '<div class="sh"><span class="sn">3</span>'
-    +     '<span class="st">PERCHÉ QUESTO PROTOCOLLO</span></div><ul>'
-    +   pr.why.map(w=>'<li>' + w + '</li>').join('') + '</ul></div>'
-    + '<div class="avvio">'
-    +   '<div class="sh"><span class="sn">4</span>'
-    +     '<span class="st">PRIMA DI AVVIARE</span></div>'
-    +   'Tasche vuote, niente orologi o gioielli · schiena bene aderente allo schienale · '
-    +   'la scansione spalle parte da sola: al <b>“DiDi”</b> correggi con <b>▲▼</b> e conferma <b>OK</b>.<br><br>'
-    +   'Poi sul gestionale, qui sul totem: <b>🟢 START</b> — Health Check d\'ingresso (indice sul sensore del bracciolo '
-    +   'destro, mano rilassata, senza premere), e il setup guidato si sblocca da solo.</div>'
-    + '<div class="nota">Questa è la proposta calcolata dalle sei risposte di oggi.<br>'
-    +   'Sul gestionale viene completata con l\'anamnesi, la prima seduta e la taratura '
-    +   'personale del cliente — e resta sempre l\'operatore a confermarla.</div>'
+    +   '<div class="nom">' + pr.prog + ' · “' + P.o + '”</div>'
+    +   '<div class="rig"><span class="pil oro">⏱ ' + S.timer + ' min</span>'
+    +     '<span class="pil">🎵 ' + (MUSICHE[S.musica] || S.musica) + '</span>'
+    +     '<span class="pil">Pressione ' + (F_PRESS[D.pressione] || 'media') + '</span></div>'
+    + '</div></div>';
+
+  const fasi =
+    '<div class="fasi">'
+    + '<div class="fase" style="--fc:#88d9ae"><div class="fq">ALL\'INIZIO</div>'
+    +   '<div class="fm">0′</div><div class="fd">Indice sul sensore del bracciolo: '
+    +   'battito e indice di fatica.</div><div class="fa">🟢 START</div></div>'
+    + '<div class="fase" style="--fc:#e2bdd4"><div class="fq">DURANTE</div>'
+    +   '<div class="fm">' + S.timer + '′</div><div class="fd">' + P.d + '</div>'
+    +   '<div class="fa">Lascialo lavorare</div></div>'
+    + '<div class="fase" style="--fc:#7ecbe8"><div class="fq">ALLA FINE</div>'
+    +   '<div class="fm">⏹</div><div class="fd">Seconda misura e confronto con '
+    +   'l\'ingresso: il risultato si vede.</div><div class="fa">🔴 END</div></div>'
+    + '</div>';
+
+  const pensiero =
+    '<div class="pens2"><div class="ph"><span class="pn">✎</span>'
+    + '<span class="pk">PERCHÉ QUESTA SEDUTA</span></div>'
+    + '<div class="pt3"><b>' + op + '</b>, ' + nome + ' '
+    +   (F_ATT[D.activity] || 'è qui') + ' ' + (F_UMORE[D.mood] || '')
+    +   '. Oggi ' + (F_OBIETT[D.goal] || 'vuole stare meglio')
+    +   ', e la pressione che ha chiesto è ' + (F_PRESS[D.pressione] || 'la media') + '.</div>'
+    + '<ul>' + pr.why.map(w=>'<li>' + w + '</li>').join('') + '</ul>'
+    + '<div class="coda">Zone di lavoro: <b>' + nomeZone() + '</b> · durata <b>'
+    +   S.timer + ' minuti</b>.</div></div>';
+
+  /* Le tre parole sono quelle del gestionale, nello stesso ordine e con
+     gli stessi colori: qui si insegnano, di là si toccano. */
+  const scala =
+    '<div class="scala">'
+    + '<div class="grad" style="--gc:#ff6b6b"><div class="gi">🪶</div>'
+    +   '<span class="gn">TROPPO FORTE</span><span class="gd">l\'ho sentita troppo</span></div>'
+    + '<div class="grad" style="--gc:#5fd08a"><div class="gi">✓</div>'
+    +   '<span class="gn">PERFETTA</span><span class="gd">era giusta così</span></div>'
+    + '<div class="grad" style="--gc:#5eb7f0"><div class="gi">💪</div>'
+    +   '<span class="gn">TROPPO LEGGERA</span><span class="gd">l\'ho sentita appena</span></div>'
+    + '</div>';
+
+  const perTe =
+    '<div class="perTe"><div class="th"><span class="tn">◐</span><span>'
+    + '<span class="tk">ALLA FINE DECIDI TU, ' + (D.nome || '').toUpperCase() + '</span>'
+    + '<span class="ts">Una parola sola, e la tua prossima seduta cambia</span></span></div>'
+    + '<div class="tp">Quando ti rialzi ti chiederemo una cosa sola: <b>com\'era '
+    +   'l\'intensità?</b> Non c\'è una risposta giusta — c\'è la tua.</div>'
+    + scala
+    + '<div class="tp">Se dici <b>troppo leggera</b>, la prossima volta parte più decisa. '
+    +   'Se dici <b>troppo forte</b>, parte più morbida. Se dici <b>perfetta</b>, abbiamo '
+    +   'trovato la tua taratura e da lì non ci muoviamo.</div>'
+    + '<div class="memo"><span class="mi2">🧠</span><span class="mt2">È così che questa '
+    +   'capsula diventa <b>la tua</b>: la seduta di oggi è già uscita da '
+    +   '<b class="oro">25,3 milioni di combinazioni</b>, e da domani conterà anche quello '
+    +   'che le hai detto tu.</span></div></div>';
+
+  const primaVoltaAvviso = D.clienteId ? '' :
+    '<div class="primav"><div class="pv-h"><span class="pv-i">✦</span>'
+    + '<span class="pv-t">Prima volta: serve la scheda anamnestica</span></div>'
+    + '<p>Questa persona <b>non è ancora in anagrafica</b>. Il programma qui sotto è '
+    + 'già scelto — è uscito dalle risposte di oggi fra <b>25,3 milioni di combinazioni</b> '
+    + '— ma da solo non basta.</p>'
+    + '<p>Prima di far accomodare in capsula, sul gestionale va aperta la scheda e '
+    + 'compilata la <b>scheda anamnestica</b> insieme al cliente. La seduta si può fare '
+    + '<b>solo se l\'esito è positivo</b>.</p></div>';
+
+  document.getElementById('proto').innerHTML =
+    primaVoltaAvviso + targa + fasi + pensiero + perTe
     + '<div class="algest" onclick="vaiAlGestionale()">'
     +   '<span class="ag-ic">▣</span>'
     +   '<span class="ag-tx"><b>APRI IL GESTIONALE</b>'
