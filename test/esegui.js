@@ -11,6 +11,7 @@ const { apriBrowser } = require('./aiuto');
 const PROVE = [
   ['vetrina',     require('./vetrina.test.js')],
   ['macchinari',  require('./macchinari.test.js')],
+  ['domande',     require('./domande.test.js')],
   ['anagrafica',  require('./anagrafica.test.js')],
   ['protocollo',  require('./protocollo.test.js')]
 ];

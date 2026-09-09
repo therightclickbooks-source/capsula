@@ -229,10 +229,35 @@ html,body{height:100%; background:#000; overflow:hidden;
 .pz.due .n{background:rgba(169,119,154,.24); border-color:rgba(169,119,154,.55); color:#e2bdd4}
 .pz.tre .n{background:rgba(79,184,221,.2); border-color:rgba(79,184,221,.45); color:#8fd3ec}
 
-/* ── la faccina, che adesso parla su una riga sola ── */
+/* ── la faccina, che adesso parla su una riga sola ──
+   La cornice non e' di un colore: e' un nastro di colori che gira
+   piano, sempre, anche quando la frase dentro non e' cambiata. Una
+   riga ferma su uno schermo pieno di cose ferme non si guarda; una che
+   cambia in continuazione, ma senza lampeggiare, si guarda per forza.
+   Il giro dura mezzo minuto apposta: piu' veloce diventerebbe un
+   allarme, e chi passa lo eviterebbe invece di toccarlo.
+   Gli angoli sono squadrati e non a pastiglia: la pastiglia diceva
+   «etichetta», il rettangolo dice «cosa su cui si preme». */
 .avatar{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.2);
+  --nastro:linear-gradient(rgba(13,10,18,.9), rgba(13,10,18,.9)) padding-box,
+    linear-gradient(100deg, #e6c65c, #e2bdd4, #a9779a, #8fd3ec, #88d9ae, #eed37a, #e6c65c)
+    border-box;
   margin-top:20px; flex:none; display:flex; align-items:center; gap:22px;
-  padding:12px 26px 12px 16px; border-radius:999px}
+  padding:12px 26px 12px 16px; border-radius:20px;
+  border:2px solid transparent; background:var(--nastro);
+  background-size:auto, 320% 100%;
+  animation:nastro 30s linear infinite}
+/* il fondo va rimesso anche sotto il dito: se no .tocca:active lo
+   sostituisce con una tinta piatta e la cornice sparisce nel momento
+   esatto in cui uno la sta toccando */
+.avatar:active{background:var(--nastro); background-size:auto, 320% 100%}
+@keyframes nastro{
+  from{background-position:0 0, 0 50%}
+  to  {background-position:0 0, 320% 50%}}
+/* il colore che si legge — freccia e «TOCCAMI» — cambia insieme alla
+   frase, cosi' il cambio si vede anche a colpo d'occhio */
+.avatar .frecc, .bubble .mini{transition:color .6s ease, border-color .6s ease}
+.bubble .mini{color:var(--tc)}
 /* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
 .avatar .frecc{position:static; flex:none}
 .orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none;
@@ -251,7 +276,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .alogo{display:none}
 .bubble{flex:1; min-width:0; font-size:27px; font-weight:800; line-height:1.22}
 .bubble .mini{display:block; font-size:19px; font-weight:800; letter-spacing:.14em;
-  color:#e6c65c; margin-top:7px}
+  margin-top:7px}
 
 /* ══ COSA FAI QUI · le cinque porte ══
    Prima qui giravano tre domande a caso fra le trentuno, sempre
@@ -815,12 +840,24 @@ html,body{height:100%; background:#000; overflow:hidden;
 .navrow{display:flex; gap:16px; flex:none; align-self:stretch}
 .nav{flex:1; height:112px; border-radius:24px; display:flex; align-items:center; justify-content:center;
   font-size:29px; font-weight:800; cursor:pointer; transition:opacity .2s}
-.nav.back{flex:.5; background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
+/* Il tasto del check-in vale mezza riga sempre: sia quando accanto ha
+   un tasto solo, sia quando ne ha due. Quello che cambia e' come si
+   divide l'altra meta', non quanto e' grande l'invito — se l'invito si
+   restringe ogni volta che compare un'altra strada, la strada nuova
+   sembra piu' importante di quella giusta. */
+.nav.next{flex:0 0 calc(50% - 8px)}
+.nav.back, .nav.casa{flex:1 1 0}
+.navrow > .nav:only-child{flex:1 1 auto}
+/* nel quiz la gerarchia e' un'altra: AVANTI comanda e INDIETRO e' la
+   scappatoia, quindi li' le due misure devono restare diverse */
+.form .navrow .nav.next{flex:1 1 0}
+.form .navrow .nav.back{flex:.5 1 0}
+.nav.back{background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
   font-size:25px; color:rgba(255,255,255,.7)}
 /* la via di casa: da una risposta si deve poter tornare alla vetrina
    senza passare per l'elenco. Prima l'unica strada era «‹ Altre
    domande», e chi voleva uscire restava dentro. */
-.nav.casa{flex:.5; background:rgba(230,198,92,.12); border:1.5px solid rgba(230,198,92,.45);
+.nav.casa{background:rgba(230,198,92,.12); border:1.5px solid rgba(230,198,92,.45);
   font-size:25px; color:#eed37a}
 .nav.next{background:linear-gradient(135deg,#a9779a,#7a496c); box-shadow:0 16px 44px rgba(122,73,108,.45)}
 .nav.next.off{opacity:.3; pointer-events:none; box-shadow:none}
@@ -1609,6 +1646,9 @@ const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
    cos'e' Zenith e voleva solo curiosare pensava che non fosse per lui.
    Adesso le frasi dicono le due cose insieme — una domanda precisa, o
    il gusto di guardarsi in giro — cosi' nessuno si sente escluso. */
+/* i quattro colori dei temi: la freccia della faccina ne prende uno a
+   turno, cosi' chi la guarda una seconda volta vede che e' cambiata */
+const COLORI_BUB = ['#e6c65c', '#e2bdd4', '#8fd3ec', '#88d9ae'];
 const BUBBLES = [
   'Hai una domanda? O vuoi solo curiosare',
   'Le risposte sono qui. O esplora e basta',
@@ -1636,8 +1676,8 @@ const QA = [
    a:'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. La prima volta sono sempre quindici: si parte piano.',
    piu:'Dopo, almeno mezz\'ora di pausa sulla stessa zona. «Di più» non vuol dire «meglio».'},
   {ic:'📈', t:'capire', alt:'battito misura sensore dito indice fatica misurazione numeri', q:'Cos\'è l\'Health Check?',
-   a:'Una <b>misura che facciamo prima e dopo</b>: appoggi il dito al sensore del bracciolo e leggiamo battito e indice di fatica.',
-   piu:'Alla fine confrontiamo i due valori con te. Il risultato lo vedi, non te lo raccontiamo soltanto.'},
+   a:'Una <b>misurazione che facciamo prima e dopo</b>: appoggi il dito al sensore del bracciolo e la capsula legge diversi valori, con un\'attenzione particolare a <b>battito e indice di fatica</b>.',
+   piu:'Alla fine confrontiamo con te i valori di prima e quelli di dopo. Il risultato lo vedi, non te lo raccontiamo soltanto.'},
   {ic:'🦵', t:'problema', alt:'gonfie gonfiore caviglie ritenzione circolazione drenaggio vene polpacci piedi', q:'Ho le gambe pesanti: cosa fate?',
    a:'C\'è una famiglia dedicata: <b>Zenith Gambe Leggere</b>. Compressione a onde, rulli sotto i piedi e posizione a gravità zero.',
    piu:'Le gambe stanno sopra il livello del cuore: è la posizione che aiuta i liquidi a tornare su.'},
@@ -1666,8 +1706,8 @@ const QA = [
    a:'Sì, ed è la prima cosa che controlliamo. Prima della seduta c\'è una <b>scheda anamnestica</b>: alcune condizioni escludono la capsula, altre richiedono il certificato del medico.',
    piu:'La domanda non è «quale programma?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
   {ic:'🔁', t:'pratica', alt:'frequenza settimana volte spesso quante', q:'Ogni quanto posso venire?',
-   a:'Anche <b>una volta a settimana</b>: è il ritmo che dà i risultati migliori senza esagerare.',
-   piu:'Cinquantadue sedute in un anno sono il livello Diamond. Ma già alla tredicesima si sente la differenza.'},
+   a:'Anche <b>tutti i giorni</b>, e persino più volte al giorno. Il momento in cui rende di più è <b>subito dopo un macchinario</b>: qualunque cosa tu abbia fatto qui, Zenith la porta a casa.',
+   piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 25,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
   {ic:'🏅', t:'pratica', alt:'punteggio livello premi medaglia gold classifica', q:'Cosa sono i punti e i livelli?',
    a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
    piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso.'},
@@ -1711,8 +1751,8 @@ const QA = [
    a:'Un <b>caffè in sala relax</b>, con calma. Poi decidi: prenoti la prossima seduta, oppure vai — senza fretta.',
    piu:'Prima di uscire l\'operatore rifà l\'Health Check e ti mostra il confronto con la misura d\'ingresso.'},
   {ic:'👯', t:'pratica', alt:'amico amica insieme accompagna compagnia due', q:'Posso venire con un\'amica?',
-   a:'Certo. In capsula si entra uno per volta, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
-   piu:'Potete anche prenotare due sedute di fila: una entra, l\'altra aspetta, e poi si scambiano.'},
+   a:'Certo. In capsula si accomoda <b>una persona alla volta</b>, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
+   piu:'Potete anche prenotare due sedute una dopo l\'altra: mentre una è in capsula l\'altra aspetta, e appena finisce tocca a lei.'},
   {ic:'🏛️', t:'capire', q:'Cos\'è Zenith Fitness Lab?',
    a:'È il nostro format. Un percorso che mette insieme <b>EMS, EMS2, Vacutherm e Matrix</b> — e alla fine <b>Zenith</b>, il nostro fiore all\'occhiello.',
    piu:'Ogni macchina lascia qualcosa di diverso nel corpo, e Zenith è quella che chiude il cerchio: raccoglie il lavoro di tutte le altre e lo trasforma in recupero.'},
@@ -1753,9 +1793,13 @@ function roamStep(){
   box.appendChild(d);
   requestAnimationFrame(()=> requestAnimationFrame(()=> d.classList.add('on')));
   setTimeout(()=>{ if(d.parentNode) d.classList.remove('on'); }, LETTURA);
-  if(roamI % 3 === 0)
+  if(roamI % 3 === 0){
+    const giro = Math.floor(roamI / 3);
     document.getElementById('bub').innerHTML =
-      BUBBLES[Math.floor(roamI/3) % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
+      BUBBLES[giro % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
+    document.getElementById('avatar').style
+      .setProperty('--tc', COLORI_BUB[giro % COLORI_BUB.length]);
+  }
   roamI++;
 }
 function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }

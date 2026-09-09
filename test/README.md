@@ -45,6 +45,14 @@ vetrina e il gestionale li raccontino **uguali**: se si cambia solo la
 vetrina, l'operatore dice al cliente una versione diversa da quella che il
 cliente ha appena letto.
 
+**`domande.test.js` — le domande, e la riga dei tasti sotto.**
+Il tasto del check-in vale mezza riga sempre: quando accanto ha un tasto solo
+e quando ne ha due. Se si restringesse ogni volta che compare un'altra
+strada, la strada nuova sembrerebbe più importante di quella giusta. Nel quiz
+vale la regola opposta, ed è voluta: lì AVANTI comanda e INDIETRO è la
+scappatoia. Poi le parole di alcune risposte, scelte a voce e da tenere
+ferme — e quelle scartate, da tenere fuori.
+
 **`anagrafica.test.js` — la condizione per salvare una scheda.**
 Telefono obbligatorio e tutte e quindici le domande dell'anamnesi risposte.
 La parte che conta è quella che non si vede: una risposta lasciata in bianco
