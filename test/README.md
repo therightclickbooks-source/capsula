@@ -61,11 +61,14 @@ perché sembra completa — dice «nessuna trombosi» a nome di uno a cui nessun
 l'ha chiesto.
 
 **`operatori.test.js` — chi segue questa seduta.**
-I nomi stanno in fila, uno accanto all'altro, come sul totem. Le due cose che
-si rompono da sole se qualcuno tocca la griglia sono il numero di file (tre
-nomi devono starci in una) e i nomi lunghi, che in una colonna stretta escono
-dalla scheda senza dare errore. Provato con due, tre e sei operatori, su
-telefono stretto e su desktop.
+Nel gestionale è la domanda zero del check-in, sul totem è il primo passo. In
+tutt'e due i nomi stanno **uno sotto l'altro**, una riga per nome, come tutte
+le altre domande: chi scende dalla prima alla sesta non deve trovare un salto
+di forma, perché una griglia in mezzo a cinque elenchi sembra un'altra app.
+Le due cose che si rompono da sole se qualcuno tocca la griglia sono il numero
+di colonne e i nomi lunghi, che stretti escono dalla riga senza dare errore.
+Provato con due, tre e sei operatori, su telefono stretto e su desktop, e sul
+totem anche che le righe siano alte come quelle delle altre domande.
 
 **`protocollo.test.js` — i due motori devono dare la stessa risposta.**
 Il protocollo si calcola in due posti: `buildProtocol()` nel gestionale e

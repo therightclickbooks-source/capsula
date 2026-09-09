@@ -150,10 +150,14 @@ html,body{height:100%; background:#000; overflow:hidden;
   justify-content:center; padding:34px 0}
 @keyframes respira{0%,100%{transform:scale(1); opacity:.9} 50%{transform:scale(1.05); opacity:.5}}
 .pod{position:relative; width:432px; height:206px}
+/* il disegno e' lo stesso di prima, ma pesa meno: fili piu' sottili, il
+   pieno meno cupo, l'ombra sotto appena accennata e l'alone dietro
+   abbassato. Prima l'insieme faceva un blocco scuro che tirava a se'
+   tutto l'angolo in alto a destra e schiacciava la frase accanto. */
 .pod svg{display:block; width:432px; height:206px;
-  filter:drop-shadow(0 24px 54px rgba(122,73,108,.7))}
+  filter:drop-shadow(0 16px 40px rgba(122,73,108,.42))}
 .pod .glow{position:absolute; inset:-64px -26px; border-radius:50%; z-index:-1;
-  background:radial-gradient(ellipse at 38% 58%, rgba(212,175,55,.26), transparent 64%);
+  background:radial-gradient(ellipse at 38% 58%, rgba(212,175,55,.17), transparent 64%);
   animation:respira 5.5s ease-in-out infinite}
 .pill{position:absolute; display:flex; align-items:center; gap:11px; padding:11px 19px;
   border-radius:999px; background:rgba(14,10,18,.86); border:1px solid rgba(255,255,255,.16);
@@ -694,17 +698,22 @@ html,body{height:100%; background:#000; overflow:hidden;
 .key.go{background:linear-gradient(135deg,#a9779a,#7a496c); font-size:25px; font-weight:800}
 .key.dim{opacity:.45}
 
-/* gli operatori, come nel gestionale */
-.opgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px; grid-auto-rows:212px}
+/* Gli operatori, come nel gestionale e come tutte le altre domande:
+   una colonna sola, una riga per nome. Su due colonne l'occhio doveva
+   fare avanti e indietro per leggere tre nomi, e la domanda zero
+   sembrava di un'altra app rispetto alle cinque che la seguono. */
+.opgrid{display:grid; grid-template-columns:1fr; gap:14px; grid-auto-rows:134px}
 .opcard{background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14);
-  border-radius:26px; padding:26px 20px; display:flex; flex-direction:column; align-items:center;
-  gap:14px; cursor:pointer; transition:border-color .2s, background .2s;
-  opacity:0; transform:translateY(22px)}
+  border-radius:26px; padding:18px 26px; display:flex; align-items:center;
+  gap:24px; cursor:pointer; transition:border-color .2s, background .2s;
+  opacity:0; transform:translateY(24px)}
 .opcard.in{opacity:1; transform:none}
-.opcard.sel{border-color:var(--oc,#a9779a); background:rgba(255,255,255,.09)}
-.opcard .av{width:104px; height:104px; border-radius:50%; background:var(--oc,#7a496c);
-  display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:800; color:#fff}
-.opcard .nm{font-size:30px; font-weight:800; text-align:center; line-height:1.2}
+.opcard.sel{border-color:var(--oc,#a9779a); background:rgba(255,255,255,.09);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--oc,#a9779a) 14%, transparent)}
+.opcard .av{width:92px; height:92px; border-radius:50%; flex:none;
+  background:var(--oc,#7a496c); display:flex; align-items:center;
+  justify-content:center; font-size:38px; font-weight:800; color:#fff}
+.opcard .nm{font-size:30px; font-weight:800; line-height:1.2; flex:1; min-width:0}
 
 /* Le risposte a scelta: righe tutte della stessa altezza, e quando le
    carte sono dispari l'ultima prende tutta la larghezza invece di
@@ -1229,25 +1238,25 @@ html,body{height:100%; background:#000; overflow:hidden;
                 <stop offset="0" stop-color="#f7e2a4"/><stop offset=".55" stop-color="#8a7048"/>
                 <stop offset="1" stop-color="#3a2c46"/></linearGradient>
             </defs>
-            <ellipse cx="308" cy="286" rx="266" ry="140" fill="url(#zcg)"/>
-            <g stroke="#e6c65c" fill="none" opacity=".16">
-              <path d="M300 336 A216 216 0 0 0 84 120" stroke-width="1.6"/>
-              <path d="M300 336 A262 262 0 0 0 38 74" stroke-width="1.6"/>
+            <ellipse cx="308" cy="286" rx="266" ry="140" fill="url(#zcg)" opacity=".72"/>
+            <g stroke="#e6c65c" fill="none" opacity=".1">
+              <path d="M300 336 A216 216 0 0 0 84 120" stroke-width="1.2"/>
+              <path d="M300 336 A262 262 0 0 0 38 74" stroke-width="1.2"/>
             </g>
-            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" fill="url(#zcc)"/>
-            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" stroke="url(#zco)" stroke-width="3.6" stroke-linejoin="round"/>
-            <path d="M126 246 C138 190 180 142 238 114 C296 86 368 80 432 96" stroke="url(#zco)" stroke-width="3" stroke-linecap="round"
+            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" fill="url(#zcc)" fill-opacity=".62"/>
+            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" stroke="url(#zco)" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M126 246 C138 190 180 142 238 114 C296 86 368 80 432 96" stroke="url(#zco)" stroke-width="2" stroke-linecap="round"
+                  opacity=".3"/>
+            <path d="M124 250 C144 226 178 218 212 224" stroke="#fff" stroke-opacity=".26"
+                  stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M406 152 C424 130 446 114 470 114" stroke="#fff" stroke-opacity=".24"
+                  stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M452 206 L444 260 L476 288" stroke="url(#zcb)" stroke-width="3.8"
+                  stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+            <ellipse cx="310" cy="338" rx="196" ry="9" fill="#000" opacity=".3"/>
+            <path d="M92 340 h770" stroke="url(#zco)" stroke-width="2.2" stroke-linecap="round"
                   opacity=".42"/>
-            <path d="M124 250 C144 226 178 218 212 224" stroke="#fff" stroke-opacity=".38"
-                  stroke-width="5.4" stroke-linecap="round"/>
-            <path d="M406 152 C424 130 446 114 470 114" stroke="#fff" stroke-opacity=".34"
-                  stroke-width="5.4" stroke-linecap="round"/>
-            <path d="M452 206 L444 260 L476 288" stroke="url(#zcb)" stroke-width="5.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-            <ellipse cx="310" cy="338" rx="212" ry="14" fill="#000" opacity=".6"/>
-            <path d="M92 340 h770" stroke="url(#zco)" stroke-width="3.2" stroke-linecap="round"
-                  opacity=".6"/>
-            <g transform="translate(710 340) scale(2.06)">
+            <g transform="translate(710 340) scale(2.06)" opacity=".82">
           <g transform="translate(-58 0) scale(0.88)" opacity="0.55">
             <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
             <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
