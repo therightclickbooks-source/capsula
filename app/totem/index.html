@@ -94,8 +94,11 @@ html,body{height:100%; background:#000; overflow:hidden;
    Prima era una pila di fasce con dentro poca roba e un vuoto grande
    in cima. Ora è una colonna sola, e ha un ordine che è anche il modo
    in cui uno guarda: prima si ferma (la capsula e la frase grande),
-   poi capisce (i tre numeri), poi sa cosa fare (i tre passi), poi può
-   chiedere (la faccina e le domande), infine tocca (l'invito).
+   poi capisce (i tre numeri), poi può chiedere (la faccina), poi si
+   riconosce — «io oggi ho fatto la tal cosa» — e solo alla fine, quando
+   il motivo c'è, legge come si fa il check-in e tocca l'invito.
+   L'ordine fra le due sezioni non è estetico: spiegare la procedura a
+   chi non sa ancora perché dovrebbe farla è l'ordine sbagliato.
    Non ci sono più posizioni assolute che si possono accavallare: è
    una colonna, e in una colonna due cose non stanno mai nello stesso
    posto per costruzione.
@@ -163,8 +166,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .pb2{right:2px; bottom:-22px; border-color:rgba(212,175,55,.5); color:#eed37a}
 
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
-.numeri{margin-top:26px; flex:none; display:flex; padding:16px 0;
-  border-top:1px solid rgba(255,255,255,.12)}
+.numeri{display:flex}
 .nb{flex:1; padding:0 24px; display:flex; flex-direction:column; justify-content:center}
 .nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
 .nb .nv{font-size:46px; font-weight:800; line-height:1; letter-spacing:-.03em;
@@ -180,13 +182,31 @@ html,body{height:100%; background:#000; overflow:hidden;
    «qui comincia un'altra cosa» prima ancora che uno legga la targhetta.
    Le parti che si presentano da sole — il manifesto, la faccina, il
    tasto — il filo non ce l'hanno: sarebbe rumore. */
-.sezione{margin-top:26px; flex:none; padding-top:16px;
-  border-top:1px solid rgba(255,255,255,.1)}
-.sezt{font-size:17px; letter-spacing:.22em; font-weight:800;
-  color:rgba(255,255,255,.34); margin-bottom:12px;
-  display:flex; align-items:center; gap:11px}
-.sezt i{width:22px; height:2px; border-radius:2px; background:rgba(230,198,92,.6);
+.sezione{margin-top:18px; flex:none; padding:14px 20px 16px; border-radius:32px;
+  background:rgba(255,255,255,.024); border:1px solid rgba(255,255,255,.085)}
+/* la parte «cosa hai fatto oggi» ha l'altezza che le serve e basta: se
+   crescesse con lo schermo, su un monitor alto il pensiero diventerebbe
+   un riquadro mezzo vuoto. L'altezza che avanza va tutta nello spazio
+   sopra il tasto, dove non si vede — un tasto piu' staccato dal resto
+   non e' un difetto, un riquadro con dentro il vuoto si' */
+.sezione.porte{display:flex; flex-direction:column; flex:0 1 auto; min-height:0}
+.spazio{flex:1 1 auto; min-height:0}
+.sezione.cifre{padding:16px 4px}
+/* il titolo di sezione: prima era una riga sola di maiuscole piccole con
+   un trattino davanti — si leggeva come un'etichetta di servizio, non
+   come l'inizio di qualcosa. Adesso sono tre righe con tre pesi diversi:
+   l'occhiello dice DOVE sei, il titolo dice COSA, la riga sotto dice
+   cosa devi farci. Da dieci metri si legge il titolo; da due, tutto. */
+.sezt{margin-bottom:12px; display:flex; flex-wrap:wrap; align-items:baseline;
+  gap:0 18px}
+.seze{display:flex; align-items:center; gap:10px; flex:none; font-size:15px;
+  font-weight:800; letter-spacing:.24em; color:rgba(230,198,92,.72);
+  transform:translateY(-1px)}
+.seze i{width:20px; height:2px; border-radius:2px; background:rgba(230,198,92,.6);
   flex:none; display:block}
+.sezh{font-size:30px; font-weight:800; line-height:1.12; letter-spacing:-.015em}
+.sezd{flex-basis:100%; margin-top:5px; font-size:17.5px; line-height:1.3;
+  color:rgba(255,255,255,.46)}
 
 /* ── i tre passi: adesso raccontano in una riga ──
    Erano tre schede alte con titolo e descrizione: 290 punti per dire
@@ -211,7 +231,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 
 /* ── la faccina, che adesso parla su una riga sola ── */
 .avatar{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.2);
-  margin-top:24px; flex:none; display:flex; align-items:center; gap:22px;
+  margin-top:20px; flex:none; display:flex; align-items:center; gap:22px;
   padding:12px 26px 12px 16px; border-radius:999px}
 /* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
 .avatar .frecc{position:static; flex:none}
@@ -253,8 +273,8 @@ html,body{height:100%; background:#000; overflow:hidden;
    letto tutti e cinque i motivi per cui gli conviene entrare.
    Cresce con lo schermo: su un 49 pollici 16:9 sta nei suoi 188 punti,
    su un monitor piu' alto si allarga da sola e la frase respira. */
-.pens{margin-top:12px; flex:1 1 auto; min-height:160px; display:flex;
-  align-items:center; gap:24px; padding:20px 28px; border-radius:26px;
+.pens{margin-top:12px; flex:1 1 auto; min-height:162px; display:flex;
+  align-items:center; gap:22px; padding:15px 24px; border-radius:26px;
   cursor:pointer; position:relative; overflow:hidden;
   background:color-mix(in srgb, var(--mc) 8%, rgba(255,255,255,.028));
   border:1.5px solid color-mix(in srgb, var(--mc) 34%, transparent);
@@ -270,7 +290,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .pens.cambia .px{opacity:0}
 .pens .pt{display:block; font-size:27px; font-weight:800; line-height:1.16;
   color:var(--mc)}
-.pens .pf{display:block; font-size:21px; line-height:1.44; margin-top:9px;
+.pens .pf{display:block; font-size:20.5px; line-height:1.4; margin-top:8px;
   color:rgba(255,255,255,.72)}
 .pens .pf b{color:#fff}
 .pens .pfr{position:absolute; right:18px; bottom:16px; width:30px; height:30px;
@@ -278,7 +298,7 @@ html,body{height:100%; background:#000; overflow:hidden;
   font-size:17px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
   background:rgba(255,255,255,.08);
   border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
-.ccard{border-radius:22px; padding:15px 12px 30px; display:flex; flex-direction:column;
+.ccard{border-radius:22px; padding:13px 10px 30px; display:flex; flex-direction:column;
   align-items:center; gap:5px; text-align:center; flex:1; min-width:0; position:relative;
   cursor:pointer;
   border:2px solid var(--mc); background:color-mix(in srgb, var(--mc) 9%, transparent);
@@ -295,13 +315,14 @@ html,body{height:100%; background:#000; overflow:hidden;
 @keyframes galleggiaC3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)}}
 @keyframes galleggiaC4{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
 @keyframes galleggiaC5{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
-.ccard .cci{width:46px; height:46px; border-radius:15px; flex:none; display:flex;
-  align-items:center; justify-content:center; font-size:22px; line-height:1;
+.ccard .cci{width:40px; height:40px; border-radius:13px; flex:none; display:flex;
+  align-items:center; justify-content:center; font-size:20px; line-height:1;
   background:color-mix(in srgb, var(--mc) 22%, transparent);
   border:1px solid color-mix(in srgb, var(--mc) 48%, transparent)}
 .ccard .ccn{font-size:18.5px; font-weight:800; line-height:1.15; white-space:nowrap}
-.ccard .ccs{font-size:13px; color:rgba(255,255,255,.52); line-height:1.2; white-space:nowrap}
-.ccard .cfr{position:absolute; right:10px; bottom:10px; width:26px; height:26px;
+.ccard .ccs{font-size:12.5px; color:rgba(255,255,255,.52); line-height:1.2;
+  white-space:nowrap; letter-spacing:-.01em}
+.ccard .cfr{position:absolute; right:10px; bottom:7px; width:24px; height:24px;
   border-radius:50%; display:flex; align-items:center; justify-content:center;
   font-size:14px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
   background:rgba(255,255,255,.08); border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
@@ -323,7 +344,7 @@ html,body{height:100%; background:#000; overflow:hidden;
    perche' e' largo e ha il bordo acceso, non perche' lampeggia.
    E il margine sopra e' fisso: non si attacca mai a quello che lo
    precede, nemmeno quando lo schermo e' cortissimo. */
-.cta{margin-top:28px; flex:none; display:flex; flex-direction:column}
+.cta{margin-top:24px; flex:none; display:flex; flex-direction:column}
 .cta .btn{border-radius:30px; position:relative; overflow:hidden;
   background:linear-gradient(110deg, rgba(138,87,121,.42), rgba(90,52,80,.26));
   border:1.5px solid rgba(226,189,212,.42);
@@ -716,6 +737,7 @@ html,body{height:100%; background:#000; overflow:hidden;
   border:1.6px solid color-mix(in srgb, var(--mc, rgba(255,255,255,.4)) 55%, transparent)}
 .mac .mfn{font-size:30px; font-weight:800}
 .mac .mfd{font-size:19px; line-height:1.42; color:rgba(255,255,255,.58); margin-top:12px}
+.mac .mfd b{color:rgba(255,255,255,.9)}
 .mac .mfz{font-size:19px; line-height:1.42; margin-top:11px; padding-left:20px;
   border-left:3px solid rgba(230,198,92,.6); color:rgba(255,255,255,.88)}
 .mac .mfz b{color:#eed37a}
@@ -1198,43 +1220,57 @@ html,body{height:100%; background:#000; overflow:hidden;
       </div>
 
       <!-- che cos'è Zenith, in tre numeri -->
-      <div class="numeri">
-        <div class="nb o"><div class="nv">25,3<small> mln</small></div>
-          <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
-        <div class="nb p"><div class="nv">15–30<small> min</small></div>
-          <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-        <div class="nb b"><div class="nv">4<small> mani</small></div>
-          <div class="nl">due bracci, uno in 3D e uno in 4D, che lavorano insieme</div></div>
-      </div>
-
-      <!-- cosa succede adesso -->
-      <div class="sez sezione">
-        <div class="sezt"><i></i>COSA SUCCEDE ADESSO · DUE MINUTI</div>
-        <div class="passi">
-          <div class="pz uno"><span class="n">1</span><span class="tx">
-            <span class="t1">Dimmi come ti chiami</span>
-            <span class="t2">Ti riconosco da poche lettere</span></span></div>
-          <div class="pz due"><span class="n">2</span><span class="tx">
-            <span class="t1">Rispondi a sei domande</span>
-            <span class="t2">Cosa hai fatto, dove tira, come stai</span></span></div>
-          <div class="pz tre"><span class="n">3</span><span class="tx">
-            <span class="t1">Accomodati: ti chiamo io</span>
-            <span class="t2">L'operatore trova già tutto pronto</span></span></div>
+      <div class="sezione cifre">
+        <div class="numeri">
+          <div class="nb o"><div class="nv">25,3<small> mln</small></div>
+            <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
+          <div class="nb p"><div class="nv">15–30<small> min</small></div>
+            <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
+          <div class="nb b"><div class="nv">4<small> mani</small></div>
+            <div class="nl">due bracci, uno in 3D e uno in 4D, che lavorano insieme</div></div>
         </div>
       </div>
 
-      <!-- la faccina, e le domande che girano -->
+      <!-- la faccina: sta subito sotto i tre numeri perché è lì che
+           nasce la voglia di chiedere. È una scorciatoia, non un passo
+           del percorso: per questo non ha né cornice né targhetta -->
       <div class="avatar tocca" id="avatar">
         <div class="orb" id="orb"></div>
         <img class="alogo" id="alogo" alt="Zenith">
         <div class="bubble" id="bub"></div>
         <span class="frecc">›</span>
       </div>
+
+      <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
+           Zenith. Solo dopo, quando il motivo c'è, si spiega come si fa
+           il check-in: spiegare la procedura a chi non sa ancora perché
+           dovrebbe farla è l'ordine sbagliato -->
       <div class="sezione porte">
-        <div class="sezt"><i></i>COSA HAI FATTO OGGI, QUI DA NOI?</div>
+        <div class="sezt"><span class="seze"><i></i>IL TUO ALLENAMENTO</span><span
+          class="sezh">Cosa hai fatto oggi, qui da noi?</span>
+          <span class="sezd">Tocca quello che hai fatto: ti dico cosa ci aggiunge Zenith</span></div>
         <div class="centro" id="centro"></div>
         <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
       </div>
+
+      <!-- e adesso il come, appoggiato al tasto che sta subito sotto -->
+      <div class="sez sezione">
+        <div class="sezt"><span class="seze"><i></i>TRE PASSAGGI · DUE MINUTI</span><span
+          class="sezh">Cosa succede adesso</span></div>
+        <div class="passi">
+          <div class="pz uno"><span class="n">1</span><span class="tx">
+            <span class="t1">Dimmi il tuo nome</span>
+            <span class="t2">Bastano poche lettere</span></span></div>
+          <div class="pz due"><span class="n">2</span><span class="tx">
+            <span class="t1">Rispondi a sei domande</span>
+            <span class="t2">Cosa hai fatto, cosa cerchi</span></span></div>
+          <div class="pz tre"><span class="n">3</span><span class="tx">
+            <span class="t1">Accomodati: al resto penso io</span>
+            <span class="t2">La capsula ti aspetta</span></span></div>
+        </div>
+      </div>
+
+      <div class="spazio"></div>
 
       <!-- l'invito -->
       <div class="cta">
@@ -1737,7 +1773,7 @@ const ORDINE_CENTRO = ['ems','matrix','vacufit','ems2','riposo'];
    sottotitolo corti, su una riga sola, si leggono anche camminando —
    la frase intera resta nel foglio dei macchinari e ne «il tuo caso» */
 const BAND_LABEL = {riposo:'A riposo'};
-const BAND_SUB = {ems:'elettrostimolazione', matrix:'pesi digitali',
+const BAND_SUB = {ems:'elettromiostimolazione', matrix:'pesi digitali',
   vacufit:'vuototerapia', ems2:'impulsi in camminata', riposo:'vengo e basta'};
 function centroBuild(){
   const box = document.getElementById('centro');
@@ -2216,10 +2252,10 @@ const PASSI_TUTTI = [
   {k:'nome', step:'BENVENUTO', q:'Come ti chiami?', qs:'Scrivi nome e cognome per intero'},
   {k:'op',   q:'Chi ti segue oggi?', qs:'Tocca il tuo operatore'},
   {k:'activity', q:'Cosa hai fatto oggi?', due:true, opts:[
-    ['ems','⚡','EMS','elettrostimolazione'],
+    ['ems','⚡','EMS','elettromiostimolazione'],
     ['matrix','🏋️','Matrix','allenamento con pesi digitali'],
     ['vacufit','💨','Vacutherm','camminata in vuototerapia'],
-    ['ems2','🌀','EMS2','elettrostimolazione in camminata veloce'],
+    ['ems2','🌀','EMS2','elettromiostimolazione in camminata veloce'],
     ['riposo','😌','Nessun allenamento','giornata senza attività']]},
   {k:'zones', q:'Su quali zone lavoriamo?',
    qs:'Tocca la figura, o le etichette qui sotto', zone:true},
@@ -2345,36 +2381,57 @@ function sagoma(vista){
    confonde con gli altri quattro ne' con l'oro degli inviti. */
 const COL_MAC = {ems:'#2FC4C4', matrix:'#F5851F', vacufit:'#DC1E78',
                   ems2:'#EE3355', riposo:'#B98ADF'};
+/* Le descrizioni dicono COSA FA GUADAGNARE quel macchinario, e le zone
+   che ne beneficiano per nome — non cosa lascia in sospeso. Chi legge
+   ha appena finito di allenarsi: se il foglio gli racconta un debito,
+   gli sta dicendo che ha fatto poco. Qui non c'e' una sola frase che
+   suoni come una mancanza. */
 const MACCHINE = [
   ['⚡','EMS',
-   'Impulsi elettrici fanno contrarre i muscoli senza caricare le articolazioni: '
-   + 'un lavoro intenso ma breve. Ti lascia i muscoli in debito di recupero, '
-   + 'e spesso l\'indolenzimento arriva il giorno dopo.',
-   'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato. '
-   + 'Se sei già indolenzito passa al programma <b>anti-DOMS</b>; se oggi hai '
-   + 'lavorato le braccia, al recupero della parte alta.', 'ems'],
+   'Elettromiostimolazione: un <b>total body</b> in venti minuti. Il numero di '
+   + 'contrazioni che accumuli vale quanto <b>tre ore di sala pesi</b>, e arriva '
+   + 'anche ai <b>muscoli profondi della schiena</b> — quelli che tengono su la '
+   + '<b>postura</b> — oltre a gambe, glutei, addome e braccia. Lavoro breve, '
+   + 'intenso e completo, con le articolazioni al riparo.',
+   'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato: '
+   + 'porta sangue nuovo dove è servito, mentre tu stai sdraiato. Se ti senti '
+   + 'già indolenzito parte il programma <b>anti-DOMS</b>; se oggi hai insistito '
+   + 'sulle braccia, il recupero della <b>parte alta</b>.', 'ems'],
   ['🌀','EMS2',
-   'Gli stessi impulsi, ma mentre cammini veloce sul tapis roulant: muscoli e '
-   + 'fiato insieme, con gambe e piedi sotto carico per tutta la seduta.',
+   'Gli stessi impulsi dell\'EMS, ma mentre <b>cammini</b>: muscoli e fiato '
+   + 'insieme. Gambe, glutei e polpacci restano sotto carico dal primo minuto, '
+   + 'l\'<b>addome</b> lavora per tenerti in equilibrio e il cuore sale di giri: '
+   + '<b>forza e resistenza</b> nella stessa seduta.',
    'Zenith alza la <b>compressione degli airbag</b>, accende la <b>posizione a '
    + 'gravità zero</b> e i <b>rulli su polpacci e piedi</b>: è lì che hai '
-   + 'lavorato di più.', 'ems2'],
+   + 'lavorato di più, ed è lì che il recupero si sente per primo.', 'ems2'],
   ['💨','Vacutherm',
-   'Cammini dentro una cabina in depressione, che richiama il sangue verso gambe '
-   + 'e glutei. Lavoro dolce, ma tutto concentrato sulla parte bassa.',
-   'Zenith mette <b>gambe e piedi al centro</b> per far durare la leggerezza, '
-   + 'con airbag alti, gravità zero e rulli sotto la pianta.', 'vacufit'],
+   'Cammini dentro una cabina a <b>depressione regolata</b>: il vuoto richiama '
+   + 'il circolo verso <b>gambe e glutei</b>, e la stessa depressione fa lavorare '
+   + 'molto anche l\'<b>addome</b>, che si tonifica mentre cammini. Il '
+   + '<b>linfodrenaggio</b> in abbinata aiuta il corpo a mandare via i liquidi in '
+   + 'eccesso, e gli <b>infrarossi a onde medie</b> ossigenano le cellule '
+   + 'adipose: alzano il consumo calorico e lasciano la pelle di gambe e glutei '
+   + 'più liscia e compatta.',
+   'Zenith mette <b>gambe, piedi e addome al centro</b> e allunga il lavoro '
+   + 'appena fatto: airbag alti, gravità zero e rulli sotto la pianta tengono '
+   + 'acceso il circolo che hai aperto in cabina.', 'vacufit'],
   ['🏋️','Matrix',
-   'Pesi digitali: carichi controllati elettronicamente, serie e ripetizioni. '
-   + 'È l\'allenamento che affatica di più i gruppi che hai scelto.',
-   'Zenith sceglie in base alla zona: <b>gambe</b> se hai lavorato gambe o '
-   + 'glutei, <b>parte alta</b> per le braccia, <b>allungamento in stile Thai</b> '
-   + 'se cerchi il relax.', 'matrix'],
+   'Pesi digitali: il carico è controllato elettronicamente e si adatta a ogni '
+   + 'ripetizione, in spinta e in ritorno. Costruisci <b>forza e tono</b> dove '
+   + 'decidi tu — <b>parte alta, gambe, glutei, catena posteriore</b> — con la '
+   + 'precisione di una scheda cucita su di te e senza sbalzi sulle articolazioni.',
+   'Il muscolo cresce nelle ore dopo il carico, non sotto il carico: Zenith gli '
+   + 'dà le condizioni giuste. Sceglie in base alla zona — <b>gambe</b> se hai '
+   + 'lavorato gambe o glutei, <b>parte alta</b> per le braccia, '
+   + '<b>allungamento in stile Thai</b> se cerchi il relax.', 'matrix'],
   ['😌','Nessun allenamento',
-   'Nessun carico da smaltire: oggi la seduta non serve a recuperare da uno '
-   + 'sforzo, ma a rispondere a come stai adesso.',
+   'Oggi non ti alleni, e va benissimo: il corpo lavora lo stesso. Le ore in '
+   + 'piedi, alla guida o alla scrivania si fanno sentire su <b>collo, spalle e '
+   + 'colonna</b>, e la circolazione delle gambe rallenta senza che te ne accorga.',
    'Zenith segue l\'<b>obiettivo che scegli</b> alla terza domanda: leggerezza, '
-   + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più.', 'riposo']
+   + 'sonno, decompressione o energia. È qui che le altre risposte pesano di più, '
+   + 'ed è la mezz\'ora in cui la schiena torna al suo posto.', 'riposo']
 ];
 const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
 
@@ -2389,21 +2446,22 @@ const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
    fatto poco, lo perde — e ha pure ragione lui. */
 const PENSIERI = {
   ems: {t:'Hai fatto EMS. Ottimo lavoro.',
-    f:'Migliaia di contrazioni in venti minuti: un lavoro che a mano libera non si '
-    + 'ottiene. Adesso quelle fibre chiedono sangue nuovo per ricostruirsi. '
-    + '<b>Zenith glielo porta: il risultato di oggi lo senti, invece di pagarlo domani.</b>'},
+    f:'Un total body vero: venti minuti di contrazioni valgono quanto tre ore di sala '
+    + 'pesi, schiena e postura comprese. <b>Zenith porta sangue nuovo dove è servito: '
+    + 'il lavoro di oggi lo senti già domani.</b>'},
   matrix: {t:'Hai fatto Matrix. Bel lavoro.',
-    f:'Serie e ripetizioni: hai creato le micro-lesioni da cui il muscolo cresce più '
-    + 'forte. Ma cresce nelle ore dopo, non sotto il carico. <b>Zenith apre e drena la '
-    + 'zona che hai lavorato: è lì che l\'allenamento diventa risultato.</b>'},
+    f:'Carico perfetto a ogni ripetizione: hai dato al muscolo il segnale per '
+    + 'crescere. E cresce nelle ore dopo, non sotto il carico. <b>Zenith apre e drena '
+    + 'la zona che hai lavorato: è lì che diventa risultato.</b>'},
   vacufit: {t:'Hai fatto Vacutherm. Ottimo.',
-    f:'Hai camminato con la depressione che tirava il sangue verso gambe e glutei: '
-    + 'circolo acceso, gambe leggere. È un effetto vero, e dura finché il circolo '
-    + 'resta acceso. <b>Zenith lo tiene acceso per ore, non per dieci minuti.</b>'},
+    f:'Depressione, linfodrenaggio e infrarossi insieme: gambe e glutei leggeri, '
+    + 'addome tonificato, pelle più liscia. È un effetto vero, e cresce finché il '
+    + 'circolo resta acceso. <b>Zenith lo tiene acceso per ore, non per dieci '
+    + 'minuti.</b>'},
   ems2: {t:'Hai fatto EMS2. Complimenti.',
     f:'Impulsi e camminata insieme: è la seduta che chiede di più, e l\'hai portata a '
-    + 'casa. Gambe e piedi hanno lavorato sotto carico dal primo minuto. <b>Zenith '
-    + 'scarica esattamente lì, e domani riparti invece di recuperare.</b>'},
+    + 'casa. Gambe, polpacci e addome hanno lavorato dal primo minuto. <b>Zenith '
+    + 'scarica esattamente lì, e domani riparti con le gambe fresche.</b>'},
   riposo: {t:'Oggi non ti alleni? Va benissimo.',
     f:'Il corpo lavora lo stesso: otto ore su una sedia comprimono la colonna più di '
     + 'un\'ora di pesi, e non te ne accorgi finché non tira. <b>Zenith è la mezz\'ora '
