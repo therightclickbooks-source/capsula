@@ -100,6 +100,26 @@ module.exports = async function(browser){
         return h.length === 3 && h.every(x=> x === h[0]);
       }));
 
+    /* ── l'invito grande ──
+       Non urla piu': se qualcuno rimette il titolo tutto maiuscolo o lo
+       riporta a cinquantadue punti, questa diventa rossa. */
+    const invito = await p.evaluate(()=>{
+      const b = document.querySelector('.cta .btn');
+      const t = b.querySelector('.t1'), i = b.querySelector('.ic'), g = b.querySelector('.go');
+      const ci = getComputedStyle(i), cg = getComputedStyle(g);
+      return {testo:t.textContent, corpo:parseFloat(getComputedStyle(t).fontSize),
+        icona:{l:i.offsetWidth, r:parseFloat(ci.borderTopLeftRadius)},
+        freccia:cg.backgroundImage};
+    });
+    tac.t(q + 'l\'invito non e\' tutto maiuscolo',
+      invito.testo !== invito.testo.toUpperCase(), invito.testo);
+    tac.t(q + 'l\'invito non urla: al massimo 44 punti',
+      invito.corpo <= 44, invito.corpo + 'px');
+    tac.t(q + 'l\'icona dell\'invito sta in un quadrato smussato, come nel gestionale',
+      invito.icona.l >= 60 && invito.icona.r >= 16, JSON.stringify(invito.icona));
+    tac.t(q + 'la freccia del cliente e\' dentro una pastiglia piena',
+      /gradient/.test(invito.freccia), invito.freccia);
+
     /* ── le cinque porte ── */
     tac.t(q + 'le cinque porte ci sono tutte, e ognuna col suo colore',
       await p.evaluate(()=>{

@@ -370,23 +370,40 @@ html,body{height:100%; background:#000; overflow:hidden;
    E il margine sopra e' fisso: non si attacca mai a quello che lo
    precede, nemmeno quando lo schermo e' cortissimo. */
 .cta{margin-top:24px; flex:none; display:flex; flex-direction:column}
-.cta .btn{border-radius:30px; position:relative; overflow:hidden;
-  background:linear-gradient(110deg, rgba(138,87,121,.42), rgba(90,52,80,.26));
-  border:1.5px solid rgba(226,189,212,.42);
-  box-shadow:0 18px 52px -26px rgba(122,73,108,.9);
-  display:flex; align-items:center; gap:24px; padding:18px 32px; cursor:pointer;
+/* ══ I DUE INVITI GRANDI ══
+   Ce ne sono due in tutta l'app, e sono di due persone diverse: «Fai il
+   check-in» e' del cliente e sta in vetrina, «Apri il gestionale» e'
+   dell'operatore e sta in fondo alla schermata della seduta. Hanno la
+   stessa forma — quadrato dell'icona, titolo, riga sotto, freccia a
+   destra — perche' fanno la stessa cosa: portano da un'altra parte.
+   Ma non si devono confondere, e quindi cambiano temperatura: il
+   cliente ha il caldo (rosa e oro), l'operatore ha il freddo (viola e
+   blu); e cambia il peso della freccia — al cliente, che e' uno che
+   passa e non sa cosa fare, la freccia sta dentro una pastiglia piena;
+   all'operatore, che sa gia' dove va, basta un segno leggero.
+   E il titolo non urla piu': cinquantadue punti tutti maiuscoli erano
+   un cartello stradale. Quarantadue in tondo si leggono uguale da
+   dieci metri, e chiedono invece di ordinare. */
+.cta .btn{border-radius:28px; position:relative; overflow:hidden;
+  background:linear-gradient(116deg, rgba(169,119,154,.5) 0%,
+    rgba(138,87,121,.42) 52%, rgba(212,175,55,.17) 100%);
+  border:2px solid rgba(226,189,212,.5);
+  box-shadow:0 16px 44px -22px rgba(122,73,108,.95);
+  display:flex; align-items:center; gap:22px; padding:16px 26px; cursor:pointer;
   transition:transform .13s cubic-bezier(.32,.72,0,1), background .2s}
-.cta .btn:active{transform:scale(.99); background:linear-gradient(110deg,
-  rgba(169,119,154,.55), rgba(122,73,108,.4))}
-.cta .ic{font-size:46px; position:relative; flex:none}
+.cta .btn:active{transform:scale(.99); background:linear-gradient(122deg,
+  rgba(169,119,154,.58), rgba(212,175,55,.2))}
+.cta .ic{width:72px; height:72px; border-radius:21px; flex:none; position:relative;
+  display:flex; align-items:center; justify-content:center; font-size:34px;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2)}
 .cta .tx{position:relative; flex:1; min-width:0; display:flex; flex-direction:column}
-.cta .t1{display:block; font-size:52px; font-weight:800; letter-spacing:.01em;
-  line-height:1.04; white-space:nowrap}
-.cta .t2{display:block; font-size:20px; color:rgba(255,255,255,.72); margin-top:8px;
+.cta .t1{display:block; font-size:42px; font-weight:800; letter-spacing:-.012em;
+  line-height:1.06; white-space:nowrap}
+.cta .t2{display:block; font-size:19px; color:rgba(255,255,255,.66); margin-top:7px;
   font-weight:600}
-.cta .go{width:58px; height:58px; border-radius:50%; flex:none; position:relative;
-  display:flex; align-items:center; justify-content:center; padding-bottom:5px;
-  font-size:34px; font-weight:800; color:#fff;
+.cta .go{width:54px; height:54px; border-radius:50%; flex:none; position:relative;
+  display:flex; align-items:center; justify-content:center; padding-bottom:4px;
+  font-size:32px; font-weight:800; color:#fff;
   background:linear-gradient(135deg,#a9779a,#7a496c)}
 .cta .hint{text-align:center; font-size:18px; color:rgba(255,255,255,.38); margin-top:10px}
 
@@ -1158,6 +1175,7 @@ html,body{height:100%; background:#000; overflow:hidden;
 .algest .ag-tx b{display:block; font-size:30px; font-weight:800; letter-spacing:.02em}
 .algest .ag-tx small{display:block; font-size:19px; color:rgba(255,255,255,.62); margin-top:7px;
   line-height:1.35}
+/* niente pastiglia piena qui: la freccia piena e' il segno del cliente */
 .algest .ag-go{font-size:40px; flex:none; color:rgba(255,255,255,.5)}
 @media (prefers-reduced-motion: reduce){ .algest::after{animation:none} }
 
@@ -1313,7 +1331,7 @@ html,body{height:100%; background:#000; overflow:hidden;
       <div class="cta">
         <div class="btn" id="gocheck">
           <span class="ic">👋</span>
-          <span class="tx"><span class="t1">FAI IL CHECK-IN</span>
+          <span class="tx"><span class="t1">Fai il check-in</span>
             <span class="t2">Due minuti, lo fai da solo · poi ti chiamo io</span></span>
           <span class="go">›</span>
         </div>
