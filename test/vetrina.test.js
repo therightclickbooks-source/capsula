@@ -13,7 +13,9 @@
    tasto del check-in finisce sotto il vetro. Per questo lo spazio si
    MISURA a ogni formato, e non si guarda a occhio.
    ═══════════════════════════════════════════════════════════════ */
-const { VETRINA, SCHERMI, Taccuino } = require('./aiuto');
+const { VETRINA, GESTIONALE, RADICE, SCHERMI, Taccuino } = require('./aiuto');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = async function(browser){
   const tac = new Taccuino('la home della vetrina');
@@ -132,5 +134,48 @@ module.exports = async function(browser){
 
     await p.close();
   }
+
+  /* ── il numero di versione ──
+     Il totem resta acceso per giorni con la stessa pagina aperta e il
+     browser tiene quella che ha scaricato la prima volta: si pubblica
+     una modifica e sul vetro non cambia niente, senza che nessun errore
+     lo dica. Per questo la vetrina scrive in fondo il suo numero e ogni
+     dieci minuti, solo da ferma, va a vedere se ne esiste uno diverso.
+     Due cose devono restare vere, e nessuna delle due si vede a occhio:
+     che il numero sia lo stesso del gestionale, e che il modello con cui
+     la pagina cerca la versione non trovi SE STESSO — se lo trovasse, il
+     totem si ricaricherebbe da solo ogni dieci minuti, per sempre. */
+  const testoVetrina = fs.readFileSync(path.join(RADICE,'app','totem','index.html'),'utf8');
+  const testoGest    = fs.readFileSync(path.join(RADICE,'app','index.html'),'utf8');
+  const modello = new RegExp('VETRINA_' + "VERSION = '([^']+)'");
+  const nVetrina = (testoVetrina.match(modello) || [])[1];
+  const nGest = (testoGest.match(new RegExp('APP_' + "VERSION = '([^']+)'")) || [])[1];
+
+  tac.t('la vetrina dichiara la sua versione', !!nVetrina, String(nVetrina));
+  tac.t('vetrina e gestionale stanno allo stesso numero',
+    nVetrina === nGest, nVetrina + ' contro ' + nGest);
+  tac.t('il modello della versione trova la riga giusta, non se stesso',
+    nVetrina === nGest && /^v\d+\.\d+\.\d+\(\d+\)$/.test(nVetrina || ''), String(nVetrina));
+
+  const p2 = await tac.pagina(browser, VETRINA, SCHERMI[0]);
+  tac.t('il numero si legge in fondo alla vetrina',
+    (await p2.textContent('#dbg')).includes(nVetrina),
+    await p2.textContent('#dbg'));
+  tac.t('da ferma la vetrina controlla se ne esiste una nuova',
+    await p2.evaluate(()=> typeof guardaSeCeNeUnaNuova === 'function'));
+  /* se qualcuno sta rispondendo alle domande, non si ricarica niente */
+  tac.t('con qualcuno dentro il controllo non fa niente',
+    await p2.evaluate(async ()=>{
+      go('form');
+      let ricaricato = false;
+      const vero = location.reload;
+      location.reload = ()=>{ ricaricato = true; };
+      await guardaSeCeNeUnaNuova();
+      location.reload = vero;
+      go('idle');
+      return !ricaricato;
+    }));
+  await p2.close();
+
   return tac;
 };

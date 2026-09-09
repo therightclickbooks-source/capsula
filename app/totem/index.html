@@ -3233,8 +3233,45 @@ function rigaBackup(){
   document.getElementById('dbg').innerHTML =
     '<span class="b1">ultima copia a mano ' + (mano ? '<b>'+mano+'</b>' : '<i>mai fatta</i>') + '</span>'
     + '<span class="b2' + (auto ? '' : ' mai') + '">ultimo backup automatico '
-    + (auto ? '<b>'+auto+'</b>' + quanto(db.lastAuto) : '<i>mai fatto</i>') + '</span>';
+    + (auto ? '<b>'+auto+'</b>' + quanto(db.lastAuto) : '<i>mai fatto</i>') + '</span>'
+    + '<span class="b1">vetrina ' + VETRINA_VERSION + '</span>';
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LA VETRINA SI ACCORGE DA SOLA CHE NE ESISTE UNA NUOVA
+   Il totem resta acceso per giorni con la stessa pagina aperta, e il
+   browser tiene in memoria quella che ha scaricato la prima volta:
+   pubblichiamo una modifica e sul vetro non cambia niente, senza che
+   nessun errore lo dica. Qui la pagina va a rileggere se stessa
+   saltando la memoria del browser, si guarda il numero di versione, e
+   se ne trova uno diverso si ricarica da sola.
+   Due precauzioni: si controlla SOLO quando nessuno sta usando il
+   totem — ricaricare a meta' di un check-in butterebbe via le risposte
+   di uno che sta li' davanti — e in silenzio, senza avvisi: chi passa
+   davanti al vetro non deve leggere le nostre faccende.
+   ═══════════════════════════════════════════════════════════════ */
+const CONTROLLO_VERSIONE = 10 * 60 * 1000;
+async function guardaSeCeNeUnaNuova(){
+  if(SCENE !== 'idle') return;                 /* c'e' qualcuno dentro */
+  if(document.hidden) return;
+  try{
+    const r = await fetch(location.href.split('#')[0] + '?v=' + Date.now(),
+                          {cache:'no-store'});
+    if(!r.ok) return;
+    const t = await r.text();
+    /* il modello si costruisce a pezzi apposta: scritto per intero
+       comparirebbe anche qui dentro, e la pagina troverebbe se stessa
+       invece della riga della versione — ricaricandosi ogni volta */
+    const m = t.match(new RegExp('VETRINA_' + "VERSION = '([^']+)'"));
+    if(m && m[1] !== VETRINA_VERSION && SCENE === 'idle') location.reload();
+  }catch(e){ /* senza rete si continua con quella che c'e' */ }
+}
+setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
+
+/* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
+   due schermi si sa subito se stanno alla stessa pagina. Si vede in
+   fondo alla vetrina, sotto le righe del backup. */
+const VETRINA_VERSION = 'v120.26.09(09)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
