@@ -60,6 +60,13 @@ non deve diventare «no» da sola. Una scheda così è peggio di una incompleta,
 perché sembra completa — dice «nessuna trombosi» a nome di uno a cui nessuno
 l'ha chiesto.
 
+**`operatori.test.js` — chi segue questa seduta.**
+I nomi stanno in fila, uno accanto all'altro, come sul totem. Le due cose che
+si rompono da sole se qualcuno tocca la griglia sono il numero di file (tre
+nomi devono starci in una) e i nomi lunghi, che in una colonna stretta escono
+dalla scheda senza dare errore. Provato con due, tre e sei operatori, su
+telefono stretto e su desktop.
+
 **`protocollo.test.js` — i due motori devono dare la stessa risposta.**
 Il protocollo si calcola in due posti: `buildProtocol()` nel gestionale e
 `costruisciProtocollo()` nella vetrina. Sono due copie scritte a mano della

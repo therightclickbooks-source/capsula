@@ -13,6 +13,7 @@ const PROVE = [
   ['macchinari',  require('./macchinari.test.js')],
   ['domande',     require('./domande.test.js')],
   ['anagrafica',  require('./anagrafica.test.js')],
+  ['operatori',   require('./operatori.test.js')],
   ['protocollo',  require('./protocollo.test.js')]
 ];
 
