@@ -52,12 +52,22 @@ module.exports = async function(browser){
         return parseFloat(c.borderTopWidth) > 0 && parseFloat(c.borderTopLeftRadius) >= 24
           && c.backgroundColor !== 'rgba(0, 0, 0, 0)';
       })));
-    tac.t(q + 'i due titoli hanno occhiello in oro e titolo grande', await p.evaluate(()=>
-      [...document.querySelectorAll('.sezt')].every(e=>{
-        const oc = e.querySelector('.seze'), ti = e.querySelector('.sezh');
-        return oc && ti && parseFloat(getComputedStyle(ti).fontSize) >= 28
-          && oc.offsetWidth > 0;
-      })));
+    /* il titolo di sezione e' fatto come una risposta aperta: targhetta a
+       pastiglia sopra, e sotto la domanda con la barra a sinistra. Le due
+       cose devono stare in colonna e allineate fra loro — sulla stessa
+       riga, quindici punti accanto a ventotto non si allineano a niente */
+    tac.t(q + 'i due titoli hanno la targhetta sopra e la domanda sotto',
+      await p.evaluate(()=>
+        [...document.querySelectorAll('.sezt')].every(e=>{
+          const oc = e.querySelector('.seze'), ti = e.querySelector('.sezh');
+          if(!oc || !ti) return false;
+          const c = getComputedStyle(ti), co = getComputedStyle(oc);
+          return oc.offsetTop + oc.offsetHeight <= ti.offsetTop      /* in colonna */
+            && parseFloat(c.fontSize) >= 26
+            && parseFloat(c.borderLeftWidth) >= 3                    /* la barra */
+            && parseFloat(co.borderTopWidth) > 0                     /* la pastiglia */
+            && parseFloat(co.borderTopLeftRadius) > 20;
+        })));
     /* la faccina e' una scorciatoia, non un passo: se le mettessimo la
        cornice diventerebbe una quarta sezione e l'ordine si perderebbe */
     tac.t(q + 'la faccina non ha la cornice di sezione',
@@ -100,6 +110,31 @@ module.exports = async function(browser){
       await p.evaluate(()=>{
         const h = [...document.querySelectorAll('.pz .t2')].map(e=> e.offsetHeight);
         return h.length === 3 && h.every(x=> x === h[0]);
+      }));
+
+    /* ── il pensiero, che e' una risposta ──
+       stessa lingua del foglio dei macchinari: barra a sinistra del
+       testo, e in oro la parte che parla di Zenith */
+    const pensiero = await p.evaluate(()=>{
+      disegnaPensiero('vacufit');
+      const b = document.getElementById('pens');
+      const px = b.querySelector('.px'), pf = b.querySelector('.pf');
+      const c = getComputedStyle(px);
+      const g = document.createElement('b'); pf.appendChild(g);
+      const oro = getComputedStyle(g).color;
+      g.remove();
+      return {barra: parseFloat(c.borderLeftWidth), passo: parseFloat(c.paddingLeft), oro};
+    });
+    tac.t(q + 'il pensiero ha la barra a sinistra, come la risposta del foglio',
+      pensiero.barra >= 3 && pensiero.passo >= 14, JSON.stringify(pensiero));
+    tac.t(q + 'la parte di Zenith nel pensiero e\' in oro, non in bianco',
+      pensiero.oro !== 'rgb(255, 255, 255)' && /^rgb/.test(pensiero.oro), pensiero.oro);
+
+    /* la riga sotto il tasto e la riga di servizio in fondo non si toccano */
+    tac.t(q + 'la riga sotto il tasto non tocca la riga di servizio',
+      await p.evaluate(()=>{
+        const h = document.querySelector('.cta .hint'), d = document.getElementById('dbg');
+        return h.getBoundingClientRect().bottom <= d.getBoundingClientRect().top;
       }));
 
     /* ── l'invito grande ──
