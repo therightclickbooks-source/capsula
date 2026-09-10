@@ -68,6 +68,19 @@ module.exports = async function(browser){
             && parseFloat(co.borderTopWidth) > 0                     /* la pastiglia */
             && parseFloat(co.borderTopLeftRadius) > 20;
         })));
+    /* il gradino: la testata sta su un ripiano che arriva ai bordi della
+       sezione, e la riga che lo chiude corre da bordo a bordo. Se
+       qualcuno toglie i margini negativi il ripiano si stringe e la
+       riga diventa un trattino in mezzo, che non divide piu' niente */
+    tac.t(q + 'la testata e\' un ripiano che arriva ai bordi della sezione',
+      await p.evaluate(()=>
+        [...document.querySelectorAll('.sezione .sezt')].every(e=>{
+          const c = getComputedStyle(e);
+          return parseFloat(c.borderBottomWidth) > 0
+            && e.offsetWidth >= e.parentElement.clientWidth - 1
+            && c.backgroundImage !== 'none';
+        })));
+
     /* la faccina e' una scorciatoia, non un passo: se le mettessimo la
        cornice diventerebbe una quarta sezione e l'ordine si perderebbe */
     tac.t(q + 'la faccina non ha la cornice di sezione',

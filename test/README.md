@@ -70,6 +70,16 @@ di colonne e i nomi lunghi, che stretti escono dalla riga senza dare errore.
 Provato con due, tre e sei operatori, su telefono stretto e su desktop, e sul
 totem anche che le righe siano alte come quelle delle altre domande.
 
+**`casa.test.js` — la home del gestionale.**
+Ha la stessa mano della vetrina, e non per gusto: chi lavora qui passa la
+giornata a guardare tutt'e due gli schermi, e due modi diversi di dire «qui
+comincia un'altra cosa» costringono l'occhio a reimparare ogni volta che alza
+la testa. Ogni gruppo dentro il suo riquadro, la testata su un ripiano
+rialzato che arriva ai bordi, e una riga che lo chiude da bordo a bordo.
+Provato su telefono e desktop, in tema scuro **e chiaro**: il ripiano è fatto
+di mescole su `--text`, e senza la prova nessuno si accorgerebbe che sul
+chiaro è sparito.
+
 **`protocollo.test.js` — i due motori devono dare la stessa risposta.**
 Il protocollo si calcola in due posti: `buildProtocol()` nel gestionale e
 `costruisciProtocollo()` nella vetrina. Sono due copie scritte a mano della
