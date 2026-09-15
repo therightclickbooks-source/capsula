@@ -4,7 +4,11 @@
   "description": "La vetrina interattiva e il check-in del cliente per il totem verticale del centro",
   "start_url": ".",
   "scope": ".",
-  "display": "standalone",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
   "orientation": "portrait",
   "background_color": "#0c0a0f",
   "theme_color": "#0c0a0f",

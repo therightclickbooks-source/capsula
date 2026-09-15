@@ -3221,6 +3221,36 @@ function idleReset(){
 }
 ['pointerdown','keydown'].forEach(e=> addEventListener(e, idleReset));
 
+/* ═══════════════════════════════════════════════════════════════
+   A TUTTO SCHERMO, DAL PRIMO TOCCO
+   Sul totem la barra dell'indirizzo in cima e' la cosa peggiore che si
+   possa vedere: dice al cliente che sta guardando una pagina web, non
+   il centro. Il modo pulito per toglierla sarebbe installare la pagina
+   come applicazione, ma Chrome la voce «Installa» la mostra solo a un
+   sito che ha un service worker, e qui non ce n'e' uno apposta: un
+   service worker tiene in memoria la pagina, e una vetrina che resta
+   accesa per giorni con dentro una versione vecchia e' un danno
+   peggiore della barra.
+   Allora si fa dall'altra parte: al primo tocco la pagina chiede lo
+   schermo intero, e la barra sparisce. Il tocco serve per forza — i
+   browser rifiutano lo schermo intero se non lo chiede una persona — e
+   il primo cliente che passa lo fa senza accorgersene.
+   Se qualcuno esce, o se la pagina si ricarica perche' ne e' uscita
+   una nuova, il tocco dopo lo rimette. Niente avvisi, niente tasti: se
+   non si puo' fare, non succede niente e nessuno se ne accorge.
+   ═══════════════════════════════════════════════════════════════ */
+function aTuttoSchermo(){
+  /* gia' installata come applicazione: la barra non c'e' comunque */
+  if(matchMedia('(display-mode: standalone)').matches) return;
+  if(document.fullscreenElement) return;
+  const el = document.documentElement;
+  const chiedi = el.requestFullscreen || el.webkitRequestFullscreen;
+  if(!chiedi) return;
+  try{ const r = chiedi.call(el, {navigationUI:'hide'}); if(r && r.catch) r.catch(()=>{}); }
+  catch(e){ /* il browser ha detto di no: si continua con la barra */ }
+}
+addEventListener('pointerdown', aTuttoSchermo, {passive:true});
+
 function vaiAlGestionale(){
   document.getElementById('dbg').textContent = 'apro il gestionale…';
   location.href = '../index.html';
@@ -3314,7 +3344,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v122.26.09(10)';
+const VETRINA_VERSION = 'v123.26.09(15)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
