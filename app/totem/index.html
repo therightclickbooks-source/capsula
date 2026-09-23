@@ -2969,7 +2969,11 @@ function costruisciProtocollo(q){
   }
   /* obiettivi senza allenamento */
   if(!prog){
-    if(q.goal === 'drenaggio' || has('gambe') || has('piedi')){
+    /* gambe o piedi portano alla leggerezza, tranne quando si cerca relax o
+       sonno: li' comanda l'obiettivo, e le gambe si curano con la
+       rifinitura della parte bassa — identico al gestionale */
+    const gambeRelax = (has('gambe') || has('piedi')) && (q.goal === 'relax' || q.goal === 'sonno');
+    if(q.goal === 'drenaggio' || ((has('gambe') || has('piedi')) && !gambeRelax)){
       prog = vuoleAria ? 'P23' : 'P08'; fam='Z3'; S.zerog = true; S.airbag = Math.max(S.airbag, 4);
       why.push(vuoleAria ? 'Obiettivo leggerezza: compressione ad aria a onde, dai piedi verso l\'alto.'
                               : 'Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
@@ -2984,6 +2988,10 @@ function costruisciProtocollo(q){
     else if(q.goal === 'energia'){
       prog='P15'; fam='Z7'; S.zerog = false; S.plantari = 3;
       why.push('Ritmo tonificante che accende corpo e circolazione.'); }
+    if(gambeRelax && prog){
+      S.ioni = true; S.plantari = 1;
+      why.push('A metà seduta una rifinitura dedicata a gambe e piedi, con gli ioni negativi accesi.');
+    }
   }
   if(!prog){ prog = q.mood === 'sereno' ? 'P14' : 'P01'; fam='Z8';
     why.push('Riequilibrio completo dalla nuca ai piedi.'); }
@@ -3323,7 +3331,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v130.26.09(23)';
+const VETRINA_VERSION = 'v131.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

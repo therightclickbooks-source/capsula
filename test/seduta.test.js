@@ -147,6 +147,48 @@ module.exports = async function(browser){
   tac.t('ripetere una seduta vecchia con airbag a 5 la riporta a 3', ripetuta.airbag === 3 && !ripetuta.testo,
     JSON.stringify(ripetuta));
 
+  /* ── la parte bassa: Down movement con ioni, velocita' e rulli plantari ──
+     relax o sonno con gambe o piedi, e nessun allenamento: comanda
+     l'obiettivo, e le gambe si curano dalla pagina Down movement */
+  const basso = await p.evaluate(()=>{
+    const c = DB.clients[0];
+    const giro = q => { const pr = buildProtocol(c, Object.assign({prefSoloAria:false}, q));
+      pr.quizZones = q.zones; const st = buildSteps(pr).find(x => x.img === 'manualDown');
+      return {prog: pr.prog, ioni: pr.S.ioni, plantari: pr.S.plantari, mb: pr.manualBasso,
+        passo: st ? st.markers.map(m => m.label) : null}; };
+    return {
+      relax: giro({activity:'riposo', zones:['gambe'], goal:'relax', mood:'sereno', pressione:'media'}),
+      sonno: giro({activity:'riposo', zones:['gambe','piedi'], goal:'sonno', mood:'stanco', pressione:'media'}),
+      drenaggio: giro({activity:'riposo', zones:['gambe'], goal:'drenaggio', mood:'sereno', pressione:'media'})
+    };
+  });
+  tac.t('relax con le gambe: Down movement, ioni accesi, velocita\' e rulli plantari a 2',
+    !!basso.relax.passo && basso.relax.ioni && basso.relax.plantari === 1
+      && /Down movement/.test(basso.relax.passo[0]) && /velocità a <b>2<\/b>/.test(basso.relax.passo.join())
+      && /livello <b>2<\/b>/.test(basso.relax.passo.join()), JSON.stringify(basso.relax));
+  tac.t('sonno con gambe e piedi: tutto piu\' lento, velocita\' e rulli plantari a 1',
+    !!basso.sonno.passo && basso.sonno.ioni && /velocità a <b>1<\/b>/.test(basso.sonno.passo.join())
+      && /livello <b>1<\/b>/.test(basso.sonno.passo.join()), JSON.stringify(basso.sonno));
+  tac.t('il drenaggio con le gambe resta la leggerezza, senza Down movement',
+    basso.drenaggio.prog === 'P08' && !basso.drenaggio.passo, JSON.stringify(basso.drenaggio));
+
+  /* ── la ripetizione si porta dietro le rifiniture manuali ── */
+  const rip = await p.evaluate(()=>{
+    const c = DB.clients[0];
+    const q = {activity:'ems', zones:['cervicale','braccia','dorsale'], goal:'recupero', mood:'sereno', pressione:'media'};
+    const pr = buildProtocol(c, Object.assign({prefSoloAria:false}, q));
+    /* una seduta vecchia, salvata senza la rifinitura: si ricalcola */
+    DB.sessions.push({id:'srip', clientId:c.id, date:'2026-09-20T10:00:00.000Z', prog:pr.prog, fam:pr.fam,
+      settings:{...pr.S}, scala:'capsula', quiz:q});
+    DB.operators = [];
+    repeatSession('srip');
+    const st = buildSteps(currentProt).map(x => x.title);
+    DB.sessions = DB.sessions.filter(x => x.id !== 'srip');
+    return {prog: pr.prog, titoli: st};
+  });
+  tac.t('ripetendo il P04 torna la rifinitura manuale sul punto',
+    rip.titoli.some(t => /Rifinitura manuale sul punto/.test(t)), JSON.stringify(rip));
+
   /* ogni marcatore abbraccia il suo tasto: porta con se' misura e forma
      del tasto (cerchio o rettangolo), non un cerchio fisso appoggiato li'
      vicino */
