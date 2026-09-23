@@ -231,6 +231,11 @@ module.exports = async function(browser){
   tac.t('il modello della versione trova la riga giusta, non se stesso',
     nVetrina === nGest && /^v\d+\.\d+\.\d+\(\d+\)$/.test(nVetrina || ''), String(nVetrina));
 
+  /* anche il gestionale va a vedere se ne esiste una nuova: senza, il
+     telefono dell'operatore resta indietro di giorni senza dirlo */
+  tac.t('il gestionale controlla da solo se ne esiste una versione nuova',
+    /function guardaVersioneNuova/.test(testoGest) && /visibilitychange/.test(testoGest));
+
   const p2 = await tac.pagina(browser, VETRINA, SCHERMI[0]);
   tac.t('il numero si legge in fondo alla vetrina',
     (await p2.textContent('#dbg')).includes(nVetrina),
