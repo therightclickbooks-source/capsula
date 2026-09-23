@@ -106,6 +106,47 @@ module.exports = async function(browser){
       && zonePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /braccia/.test(m.label)),
     zonePasso ? JSON.stringify(zonePasso.marcatori) : 'nessun passo airbag');
 
+  /* le zone degli airbag le decide il protocollo: nella seduta solo aria
+     ci sono sempre, e sono icone precise, non «tocca quelle desiderate» */
+  const aria = await p.evaluate(()=>{
+    const c = DB.clients[0];
+    const giro = q => { const pr = buildProtocol(c, Object.assign({prefSoloAria:true}, q));
+      pr.quizZones = q.zones; return buildSteps(pr).filter(x => x.img === 'airbag')
+        .map(x => x.markers.map(m => m.label)); };
+    return {
+      drenaggio: giro({activity:'riposo', zones:[], goal:'drenaggio', mood:'sereno', pressione:'media'}),
+      relax:     giro({activity:'riposo', zones:[], goal:'relax', mood:'sereno', pressione:'media'}),
+      lombare:   giro({activity:'ems', zones:['lombare'], goal:'recupero', mood:'sereno', pressione:'media'}),
+      tante:     giro({activity:'ems', zones:['cervicale','braccia','lombare','gambe'], goal:'recupero', mood:'sereno', pressione:'media'})
+    };
+  });
+  tac.t('solo aria, drenaggio senza zone: il protocollo accende gambe e piedi',
+    aria.drenaggio.length === 1 && aria.drenaggio[0].length === 1 && /gambe e piedi/.test(aria.drenaggio[0][0]),
+    JSON.stringify(aria.drenaggio));
+  tac.t('solo aria, relax senza zone: corpo intero', aria.relax.length === 1 && /corpo intero/.test(aria.relax[0].join()),
+    JSON.stringify(aria.relax));
+  tac.t('solo aria con la lombare: vita e fianchi', aria.lombare.length === 1 && /vita e fianchi/.test(aria.lombare[0].join()),
+    JSON.stringify(aria.lombare));
+  tac.t('quattro zone diverse: si accende direttamente corpo intero',
+    aria.tante.length === 1 && aria.tante[0].length === 1 && /corpo intero/.test(aria.tante[0][0]), JSON.stringify(aria.tante));
+  tac.t('nessun passo dice piu\' «tocca quelle desiderate»',
+    !JSON.stringify(aria).includes('desiderate'));
+
+  /* una seduta salvata prima della scala 0-3 (airbag a 5) ripetuta oggi
+     torna sulla scala della capsula */
+  const ripetuta = await p.evaluate(()=>{
+    DB.sessions.push({id:'svecchia', clientId:'cprova', date:'2026-09-01T10:00:00.000Z', prog:'P23', fam:'Z3',
+      settings:{intensita:0, fourD:0, airbag:5, calore:true, ioni:false, zerog:true, timer:20, plantari:0, polpacci:0},
+      quiz:{zones:[], goal:'drenaggio', activity:'riposo'}});
+    DB.operators = [];
+    repeatSession('svecchia');
+    const S = currentProt.S, air = document.body.innerText;
+    DB.sessions = DB.sessions.filter(x => x.id !== 'svecchia');
+    return {airbag: S.airbag, testo: /porta il valore a 5/.test(air)};
+  });
+  tac.t('ripetere una seduta vecchia con airbag a 5 la riporta a 3', ripetuta.airbag === 3 && !ripetuta.testo,
+    JSON.stringify(ripetuta));
+
   /* ogni marcatore abbraccia il suo tasto: porta con se' misura e forma
      del tasto (cerchio o rettangolo), non un cerchio fisso appoggiato li'
      vicino */
