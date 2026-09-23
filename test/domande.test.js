@@ -102,6 +102,37 @@ module.exports = async function(browser){
   tac.t('a fine seduta si chiede com\'era l\'intensita\'',
     /intensit/.test(fine.piu), fine.piu);
 
+  /* ── la domanda «massaggio completo o solo aria» ──
+     si fa solo quando cambia davvero la seduta, e la risposta arriva al
+     gestionale dentro il biglietto del check-in */
+  const aria = await p.evaluate(()=>{
+    const conDomanda = q => { Object.assign(D, {activity:'', zones:[], goal:'', aria:''}, q);
+      return passi().some(x => x.k === 'aria'); };
+    const r = {
+      ems2: conDomanda({activity:'ems2', goal:'recupero'}),
+      vacufit: conDomanda({activity:'vacufit', goal:'relax'}),
+      gambe: conDomanda({activity:'ems', zones:['gambe'], goal:'recupero'}),
+      drenaggio: conDomanda({activity:'riposo', goal:'drenaggio'}),
+      ems: conDomanda({activity:'ems', zones:['lombare'], goal:'recupero'}),
+      relax: conDomanda({activity:'riposo', zones:['cervicale'], goal:'relax'}),
+      matrix: conDomanda({activity:'matrix', zones:['braccia'], goal:'recupero'})
+    };
+    Object.assign(D, {activity:'vacufit', zones:[], goal:'drenaggio', mood:'sereno', pressione:'media', aria:'soloaria'});
+    r.p23 = costruisciProtocollo(D).prog;
+    /* tornando indietro e cambiando attivita' la risposta vecchia non vale piu' */
+    Object.assign(D, {activity:'ems', zones:['lombare'], goal:'recupero'});
+    r.vecchia = costruisciProtocollo(D).prog;
+    Object.assign(D, {activity:'', zones:[], goal:'', mood:'', pressione:'', aria:''});
+    return r;
+  });
+  tac.t('la domanda sull\'aria c\'e\' dopo EMS2, Vacutherm, con le gambe e per il drenaggio',
+    aria.ems2 && aria.vacufit && aria.gambe && aria.drenaggio, JSON.stringify(aria));
+  tac.t('la domanda sull\'aria non c\'e\' dopo EMS, Matrix o per il relax della cervicale',
+    !aria.ems && !aria.relax && !aria.matrix, JSON.stringify(aria));
+  tac.t('«solo aria» sul totem porta al P23', aria.p23 === 'P23', aria.p23);
+  tac.t('una risposta «solo aria» rimasta indietro non vale quando la domanda non c\'e\' piu\'',
+    aria.vecchia !== 'P23', aria.vecchia);
+
   await p.close();
   return tac;
 };

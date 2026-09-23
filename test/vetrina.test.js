@@ -145,8 +145,8 @@ module.exports = async function(browser){
               righe: e ? Math.round(e.offsetHeight / parseFloat(getComputedStyle(e).lineHeight || 24)) : 0,
               alto: e ? e.offsetHeight : 0, corpo: e ? parseFloat(getComputedStyle(e).fontSize) : 0};
     });
-    tac.t(q + 'nel tasto ci sono i tre passaggi: nome, sei domande, ti accomodi',
-      passi.numeri === 3 && /nome/.test(passi.testo) && /sei domande/.test(passi.testo)
+    tac.t(q + 'nel tasto ci sono i tre passaggi: nome, poche domande, ti accomodi',
+      passi.numeri === 3 && /nome/.test(passi.testo) && /poche domande/.test(passi.testo)
         && /accomodi/.test(passi.testo), passi.testo);
     tac.t(q + 'i tre passaggi stanno su una riga sola',
       passi.alto <= passi.corpo * 1.7, passi.alto + 'px per ' + passi.corpo + 'px');

@@ -1298,7 +1298,7 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="btn" id="gocheck">
           <span class="ic">👋</span>
           <span class="tx"><span class="t1">Fai il check-in</span>
-            <span class="t2 passi3"><i>1</i> il tuo nome<em>·</em><i>2</i> sei domande<em>·</em><i>3</i> ti accomodi</span></span>
+            <span class="t2 passi3"><i>1</i> il tuo nome<em>·</em><i>2</i> poche domande<em>·</em><i>3</i> ti accomodi</span></span>
           <span class="go">›</span>
         </div>
         <div class="hint">Due minuti, lo fai da solo · poi ti chiama il tuo operatore</div>
@@ -1661,7 +1661,7 @@ const QA = [
    piu:'Il protocollo non è uguale per tutti: viene scritto per te, oggi, in base a come stai.'},
   {ic:'🎯', t:'capire', q:'Cosa può fare per me?',
    a:'Dipende da cosa ti porta qui. <b>Gambe pesanti. Schiena rigida. Sonno difficile. Recupero dopo l\'allenamento.</b> Per ognuna c\'è una famiglia di protocolli diversa.',
-   piu:'Al check-in rispondi a cinque domande, e il protocollo si costruisce da solo.'},
+   piu:'Al check-in rispondi a poche domande, e il protocollo si costruisce da solo.'},
   {ic:'🎓', t:'capire', q:'Chi mi segue?',
    a:'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo.',
    piu:'È una cosa nostra: non la trovi in nessun altro centro.'},
@@ -2123,7 +2123,7 @@ document.getElementById('avatar').onclick = ()=>{
    Stessa sequenza del gestionale: prima chi ti segue, poi le cinque
    domande con le stesse parole e le stesse scelte. */
 const D = {nome:'', cogn:'', op:null, activity:'', zones:[], zmode:null,
-           goal:'', mood:'', pressione:'',
+           goal:'', mood:'', pressione:'', aria:'',
            /* chi è: la scheda riconosciuta in anagrafica, se c'è */
            clienteId:null, cell:'', cifre:''};
 let MODO = 'nome';   /* 'nome' oppure 'cell' */
@@ -2310,6 +2310,9 @@ const PASSI_TUTTI = [
     ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
     ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità'],
     ['media','⚖️','Pressione media','la regolazione standard']]},
+  {k:'aria', q:'Come vuoi il massaggio oggi?', qs:'Rulli e aria insieme, oppure solo la compressione ad aria', due:true, opts:[
+    ['completo','🌀','Massaggio completo','rulli e aria insieme: il lavoro più profondo'],
+    ['soloaria','💨','Solo aria','compressione ad aria, come una pressoterapia: niente rulli']]},
 ];
 
 /* ─── la prima volta ───────────────────────────────────────────────
@@ -2327,7 +2330,8 @@ function primaVolta(){
   return !((db && db.sessions) || []).some(x=> x.clientId === D.clienteId);
 }
 function passi(){
-  return primaVolta() ? PASSI_TUTTI.filter(p=> p.k !== 'pressione') : PASSI_TUTTI;
+  const prima = primaVolta(), aria = serveDomandaAria(D);
+  return PASSI_TUTTI.filter(p=> !(prima && p.k === 'pressione') && !(!aria && p.k === 'aria'));
 }
 /* «PASSO 3 DI 5» o «DI 6» a seconda di quante domande ci sono davvero */
 function etichettaPasso(L, i){
@@ -2528,7 +2532,7 @@ document.getElementById('gocheck').onclick = startCheck;
 
 /* le etichette del riepilogo, le stesse del gestionale */
 const QLBL = {nome:'Nome', op:'Operatore', activity:'Attività', zones:'Zone',
-              goal:'Obiettivo', mood:'Umore', pressione:'Pressione'};
+              goal:'Obiettivo', mood:'Umore', pressione:'Pressione', aria:'Massaggio'};
 
 function rispostaDi(k){
   if(k === 'nome') return D.nome ? (D.nome + ' ' + D.cogn).trim() : '';
@@ -2757,7 +2761,8 @@ const NOMI = {
   recupero:'Recupero muscolare', sollievo:'Sollievo mirato', drenaggio:'Leggerezza',
   relax:'Relax profondo', sonno:'Verso il sonno', energia:'Energia',
   sereno:'Sereno', stanco:'Stanco', stressato:'Stressato', dolorante:'Indolenzito', carico:'Carico',
-  dolce:'Pressione dolce', media:'Pressione media', decisa:'Pressione decisa'
+  dolce:'Pressione dolce', media:'Pressione media', decisa:'Pressione decisa',
+  completo:'Massaggio completo', soloaria:'Solo aria'
 };
 /* ══════════════════════════════════════════════════════════════
    IL CHECK-IN CHE ASPETTA
@@ -2785,14 +2790,17 @@ function salvaCheckin(){
     cell: D.cell || '',
     op: D.op || null,
     quiz: { activity:D.activity, zones:D.zones.slice(), zmode:D.zmode,
-            goal:D.goal, mood:D.mood, pressione:D.pressione }
+            goal:D.goal, mood:D.mood, pressione:D.pressione,
+            /* la risposta viaggia solo se la domanda e' stata fatta */
+            aria: serveDomandaAria(D) ? D.aria : '' }
   });
   try{ localStorage.setItem('zfl_app_v1', JSON.stringify(db)); }catch(e){}
 }
 
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
-  const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione]]
+  const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione],
+                 serveDomandaAria(D) ? NOMI[D.aria] : '']
     .concat(D.zones.length ? D.zones.map(ZNOME)
       : D.zmode === 'totale' ? ['Total body']
       : D.zmode === 'nessuna' ? ['Nessuna zona in particolare'] : [])
@@ -2873,7 +2881,20 @@ function inScalaCapsula(S){
   S.polpacci  = S.polpacci > 0 ? 1 : 0;
   S.plantari  = S.plantari > 0 ? 1 : 0;
 }
+/* La domanda «massaggio completo o solo aria» si fa solo quando la
+   risposta cambia davvero la seduta: dopo EMS2 o Vacutherm, con gambe o
+   piedi fra le zone, o quando si cerca leggerezza. Negli altri casi il
+   lavoro lo fanno i rulli, e proporre di toglierli vorrebbe dire far
+   scegliere una seduta meno efficace a chi non sa cosa perde. */
+function serveDomandaAria(q){
+  return q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio'
+    || (q.zones || []).some(z=> z === 'gambe' || z === 'piedi');
+}
 function costruisciProtocollo(q){
+  /* dal gestionale arriva prefSoloAria; dal totem la risposta, che conta
+     solo se la domanda e' stata fatta davvero: tornando indietro e
+     cambiando attivita' la risposta vecchia resta in D, e non deve valere */
+  const vuoleAria = q.prefSoloAria === true || (q.aria === 'soloaria' && serveDomandaAria(q));
   let S = Object.assign({}, MACRO);
   let prog = null, fam = 'Z8', why = [], manualRef = null;
   const zone = q.zones || [];
@@ -2923,6 +2944,8 @@ function costruisciProtocollo(q){
   else if(q.activity === 'ems2'){
     if(q.mood === 'dolorante'){ prog='P07'; fam='Z2';
       why.push('EMS2 con muscoli indolenziti: prima si sciolgono le contrazioni dell\'elettrostimolazione, poi si alleggeriscono le gambe della camminata.'); }
+    else if(vuoleAria){ prog='P23'; fam='Z3';
+      why.push('Dopo EMS2 (elettrostimolazione in camminata): compressione pura, senza rulli, per far defluire il carico dalle gambe.'); }
     else if(q.goal === 'recupero' && !has('gambe')){ prog='P21'; fam='Z2';
       why.push('EMS2 con obiettivo recupero: defaticamento completo di tutti i gruppi che l\'elettrostimolazione ha fatto contrarre.'); }
     else { prog='P08'; fam='Z3';
@@ -2931,8 +2954,9 @@ function costruisciProtocollo(q){
     S.plantari = Math.max(S.plantari, 2); S.polpacci = Math.max(S.polpacci, 2);
   }
   else if(q.activity === 'vacufit'){
-    fam='Z3'; prog='P08';
-    why.push('Gambe e piedi al centro: prolunga l\'effetto leggerezza del Vacutherm.');
+    fam='Z3';
+    if(vuoleAria){ prog='P23'; why.push('Solo compressione d\'aria: effetto pressoterapia senza rulli.'); }
+    else { prog='P08'; why.push('Gambe e piedi al centro: prolunga l\'effetto leggerezza del Vacutherm.'); }
     S.zerog = true; S.airbag = Math.max(S.airbag, 4);
     S.plantari = Math.max(S.plantari, 2); S.polpacci = Math.max(S.polpacci, 2);
   }
@@ -2946,8 +2970,9 @@ function costruisciProtocollo(q){
   /* obiettivi senza allenamento */
   if(!prog){
     if(q.goal === 'drenaggio' || has('gambe') || has('piedi')){
-      prog='P08'; fam='Z3'; S.zerog = true; S.airbag = Math.max(S.airbag, 4);
-      why.push('Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
+      prog = vuoleAria ? 'P23' : 'P08'; fam='Z3'; S.zerog = true; S.airbag = Math.max(S.airbag, 4);
+      why.push(vuoleAria ? 'Obiettivo leggerezza: compressione ad aria a onde, dai piedi verso l\'alto.'
+                              : 'Obiettivo leggerezza: compressione a onde e rulli plantari.'); }
     else if(q.goal === 'sonno' || (when === 'sera' && q.goal === 'relax')){
       prog = q.mood === 'stressato' ? 'P17' : 'P18'; fam='Z6'; S.ioni = true;
       S.intensita = Math.min(S.intensita, 2);
@@ -2963,14 +2988,29 @@ function costruisciProtocollo(q){
   if(!prog){ prog = q.mood === 'sereno' ? 'P14' : 'P01'; fam='Z8';
     why.push('Riequilibrio completo dalla nuca ai piedi.'); }
 
+  /* «solo aria» scelto dal cliente — come nel gestionale ha SEMPRE la
+     precedenza: P23, nessun rullo, e tutte le manopole dei rulli a zero */
+  const soloAria = vuoleAria;
+  if(soloAria){
+    const conflitto = prog !== 'P23' && (manualRef || q.goal === 'sollievo');
+    prog = 'P23'; fam = 'Z3'; manualRef = null;
+    S.plantari = 0; S.polpacci = 0; S.intensita = 0; S.fourD = 0;
+    S.zerog = true; S.airbag = Math.max(S.airbag, 4);
+    why.push('💨 Preferenza «solo compressione d\'aria» applicata: P23 Airbag Massage, effetto pressoterapia — nessun rullo.');
+    if(conflitto) why.push('⚠️ Nota: era stato chiesto un lavoro mirato che di norma usa i rulli. Con «solo aria» quel lavoro coi rulli non viene eseguito: se serve la schiena coi rulli, disattiva l\'interruttore.');
+  }
+
   /* la pressione chiesta oggi — alla prima volta la domanda non si fa */
+  /* con solo aria i rulli stanno fermi: la pressione lavora sugli airbag */
   if(!prima && q.pressione === 'dolce'){
-    S.intensita = Math.max(0, S.intensita - 1); S.fourD = Math.max(0, S.fourD - 1);
-    why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.');
+    if(soloAria){ S.airbag = Math.max(0, S.airbag - 1); why.push('Pressione alleggerita: compressione d\'aria portata un livello più dolce.'); }
+    else { S.intensita = Math.max(0, S.intensita - 1); S.fourD = Math.max(0, S.fourD - 1);
+      why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.'); }
   }
   if(!prima && q.pressione === 'decisa'){
-    S.intensita = Math.min(6, S.intensita + 1); S.fourD = Math.min(6, S.fourD + 1);
-    why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.');
+    if(soloAria){ S.airbag = Math.min(6, S.airbag + 1); why.push('Pressione aumentata: compressione d\'aria portata un livello più decisa.'); }
+    else { S.intensita = Math.min(6, S.intensita + 1); S.fourD = Math.min(6, S.fourD + 1);
+      why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.'); }
   }
 
   /* dalla scala del motore alla scala della capsula — nello stesso punto del
@@ -2991,7 +3031,7 @@ function costruisciProtocollo(q){
     S.timer = 15;
     const zc0 = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
       + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
-    return {prog, fam, S, why, zCode: zc0, manualRef};
+    return {prog, fam, S, why, zCode: zc0, manualRef, soloAria};
   }
   let rec = 20, dwhy = 'Durata standard di 20 minuti.';
   if(fam === 'Z7'){ rec = 15; dwhy = 'Energia: sessione breve e tonificante di 15 minuti — di più smorzerebbe l\'effetto sveglia.'; }
@@ -3004,7 +3044,7 @@ function costruisciProtocollo(q){
 
   const zCode = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
     + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
-  return {prog, fam, S, why, zCode, manualRef};
+  return {prog, fam, S, why, zCode, manualRef, soloAria};
 }
 
 /* ── le frasi che compongono il pensiero ──
@@ -3044,7 +3084,8 @@ function disegnaProtocollo(){
     +     pr.fam + ' · ' + F.name + '</div>'
     +   '<div class="nom">' + pr.prog + ' · “' + P.o + '”</div>'
     +   '<div class="rig"><span class="pil oro">⏱ ' + S.timer + ' min</span>'
-    +     '<span class="pil">Pressione ' + (F_PRESS[D.pressione] || 'media') + '</span></div>'
+    +     '<span class="pil">Pressione ' + (F_PRESS[D.pressione] || 'media') + '</span>'
+    +     (pr.soloAria ? '<span class="pil">💨 Solo aria</span>' : '') + '</div>'
     + '</div></div>';
 
   const fasi =
@@ -3122,7 +3163,7 @@ function disegnaProtocollo(){
 
 function reset(){
   D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
-  D.goal=''; D.mood=''; D.pressione='';
+  D.goal=''; D.mood=''; D.pressione=''; D.aria='';
   D.clienteId=null; D.cell=''; D.cifre='';
   MODO = 'nome';
   PASSO = 0; FIELD = 'nome';
@@ -3282,7 +3323,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v129.26.09(23)';
+const VETRINA_VERSION = 'v130.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

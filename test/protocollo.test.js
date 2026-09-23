@@ -32,6 +32,10 @@ const ATTIVITA  = ['ems','ems2','vacufit','matrix','riposo'];
 const OBIETTIVI = ['recupero','sollievo','drenaggio','relax','sonno','energia'];
 const UMORI     = ['sereno','stanco','stressato','dolorante','carico'];
 const PRESSIONI = ['dolce','media','decisa','abituale'];
+/* «solo aria»: nel gestionale e' l'interruttore della proposta, nel totem
+   la domanda che si fa solo a chi serve. I due motori devono dare la
+   stessa seduta anche cosi' */
+const ARIA = [false, true];
 const ZONE = [
   [], ['gambe'], ['glutei'], ['braccia'], ['cervicale','spalle'],
   ['lombare'], ['dorsale','lombare'], ['gambe','piedi']
@@ -45,7 +49,8 @@ function casi(){
       for(const goal of OBIETTIVI)
         for(const mood of UMORI)
           for(const pressione of PRESSIONI)
-            out.push({activity, zones, goal, mood, pressione});
+            for(const prefSoloAria of ARIA)
+              out.push({activity, zones, goal, mood, pressione, prefSoloAria});
   return out;
 }
 
@@ -93,7 +98,7 @@ module.exports = async function(browser){
       Date.prototype.getHours = function(){ return ora; };
       const c = DB.clients[0];
       const out = lista.map(q => {
-        try { return f(buildProtocol(c, Object.assign({prefSoloAria:false}, q))); }
+        try { return f(buildProtocol(c, q)); }
         catch(e){ return 'ERRORE ' + e.message; }
       });
       Date.prototype.getHours = vero;
@@ -137,8 +142,7 @@ module.exports = async function(browser){
     for(const ora of [10, 14, 20]){
       const vero = Date.prototype.getHours;
       Date.prototype.getHours = function(){ return ora; };
-      lista.forEach(q => out.push(f(buildProtocol(DB.clients[0],
-        Object.assign({prefSoloAria:false}, q)))));
+      lista.forEach(q => out.push(f(buildProtocol(DB.clients[0], q))));
       Date.prototype.getHours = vero;
     }
     return out;
