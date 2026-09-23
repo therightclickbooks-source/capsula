@@ -106,6 +106,17 @@ module.exports = async function(browser){
       && zonePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /braccia/.test(m.label)),
     zonePasso ? JSON.stringify(zonePasso.marcatori) : 'nessun passo airbag');
 
+  /* ogni marcatore abbraccia il suo tasto: porta con se' misura e forma
+     del tasto (cerchio o rettangolo), non un cerchio fisso appoggiato li'
+     vicino */
+  no = ogni(s => s.passi.every(x => x.marcatori.every(m =>
+    m.pos.length === 5 && m.pos[2] > 0 && m.pos[3] > 0 && ['c','r'].includes(m.pos[4])
+    && m.pos[0] - m.pos[2]/2 >= 0 && m.pos[0] + m.pos[2]/2 <= 100
+    && m.pos[1] - m.pos[3]/2 >= 0 && m.pos[1] + m.pos[3]/2 <= 100)));
+  tac.t('ogni marcatore ha forma e misura del suo tasto, dentro la schermata', !no.length,
+    no.length + ' sedute, per es. ' + (no[0] ? JSON.stringify(no[0].passi.flatMap(x => x.marcatori)
+      .find(m => m.pos.length !== 5)) : ''));
+
   /* la pagina della proposta: niente blocchi, niente IN/OUT, niente musica */
   const pagina = await p.evaluate(()=>{
     quizState = {clientId:'cprova', activity:'ems', zones:['gambe'], goal:'recupero',
