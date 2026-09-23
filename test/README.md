@@ -26,8 +26,9 @@ a un controllo automatico senza cambiare niente.
 ## Cosa prova, e perché
 
 **`vetrina.test.js` — la home del totem, su cinque formati.**
-L'ordine della colonna (prima «cosa hai fatto oggi», poi «cosa succede
-adesso»), il rettangolo intorno a ogni sezione, i titoli con occhiello.
+L'ordine della colonna — quattro fasce: la frase col guscio di luce, i tre
+numeri, «cosa hai fatto oggi», l'invito con dentro i tre passaggi e sotto la
+faccina — il rettangolo intorno a ogni sezione, i titoli con occhiello.
 E soprattutto lo **spazio**: la colonna ha un'altezza fissa e dentro ci sta
 tutto per pochi punti, quindi ogni parola in più la fa sbordare — e su un 49
 pollici sbordare vuol dire che il tasto del check-in finisce sotto il vetro.

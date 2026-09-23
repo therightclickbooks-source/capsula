@@ -104,7 +104,14 @@ html,body{height:100%; background:#000; overflow:hidden;
    posto per costruzione.
    ══════════════════════════════════════════════════════════════ */
 .vetr{position:absolute; left:58px; right:58px; top:11.6%; bottom:4.6%;
-  display:flex; flex-direction:column; z-index:12}
+  display:flex; flex-direction:column; justify-content:space-between; z-index:12}
+/* Quattro fasce, un compito ciascuna: la frase con il disegno, i tre
+   numeri, l'allenamento, l'invito (con sotto la faccina). «Cosa succede
+   adesso» non e' piu' un riquadro a parte: i tre passaggi stanno dentro
+   il tasto, perche' spiegano quel tasto. Lo spazio che avanza si divide
+   in parti uguali fra le fasce invece di finire tutto in un buco sopra
+   il tasto. */
+.vetr > *{margin-top:0}
 
 /* ── il manifesto: la frase che gira, e la capsula accanto ── */
 /* L'altezza è fissa apposta. Le frasi girano ogni nove secondi e mezzo
@@ -163,11 +170,8 @@ html,body{height:100%; background:#000; overflow:hidden;
   border-radius:999px; background:rgba(14,10,18,.86); border:1px solid rgba(255,255,255,.16);
   font-size:21px; font-weight:800; white-space:nowrap; z-index:3}
 .pill span{font-size:25px}
-.pb1{left:2px; top:-24px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
-/* «4 mani» non torna qui: è già uno dei tre numeri qui sotto. Al suo
-   posto la pastiglia dice quello che dice il disegno — la fila di
-   persone accanto alla capsula. */
-.pb2{right:2px; bottom:-22px; border-color:rgba(212,175,55,.5); color:#eed37a}
+/* la pastiglia sta sotto il guscio, a destra: sopra copriva la testiera */
+.pb1{right:2px; bottom:-22px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
 
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
 .numeri{display:flex}
@@ -199,7 +203,6 @@ html,body{height:100%; background:#000; overflow:hidden;
    sopra il tasto, dove non si vede — un tasto piu' staccato dal resto
    non e' un difetto, un riquadro con dentro il vuoto si' */
 .sezione.porte{display:flex; flex-direction:column; flex:0 1 auto; min-height:0}
-.spazio{flex:1 1 auto; min-height:0}
 .sezione.cifre{padding:14px 2px}
 /* il titolo di sezione: prima era una riga sola di maiuscole piccole con
    un trattino davanti — si leggeva come un'etichetta di servizio, non
@@ -236,29 +239,6 @@ html,body{height:100%; background:#000; overflow:hidden;
   padding-left:15px; border-left:4px solid rgba(230,198,92,.7)}
 .sezd{display:block; margin-top:5px; padding-left:19px; font-size:17px;
   line-height:1.3; color:rgba(255,255,255,.44)}
-
-/* ── i tre passi: adesso raccontano in una riga ──
-   Erano tre schede alte con titolo e descrizione: 290 punti per dire
-   «dimmi come ti chiami, rispondi, accomodati». Sono la spiegazione di
-   una cosa che dura due minuti, non il contenuto della vetrina, e
-   prendevano piu' spazio del manifesto. Adesso sono tre righe basse:
-   dicono la stessa cosa, ma stanno al loro posto. */
-.passi{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
-.pz{background:rgba(255,255,255,.035); border:0; border-radius:20px;
-  padding:9px 13px; display:flex; align-items:center; gap:12px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 9px 20px -13px rgba(0,0,0,.95)}
-.pz .n{width:44px; height:44px; border-radius:14px; flex:none; display:flex;
-  align-items:center; justify-content:center; font-size:23px; font-weight:800;
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
-.pz .tx{min-width:0; display:flex; flex-direction:column}
-.pz .t1{display:block; font-size:19.5px; font-weight:800; line-height:1.18}
-.pz .t2{display:block; font-size:15.5px; line-height:1.3; color:rgba(255,255,255,.5);
-  margin-top:3px}
-/* il numero resta colorato: dice l'ordine, non invita a premere */
-.pz.uno .n{background:rgba(230,198,92,.18); border-color:rgba(230,198,92,.5); color:#eed37a}
-.pz.due .n{background:rgba(169,119,154,.24); border-color:rgba(169,119,154,.55); color:#e2bdd4}
-.pz.tre .n{background:rgba(79,184,221,.2); border-color:rgba(79,184,221,.45); color:#8fd3ec}
 
 /* ── la faccina, che adesso parla su una riga sola ──
    La cornice non e' di un colore: e' un nastro di colori che gira
@@ -451,6 +431,12 @@ html,body{height:100%; background:#000; overflow:hidden;
   font-size:32px; font-weight:800; color:#fff;
   background:linear-gradient(135deg,#a9779a,#7a496c)}
 .cta .hint{text-align:center; font-size:18px; color:rgba(255,255,255,.38); margin-top:10px}
+/* i tre passaggi, dentro il tasto: il numero in oro dice l'ordine */
+.cta .passi3{font-size:21px; color:rgba(255,255,255,.78)}
+.cta .passi3 i{font-style:normal; font-weight:800; color:#e6c65c; margin-right:5px}
+.cta .passi3 em{font-style:normal; color:rgba(255,255,255,.3); margin:0 12px}
+/* la faccina sotto il tasto: piu' stretta, e' la seconda strada */
+.cta .avatar{align-self:center; width:88%; margin-top:22px}
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -1258,68 +1244,27 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div id="roams"></div>
         <div class="hp">
           <div class="pod"><div class="glow"></div>
-          <svg width="432" height="206" viewBox="0 0 880 420" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="zco" x1="0" y1="0" x2="1" y2=".4">
-                <stop offset="0" stop-color="#9a7530"/><stop offset=".45" stop-color="#f7e2a4"/>
-                <stop offset="1" stop-color="#b48a35"/></linearGradient>
-              <linearGradient id="zcc" x1=".25" y1="0" x2=".8" y2="1">
-                <stop offset="0" stop-color="#3f3149"/><stop offset=".55" stop-color="#170f1f"/>
-                <stop offset="1" stop-color="#090610"/></linearGradient>
-              <radialGradient id="zcg" cx=".5" cy=".62" r=".5">
-                <stop offset="0" stop-color="#4fb8dd" stop-opacity=".34"/>
-                <stop offset="1" stop-color="#4fb8dd" stop-opacity="0"/></radialGradient>
-              <linearGradient id="zcb" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#bdf0ff"/><stop offset="1" stop-color="#2f93c8"/></linearGradient>
-              <!-- la fila di persone è illuminata da sinistra, cioè dalla
-                   capsula: il bordo chiaro non è un contorno disegnato, è la
-                   luce che le arriva -->
-              <linearGradient id="zcf" gradientUnits="userSpaceOnUse"
-                              x1="590" y1="0" x2="812" y2="0">
-                <stop offset="0" stop-color="#f7e2a4"/><stop offset=".55" stop-color="#8a7048"/>
-                <stop offset="1" stop-color="#3a2c46"/></linearGradient>
-            </defs>
-            <ellipse cx="308" cy="286" rx="266" ry="140" fill="url(#zcg)" opacity=".72"/>
-            <g stroke="#e6c65c" fill="none" opacity=".1">
-              <path d="M300 336 A216 216 0 0 0 84 120" stroke-width="1.2"/>
-              <path d="M300 336 A262 262 0 0 0 38 74" stroke-width="1.2"/>
-            </g>
-            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" fill="url(#zcc)" fill-opacity=".62"/>
-            <path d="M118 330 C110 292 112 264 124 250 C144 226 178 218 212 224 C232 228 242 242 244 258 C246 274 258 282 274 274 C312 256 352 216 392 162 C414 132 442 112 470 114 C500 116 514 142 512 176 C508 236 506 292 502 330 Z" stroke="url(#zco)" stroke-width="2.4" stroke-linejoin="round"/>
-            <path d="M126 246 C138 190 180 142 238 114 C296 86 368 80 432 96" stroke="url(#zco)" stroke-width="2" stroke-linecap="round"
-                  opacity=".3"/>
-            <path d="M124 250 C144 226 178 218 212 224" stroke="#fff" stroke-opacity=".26"
-                  stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M406 152 C424 130 446 114 470 114" stroke="#fff" stroke-opacity=".24"
-                  stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M452 206 L444 260 L476 288" stroke="url(#zcb)" stroke-width="3.8"
-                  stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
-            <ellipse cx="310" cy="338" rx="196" ry="9" fill="#000" opacity=".3"/>
-            <path d="M92 340 h770" stroke="url(#zco)" stroke-width="2.2" stroke-linecap="round"
-                  opacity=".42"/>
-            <g transform="translate(710 340) scale(2.06)" opacity=".82">
-          <g transform="translate(-58 0) scale(0.88)" opacity="0.55">
-            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
-            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
-                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
-                  fill="url(#zcf)" stroke-linejoin="round"/>
-          </g>
-          <g transform="translate(0 0) scale(1.06)" opacity="1">
-            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
-            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
-                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
-                  fill="url(#zcf)" stroke-linejoin="round"/>
-          </g>
-          <g transform="translate(52 0) scale(0.8)" opacity="0.48">
-            <circle cx="0" cy="-104" r="11" fill="url(#zcf)"/>
-            <path d="M0 -90 C13 -90 21 -80 23 -66 L29 -18 C30 -8 24 -1 15 -1
-                     H-15 C-24 -1 -30 -8 -29 -18 L-23 -66 C-21 -80 -13 -90 0 -90 Z"
-                  fill="url(#zcf)" stroke-linejoin="round"/>
-          </g>
-            </g>
-          </svg>
+          <svg width="432" height="206" viewBox="66 50 480 300" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true">
+<defs>
+ <linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2536"/><stop offset=".6" stop-color="#1a1320"/><stop offset="1" stop-color="#0f0b13"/></linearGradient>
+ <linearGradient id="gb2" x1="0" x2="1"><stop offset="0" stop-color="#f3dc8a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#d4af37" stop-opacity=".1"/></linearGradient>
+ <radialGradient id="gb3" cx=".45" cy=".55" r=".5"><stop offset="0" stop-color="#e2bdd4" stop-opacity=".55"/><stop offset="1" stop-color="#e2bdd4" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#e2bdd4" stop-opacity=".8"/></linearGradient>
+ <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37" stop-opacity=".28"/><stop offset="1" stop-color="#d4af37" stop-opacity="0"/></linearGradient>
+</defs>
+<!-- il guscio pieno, col bordo che si accende d'oro -->
+<path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="url(#gb1)"/>
+<path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
+<path d="M112 84 C140 58 182 56 206 80 C220 96 214 120 196 124" fill="url(#gb1)" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="290" cy="200" rx="190" ry="80" fill="url(#gb3)"/>
+<!-- la persona in gravita' zero, illuminata da dentro -->
+<circle cx="180" cy="130" r="18" fill="url(#gb4)"/>
+<path d="M170 150 C176 146 196 144 204 152 C222 176 244 200 272 214 L336 176 C344 172 352 174 356 180 L424 194 C432 196 432 208 424 210 L352 202 L282 238 C270 244 256 242 246 236 C214 218 186 190 168 166 C164 160 164 154 170 150 Z" fill="url(#gb4)"/>
+<!-- il riflesso sul pavimento -->
+<path d="M150 300 C250 330 380 322 470 290 L470 312 C380 342 250 348 150 322 Z" fill="url(#gbr)"/>
+<path d="M120 326 H500" stroke="#d4af37" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
+</svg>
           <div class="pill pb1"><span>🪶</span>Zero gravità</div>
-          <div class="pill pb2"><span>👥</span>Per tutti</div>
         </div>
         </div>
       </div>
@@ -1336,16 +1281,6 @@ html,body{height:100%; background:#000; overflow:hidden;
         </div>
       </div>
 
-      <!-- la faccina: sta subito sotto i tre numeri perché è lì che
-           nasce la voglia di chiedere. È una scorciatoia, non un passo
-           del percorso: per questo non ha né cornice né targhetta -->
-      <div class="avatar tocca" id="avatar">
-        <div class="orb" id="orb"></div>
-        <img class="alogo" id="alogo" alt="Zenith">
-        <div class="bubble" id="bub"></div>
-        <span class="frecc">›</span>
-      </div>
-
       <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
            Zenith. Solo dopo, quando il motivo c'è, si spiega come si fa
            il check-in: spiegare la procedura a chi non sa ancora perché
@@ -1358,34 +1293,25 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
       </div>
 
-      <!-- e adesso il come, appoggiato al tasto che sta subito sotto -->
-      <div class="sez sezione">
-        <div class="sezt"><span class="seze"><i></i>TRE PASSAGGI · DUE MINUTI</span><span
-          class="sezh">Cosa succede adesso</span></div>
-        <div class="passi">
-          <div class="pz uno"><span class="n">1</span><span class="tx">
-            <span class="t1">Dimmi il tuo nome</span>
-            <span class="t2">Bastano poche lettere</span></span></div>
-          <div class="pz due"><span class="n">2</span><span class="tx">
-            <span class="t1">Rispondi a sei domande</span>
-            <span class="t2">Cosa hai fatto, cosa cerchi</span></span></div>
-          <div class="pz tre"><span class="n">3</span><span class="tx">
-            <span class="t1">Accomodati: al resto penso io</span>
-            <span class="t2">La capsula ti aspetta</span></span></div>
-        </div>
-      </div>
-
-      <div class="spazio"></div>
-
       <!-- l'invito -->
       <div class="cta">
         <div class="btn" id="gocheck">
           <span class="ic">👋</span>
           <span class="tx"><span class="t1">Fai il check-in</span>
-            <span class="t2">Due minuti, lo fai da solo · poi ti chiamo io</span></span>
+            <span class="t2 passi3"><i>1</i> il tuo nome<em>·</em><i>2</i> sei domande<em>·</em><i>3</i> ti accomodi</span></span>
           <span class="go">›</span>
         </div>
-        <div class="hint">Poi ti chiama il tuo operatore, appena la capsula è pronta</div>
+        <div class="hint">Due minuti, lo fai da solo · poi ti chiama il tuo operatore</div>
+          <!-- la faccina: sta sotto il tasto, come seconda strada. È una
+               scorciatoia, non un passo del percorso: per questo non ha né
+               cornice né targhetta, e non si mette fra i numeri e
+               l'allenamento dove spezzava il filo del racconto -->
+        <div class="avatar tocca" id="avatar">
+          <div class="orb" id="orb"></div>
+          <img class="alogo" id="alogo" alt="Zenith">
+          <div class="bubble" id="bub"></div>
+          <span class="frecc">›</span>
+        </div>
       </div>
 
     </div>
@@ -3356,7 +3282,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v128.26.09(23)';
+const VETRINA_VERSION = 'v129.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

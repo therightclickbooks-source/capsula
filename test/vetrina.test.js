@@ -30,19 +30,21 @@ module.exports = async function(browser){
         const h = e.querySelector('.sezh');
         return h ? h.textContent.trim() : e.className.split(' ')[0];
       }));
-    tac.t(q + 'la colonna e\' hero · numeri · faccina · allenamento · check-in · tasto',
-      colonna.length === 7
+    /* quattro fasce, un compito ciascuna: «cosa succede adesso» non e'
+       piu' un riquadro a parte, i tre passaggi stanno dentro il tasto */
+    tac.t(q + 'la colonna e\' frase · numeri · allenamento · invito',
+      colonna.length === 4
       && colonna[0] === 'hero' && colonna[1] === 'sezione'
-      && colonna[2] === 'avatar'
-      && colonna[3].startsWith('Cosa hai fatto oggi')
-      && colonna[4].startsWith('Cosa succede adesso')
-      && colonna[5] === 'spazio' && colonna[6] === 'cta',
+      && colonna[2].startsWith('Cosa hai fatto oggi')
+      && colonna[3] === 'cta',
       colonna.join(' | '));
-
-    tac.t(q + '«cosa hai fatto oggi» sta sopra «cosa succede adesso»',
+    tac.t(q + 'il riquadro «cosa succede adesso» non c\'e\' piu\'',
+      !(await p.textContent('.vetr')).includes('Cosa succede adesso'));
+    tac.t(q + 'lo spazio che avanza si divide fra le fasce, non fa un buco sopra il tasto',
       await p.evaluate(()=>{
-        const a = document.querySelector('.porte'), b = document.querySelector('.sez');
-        return a.offsetTop < b.offsetTop;
+        const f = [...document.querySelector('.vetr').children];
+        const g = f.slice(1).map((e,i)=> e.offsetTop - (f[i].offsetTop + f[i].offsetHeight));
+        return Math.max(...g) - Math.min(...g) <= 30;
       }));
 
     /* ── la forma delle sezioni ── */
@@ -82,9 +84,30 @@ module.exports = async function(browser){
         })));
 
     /* la faccina e' una scorciatoia, non un passo: se le mettessimo la
-       cornice diventerebbe una quarta sezione e l'ordine si perderebbe */
+       cornice diventerebbe una sezione e l'ordine si perderebbe. Sta
+       sotto il tasto, come seconda strada */
     tac.t(q + 'la faccina non ha la cornice di sezione',
       await p.evaluate(()=> !document.getElementById('avatar').classList.contains('sezione')));
+    tac.t(q + 'la faccina sta sotto il tasto del check-in',
+      await p.evaluate(()=>{
+        const a = document.getElementById('avatar'), b = document.getElementById('gocheck');
+        return a.closest('.cta') && a.offsetTop > b.offsetTop + b.offsetHeight;
+      }));
+    tac.t(q + 'la faccina non esce dalla colonna e non tocca la riga di servizio',
+      await p.evaluate(()=>{
+        const a = document.getElementById('avatar').getBoundingClientRect();
+        const d = document.getElementById('dbg').getBoundingClientRect();
+        return a.bottom <= d.top;
+      }));
+
+    /* ── il disegno in alto a destra: il guscio di luce ──
+       niente piu' fila di sagome, e la pastiglia non copre la testiera */
+    tac.t(q + 'in alto a destra c\'e\' il guscio, senza la fila di sagome',
+      await p.evaluate(()=>{
+        const svg = document.querySelector('.pod svg');
+        return !!svg.querySelector('#gb1') && !svg.querySelector('#zcf')
+          && !document.querySelector('.pb2');
+      }));
 
     /* ── lo spazio: niente deve sbordare ── */
     const spazio = await p.evaluate(()=>{
@@ -115,15 +138,18 @@ module.exports = async function(browser){
       tac.t(q + 'il pensiero di ' + k + ' ci sta tutto', ok);
     }
 
-    /* ── i tre passi ── */
-    const passi = await p.textContent('.passi');
-    tac.t(q + 'fra i tre passi non si parla piu\' di «dove tira»',
-      !passi.includes('dove tira'));
-    tac.t(q + 'i tre passi hanno tutti il sottotitolo su una riga sola',
-      await p.evaluate(()=>{
-        const h = [...document.querySelectorAll('.pz .t2')].map(e=> e.offsetHeight);
-        return h.length === 3 && h.every(x=> x === h[0]);
-      }));
+    /* ── i tre passaggi, dentro il tasto ── */
+    const passi = await p.evaluate(()=>{
+      const e = document.querySelector('#gocheck .passi3');
+      return {testo: e ? e.textContent : '', numeri: e ? e.querySelectorAll('i').length : 0,
+              righe: e ? Math.round(e.offsetHeight / parseFloat(getComputedStyle(e).lineHeight || 24)) : 0,
+              alto: e ? e.offsetHeight : 0, corpo: e ? parseFloat(getComputedStyle(e).fontSize) : 0};
+    });
+    tac.t(q + 'nel tasto ci sono i tre passaggi: nome, sei domande, ti accomodi',
+      passi.numeri === 3 && /nome/.test(passi.testo) && /sei domande/.test(passi.testo)
+        && /accomodi/.test(passi.testo), passi.testo);
+    tac.t(q + 'i tre passaggi stanno su una riga sola',
+      passi.alto <= passi.corpo * 1.7, passi.alto + 'px per ' + passi.corpo + 'px');
 
     /* ── il pensiero, che e' una risposta ──
        stessa lingua del foglio dei macchinari: barra a sinistra del
