@@ -84,8 +84,8 @@ module.exports = async function(browser){
     /tutti i giorni/.test(quanto.a), quanto.a);
   tac.t('ogni quanto: il momento migliore e\' dopo un macchinario',
     /dopo un macchinario/.test(quanto.a), quanto.a);
-  tac.t('ogni quanto: il perche\' sono i 25,3 milioni di combinazioni',
-    /25,3 milioni/.test(quanto.piu), quanto.piu);
+  tac.t('ogni quanto: il perche\' sono gli 81,3 milioni di combinazioni',
+    /81,3 milioni/.test(quanto.piu), quanto.piu);
   tac.t('ogni quanto: non si dice piu\' «una volta a settimana»',
     !/una volta a settimana/.test(quanto.a + quanto.piu));
 

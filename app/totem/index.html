@@ -1327,7 +1327,7 @@ html,body{height:100%; background:#000; overflow:hidden;
       <!-- che cos'è Zenith, in tre numeri -->
       <div class="sezione cifre">
         <div class="numeri">
-          <div class="nb o"><div class="nv">25,3<small> mln</small></div>
+          <div class="nb o"><div class="nv">81,3<small> mln</small></div>
             <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
           <div class="nb p"><div class="nv">15–30<small> min</small></div>
             <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
@@ -1701,7 +1701,7 @@ const ROAM = [
   {a:0, k:'beneficio', ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.'},
   {a:3, k:'curiosita', ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
   {a:1, k:'beneficio', ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.'},
-  {a:4, k:'curiosita', ic:'🔢', tx:'<em>25,3 milioni</em><br>di combinazioni.',
+  {a:4, k:'curiosita', ic:'🔢', tx:'<em>81,3 milioni</em><br>di combinazioni.',
         sub:'Cinque risposte, e i parametri si compongono in un modo che non si ripete.'},
   {a:2, k:'beneficio', ic:'🤲', tx:'Nessuno ti ha mai <em>chiesto</em><br>come stai, prima di un massaggio.'},
   {a:5, k:'curiosita', ic:'✋', tx:'Due bracci, <em>3D e 4D</em>.<br>Come quattro mani.',
@@ -1771,7 +1771,7 @@ const QA = [
    piu:'La domanda non è «quale programma?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
   {ic:'🔁', t:'pratica', alt:'frequenza settimana volte spesso quante', q:'Ogni quanto posso venire?',
    a:'Anche <b>tutti i giorni</b>, e persino più volte al giorno. Il momento in cui rende di più è <b>subito dopo un macchinario</b>: qualunque cosa tu abbia fatto qui, Zenith la porta a casa.',
-   piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 25,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
+   piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 81,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
   {ic:'🏅', t:'pratica', alt:'punteggio livello premi medaglia gold classifica', q:'Cosa sono i punti e i livelli?',
    a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
    piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso.'},
@@ -1789,7 +1789,7 @@ const QA = [
    piu:'E la prima volta è sempre dolce e breve, apposta per farti conoscere ogni sensazione.'},
   {ic:'🛋️', t:'capire', alt:'poltrona massaggiante differenza uguale sedia', q:'Non è una poltrona massaggiante?',
    a:'No, ed è la differenza più grande di tutte. <b>Una poltrona ha un tasto che si aziona.</b> Zenith ha <b>due bracci — uno 3D e uno 4D — che simulano un massaggio a quattro mani</b>: è un\'unicità di questo dispositivo. C\'è il calore che scioglie i muscoli. E soprattutto le funzioni vengono <b>programmate in base alle tue risposte</b>.',
-   piu:'Le combinazioni possibili sono <b>25,3 milioni</b>: vuol dire che ogni volta che entri in Zenith la seduta non sarà mai uguale a un\'altra. A meno che una seduta riuscita non venga salvata nei preferiti e ripresa apposta — ma allora è una scelta, non il caso.'},
+   piu:'Le combinazioni possibili sono <b>81,3 milioni</b>: vuol dire che ogni volta che entri in Zenith la seduta non sarà mai uguale a un\'altra. A meno che una seduta riuscita non venga salvata nei preferiti e ripresa apposta — ma allora è una scelta, non il caso.'},
   {ic:'📅', t:'pratica', alt:'prenotazione prenotare appuntamento orario whatsapp telefono social', q:'Come prenoto?',
    a:'Come ti è più comodo: <b>su WhatsApp</b> al numero del centro, <b>sui nostri canali social</b>, oppure <b>di persona</b> qui in reception.',
    piu:'Si entra solo su prenotazione, ed è per questo che non c\'è mai da aspettare.'},
@@ -3169,14 +3169,14 @@ function disegnaProtocollo(){
     +   'trovato la tua taratura e da lì non ci muoviamo.</div>'
     + '<div class="memo"><span class="mi2">🧠</span><span class="mt2">È così che questa '
     +   'capsula diventa <b>la tua</b>: la seduta di oggi è già uscita da '
-    +   '<b class="oro">25,3 milioni di combinazioni</b>, e da domani conterà anche quello '
+    +   '<b class="oro">81,3 milioni di combinazioni</b>, e da domani conterà anche quello '
     +   'che le hai detto tu.</span></div></div>';
 
   const primaVoltaAvviso = D.clienteId ? '' :
     '<div class="primav"><div class="pv-h"><span class="pv-i">✦</span>'
     + '<span class="pv-t">Prima volta: serve la scheda anamnestica</span></div>'
     + '<p>Questa persona <b>non è ancora in anagrafica</b>. Il programma qui sotto è '
-    + 'già scelto — è uscito dalle risposte di oggi fra <b>25,3 milioni di combinazioni</b> '
+    + 'già scelto — è uscito dalle risposte di oggi fra <b>81,3 milioni di combinazioni</b> '
     + '— ma da solo non basta.</p>'
     + '<p>Prima di far accomodare in capsula, sul gestionale va aperta la scheda e '
     + 'compilata la <b>scheda anamnestica</b> insieme al cliente. La seduta si può fare '
@@ -3356,7 +3356,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v124.26.09(23)';
+const VETRINA_VERSION = 'v125.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
