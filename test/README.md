@@ -91,6 +91,16 @@ davvero la macchina: programma, famiglia e i nove parametri. Le frasi del
 «perché» no: quelle possono essere scritte con parole diverse senza che
 cambi niente.
 
+**`seduta.test.js` — la seduta come la fa la capsula vera.**
+Il costruttore non ha una modalità professionale: appena si accende il
+tablet la capsula controlla la posizione e fa partire da sola un programma, e
+ogni tocco fuori ordine la fa ripartire. Quindi i passi guidati seguono il
+suo ordine — pulsantiera laterale a monitor spento, Pausa, programma,
+**Timing per primo**, poi il resto — e tacciono su quello che in seduta non
+si fa: Health Check, musica, livelli di Leg Kneading e Foot Roller. Provato
+su 540 sedute diverse, più l'ordine delle icone airbag del nostro display
+(che non è quello del libretto) e la scala 0–3 nella scheda cliente.
+
 ## Una nota sulle misure
 
 Sulla vetrina il foglio è disegnato su una tela da 1080 punti e poi

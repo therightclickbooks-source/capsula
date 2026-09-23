@@ -15,7 +15,8 @@ const PROVE = [
   ['anagrafica',  require('./anagrafica.test.js')],
   ['operatori',   require('./operatori.test.js')],
   ['casa',        require('./casa.test.js')],
-  ['protocollo',  require('./protocollo.test.js')]
+  ['protocollo',  require('./protocollo.test.js')],
+  ['seduta',      require('./seduta.test.js')]
 ];
 
 (async ()=>{

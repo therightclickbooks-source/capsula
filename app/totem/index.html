@@ -1508,9 +1508,9 @@ html,body{height:100%; background:#000; overflow:hidden;
           <span class="co"><span class="ci">🪑</span><span class="cx">
             <span class="c1">Siediti e appoggia la schiena allo schienale</span>
             <span class="c2">La capsula misura le tue spalle da sola: dura pochi secondi, è normale.</span></span></span>
-          <span class="co"><span class="ci">🫱</span><span class="cx">
-            <span class="c1">Appoggia l'indice al sensore del bracciolo</span>
-            <span class="c2">Battito e livello di fatica, prima e dopo: è la misura della tua seduta.</span></span></span>
+          <span class="co"><span class="ci">🤝</span><span class="cx">
+            <span class="c1">L'operatore ti sistema la posizione</span>
+            <span class="c2">Resta accanto a te: regola la seduta e imposta il tuo programma.</span></span></span>
           <span class="co"><span class="ci">😌</span><span class="cx">
             <span class="c1">Poi non fai più niente</span>
             <span class="c2">Chiudi gli occhi. Da lì in avanti lavora la capsula, e tu ti godi la seduta.</span></span></span>
@@ -1521,9 +1521,8 @@ html,body{height:100%; background:#000; overflow:hidden;
         <span class="bo">3</span>
         <span class="qua">ALLA FINE</span>
         <span class="tt">Ti rialzi, e senti la differenza</span>
-        <span class="td">Rimisuriamo battito e fatica e ti mostriamo il confronto con
-          l'ingresso: il risultato lo vedi, non te lo raccontiamo. Poi un caffè in
-          sala relax, con calma.</span>
+        <span class="td">Ci dici com'era l'intensità: la prossima seduta si regola
+          sulla tua risposta. Poi un caffè in sala relax, con calma.</span>
       </div>
     </div>
 
@@ -1728,8 +1727,8 @@ const BUBBLES = [
 
 /* ══════════ LE VENTI DOMANDE ══════════
    Frasi corte, per chi legge poco o legge male. I contenuti vengono dal
-   gestionale vero: famiglie di protocollo, livelli, rituale dell'Health
-   Check, Scuola Zenith, anamnesi. */
+   gestionale vero: famiglie di protocollo, livelli, rituale della
+   seduta, Scuola Zenith, anamnesi. */
 const QA = [
   {ic:'🧬', t:'capire', q:'Cos\'è Zenith?',
    a:'Una <b>capsula per il recupero biomuscolare</b>. Ti sdrai. Per venti o trenta minuti il corpo viene lavorato con compressione ad aria, calore e movimento.',
@@ -1743,9 +1742,6 @@ const QA = [
   {ic:'⏱️', t:'seduta', alt:'minuti tempo durata lunga breve', q:'Quanto dura una seduta?',
    a:'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. La prima volta sono sempre quindici: si parte piano.',
    piu:'Dopo, almeno mezz\'ora di pausa sulla stessa zona. «Di più» non vuol dire «meglio».'},
-  {ic:'📈', t:'capire', alt:'battito misura sensore dito indice fatica misurazione numeri', q:'Cos\'è l\'Health Check?',
-   a:'Una <b>misurazione che facciamo prima e dopo</b>: appoggi il dito al sensore del bracciolo e la capsula legge diversi valori, con un\'attenzione particolare a <b>battito e indice di fatica</b>.',
-   piu:'Alla fine confrontiamo con te i valori di prima e quelli di dopo. Il risultato lo vedi, non te lo raccontiamo soltanto.'},
   {ic:'🦵', t:'problema', alt:'gonfie gonfiore caviglie ritenzione circolazione drenaggio vene polpacci piedi', q:'Ho le gambe pesanti: cosa fate?',
    a:'C\'è una famiglia dedicata: <b>Zenith Gambe Leggere</b>. Compressione a onde, rulli sotto i piedi e posizione a gravità zero.',
    piu:'Le gambe stanno sopra il livello del cuore: è la posizione che aiuta i liquidi a tornare su.'},
@@ -1756,7 +1752,7 @@ const QA = [
    a:'Sì: <b>Zenith Collo & Spalle</b> è pensata esattamente per questo. Ore di scrivania o di guida induriscono trapezi e collo.',
    piu:'Lavoro mirato sulla parte alta, con gli airbag che stringono spalle e braccia.'},
   {ic:'🌙', t:'problema', alt:'insonnia notte riposo sonno dormire sveglio addormentarmi', q:'Dormo male. Può aiutarmi?',
-   a:'C\'è <b>Zenith Sonno & Relax</b>: manovre lentissime, ioni negativi, musica e dondolio.',
+   a:'C\'è <b>Zenith Sonno & Relax</b>: manovre lentissime, ioni negativi e dondolio.',
    piu:'Serve ad abbassare i giri del sistema nervoso. Di sera dura anche mezz\'ora: il rilassamento profondo ha bisogno di tempo.'},
   {ic:'💪', t:'problema', alt:'doms indolenzito indolenzimento recupero muscoli ems ems2 matrix vacutherm palestra sport allenamento', q:'Mi alleno. Quando dovrei venire?',
    a:'<b>Subito dopo.</b> La famiglia Zenith Recupero trasforma la fatica in recupero: i muscoli che hai appena lavorato vengono defaticati.',
@@ -1806,8 +1802,8 @@ const QA = [
   {ic:'🧼', t:'seduta', alt:'igiene sanificazione disinfezione sudore pulizia pulita sporca', q:'La capsula viene pulita fra un cliente e l\'altro?',
    a:'Sì. <b>Viene igienizzata da un cliente all\'altro</b>, ogni volta, senza eccezioni.',
    piu:'Fa parte del rituale della seduta, esattamente come la misura d\'ingresso e quella d\'uscita.'},
-  {ic:'🤫', t:'seduta', alt:'parlare silenzio musica chiacchierare telefono', q:'Posso parlare durante la seduta?',
-   a:'Puoi, e <b>puoi anche stare al telefono</b>. Ma il consiglio è un altro: lasciati andare alla <b>musica di sottofondo</b> e rilassati il più possibile.',
+  {ic:'🤫', t:'seduta', alt:'parlare silenzio chiacchierare telefono', q:'Posso parlare durante la seduta?',
+   a:'Puoi, e <b>puoi anche stare al telefono</b>. Ma il consiglio è un altro: chiudi gli occhi, <b>lasciati andare</b> e rilassati il più possibile.',
    piu:'Il corpo si scioglie meglio quando la testa smette di lavorare. Sono venti minuti: vale la pena regalarseli.'},
   {ic:'🎂', t:'pratica', alt:'anni minorenne minorenni bambini ragazzi giovani anziani vecchio', q:'C\'è un limite di età?',
    a:'In alto <b>nessuno</b>. In basso <b>sedici anni</b>, con la firma di un genitore.',
@@ -1817,7 +1813,7 @@ const QA = [
    piu:'Subito dopo il lavoro fisico Zenith defatica e aiuta le fibre muscolari. Prima non avrebbe senso: rilasserebbe muscoli che stai per far lavorare.'},
   {ic:'☕', t:'seduta', alt:'dopo fine finita caffe relax uscita', q:'Cosa faccio quando finisco?',
    a:'Un <b>caffè in sala relax</b>, con calma. Poi decidi: prenoti la prossima seduta, oppure vai — senza fretta.',
-   piu:'Prima di uscire l\'operatore rifà l\'Health Check e ti mostra il confronto con la misura d\'ingresso.'},
+   piu:'Prima di uscire l\'operatore ti chiede com\'era l\'intensità: la prossima seduta si regola sulla tua risposta.'},
   {ic:'👯', t:'pratica', alt:'amico amica insieme accompagna compagnia due', q:'Posso venire con un\'amica?',
    a:'Certo. In capsula si accomoda <b>una persona alla volta</b>, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
    piu:'Potete anche prenotare due sedute una dopo l\'altra: mentre una è in capsula l\'altra aspetta, e appena finisce tocca a lei.'},
@@ -2840,7 +2836,7 @@ const NOMI = {
 /* ══════════════════════════════════════════════════════════════
    IL CHECK-IN CHE ASPETTA
    Il totem NON registra una seduta: una seduta nello storico vale dieci
-   punti, fa salire il livello e porta i flag dell'Health Check. Scriverla
+   punti e fa salire il livello. Scriverla
    da qui vorrebbe dire punti a chi poi non entra, sedute senza il
    controllo dell'anamnesi e doppioni in anagrafica per un nome scritto
    male al touch. Il totem lascia un biglietto: il gestionale lo trova, e
@@ -2925,13 +2921,32 @@ const FAMIGLIE = {
   Z7:{name:'Zenith Energia',        color:'#e0997d'},
   Z8:{name:'Zenith Total Body',     color:'#9aa66f'}
 };
-const MUSICHE = {
-  Mindful:'Mindful Relaxation', Motivation:'Motivation Mastermind', Morning:'Morning Energy',
-  Mental:'Mental Healing', Soothing:'Soothing Relief', Sweet:'Sweet Dreams'
-};
 const MACRO = {intensita:3, fourD:3, airbag:3, calore:true, ioni:false,
                zerog:true, timer:20, plantari:2, polpacci:2};
 
+/* ══ LA SCALA DELLA CAPSULA ══
+   Il motore ragiona su una scala da 0 a 6, ma sulla capsula vera il 4D e
+   la forza degli airbag si usano da 0 a 3: 3 e' il massimo che il motore
+   puo' prescrivere, 2 e' il medio, 1 il basso, 0 spento. Oltre il 3 si va
+   solo a mano, a giudizio dell'operatore — oppure con la taratura di fine
+   seduta, quando il cliente dice che era troppo leggera: e' per questo che
+   la conversione si fa prima della taratura, e non dopo.
+   La traduzione tiene la distanza fra i livelli: la seduta normale (3 su
+   6) diventa media (2), quella decisa (4 e oltre) diventa massima (3),
+   quella dolce (1-2) diventa bassa (1).
+   Polpacci e piedi sulla capsula si accendono e si spengono e basta:
+   diventano 1 o 0, e nessuna schermata ne mostra piu' un livello.
+   Questa funzione e' identica nel gestionale e nella vetrina: sono due
+   copie dello stesso motore, e la prova da 14.400 casi controlla che
+   diano la stessa risposta. */
+function scalaCapsula(v){ return v <= 0 ? 0 : v <= 2 ? 1 : v === 3 ? 2 : 3; }
+function inScalaCapsula(S){
+  S.intensita = scalaCapsula(S.intensita);
+  S.fourD     = scalaCapsula(S.fourD);
+  S.airbag    = scalaCapsula(S.airbag);
+  S.polpacci  = S.polpacci > 0 ? 1 : 0;
+  S.plantari  = S.plantari > 0 ? 1 : 0;
+}
 function costruisciProtocollo(q){
   let S = Object.assign({}, MACRO);
   let prog = null, fam = 'Z8', why = [], manualRef = null;
@@ -3032,20 +3047,18 @@ function costruisciProtocollo(q){
     why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.');
   }
 
+  /* dalla scala del motore alla scala della capsula — nello stesso punto del
+     gestionale, cioe' prima della taratura (che qui non c'e') */
+  inScalaCapsula(S);
+
   if(zone.length > 1) why.push('Zone selezionate oggi: ' + zone.map(ZNOME).join(', ')
     + ' — la prima guida il programma, le altre si rifiniscono con airbag e regolazioni.');
   if(D.zmode === 'totale') why.push('Nessuna zona indicata: Total body, riequilibrio dalla nuca ai piedi.');
   if(D.zmode === 'nessuna') why.push('Nessuna zona in particolare: il programma è scelto dall\'obiettivo e da come sta oggi.');
 
-  /* la musica, come nel gestionale */
-  let mus = 'Soothing';
-  if(fam === 'Z2') mus = 'Mindful';
-  if(fam === 'Z3') mus = 'Soothing';
-  if(fam === 'Z6') mus = (q.goal === 'sonno' || when === 'sera') ? 'Sweet' : 'Mental';
-  if(fam === 'Z7') mus = q.mood === 'carico' ? 'Motivation' : 'Morning';
-  if(fam === 'Z1') mus = 'Mindful';
-  if(q.mood === 'stressato' && fam !== 'Z7') mus = 'Mental';
-  S.musica = mus;
+  /* la musica no, come nel gestionale: sulla capsula il tasto Music
+     cambia programma invece di accompagnarlo */
+  delete S.musica;
 
   /* la durata: la prima volta resta sempre una prova breve di 15 minuti */
   if(prima){
@@ -3105,21 +3118,20 @@ function disegnaProtocollo(){
     +     pr.fam + ' · ' + F.name + '</div>'
     +   '<div class="nom">' + pr.prog + ' · “' + P.o + '”</div>'
     +   '<div class="rig"><span class="pil oro">⏱ ' + S.timer + ' min</span>'
-    +     '<span class="pil">🎵 ' + (MUSICHE[S.musica] || S.musica) + '</span>'
     +     '<span class="pil">Pressione ' + (F_PRESS[D.pressione] || 'media') + '</span></div>'
     + '</div></div>';
 
   const fasi =
     '<div class="fasi">'
     + '<div class="fase" style="--fc:#88d9ae"><div class="fq">ALL\'INIZIO</div>'
-    +   '<div class="fm">0′</div><div class="fd">Indice sul sensore del bracciolo: '
-    +   'battito e indice di fatica.</div><div class="fa">🟢 START</div></div>'
+    +   '<div class="fm">0′</div><div class="fd">L\'operatore ti sistema la seduta '
+    +   'e imposta il programma.</div><div class="fa">🟢 In posizione</div></div>'
     + '<div class="fase" style="--fc:#e2bdd4"><div class="fq">DURANTE</div>'
     +   '<div class="fm">' + S.timer + '′</div><div class="fd">' + P.d + '</div>'
     +   '<div class="fa">Lascialo lavorare</div></div>'
     + '<div class="fase" style="--fc:#7ecbe8"><div class="fq">ALLA FINE</div>'
-    +   '<div class="fm">⏹</div><div class="fd">Seconda misura e confronto con '
-    +   'l\'ingresso: il risultato si vede.</div><div class="fa">🔴 END</div></div>'
+    +   '<div class="fm">⏹</div><div class="fd">Ci dici com\'era l\'intensità: '
+    +   'la prossima si regola su di te.</div><div class="fa">💬 Com\'era?</div></div>'
     + '</div>';
 
   const pensiero =
@@ -3176,8 +3188,8 @@ function disegnaProtocollo(){
     +   '<span class="ag-ic">▣</span>'
     +   '<span class="ag-tx"><b>APRI IL GESTIONALE</b>'
     +   '<small>' + (D.clienteId
-          ? 'per registrare la seduta: START, setup della capsula, END'
-          : 'prima la scheda anamnestica, poi registrare la seduta: START, setup, END')
+          ? 'per registrare la seduta e seguire il setup guidato della capsula'
+          : 'prima la scheda anamnestica, poi il setup guidato della capsula')
     +   '</small></span>'
     +   '<span class="ag-go">›</span></div>';
 }
@@ -3344,7 +3356,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v123.26.09(15)';
+const VETRINA_VERSION = 'v124.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

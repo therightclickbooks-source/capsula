@@ -127,6 +127,46 @@ module.exports = async function(browser){
       !rg.some(x => x.startsWith('ERRORE')) && !rv.some(x => x.startsWith('ERRORE')),
       (rg.find(x => x.startsWith('ERRORE')) || rv.find(x => x.startsWith('ERRORE')) || ''));
   }
+  /* ── la scala della capsula ──
+     Sul display vero il 4D e la forza degli airbag si usano da 0 a 3: il
+     motore non deve MAI prescrivere oltre il 3. Polpacci e piedi si
+     accendono e si spengono e basta: 0 o 1, mai un livello. Si controlla
+     su tutti i casi di tutte le fasce orarie, non su un campione. */
+  const tutti = await g.evaluate(({lista, firma})=>{
+    const f = eval(firma), out = [];
+    for(const ora of [10, 14, 20]){
+      const vero = Date.prototype.getHours;
+      Date.prototype.getHours = function(){ return ora; };
+      lista.forEach(q => out.push(f(buildProtocol(DB.clients[0],
+        Object.assign({prefSoloAria:false}, q)))));
+      Date.prototype.getHours = vero;
+    }
+    return out;
+  }, {lista, firma: FIRMA});
+  const oltre = tutti.filter(x => { const v = x.split('|');
+    return +v[2] > 3 || +v[3] > 3 || +v[4] > 3; });
+  const livelli = tutti.filter(x => { const v = x.split('|');
+    return !['0','1'].includes(v[9]) || !['0','1'].includes(v[10]); });
+  tac.t('il motore non prescrive mai 4D, airbag o intensita\' oltre il 3',
+    oltre.length === 0, oltre.length + ' casi oltre, per es. ' + (oltre[0] || ''));
+  tac.t('polpacci e piedi sono solo accesi o spenti, mai un livello',
+    livelli.length === 0, livelli.length + ' casi con un livello, per es. ' + (livelli[0] || ''));
+  tac.t('una seduta normale esce al livello medio (2)',
+    tutti.some(x => { const v = x.split('|'); return v[3] === '2' && v[4] === '2'; }));
+  tac.t('la pressione decisa arriva al massimo (3), non oltre',
+    tutti.some(x => x.split('|')[3] === '3'));
+
+  /* oltre il 3 ci si arriva solo con la taratura di fine seduta: se il
+     cliente ha detto «troppo leggera», il 3 diventa 4 */
+  const tarato = await g.evaluate(()=>{
+    const c = Object.assign({}, DB.clients[0], {cal:1, calTuned:true});
+    const p = buildProtocol(c, {activity:'ems', zones:[], goal:'recupero', mood:'sereno',
+      pressione:'decisa', prefSoloAria:false});
+    return {fourD:p.S.fourD, airbag:p.S.airbag};
+  });
+  tac.t('con la taratura «troppo leggera» il 4D passa da 3 a 4',
+    tarato.fourD === 4, JSON.stringify(tarato));
+
   console.log('   (' + confrontati + ' combinazioni confrontate, '
     + diversi.filter(x => x !== '…').length + ' divergenze)');
 

@@ -89,11 +89,18 @@ module.exports = async function(browser){
   tac.t('ogni quanto: non si dice piu\' «una volta a settimana»',
     !/una volta a settimana/.test(quanto.a + quanto.piu));
 
-  const hc = trova('Health Check');
-  tac.t('health check: e\' una misurazione, non una misura',
-    /misurazione/.test(hc.a) && hc.a.indexOf('Una <b>misura c') < 0, hc.a);
-  tac.t('health check: legge diversi valori, con attenzione particolare a due',
-    /diversi valori/.test(hc.a) && /attenzione particolare/.test(hc.a), hc.a);
+  /* l'Health Check non fa piu' parte della seduta: sulla capsula vera
+     ferma il programma e sposta la poltrona. Nessuna risposta del totem
+     deve prometterlo al cliente, ne' la musica, che cambia programma */
+  const tutto = testi.map(x => x.q + ' ' + x.a + ' ' + x.piu).join(' ');
+  tac.t('nessuna risposta parla piu\' di Health Check, sensore o START/END',
+    !/Health Check|sensore|\bSTART\b|\bEND\b/.test(tutto),
+    (tutto.match(/.{0,40}(Health Check|sensore|START|END).{0,40}/) || [''])[0]);
+  tac.t('nessuna risposta promette la musica in seduta',
+    !/musica/i.test(tutto), (tutto.match(/.{0,40}musica.{0,40}/i) || [''])[0]);
+  const fine = trova('quando finisco');
+  tac.t('a fine seduta si chiede com\'era l\'intensita\'',
+    /intensit/.test(fine.piu), fine.piu);
 
   await p.close();
   return tac;
