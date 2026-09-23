@@ -480,6 +480,11 @@ html,body{height:100%; background:#000; overflow:hidden;
 .filt .pallino{width:14px; height:14px; border-radius:50%; background:var(--fc);
   margin-right:11px; flex:none}
 .filt.on .pallino{background:rgba(0,0,0,.35)}
+/* quante risposte ci sono dietro ogni tema: un numero incuriosisce */
+.filt .fnum{margin-left:9px; font-size:15px; letter-spacing:0; padding:2px 8px; border-radius:999px;
+  background:rgba(255,255,255,.1); color:rgba(255,255,255,.75)}
+.filt.on .fnum{background:rgba(0,0,0,.2); color:#0c0a0f}
+#asksot b{color:#eed37a}
 
 /* Due colonne fatte con FLEX, non con GRID.
    Con la griglia le righe restavano alte quanto il minimo della carta e
@@ -582,6 +587,16 @@ html,body{height:100%; background:#000; overflow:hidden;
   background:rgba(255,255,255,.07);
   border:1.4px solid color-mix(in srgb, var(--rc) 55%, transparent)}
 .crow.on .crfr{display:none}
+/* «fa per te se…»: la prima cosa che si legge, in chiaro e con la spunta */
+.perte{display:block; margin-top:12px; padding:14px 18px 12px; border-radius:18px;
+  background:color-mix(in srgb, var(--rc, var(--mc, #e6c65c)) 14%, rgba(0,0,0,.2));
+  border:1px solid color-mix(in srgb, var(--rc, var(--mc, #e6c65c)) 45%, transparent)}
+.perte em{display:block; font-style:normal; font-size:14.5px; letter-spacing:.16em; font-weight:800;
+  text-transform:uppercase; margin-bottom:8px; color:var(--rc, var(--mc, #e6c65c))}
+.perte .pt1{display:flex; gap:12px; align-items:baseline; font-size:22px; line-height:1.35;
+  color:rgba(255,255,255,.92); padding:4px 0}
+.perte .pt1 i{font-style:normal; font-weight:800; color:var(--rc, var(--mc, #e6c65c)); flex:none}
+.perte .pt1 b{color:#fff}
 
 /* ══════════════════════════════════════════════════════════════
    3 · IL CHECK-IN — stessa sequenza del gestionale: prima chi ti
@@ -722,6 +737,8 @@ html,body{height:100%; background:#000; overflow:hidden;
   font-size:34px; font-weight:700; cursor:pointer; transition:transform .1s, background .1s}
 .key:active{transform:scale(.93); background:rgba(169,119,154,.5)}
 .key.wide{flex:2.4}
+.key.kx{flex:0 0 150px}
+.key.acc{font-size:28px; letter-spacing:.04em}
 .key.go{background:linear-gradient(135deg,#a9779a,#7a496c); font-size:25px; font-weight:800}
 .key.dim{opacity:.45}
 
@@ -1288,7 +1305,7 @@ html,body{height:100%; background:#000; overflow:hidden;
       <div class="sezione porte">
         <div class="sezt"><span class="seze"><i></i>IL TUO ALLENAMENTO</span><span
           class="sezh">Cosa hai fatto oggi, qui da noi?</span>
-          <span class="sezd">Tocca quello che hai fatto: ti dico cosa ci aggiunge Zenith</span></div>
+          <span class="sezd">Tocca un macchinario: scopri se fa per te e cosa ci aggiunge Zenith</span></div>
         <div class="centro" id="centro"></div>
         <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
       </div>
@@ -1324,7 +1341,7 @@ html,body{height:100%; background:#000; overflow:hidden;
         <div class="orbs" id="orbs"></div>
         <div>
           <div class="tit">Chiedimi quello che vuoi sapere</div>
-          <div class="sot">Scrivi la tua domanda, o toccane una qui sotto</div>
+          <div class="sot" id="asksot">Scrivi la tua domanda, o toccane una qui sotto</div>
         </div>
       </div>
       <div class="cerca">
@@ -1396,7 +1413,7 @@ html,body{height:100%; background:#000; overflow:hidden;
       <div class="ring">✓</div>
       <div class="big">Ci siamo,<br><span id="dnome">Giulia</span></div>
       <div class="sit">La tua seduta è pronta.</div>
-      <div class="msg">Ho passato tutto al tuo operatore: la capsula ti aspetta
+      <div class="msg" id="dmsg">Ho passato tutto al tuo operatore: la capsula ti aspetta
         già impostata su di te. Adesso tocca a te — e non c'è niente di difficile.</div>
       <div class="chips" id="dchips"></div>
       <div class="wait">Questa schermata si chiude da sola</div>
@@ -1642,16 +1659,19 @@ const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
 /* i quattro colori dei temi: la freccia della faccina ne prende uno a
    turno, cosi' chi la guarda una seconda volta vede che e' cambiata */
 const COLORI_BUB = ['#e6c65c', '#e2bdd4', '#8fd3ec', '#88d9ae'];
+/* {N} diventa il numero vero delle domande, contato al momento */
 const BUBBLES = [
-  'Hai una domanda? O vuoi solo curiosare',
-  'Le risposte sono qui. O esplora e basta',
-  'Chiedimi tutto. O guarda e scopri da solo',
-  'Domande precise, o solo per capire meglio',
-  'Qui trovi le risposte. O ti va di guardare?',
-  'Chiedi quello che vuoi, oppure esplora'
+  'Hai una domanda? Ho {N} risposte pronte',
+  '{N} domande che ci fanno tutti. Curiosa pure',
+  'Chiedimi tutto: {N} risposte, un tocco ciascuna',
+  'La gravità zero? Gli ioni? {N} risposte qui',
+  'Fa male? Quanto dura? {N} risposte pronte',
+  'Chiedi quello che vuoi: {N} risposte, o esplora'
 ];
 
-/* ══════════ LE VENTI DOMANDE ══════════
+/* ══════════ LE DOMANDE ══════════
+   Quante sono lo dice la vetrina stessa (QA.length): un numero preciso
+   incuriosisce piu' di «hai una domanda?», e non va mai aggiornato a mano.
    Frasi corte, per chi legge poco o legge male. I contenuti vengono dal
    gestionale vero: famiglie di protocollo, livelli, rituale della
    seduta, Scuola Zenith, anamnesi. */
@@ -1743,6 +1763,18 @@ const QA = [
   {ic:'👯', t:'pratica', alt:'amico amica insieme accompagna compagnia due', q:'Posso venire con un\'amica?',
    a:'Certo. In capsula si accomoda <b>una persona alla volta</b>, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
    piu:'Potete anche prenotare due sedute una dopo l\'altra: mentre una è in capsula l\'altra aspetta, e appena finisce tocca a lei.'},
+  {ic:'🪶', t:'seduta', alt:'zero gravita gravità gambe alte cuore posizione sdraiato', q:'Cos\'è la gravità zero?',
+   a:'È la posizione in cui la capsula ti porta con le <b>gambe sollevate sopra il cuore</b>: la colonna si scarica, il peso si distribuisce e il sangue torna su più facilmente.',
+   piu:'La regola il tuo operatore prima di partire, con un tocco. Tu senti solo lo schienale che si inclina piano.'},
+  {ic:'✨', t:'seduta', alt:'ioni negativi aria respiro mare', q:'Cosa sono gli ioni negativi?',
+   a:'La capsula può arricchire l\'aria che respiri di <b>ioni negativi</b>, come succede vicino al mare o dopo un temporale. Li accendiamo nelle sedute di <b>relax e sonno</b>.',
+   piu:'Non si sentono e non si vedono: rendono solo più fresca l\'aria intorno a te mentre ti lasci andare.'},
+  {ic:'🤲', t:'capire', alt:'quattro mani 3d 4d rulli bracci schienale', q:'Cosa vuol dire «quattro mani»?',
+   a:'Dentro lo schienale ci sono <b>due bracci con i rulli</b>: uno lavora in <b>4D</b> sulla parte alta, l\'altro in <b>3D</b> sulla parte bassa. Insieme fanno il lavoro di quattro mani.',
+   piu:'4D vuol dire che i rulli non scorrono soltanto: entrano ed escono con la profondità che serve a te, regolata dal tuo operatore.'},
+  {ic:'🎛️', t:'capire', alt:'scegliere programma decido io preferenze personalizzare', q:'Posso scegliere io il programma?',
+   a:'Il programma lo costruisce il <b>protocollo</b> dalle tue risposte. Ma decidi tu la <b>pressione</b>, e se preferisci senza rulli puoi chiedere <b>solo aria</b>.',
+   piu:'E a fine seduta la tua risposta su com\'era l\'intensità tara la volta dopo: più sedute fai, più il programma diventa tuo.'},
   {ic:'🏛️', t:'capire', q:'Cos\'è Zenith Fitness Lab?',
    a:'È il nostro format. Un percorso che mette insieme <b>EMS, EMS2, Vacutherm e Matrix</b> — e alla fine <b>Zenith</b>, il nostro fiore all\'occhiello.',
    piu:'Ogni macchina lascia qualcosa di diverso nel corpo, e Zenith è quella che chiude il cerchio: raccoglie il lavoro di tutte le altre e lo trasforma in recupero.'},
@@ -1786,7 +1818,7 @@ function roamStep(){
   if(roamI % 3 === 0){
     const giro = Math.floor(roamI / 3);
     document.getElementById('bub').innerHTML =
-      BUBBLES[giro % BUBBLES.length] + '<span class="mini">TOCCAMI</span>';
+      BUBBLES[giro % BUBBLES.length].replace('{N}', QA.length) + '<span class="mini">TOCCAMI</span>';
     document.getElementById('avatar').style
       .setProperty('--tc', COLORI_BUB[giro % COLORI_BUB.length]);
   }
@@ -1974,7 +2006,10 @@ function buildFiltri(){
   box.innerHTML = ORDINE_TEMI.map(k=>
     '<div class="filt tocca' + (TEMA === k ? ' on' : '') + '"'
     + ' style="--fc:' + TEMI[k].c + '" onclick="filtraTema(\'' + k + '\')">'
-    + '<span class="pallino"></span>' + TEMI[k].n + '</div>').join('');
+    + '<span class="pallino"></span>' + TEMI[k].n
+    + '<span class="fnum">' + QA.filter(d=> d.t === k).length + '</span></div>').join('');
+  const sot = document.getElementById('asksot');
+  if(sot) sot.innerHTML = '<b>' + QA.length + ' risposte pronte</b> · scrivi la tua domanda o toccane una';
 }
 function filtraTema(k){
   TEMA = (TEMA === k) ? null : k;
@@ -2098,7 +2133,8 @@ function apriRispostaCaso(k){
              cosa ci aggiunge Zenith e perché. In quest'ordine — il
              consiglio senza il fatto è una pubblicità, il fatto senza il
              consiglio è una lezione di fisiologia */
-          ? '<span class="crd"><em>Che cosa hai fatto davvero</em>' + mm[2] + '</span>'
+          ? perTeHTML(kk)
+            + '<span class="crd"><em>Come funziona</em>' + mm[2] + '</span>'
             + '<span class="crz"><em>Perché ti conviene anche Zenith</em>' + mm[3] + '</span>'
           : '<span class="crd">' + sub(kk) + '</span>')
       + '</span><span class="crfr">›</span></div>';
@@ -2158,7 +2194,9 @@ function clienti(){
   return (db && db.clients) || [];
 }
 function norm(t){
+  /* senza accenti e senza apostrofi: «dangelo» trova D'Angelo */
   return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/['’`]/g,'')
     .replace(/\s+/g,' ').trim();
 }
 function cifreDi(t){ return String(t||'').replace(/\D/g,''); }
@@ -2333,9 +2371,12 @@ function passi(){
   const prima = primaVolta(), aria = serveDomandaAria(D);
   return PASSI_TUTTI.filter(p=> !(prima && p.k === 'pressione') && !(!aria && p.k === 'aria'));
 }
-/* «PASSO 3 DI 5» o «DI 6» a seconda di quante domande ci sono davvero */
+/* «PASSO 3», e all'ultima «PASSO 7 · L'ULTIMA». Il totale non si scrive:
+   la domanda sull'aria compare solo dopo certe risposte, e un «3 DI 6»
+   che diventa «4 DI 7» sembra un errore. Che manchi poco lo dicono
+   la barra in alto e i trattini. */
 function etichettaPasso(L, i){
-  return L[i].step || ('PASSO ' + i + ' DI ' + (L.length - 1));
+  return L[i].step || ('PASSO ' + i + (i === L.length - 1 ? ' · L\'ULTIMA' : ''));
 }
 
 /* Le sette zone, con lo stesso nome che portano nel gestionale. */
@@ -2472,6 +2513,33 @@ const MACCHINE = [
    + 'ed è la mezz\'ora in cui la schiena torna al suo posto.', 'riposo']
 ];
 const MAC_DI = k => MACCHINE.find(m=> m[4] === k);
+/* ── FA PER TE SE… ──
+   Chi non conosce i macchinari non si riconosce in «depressione regolata»
+   o «elettromiostimolazione»: si riconosce in un problema suo. Per questo
+   ogni macchinario comincia da tre situazioni in cui chi legge puo'
+   dire «sono io», e solo dopo racconta come funziona. Sono problemi di
+   chi legge, mai mancanze di un altro macchinario. Le stesse frasi nel
+   totem e nel gestionale: l'operatore deve poter ripetere quello che il
+   cliente ha appena letto. Per «Nessun allenamento» parlano di Zenith. */
+const PER_TE = {
+  ems:     ['Hai <b>poco tempo</b>: venti minuti valgono tre ore di sala pesi',
+            'La <b>schiena tira</b> e vuoi una postura più dritta',
+            'Vuoi <b>tonificare tutto il corpo</b> senza caricare le articolazioni'],
+  ems2:    ['Vuoi <b>bruciare e tonificare</b> nella stessa mezz\'ora',
+            'Hai <b>gambe, glutei e addome</b> da rassodare',
+            'Ti manca il <b>fiato</b> e vuoi più resistenza'],
+  vacufit: ['Hai le <b>gambe pesanti</b>, gonfie o con ritenzione',
+            'Vuoi <b>gambe e glutei più lisci</b> e compatti',
+            'Vuoi un <b>addome più tonico</b> senza fare addominali'],
+  matrix:  ['Vuoi <b>più forza e tono</b>, proprio dove decidi tu',
+            'Hai <b>articolazioni delicate</b> e i pesi liberi ti frenano',
+            'Vuoi un allenamento <b>preciso</b>, che si adatta a ogni ripetizione'],
+  riposo:  ['Passi ore <b>alla scrivania, in auto o in piedi</b>',
+            '<b>Collo, spalle o schiena</b> tirano a fine giornata',
+            '<b>Dormi male</b> o sei spesso sotto stress']
+};
+const perTeHTML = k => '<span class="perte"><em>' + (k === 'riposo' ? 'Zenith fa per te se…' : 'Fa per te se…') + '</em>'
+  + PER_TE[k].map(x=> '<span class="pt1"><i>✓</i><span>' + x + '</span></span>').join('') + '</span>';
 
 /* ── IL PENSIERO CHE ACCOMPAGNA IL RIFLETTORE ──
    Regola che vale per tutte e cinque, e non e' una preferenza di stile:
@@ -2507,8 +2575,9 @@ const PENSIERI = {
 };
 function apriMacchine(){
   document.getElementById('mlist').innerHTML = MACCHINE.map(m=>
-    '<div class="mac"><div class="mhd"><span class="mfi" style="--mc:' + COL_MAC[m[4]] + '">' + m[0] + '</span>'
+    '<div class="mac" style="--mc:' + COL_MAC[m[4]] + '"><div class="mhd"><span class="mfi" style="--mc:' + COL_MAC[m[4]] + '">' + m[0] + '</span>'
     + '<span class="mfn">' + m[1] + '</span></div>'
+    + perTeHTML(m[4])
     + '<div class="mfd">' + m[2] + '</div>'
     + '<div class="mfz">' + m[3] + '</div></div>').join('');
   document.getElementById('velo').classList.add('on');
@@ -2679,14 +2748,31 @@ function buildKb(){
     if(i === 2) h += '<div class="key wide go" onclick="kbGo()">AVANTI ›</div>';
     h += '</div>';
   });
-  h += '<div class="kbrow"><div class="key wide" onclick="kbType(\' \')">spazio</div></div>';
+  /* l'apostrofo e l'accento: D'Angelo, D'Amico, Nicolò. Senza, qui a
+     Pompei mezza anagrafica non si poteva scrivere com'e' */
+  h += '<div class="kbrow"><div class="key kx" onclick="kbType(String.fromCharCode(39))">\'</div>'
+    + '<div class="key wide sp" onclick="kbType(\' \')">spazio</div>'
+    + '<div class="key kx acc" onclick="kbAccento()">à è ò</div></div>';
   document.getElementById('kb').innerHTML = h;
 }
 /* Ogni lettera cambia quante schede corrispondono: il pannello si
    ridisegna, e quando ne resta una sola si scopre da sola. */
 function kbType(c){
   if(D.clienteId) return;                    /* già riconosciuto: non si riscrive */
-  D[FIELD] += (D[FIELD] ? c.toLowerCase() : c);
+  /* maiuscola all'inizio, dopo lo spazio e dopo l'apostrofo: D'Angelo */
+  const prima = !D[FIELD] || /[\s']$/.test(D[FIELD]);
+  D[FIELD] += (prima ? c : c.toLowerCase());
+  disegnaPasso(); idleReset();
+}
+/* l'accento va sull'ultima vocale scritta: a→à, e→è→é, i→ì, o→ò, u→ù.
+   Un tasto solo, invece di cinque: la tastiera resta quella di sempre */
+function kbAccento(){
+  if(D.clienteId) return;
+  const v = D[FIELD], u = v.slice(-1);
+  const giro = {a:'à', 'à':'a', e:'è', 'è':'é', 'é':'e', i:'ì', 'ì':'i', o:'ò', 'ò':'o', u:'ù', 'ù':'u'};
+  const k = giro[u.toLowerCase()];
+  if(!k) return;
+  D[FIELD] = v.slice(0, -1) + (u === u.toUpperCase() && u !== u.toLowerCase() ? k.toUpperCase() : k);
   disegnaPasso(); idleReset();
 }
 function kbDel(){
@@ -2799,6 +2885,13 @@ function salvaCheckin(){
 
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
+  /* chi lo segue ha un nome: «ho passato tutto a Raffaele» vale piu' di
+     «al tuo operatore», e il cliente sa chi aspettare */
+  const op = operatori().find(x=> x.id === D.op);
+  document.getElementById('dmsg').innerHTML = (op
+      ? 'Ho passato tutto a <b>' + esc(op.nome) + '</b>: ti chiama appena la capsula è pronta, già impostata su di te. '
+      : 'Ho passato tutto al tuo operatore: la capsula ti aspetta già impostata su di te. ')
+    + 'Adesso tocca a te — e non c\'è niente di difficile.';
   const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione],
                  serveDomandaAria(D) ? NOMI[D.aria] : '']
     .concat(D.zones.length ? D.zones.map(ZNOME)
@@ -3331,7 +3424,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v132.26.09(23)';
+const VETRINA_VERSION = 'v133.26.09(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

@@ -133,6 +133,36 @@ module.exports = async function(browser){
   tac.t('una risposta «solo aria» rimasta indietro non vale quando la domanda non c\'e\' piu\'',
     aria.vecchia !== 'P23', aria.vecchia);
 
+  /* ── quante risposte ci sono: il numero si vede, e non si aggiorna a mano ── */
+  const conta = await p.evaluate(()=>{
+    document.getElementById('avatar').onclick();
+    const sot = document.getElementById('asksot').textContent;
+    const nums = [...document.querySelectorAll('#filtri .fnum')].map(e=> +e.textContent);
+    go('idle');
+    return {n: QA.length, sot, somma: nums.reduce((a,b)=> a+b, 0), bolle: BUBBLES.every(b=> b.includes('{N}'))};
+  });
+  tac.t('la pagina delle domande dice quante risposte ci sono',
+    conta.sot.includes(conta.n + ' risposte'), conta.sot);
+  tac.t('i numeri sui quattro temi fanno il totale', conta.somma === conta.n, conta.somma + ' su ' + conta.n);
+  tac.t('la faccina in home dice il numero delle risposte', conta.bolle);
+
+  /* ── la tastiera del nome: apostrofo e accenti ── */
+  const tast = await p.evaluate(()=>{
+    startCheck(); D.nome = ''; D.cogn = ''; FIELD = 'cogn';
+    ['D',"'",'A','N','G','E','L','O'].forEach(c=> kbType(c));
+    const cogn = D.cogn;
+    FIELD = 'nome'; ['N','I','C','O','L','O'].forEach(c=> kbType(c)); kbAccento();
+    const nome = D.nome;
+    const trova = norm("D'Angelo").indexOf(norm('dangelo')) === 0;
+    const passo = (PASSO = 2, etichettaPasso(passi(), 2));
+    go('idle');
+    return {cogn, nome, trova, passo};
+  });
+  tac.t('si scrive D\'Angelo, con la maiuscola dopo l\'apostrofo', tast.cogn === "D'Angelo", tast.cogn);
+  tac.t('si scrive Nicolò con il tasto degli accenti', tast.nome === 'Nicolò', tast.nome);
+  tac.t('«dangelo» senza apostrofo trova lo stesso D\'Angelo', tast.trova);
+  tac.t('il passo non dice «di N»: il totale cambierebbe a meta\' strada', !/ DI /.test(tast.passo), tast.passo);
+
   await p.close();
   return tac;
 };

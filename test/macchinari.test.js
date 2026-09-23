@@ -69,6 +69,11 @@ module.exports = async function(browser){
     tac.t(q + 'senza allenamento si parla di collo, spalle e colonna',
       /collo, spalle e colonna/i.test(testo));
 
+    /* chi non conosce i macchinari si riconosce in un problema suo */
+    tac.t(q + 'ogni macchinario dice per chi e\' («fa per te se…»)',
+      (testo.match(/fa per te se/gi) || []).length >= 5, (testo.match(/fa per te se/gi) || []).length + ' volte');
+    tac.t(q + 'si riconoscono le situazioni: poco tempo, gambe pesanti, scrivania',
+      /poco tempo/i.test(testo) && /gambe pesanti/i.test(testo) && /scrivania/i.test(testo));
     /* la regola di sempre: il modello del costruttore non si nomina */
     tac.t(q + 'la capsula si chiama solo Zenith', /Zenith/.test(testo));
   }

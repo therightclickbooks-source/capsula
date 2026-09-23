@@ -189,6 +189,21 @@ module.exports = async function(browser){
   tac.t('ripetendo il P04 torna la rifinitura manuale sul punto',
     rip.titoli.some(t => /Rifinitura manuale sul punto/.test(t)), JSON.stringify(rip));
 
+  /* ── il QR del telefono mostra gli stessi passi del tablet ── */
+  const qr = await p.evaluate(()=>{
+    const c = DB.clients[0];
+    const giro = q => { const pr = buildProtocol(c, Object.assign({prefSoloAria:false}, q)); pr.quizZones = q.zones;
+      const tab = buildSteps(pr).map(x => x.title + '|' + x.markers.length);
+      const tel = decodificaSeduta(codificaSeduta(pr, 'Prova', q.zones));
+      return {tab, tel: buildSteps(tel).map(x => x.title + '|' + x.markers.length)}; };
+    return [giro({activity:'ems', zones:['cervicale','braccia','dorsale'], goal:'recupero', mood:'sereno', pressione:'media'}),
+            giro({activity:'riposo', zones:['gambe','piedi'], goal:'relax', mood:'sereno', pressione:'media'})];
+  });
+  tac.t('dal QR il telefono ha gli stessi passi del tablet (rifinitura sul punto e Down movement compresi)',
+    qr.every(x => JSON.stringify(x.tab) === JSON.stringify(x.tel)), JSON.stringify(qr.map(x => x.tel)));
+  tac.t('i vecchi QR senza rifiniture si aprono ancora',
+    await p.evaluate(()=> !!decodificaSeduta('Z3.P08.2.2.3.1.0.1.25.1.1..Prova.gambe')));
+
   /* ogni marcatore abbraccia il suo tasto: porta con se' misura e forma
      del tasto (cerchio o rettangolo), non un cerchio fisso appoggiato li'
      vicino */
