@@ -293,6 +293,77 @@ module.exports = async function(browser){
     tac.t('la chiusura parla al cliente: niente copioni di vendita a vista', !no.length,
       no.length ? (no[0].match(vietate) || [''])[0] : ''); }
 
+  /* i premi: le regole scritte nel regolamento, fatte a conti */
+  const premi = await p.evaluate(()=>{
+    const salva = DB.sessions, clienti = DB.clients;
+    const giro = (passo, quante) => {
+      const c = {id:'cpremi', nome:'Premio', cognome:'Prova', anamnesi:{}};
+      DB.clients = clienti.concat([c]);
+      const t0 = new Date('2025-01-06T10:00:00Z').getTime();
+      DB.sessions = salva.concat(Array.from({length: quante}, (_, i) => ({id:'sp' + i, clientId:'cpremi',
+        date: new Date(t0 + i * passo * 864e5).toISOString(), fam:'Z8', prog:'P01', quiz:{}, settings:{timer:20}})));
+      const v = premiCliente(c).flatMap(p => p.voci);
+      return {te: v.filter(x => x.tipo === 'te').length, regalo: v.filter(x => x.tipo === 'regalo').length,
+              tappe: premiCliente(c).map(p => p.tappa.nome + (p.inTempo ? '+' : '')), c};
+    };
+    const r = {};
+    r.settimana = giro(7, 52); r.dieci = giro(10, 13); r.due = giro(7, 104);
+    /* la seduta che fa salire di livello mostra il premio al cliente */
+    const g = giro(7, 13);
+    VIEW = {name:'closing', id:'cpremi', sid:'sp12', lvUp:true}; render();
+    r.vinto = !!document.querySelector('.premiovinto') && /hai vinto/.test(document.querySelector('.premiovinto').textContent);
+    DB.sessions = DB.sessions.filter(x => x.id !== 'sp12');
+    VIEW = {name:'closing', id:'cpremi', sid:'sp11', lvUp:false}; render();
+    r.conto = /Premio Costanza/.test((document.querySelector('.costanza') || {}).textContent || '');
+    r.vuoto = messaggioZenith(g.c, DB.sessions.find(x => x.id === 'sp11')).frasi.map(f => f.t).join(' ');
+    r.tooltip = [...document.querySelectorAll('.fbtn')].map(b => b.getAttribute('data-zt') || '').join(' ');
+    /* la seduta da regalare: passa a un'altra scheda, o resta a lui */
+    { const amico = {id:'camico', nome:'Marco', cognome:'Bianchi', anamnesi:{}};
+      DB.clients = DB.clients.concat([amico]);
+      const g13 = DB.clients.find(x => x.id === 'cpremi');
+      DB.sessions.push({id:'sp12', clientId:'cpremi', date:new Date(new Date('2025-01-06T10:00:00Z').getTime() + 84 * 864e5).toISOString(), fam:'Z8', prog:'P01', quiz:{}, settings:{timer:20}});
+      const reg = premiCliente(g13)[0].voci.find(v => v.tipo === 'regalo');
+      const prima = premiDaUsare(g13).length;
+      regalaA('cpremi', reg.id, 'camico');
+      r.regalo = {prima, dopoGiver: premiDaUsare(g13).length, amico: premiDaUsare(amico).length,
+        ricevuto: regaliRicevuti(amico).length === 1 && regaliRicevuti(amico)[0].da.id === 'cpremi'};
+      VIEW = {name:'client', id:'camico'}; render();
+      r.regalo.scheda = /regalata da/.test(document.querySelector('.premicard').textContent);
+      usaPremio('cpremi', reg.id);
+      r.regalo.usato = premiDaUsare(amico).length === 0;
+      delete g13.premiUsati[reg.id];
+      window.confirm = () => true;
+      annullaScelta('cpremi', reg.id);
+      perSe('cpremi', reg.id);
+      r.regalo.perSe = premiDaUsare(g13).length === prima && regaliRicevuti(amico).length === 0;
+      VIEW = {name:'client', id:'cpremi'}; render();
+      r.regalo.schedaPerSe = /era da regalare/.test(document.querySelector('.premicard').textContent); }
+    DB.sessions = salva; DB.clients = clienti;
+    delete r.settimana.c; delete r.dieci.c; delete r.due.c;
+    return r;
+  });
+  tac.t('una seduta a settimana per un anno: 6 sedute per sé e 3 da regalare',
+    premi.settimana.te === 6 && premi.settimana.regalo === 3, JSON.stringify(premi.settimana));
+  tac.t('ogni 10 giorni: Silver arriva dopo 120 giorni, solo la seduta omaggio',
+    premi.dieci.te === 1 && premi.dieci.regalo === 0, JSON.stringify(premi.dieci));
+  tac.t('dopo Diamond i premi ripartono con il 2° giro',
+    premi.due.te === 12 && premi.due.regalo === 6 && premi.due.tappe.includes('Silver · 2° giro+'), JSON.stringify(premi.due.tappe));
+  tac.t('la seduta che fa salire di livello dice al cliente «hai vinto»', premi.vinto);
+  tac.t('senza risposte al check-in il messaggio non lascia buchi', !/undefined|così come stavi|null/.test(premi.vuoto), premi.vuoto.slice(0, 200));
+  tac.t('sotto la strada c\'e\' il conto alla rovescia del Premio Costanza', premi.conto);
+  tac.t('nella chiusura le schede della pressione parlano al cliente, non all\'operatore',
+    !/Il cliente|gestionale|questa persona/.test(premi.tooltip) && /Hai sentito/.test(premi.tooltip), premi.tooltip.slice(0, 200));
+  tac.t('la seduta regalata passa nella scheda dell\'amico, e lui la usa',
+    premi.regalo.prima === 2 && premi.regalo.dopoGiver === 1 && premi.regalo.amico === 1 && premi.regalo.ricevuto
+    && premi.regalo.scheda && premi.regalo.usato, JSON.stringify(premi.regalo));
+  tac.t('chi non ha nessuno a cui regalarla la tiene per se\'', premi.regalo.perSe && premi.regalo.schedaPerSe, JSON.stringify(premi.regalo));
+  { const fs = require('fs'), path = require('path');
+    const blocco = f => { const t = fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+      const i = t.indexOf('const REGOLA = ['), j = t.indexOf('];', t.indexOf('const REGOLA_ESEMPI = ['));
+      return i < 0 || j < 0 ? '' : t.slice(i, j); };
+    const g = blocco('app/index.html'), v = blocco('app/totem/index.html');
+    tac.t('il regolamento dei premi e\' identico nel gestionale e nella vetrina', g && g === v); }
+
   console.log('   (' + sedute.length + ' sedute passate al setaccio)');
   await p.close();
   return tac;

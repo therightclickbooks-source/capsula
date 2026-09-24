@@ -217,6 +217,23 @@ module.exports = async function(browser){
       /AVANTI/.test(seitu.dopo) && seitu.tasto && seitu.passo !== 'nome', JSON.stringify(seitu));
   }
 
+  /* ── il regolamento dei premi, dalla risposta sui premi ── */
+  const reg = await p.evaluate(()=>{
+    const i = QA.findIndex(x => /vincere delle sedute/.test(x.q));
+    if(i < 0) return {trovata:false};
+    apriRisposta(i);
+    const tasto = document.querySelector('#rbody .aprireg');
+    if(tasto) tasto.click();
+    const r = {trovata:true, tasto: !!tasto, aperto: document.getElementById('regola').classList.contains('on'),
+      voci: document.querySelectorAll('#rlist .rg').length, esempi: document.querySelectorAll('#rlist .rge').length,
+      inVetrina: DOMANDE_VETRINA.includes(QA[i].q)};
+    go('idle'); r.chiuso = !document.getElementById('regola').classList.contains('on');
+    return r;
+  });
+  tac.t('«Posso vincere delle sedute omaggio?» apre il regolamento dei premi',
+    reg.trovata && reg.tasto && reg.aperto && reg.voci === 8 && reg.esempi === 2 && reg.inVetrina, JSON.stringify(reg));
+  tac.t('tornando alla vetrina il regolamento si chiude', reg.chiuso);
+
   /* ── «Sono io» / «Non sono io» ──
      con una scheda sola da confermare, AVANTI chiede prima chi sei */
   const chi = await p.evaluate(()=>{

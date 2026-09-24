@@ -896,6 +896,19 @@ html,body{overscroll-behavior:none}
 .foglio .fs{font-size:23px; color:rgba(255,255,255,.6); margin-top:10px; line-height:1.42}
 .mlist{margin-top:24px; flex:1; min-height:0; overflow-y:auto; display:flex;
   flex-direction:column; gap:14px; padding-right:10px}
+.rg{display:flex; gap:20px; align-items:flex-start; background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.12); border-radius:26px; padding:20px 24px}
+.rg .rgi{width:60px; height:60px; flex:none; border-radius:20px; display:flex; align-items:center;
+  justify-content:center; font-size:30px; background:rgba(230,198,92,.14); border:1.6px solid rgba(230,198,92,.45)}
+.rg .rgt{font-size:28px; font-weight:800; letter-spacing:-.01em}
+.rg .rgb{font-size:20px; line-height:1.45; color:rgba(255,255,255,.62); margin-top:6px}
+.rg .rgb b{color:#eed37a}
+.rgk{font-size:18px; letter-spacing:.22em; color:#e6c65c; font-weight:800; margin-top:10px}
+.rge{font-size:20px; line-height:1.45; color:rgba(255,255,255,.66); padding:18px 24px; border-radius:24px;
+  border-left:4px solid rgba(230,198,92,.7); background:rgba(230,198,92,.06)}
+.rge b{color:#fff}
+.aprireg{display:inline-block; margin-top:22px; padding:16px 26px; border-radius:18px; cursor:pointer;
+  font-weight:800; font-size:24px; color:#eed37a; background:rgba(230,198,92,.1); border:1.6px solid rgba(230,198,92,.55)}
 .mac{background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.12);
   border-radius:28px; padding:20px 26px}
 .mac .mhd{display:flex; flex-direction:row; align-items:center; gap:16px}
@@ -1570,6 +1583,18 @@ html,body{overscroll-behavior:none}
     </div>
   </div>
 
+  <!-- il regolamento dei premi: si apre dalle risposte sui punti -->
+  <div class="velo" id="regola" onclick="chiudiRegolamento(event)">
+    <div class="foglio" onclick="event.stopPropagation()">
+      <div class="ft">🎁 I premi Zenith</div>
+      <div class="fs">Più vieni, più vinci. Le regole sono poche e semplici.</div>
+      <div class="mlist" id="rlist"></div>
+      <div class="navrow" style="margin-top:26px">
+        <div class="nav next" onclick="chiudiRegolamento()">HO CAPITO ›</div>
+      </div>
+    </div>
+  </div>
+
   <div class="tost" id="tost"></div>
 
   <div class="dbg" id="dbg"></div>
@@ -1785,7 +1810,7 @@ const DOMANDE_VETRINA = ['Fa male? Che pressione si sente?', 'Cos\'è la gravit�
   'Non è una poltrona massaggiante?', 'Quanto ci metto a capire se fa per me?',
   'Meglio prima o dopo l\'allenamento?', 'Cosa vuol dire «quattro mani»?',
   'Posso parlare durante la seduta?', 'Ogni quanto posso venire?',
-  'Cosa sono gli ioni negativi?', 'Posso scegliere io il programma?',
+  'Cosa sono gli ioni negativi?', 'Posso scegliere io il programma?', 'Posso vincere delle sedute omaggio?',
   'Ho la cervicale da ufficio: serve?', 'E se non voglio i rulli?'];
 let ROAM = null;
 function frasiVetrina(){
@@ -1871,7 +1896,12 @@ const QA = [
    piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 20,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
   {ic:'🏅', t:'pratica', alt:'punteggio livello premi medaglia gold classifica', q:'Cosa sono i punti e i livelli?',
    a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
-   piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso.'},
+   piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso. E a ogni livello vinci una seduta omaggio.'
+     + '<span class="aprireg" onclick="apriRegolamento()">🎁 Leggi il regolamento dei premi ›</span>'},
+  {ic:'🎁', t:'pratica', alt:'premi omaggio gratis regalo regalare vincere bonus costanza regolamento', q:'Posso vincere delle sedute omaggio?',
+   a:'Sì: a ogni livello vinci <b>una seduta omaggio</b>. E se ci arrivi entro <b>100 giorni</b>, vinci anche una seduta <b>da regalare</b> a chi vuoi.',
+   piu:'A Diamond il bonus è ancora più grande: due sedute in più per te. Il conto lo teniamo noi, a fine seduta vedi quanto ti manca.'
+     + '<span class="aprireg" onclick="apriRegolamento()">🎁 Leggi il regolamento dei premi ›</span>'},
   {ic:'📲', t:'capire', q:'Cosa guarda l\'operatore sul touchscreen?',
    a:'Intensità, profondità, forza dell\'aria, calore, durata. <b>Ogni valore lo sceglie lui</b>, in base alle tue risposte.',
    piu:'Niente è lasciato al caso: ogni seduta ha un codice suo, che la rende ripetibile identica.'},
@@ -2057,7 +2087,7 @@ function centroSpotStop(){
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
 function go(n){
-  chiudiMacchine();
+  chiudiMacchine(); chiudiRegolamento();
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
@@ -2807,6 +2837,52 @@ function chiudiMacchine(e){
   if(e && e.target !== e.currentTarget) return;
   const v = document.getElementById('velo');
   if(v) v.classList.remove('on');
+  idleReset();
+}
+
+/* il regolamento dei premi: lo stesso, parola per parola, nel gestionale
+   e nella vetrina del totem (un test controlla che non si separino) */
+const REGOLA = [
+  ['🎟️', 'Ogni seduta vale 10 punti',
+   'Anche la prima, quella di prova, e anche le sedute omaggio. I punti non si azzerano mai.'],
+  ['🏅', 'Ogni 13 sedute sali di livello',
+   '✦ <b>Silver</b> alla 13ª seduta (130 punti) · ★ <b>Gold</b> alla 26ª (260) · ✹ <b>Platinum</b> alla 39ª (390) · ◆ <b>Diamond</b> alla 52ª (520).'],
+  ['🎁', 'A ogni livello vinci 1 seduta omaggio',
+   'Sempre, senza fretta: che tu ci arrivi in tre mesi o in tre anni, la seduta omaggio è tua.'],
+  ['⏱', 'Il Premio Costanza: 100 giorni',
+   'Se arrivi al livello <b>entro 100 giorni</b>, vinci anche un bonus: a Silver, Gold e Platinum <b>1 seduta da regalare</b> a chi vuoi; a Diamond <b>2 sedute in più per te</b>. '
+   + 'Per Silver i 100 giorni partono dalla prima seduta; per gli altri livelli dal giorno in cui hai raggiunto quello prima.'],
+  ['🔄', 'Il cronometro riparte a ogni livello',
+   'Se un bonus ti sfugge non perdi niente per il futuro: dal livello appena raggiunto hai di nuovo 100 giorni per il prossimo. '
+   + '100 giorni sono più di 14 settimane: con una seduta a settimana ci arrivi con una settimana di margine.'],
+  ['◆', 'Dopo Diamond si ricomincia',
+   'Il livello Diamond resta tuo per sempre. I premi ripartono con un nuovo giro — Silver, Gold, Platinum e Diamond del 2° giro — con le stesse regole.'],
+  ['🤝', 'Come si usano',
+   'Le sedute vinte restano scritte nella tua scheda e si usano <b>entro 12 mesi</b>: basta dirlo a chi ti segue. '
+   + 'Per regalare la tua basta dire il nome della persona: la seduta passa nella sua scheda. '
+   + 'Se non hai nessuno a cui regalarla, <b>puoi usarla tu</b>. Le sedute omaggio non si cambiano in denaro.'],
+  ['📋', 'Il conto lo teniamo noi',
+   'Alla fine di ogni seduta vedi quante sedute mancano al prossimo livello e fino a che giorno vale il Premio Costanza.']
+];
+const REGOLA_ESEMPI = [
+  ['Giulia viene una volta a settimana',
+   'Arriva a Silver alla 13ª seduta, dopo 84 giorni: vince 1 seduta per sé e 1 da regalare. Continuando così, in un anno vince <b>6 sedute per sé e 3 da regalare</b>.'],
+  ['Marco viene ogni 10 giorni',
+   'Arriva a Silver dopo 120 giorni: vince la sua seduta omaggio, il bonus no. Da quel giorno ha di nuovo 100 giorni per Gold: se accelera un po\', il bonus di Gold è suo.']
+];
+function apriRegolamento(){
+  document.getElementById('rlist').innerHTML =
+    REGOLA.map(([ic,t,b])=> '<div class="rg"><span class="rgi">' + ic + '</span><div><div class="rgt">' + t
+      + '</div><div class="rgb">' + b + '</div></div></div>').join('')
+    + '<div class="rgk">DUE ESEMPI</div>'
+    + REGOLA_ESEMPI.map(([t,b])=> '<div class="rge"><b>' + t + '</b><br>' + b + '</div>').join('');
+  document.getElementById('rlist').scrollTop = 0;
+  document.getElementById('regola').classList.add('on');
+  idleReset();
+}
+function chiudiRegolamento(e){
+  if(e && e.target !== e.currentTarget) return;
+  document.getElementById('regola').classList.remove('on');
   idleReset();
 }
 
@@ -3667,7 +3743,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v138.26.09(24)';
+const VETRINA_VERSION = 'v139.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
