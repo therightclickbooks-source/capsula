@@ -119,7 +119,7 @@ html,body{height:100%; background:#000; overflow:hidden;
    ogni cambio tutta la vetrina — numeri, passi, faccina, tasto — si
    alzerebbe e si abbasserebbe. Qui invece si muove solo la frase, e
    dentro una casella che non cambia mai: 508 è la più alta delle
-   trentasei, misurata. */
+   sessanta, misurata (e la prova della vetrina le rimisura tutte). */
 .hero{display:flex; align-items:center; gap:20px; flex:none; min-height:508px}
 #roams{flex:1; min-width:0; pointer-events:none}
 .roam{opacity:0; transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
@@ -130,6 +130,14 @@ html,body{height:100%; background:#000; overflow:hidden;
   border:1px solid rgba(169,119,154,.6)}
 .roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a;
   border:1px solid rgba(212,175,55,.55)}
+.roam.domanda .rtag{background:rgba(79,184,221,.16); color:#8fd3ec;
+  border:1px solid rgba(79,184,221,.5)}
+/* la domanda si tocca: il riquadro accetta il dito, e la riga sotto lo dice */
+.roam.domanda{pointer-events:auto; cursor:pointer}
+.roam.domanda .tx{font-size:58px}
+.roam.domanda .sub{color:#8fd3ec; font-weight:700}
+/* sotto il fastidio, la risposta: «Zenith» in oro, perche' e' li' che si guarda */
+.roam .sub b{color:#eed37a; font-weight:800}
 .roam .rtag i{font-style:normal; font-size:25px; line-height:1}
 .roam .tx{margin-top:24px; font-size:66px; font-weight:800; line-height:1.04;
   letter-spacing:-.032em; text-shadow:0 4px 34px rgba(0,0,0,.7)}
@@ -1591,66 +1599,130 @@ document.getElementById('orb').innerHTML = VOLTO;
 document.getElementById('orbs').innerHTML = VOLTO;
 
 /* ══════════ LE FRASI DELLA VETRINA ══════════
-   Trentadue, in due famiglie di colore: VIOLA il beneficio (il fastidio
-   che il cliente riconosce come suo), ORO la curiosità (i fatti veri del
-   metodo, presi dai protocolli e dai livelli del gestionale).
-   Le ancore (q0…q5) sono assegnate a mano perché due frasi consecutive
-   non condividano mai lo stesso punto dello schermo. */
-const ROAM = [
-  {a:0, k:'beneficio', ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.'},
-  {a:3, k:'curiosita', ic:'📈', tx:'Zenith non indovina.<br><em>Misura.</em>',
-        sub:'Battito e indice di fatica, prima e dopo la seduta. Coi tuoi numeri.'},
-  {a:1, k:'beneficio', ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.'},
-  {a:4, k:'curiosita', ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
+   Tre famiglie, alternate: una frase per tipo, poi si ricomincia.
+   · TI SUCCEDE? (viola) — un fastidio in cui chi passa si riconosce, e
+     sotto, subito, cosa ci fa Zenith. Prima c'era solo il fastidio: si
+     leggeva «ecco il mio problema» e non «ecco chi me lo risolve».
+   · CURIOSITÀ (oro) — i fatti veri del metodo.
+   · LO CHIEDONO TUTTI (azzurro) — una delle domande pronte: si tocca e si
+     apre la risposta. Sono quelle che agganciano; le pratiche (prenotare,
+     vestirsi, l'eta') restano a un tocco nella pagina delle domande.
+   Il punto dello schermo da cui entra una frase (q0…q5) si assegna in
+   giro, cosi' due frasi di fila non entrano mai dallo stesso lato. */
+const FRASI_PROBLEMA = [
+  {ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.',
+        sub:'Z la scioglie con calore e rulli lenti, là dove nasce la tensione.'},
+  {ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.',
+        sub:'Z le solleva sopra il cuore e le alleggerisce con la compressione a onde.'},
+  {ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.',
+        sub:'Z lavora trapezi e base del collo, e la testa torna a girare libera.'},
+  {ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.',
+        sub:'Z abbassa i giri: manovre lente, ioni e dondolio preparano il sonno vero.'},
+  {ic:'🏋️', tx:'Ti alleni bene.<br>Ma <em>recuperi male</em>.',
+        sub:'Z è il defaticamento che il tuo allenamento si merita, in venti minuti.'},
+  {ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.',
+        sub:'Z scarica la colonna in gravità zero e rimette in moto le gambe.'},
+  {ic:'🪜', tx:'Il leg day di ieri<br>si sente <em>sulle scale</em>.',
+        sub:'Z lavora gambe e glutei con rulli e compressione: le scale tornano scale.'},
+  {ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.',
+        sub:'Z le riporta giù: airbag su spalle e braccia, rulli sui trapezi.'},
+  {ic:'⏰', tx:'Un massaggio sì,<br>ma <em>un\'ora</em> non ce l\'hai.',
+        sub:'Con Z bastano venti minuti, e ogni minuto è scelto per te.'},
+  {ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.',
+        sub:'Z ha un programma che ti rimette in moto: quindici minuti, ritmo vivo.'},
+  {ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.',
+        sub:'Z scioglie collo e schiena che il volante ha tenuto fermi per ore.'},
+  {ic:'👟', tx:'In piedi tutto il giorno,<br>i piedi <em>non ne possono più</em>.',
+        sub:'Z: rulli sotto la pianta e compressione su polpacci e piedi.'},
+  {ic:'🦶', tx:'Le caviglie gonfie<br>che a sera <em>non passano</em>.',
+        sub:'Z comprime dai piedi verso l\'alto, con le gambe sopra il cuore.'},
+  {ic:'😣', tx:'Lo stress non resta<br>nella testa.',
+        sub:'Si deposita nei muscoli: Z lo scioglie proprio lì, con manovre lente.'},
+  {ic:'🧠', tx:'Allenamento finito,<br>testa <em>ancora accesa</em>.',
+        sub:'Z abbassa i giri: il recupero comincia dalla mente.'},
+  {ic:'🌫️', tx:'Ti senti a pezzi<br>e non sai nemmeno <em>dove</em>.',
+        sub:'Z te lo chiede, e poi lavora proprio lì.'},
+  {ic:'🎯', tx:'Quel punto preciso<br>che <em>tira sempre</em>.',
+        sub:'Z ci arriva: il tuo operatore porta i rulli esattamente su quel punto.'},
+  {ic:'⏳', tx:'Dopo l\'allenamento<br>servono <em>giorni</em> per tornare.',
+        sub:'Z accorcia l\'attesa: sangue nuovo dove hai lavorato, subito dopo.'},
+  {ic:'🤲', tx:'Braccia e spalle<br>che portano <em>tutto il giorno</em>.',
+        sub:'Z ha gli airbag per braccia e spalle: stringono, sciolgono, lasciano andare.'},
+  {ic:'🌀', tx:'Ti muovi <em>meno</em><br>di quanto pensi.',
+        sub:'Z ridà circolo a quello che la giornata tiene fermo.'},
+  {ic:'🧗', tx:'Il weekend attivo,<br>e il lunedì <em>a pezzi</em>.',
+        sub:'Mezz\'ora di Z il lunedì sera, e la settimana riparte leggera.'},
+  {ic:'🥶', tx:'Mani e piedi<br>sempre <em>freddi</em>.',
+        sub:'Z riattiva il circolo con compressione e calore, dai piedi in su.'},
+  {ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.',
+        sub:'Z ha i programmi del sonno: il corpo impara di nuovo a staccare.'},
+  {ic:'🧘', tx:'Vorresti staccare,<br>ma <em>non sai come</em>.',
+        sub:'Su Z non devi fare niente: ti siedi, e al resto pensa la capsula.'},
+  {ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.',
+        sub:'Z scrive la tua seduta da capo, ogni volta, da come stai oggi.'},
+  {ic:'💬', tx:'Nessuno ti ha mai <em>chiesto</em><br>come stai, prima di un massaggio.',
+        sub:'Z comincia da lì: poche domande, e la seduta è tua.'},
+].map(f=> Object.assign({k:'beneficio'}, f, {sub: f.sub.replace(/\bZ\b/, '__Z__')}));
+const FRASI_CURIOSITA = [
+  {ic:'👂', tx:'Zenith non indovina.<br><em>Ti ascolta.</em>',
+        sub:'Poche domande su come stai oggi, e la tua parola a fine seduta tara la prossima.'},
+  {ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
         sub:'Il protocollo nasce da come stai oggi, non da come stavi il mese scorso.'},
-  {a:2, k:'beneficio', ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.'},
-  {a:5, k:'curiosita', ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
+  {ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
         sub:'Il tempo giusto, misurato: non un minuto di più.'},
-  {a:0, k:'beneficio', ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.'},
-  {a:3, k:'curiosita', ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
+  {ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
         sub:'Se dici che era troppo leggera, la volta dopo parte già corretta.'},
-  {a:1, k:'beneficio', ic:'🏋️', tx:'Ti alleni bene.<br>Ma <em>recuperi male</em>.'},
-  {a:4, k:'curiosita', ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
+  {ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
         sub:'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'},
-  {a:2, k:'beneficio', ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.'},
-  {a:5, k:'curiosita', ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
+  {ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
         sub:'Ogni operatore supera la Scuola Zenith prima di condurre una seduta da solo.'},
-  {a:0, k:'beneficio', ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.'},
-  {a:3, k:'curiosita', ic:'🗂️', tx:'<em>Ventiquattro</em> programmi.<br>Oggi uno solo è il tuo.'},
-  {a:1, k:'beneficio', ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.'},
-  {a:4, k:'curiosita', ic:'🔥', tx:'Calore in fibra di carbone<br>lungo la <em>schiena</em>.',
+  {ic:'🗂️', tx:'<em>Ventiquattro</em> programmi.<br>Oggi uno solo è il tuo.'},
+  {ic:'🔥', tx:'Calore in fibra di carbone<br>lungo la <em>schiena</em>.',
         sub:'Manovre lente e profonde là dove nasce la tensione, non dove si sente.'},
-  {a:2, k:'beneficio', ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.'},
-  {a:5, k:'curiosita', ic:'🌊', tx:'Compressione a onde,<br>dai <em>piedi verso l\'alto</em>.',
+  {ic:'🌊', tx:'Compressione a onde,<br>dai <em>piedi verso l\'alto</em>.',
         sub:'Come una spremitura dolce che accompagna i liquidi dove devono andare.'},
-  {a:0, k:'beneficio', ic:'🦶', tx:'Le caviglie gonfie<br>che a sera <em>non passano</em>.'},
-  {a:3, k:'curiosita', ic:'💎', tx:'Cinquantadue sedute in un anno.<br>Si chiama <em>Diamond</em>.',
+  {ic:'💎', tx:'Cinquantadue sedute in un anno.<br>Si chiama <em>Diamond</em>.',
         sub:'Ogni seduta vale punti, e i punti non si azzerano mai.'},
-  {a:1, k:'beneficio', ic:'😣', tx:'Lo stress non resta<br>nella testa.',
-        sub:'Si deposita nei muscoli, e lì va sciolto.'},
-  {a:4, k:'curiosita', ic:'🫧', tx:'Airbag su spalle e braccia,<br>per chi <em>vive alla scrivania</em>.'},
-  {a:2, k:'beneficio', ic:'🌫️', tx:'Ti senti a pezzi<br>e non sai nemmeno <em>dove</em>.'},
-  {a:5, k:'curiosita', ic:'🌙', tx:'Manovre lentissime,<br>ioni e <em>dondolio</em>.',
+  {ic:'🫧', tx:'Airbag su spalle e braccia,<br>per chi <em>vive alla scrivania</em>.'},
+  {ic:'🌙', tx:'Manovre lentissime,<br>ioni e <em>dondolio</em>.',
         sub:'Si abbassano i giri del sistema nervoso: è così che si prepara il sonno.'},
-  {a:0, k:'beneficio', ic:'⏳', tx:'Dopo l\'allenamento<br>servono <em>giorni</em> per tornare.'},
-  {a:3, k:'curiosita', ic:'🔢', tx:'Il codice della tua seduta<br>è <em>unico</em>.',
+  {ic:'🔢', tx:'Il codice della tua seduta<br>è <em>unico</em>.',
         sub:'Una seduta riuscita si può ripetere identica, anche fra mesi.'},
-  {a:1, k:'beneficio', ic:'🌀', tx:'Ti muovi <em>meno</em><br>di quanto pensi.'},
-  {a:4, k:'curiosita', ic:'🕐', tx:'La prima volta<br>sono <em>quindici minuti</em>.',
+  {ic:'🕐', tx:'La prima volta<br>sono <em>quindici minuti</em>.',
         sub:'Si parte piano, sempre: ogni sensazione te la spiegano prima che arrivi.'},
-  {a:2, k:'beneficio', ic:'🧗', tx:'Il weekend attivo,<br>e il lunedì <em>a pezzi</em>.'},
-  {a:5, k:'curiosita', ic:'🎚️', tx:'Cinque domande.<br>Un protocollo <em>su misura</em>.',
+  {ic:'🎚️', tx:'Poche domande.<br>Un protocollo <em>su misura</em>.',
         sub:'Cosa hai fatto oggi, dove, per cosa, come stai, che pressione vuoi.'},
-  {a:0, k:'beneficio', ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.'},
-  {a:3, k:'curiosita', ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
-  {a:1, k:'beneficio', ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.'},
-  {a:4, k:'curiosita', ic:'🔢', tx:'<em>20,3 milioni</em><br>di combinazioni.',
-        sub:'Cinque risposte, e i parametri si compongono in un modo che non si ripete.'},
-  {a:2, k:'beneficio', ic:'🤲', tx:'Nessuno ti ha mai <em>chiesto</em><br>come stai, prima di un massaggio.'},
-  {a:5, k:'curiosita', ic:'✋', tx:'Due bracci, <em>3D e 4D</em>.<br>Come quattro mani.',
+  {ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
+  {ic:'🔢', tx:'<em>20,3 milioni</em><br>di combinazioni.',
+        sub:'Le tue risposte, e i parametri si compongono in un modo che non si ripete.'},
+  {ic:'✋', tx:'Due bracci, <em>3D e 4D</em>.<br>Come quattro mani.',
         sub:'Non è una parte che si muove: sono due sistemi che lavorano insieme sul corpo.'},
-];
-const RTAG = {beneficio:'BENEFICIO', curiosita:'CURIOSITÀ'};
+].map(f=> Object.assign({k:'curiosita'}, f));
+/* le domande che agganciano: si cercano per testo dentro QA, cosi' se una
+   cambia parole o sparisce la vetrina non mostra una domanda che non c'e' */
+const DOMANDE_VETRINA = ['Fa male? Che pressione si sente?', 'Cos\'è la gravità zero?',
+  'Posso venire anche senza allenarmi?', 'Ho le gambe pesanti: cosa fate?',
+  'Mi fa male la schiena: cosa fate?', 'Dormo male. Può aiutarmi?',
+  'Non è una poltrona massaggiante?', 'Quanto ci metto a capire se fa per me?',
+  'Meglio prima o dopo l\'allenamento?', 'Cosa vuol dire «quattro mani»?',
+  'Posso parlare durante la seduta?', 'Ogni quanto posso venire?',
+  'Cosa sono gli ioni negativi?', 'Posso scegliere io il programma?',
+  'Ho la cervicale da ufficio: serve?', 'E se non voglio i rulli?'];
+let ROAM = null;
+function frasiVetrina(){
+  if(ROAM) return ROAM;
+  const dom = DOMANDE_VETRINA.map(q=> QA.findIndex(x=> x.q === q)).filter(i=> i >= 0)
+    .map(i=> ({k:'domanda', ic:QA[i].ic, tx:QA[i].q, qa:i,
+               sub:'Tocca qui: la risposta è pronta ›'}));
+  const famiglie = [FRASI_PROBLEMA.map(f=> Object.assign({}, f, {sub: f.sub.replace('__Z__', '<b>Zenith</b>')})),
+                    FRASI_CURIOSITA, dom];
+  ROAM = [];
+  for(let i = 0; famiglie.some(f=> i < f.length); i++)
+    famiglie.forEach(f=>{ if(i < f.length) ROAM.push(f[i]); });
+  ROAM.forEach((f, i)=> f.a = i % 6);
+  return ROAM;
+}
+const RTAG = {beneficio:'TI SUCCEDE?', curiosita:'CURIOSITÀ', domanda:'LO CHIEDONO TUTTI'};
 
 /* prima diceva solo «ti spiego cos'e' Zenith»: chi aveva gia' capito
    cos'e' Zenith e voleva solo curiosare pensava che non fosse per lui.
@@ -1804,9 +1876,11 @@ let roamI = 0, roamTimer = null;
 function roamStep(){
   const box = document.getElementById('roams');
   box.innerHTML = '';
-  const m = ROAM[roamI % ROAM.length];
+  const L = frasiVetrina(), m = L[roamI % L.length];
   const d = document.createElement('div');
   d.className = 'roam q' + m.a + ' ' + m.k;
+  /* le domande si toccano: si apre la risposta */
+  if(m.k === 'domanda') d.onclick = ()=> apriRisposta(m.qa);
   /* l'emoji entra nella targhetta invece di stare per conto suo: nella
      colonna nuova una riga in più di icona rubava spazio alla frase */
   d.innerHTML = '<span class="rtag"><i>' + m.ic + '</i>' + RTAG[m.k] + '</span>'
@@ -3424,7 +3498,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v133.26.09(23)';
+const VETRINA_VERSION = 'v134.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

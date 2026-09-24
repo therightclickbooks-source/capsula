@@ -231,6 +231,34 @@ module.exports = async function(browser){
   tac.t('il modello della versione trova la riga giusta, non se stesso',
     nVetrina === nGest && /^v\d+\.\d+\.\d+\(\d+\)$/.test(nVetrina || ''), String(nVetrina));
 
+  /* ── le frasi che girano in alto ──
+     La casella e' alta 508 punti e non cresce: una frase piu' alta
+     spingerebbe giu' tutta la vetrina a ogni giro. Si misurano tutte. */
+  const pf = await tac.pagina(browser, VETRINA, SCHERMI[0]);
+  const frasi = await pf.evaluate(()=>{
+    roamStop();
+    const L = frasiVetrina(), box = document.getElementById('roams');
+    const alte = [];
+    L.forEach(m=>{
+      box.innerHTML = '<div class="roam on ' + m.k + '"><span class="rtag"><i>' + m.ic + '</i>' + RTAG[m.k]
+        + '</span><div class="tx">' + m.tx + '</div>' + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '') + '</div>';
+      if(box.firstChild.offsetHeight > 508) alte.push(m.tx);
+    });
+    const k = t => L.filter(x=> x.k === t);
+    return {n:L.length, alte, problemi:k('beneficio').length,
+      conZenith: k('beneficio').every(x=> /Zenith/.test(x.sub || '')),
+      domande: k('domanda').every(x=> QA[x.qa] && QA[x.qa].q === x.tx), nDom: k('domanda').length,
+      giro: L.every((x,i)=> i === 0 || x.a !== L[i-1].a),
+      vecchie: L.filter(x=> /battito|indice di fatica|Cinque domande|Cinque risposte/i.test(x.tx + ' ' + (x.sub||''))).length};
+  });
+  tac.t('le frasi in alto sono almeno cinquanta', frasi.n >= 50, frasi.n + '');
+  tac.t('ogni frase entra nella casella da 508 punti', !frasi.alte.length, frasi.alte.join(' | '));
+  tac.t('sotto ogni «ti succede?» c\'e\' cosa ci fa Zenith', frasi.conZenith);
+  tac.t('le domande in alto sono domande vere, che si aprono', frasi.domande && frasi.nDom >= 10, frasi.nDom + '');
+  tac.t('due frasi di fila non entrano mai dallo stesso lato', frasi.giro);
+  tac.t('nessuna frase promette piu\' battito, fatica o «cinque domande»', frasi.vecchie === 0, frasi.vecchie + '');
+  await pf.close();
+
   /* anche il gestionale va a vedere se ne esiste una nuova: senza, il
      telefono dell'operatore resta indietro di giorni senza dirlo */
   tac.t('il gestionale controlla da solo se ne esiste una versione nuova',
