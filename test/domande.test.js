@@ -217,6 +217,33 @@ module.exports = async function(browser){
       /AVANTI/.test(seitu.dopo) && seitu.tasto && seitu.passo !== 'nome', JSON.stringify(seitu));
   }
 
+  /* ── i premi visti dal totem: stessi conti del gestionale ── */
+  const pt = await p.evaluate(()=>{
+    const vecchio = localStorage.getItem('zfl_app_v1');
+    const t0 = Date.parse('2026-01-05T10:00:00Z');
+    const sed = (id, n, passo) => Array.from({length:n}, (_, i) => ({id: id + i, clientId: id,
+      date: new Date(t0 + i * passo * 864e5).toISOString(), fam:'Z8', prog:'P01', quiz:{}, settings:{timer:20}}));
+    const FIX = {clients:[
+        {id:'cA', nome:'Anna', cognome:'Prova', anamnesi:{}, premiUsati:{'g1-1-b':{data:'2026-04-01T10:00:00Z'}}, premiScelte:{'g1-1-r':{a:'cB', data:'2026-04-01T10:00:00Z'}}},
+        {id:'cB', nome:'Bruno', cognome:'Prova', anamnesi:{}}],
+      sessions: sed('cA', 26, 7).concat(sed('cB', 3, 7))};
+    localStorage.setItem('zfl_app_v1', JSON.stringify(Object.assign(JSON.parse(vecchio || '{}'), FIX)));
+    const a = premiStato('cA', '2026-07-10T10:00:00Z'), b = premiStato('cB', '2026-07-10T10:00:00Z');
+    const r = {a:{k:a.k, manca:a.manca, daUsare:a.daUsare, scade:new Date(a.scade).toISOString().slice(0,10)},
+               b:{k:b.k, manca:b.manca, daUsare:b.daUsare}};
+    /* il riquadro della schermata finale */
+    D.clienteId = 'cB'; D.op = null; r.boxB = premiBoxHTML();
+    D.clienteId = null; r.boxNuovo = premiBoxHTML();
+    if(vecchio === null) localStorage.removeItem('zfl_app_v1'); else localStorage.setItem('zfl_app_v1', vecchio);
+    return r;
+  });
+  tac.t('il totem conta i premi come il gestionale',
+    pt.a.k === 39 && pt.a.manca === 13 && pt.a.daUsare === 2 && pt.a.scade === '2026-10-07'
+    && pt.b.k === 13 && pt.b.manca === 10 && pt.b.daUsare === 1, JSON.stringify(pt));
+  tac.t('a fine check-in il cliente vede quante sedute gli mancano e la seduta ricevuta in regalo',
+    /ti mancano 9 sedute/.test(pt.boxB) && /1 seduta vinta/.test(pt.boxB), pt.boxB.slice(0, 200));
+  tac.t('chi viene per la prima volta legge come si vincono i premi', /Da oggi ogni seduta vale 10 punti/.test(pt.boxNuovo));
+
   /* ── il regolamento dei premi, dalla risposta sui premi ── */
   const reg = await p.evaluate(()=>{
     const i = QA.findIndex(x => /vincere delle sedute/.test(x.q));

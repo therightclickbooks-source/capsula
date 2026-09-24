@@ -357,6 +357,25 @@ module.exports = async function(browser){
     premi.regalo.prima === 2 && premi.regalo.dopoGiver === 1 && premi.regalo.amico === 1 && premi.regalo.ricevuto
     && premi.regalo.scheda && premi.regalo.usato, JSON.stringify(premi.regalo));
   tac.t('chi non ha nessuno a cui regalarla la tiene per se\'', premi.regalo.perSe && premi.regalo.schedaPerSe, JSON.stringify(premi.regalo));
+  { const g = await p.evaluate(()=>{
+      const salva = DB.sessions, clienti = DB.clients;
+    const t0 = Date.parse('2026-01-05T10:00:00Z');
+    const sed = (id, n, passo) => Array.from({length:n}, (_, i) => ({id: id + i, clientId: id,
+      date: new Date(t0 + i * passo * 864e5).toISOString(), fam:'Z8', prog:'P01', quiz:{}, settings:{timer:20}}));
+    const FIX = {clients:[
+        {id:'cA', nome:'Anna', cognome:'Prova', anamnesi:{}, premiUsati:{'g1-1-b':{data:'2026-04-01T10:00:00Z'}}, premiScelte:{'g1-1-r':{a:'cB', data:'2026-04-01T10:00:00Z'}}},
+        {id:'cB', nome:'Bruno', cognome:'Prova', anamnesi:{}}],
+      sessions: sed('cA', 26, 7).concat(sed('cB', 3, 7))};
+      DB.clients = clienti.concat(FIX.clients); DB.sessions = salva.concat(FIX.sessions);
+      const A = DB.clients.find(x => x.id === 'cA'), B = DB.clients.find(x => x.id === 'cB');
+      const r = {a:{k: prossimaTappa(A).k, daUsare: premiDaUsare(A).length, scade: new Date(prossimaTappa(A).scade).toISOString().slice(0,10)},
+                 b:{k: prossimaTappa(B).k, daUsare: premiDaUsare(B).length}};
+      DB.sessions = salva; DB.clients = clienti;
+      return r; });
+    tac.t('il gestionale conta i premi come il totem',
+      g.a.k === 39 && g.a.daUsare === 2 && g.a.scade === '2026-10-07' && g.b.k === 13 && g.b.daUsare === 1, JSON.stringify(g)); }
+  { const vecchi = await p.evaluate(()=> premiCliente({id:'cpremi', nome:'x', cognome:'y'}).length);
+    tac.t('(i premi di prova sono stati tolti dall\'archivio)', vecchi === 0); }
   { const fs = require('fs'), path = require('path');
     const blocco = f => { const t = fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
       const i = t.indexOf('const REGOLA = ['), j = t.indexOf('];', t.indexOf('const REGOLA_ESEMPI = ['));

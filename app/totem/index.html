@@ -1044,6 +1044,15 @@ html,body{overscroll-behavior:none}
   display:flex; align-items:center; justify-content:center; font-size:104px;
   animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
 @keyframes pop{0%{transform:scale(.3); opacity:0} 100%{transform:scale(1); opacity:1}}
+.premibox{margin:34px auto 0; max-width:860px; padding:26px 32px; border-radius:30px; text-align:center;
+  border:2px solid rgba(230,198,92,.6); background:linear-gradient(170deg, rgba(230,198,92,.13), rgba(230,198,92,.03))}
+.premibox:empty{display:none}
+.premibox .pbt{font-size:31px; font-weight:800; letter-spacing:-.01em; line-height:1.25}
+.premibox .pbx{font-size:23px; line-height:1.45; color:rgba(255,255,255,.72); margin-top:10px}
+.premibox .pbx b{color:#eed37a}
+.premibox .pbu{font-size:23px; margin-top:14px; color:#fff}
+.premibox .pbu b{color:#eed37a}
+.premibox .pblink{display:inline-block; margin-top:16px; font-size:21px; font-weight:800; color:#eed37a; cursor:pointer}
 .done .big{font-size:70px; font-weight:800; margin-top:42px; line-height:1.1; letter-spacing:-.02em}
 .done .big span{color:#e6c65c}
 .done .sit{font-size:42px; font-weight:800; margin-top:28px}
@@ -1506,6 +1515,7 @@ html,body{overscroll-behavior:none}
       <div class="msg" id="dmsg">Ho passato tutto al tuo operatore: la capsula ti aspetta
         già impostata su di te. Adesso tocca a te — e non c'è niente di difficile.</div>
       <div class="chips" id="dchips"></div>
+      <div class="premibox" id="dpremi"></div>
       <div class="wait">Questa schermata si chiude da sola</div>
       <div class="giu">ECCO COME VA ↓</div>
     </div>
@@ -3201,6 +3211,66 @@ function salvaCheckin(){
   try{ localStorage.setItem('zfl_app_v1', JSON.stringify(db)); }catch(e){}
 }
 
+/* ── I PREMI ZENITH, VISTI DAL TOTEM ──
+   Gli stessi conti del gestionale (premiCliente, prossimaTappa,
+   premiDaUsare), rifatti qui sull'archivio condiviso: un test controlla
+   che i due diano gli stessi numeri. In piu' il totem conta anche la
+   seduta di oggi, che il cliente sta per fare. */
+const LIVELLI_T = [['Iron','⬢'], ['Silver','✦'], ['Gold','★'], ['Platinum','✹'], ['Diamond','◆']];
+function premiStato(clienteId, oggi){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  const tutte = ((db && db.sessions) || []), clients = ((db && db.clients) || []);
+  const sedDi = id => tutte.filter(x=> x.clientId === id).sort((a,b)=> a.date < b.date ? -1 : 1);
+  const tappa = k => { const j = ((k - 1) % 52 + 1) / 13, giro = Math.floor((k - 1) / 52) + 1;
+    return {j, giro, nome: LIVELLI_T[j][0] + (giro > 1 ? ' · ' + giro + '° giro' : ''), emoji: LIVELLI_T[j][1]}; };
+  const voci = id => {
+    const ss = sedDi(id), out = [];
+    for(let k = 13; k <= ss.length; k += 13){
+      const rif = k === 13 ? ss[0] : ss[k - 14], t = tappa(k);
+      const inTempo = Math.round((Date.parse(ss[k - 1].date) - Date.parse(rif.date)) / 864e5) <= 100;
+      const b = 'g' + t.giro + '-' + t.j;
+      out.push(b + '-b');
+      if(inTempo && t.j < 4) out.push(b + '-r');
+      if(inTempo && t.j === 4) out.push(b + '-p1', b + '-p2');
+    }
+    return out;
+  };
+  const c = clients.find(x=> x.id === clienteId) || {};
+  const miei = voci(clienteId).filter(v=> !(c.premiUsati || {})[v] && !((c.premiScelte || {})[v] || {}).a);
+  const ricevuti = clients.filter(g=> g.id !== clienteId && g.premiScelte)
+    .flatMap(g=> voci(g.id).filter(v=> (g.premiScelte[v] || {}).a === clienteId && !(g.premiUsati || {})[v]));
+  const ss = sedDi(clienteId), n = ss.length, k = (Math.floor(n / 13) + 1) * 13;
+  const rif = n ? (k === 13 ? ss[0] : ss[k - 14]) : null;
+  const ora = oggi ? Date.parse(oggi) : Date.now();
+  const scade = rif ? Date.parse(rif.date) + 100 * 864e5 : ora + 100 * 864e5;
+  return {n, k, tappa: tappa(k), manca: k - n, mancaDopoOggi: k - n - 1, scade, scaduto: ora > scade,
+          daUsare: miei.length + ricevuti.length};
+}
+function premiBoxHTML(){
+  const data = t => new Date(t).toLocaleDateString('it-IT', {day:'numeric', month:'long'});
+  const bonus = j => j === 4 ? '<b>2 sedute in più per te</b>' : '<b>1 seduta da regalare</b>';
+  const link = '<span class="pblink" onclick="apriRegolamento()">Come funzionano i premi ›</span>';
+  if(!D.clienteId){
+    return '<div class="pbt">🎁 Da oggi ogni seduta vale 10 punti</div>'
+      + '<div class="pbx">Alla 13ª vinci <b>una seduta omaggio</b>. Se ci arrivi entro il <b>'
+      + data(Date.now() + 100 * 864e5) + '</b>, vinci anche ' + bonus(1) + '.</div>' + link;
+  }
+  const st = premiStato(D.clienteId), t = st.tappa, m = st.mancaDopoOggi;
+  const op = operatori().find(x=> x.id === D.op);
+  let h;
+  if(m === 0) h = '<div class="pbt">🎁 Oggi è la tua ' + st.k + 'ª seduta: arrivi a ' + t.emoji + ' ' + t.nome + '!</div>'
+    + '<div class="pbx">A fine seduta vinci <b>una seduta omaggio</b>'
+    + (st.scaduto ? '.' : ', e sei dentro i 100 giorni: vinci anche ' + bonus(t.j) + '.') + '</div>';
+  else if(!st.scaduto) h = '<div class="pbt">⏱ Dopo oggi ti mancano ' + m + (m === 1 ? ' seduta' : ' sedute') + ' a ' + t.emoji + ' ' + t.nome + '</div>'
+    + '<div class="pbx">Arrivaci entro il <b>' + data(st.scade) + '</b>: oltre alla seduta omaggio vinci anche ' + bonus(t.j) + '.</div>';
+  else h = '<div class="pbt">Dopo oggi ti mancano ' + m + (m === 1 ? ' seduta' : ' sedute') + ' a ' + t.emoji + ' ' + t.nome + '</div>'
+    + '<div class="pbx">Lì vinci la tua <b>seduta omaggio</b>, e da quel giorno il cronometro del Premio Costanza riparte da capo.</div>';
+  if(st.daUsare) h += '<div class="pbu">🎁 Hai ' + (st.daUsare === 1 ? '<b>1 seduta vinta</b>' : '<b>' + st.daUsare + ' sedute vinte</b>')
+    + ' da usare: dillo a ' + (op ? esc(op.nome) : 'chi ti segue') + '.</div>';
+  return h + link;
+}
+
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
   /* chi lo segue ha un nome: «ho passato tutto a Raffaele» vale piu' di
@@ -3218,6 +3288,7 @@ function finisci(){
     .filter(Boolean);
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
+  document.getElementById('dpremi').innerHTML = premiBoxHTML();
   salvaCheckin();
   disegnaProtocollo();
   document.getElementById('donewrap').scrollTop = 0;
@@ -3743,7 +3814,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v139.26.09(24)';
+const VETRINA_VERSION = 'v140.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
