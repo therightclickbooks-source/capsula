@@ -23,7 +23,11 @@ const SCHERMI = [
   {n:'monitor 16:9',    w:1920, h:1080},
   {n:'monitor 1280',    w:1280, h:800},
   {n:'iPhone',          w:390,  h:844},
-  {n:'Android',         w:412,  h:915}
+  {n:'Android',         w:412,  h:915},
+  /* i tablet in verticale: piu' larghi del foglio, che adesso si allarga
+     con loro invece di restare stretto fra due bande nere */
+  {n:'tablet 3:4',      w:768,  h:1024},
+  {n:'tablet 10:16',    w:800,  h:1280}
 ];
 
 function playwright(){

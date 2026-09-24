@@ -182,6 +182,61 @@ module.exports = async function(browser){
   tac.t('il numero si legge a gruppi: 333 123 4', /333 123 4/.test(tel.campo), tel.campo);
   tac.t('col cellulare la frase sotto parla del numero', /cellulare/i.test(tel.sotto), tel.sotto);
 
+  /* ── «✓ Sei tu» che dopo un secondo e mezzo diventa AVANTI ── */
+  const seitu = await p.evaluate(async ()=>{
+    /* un cliente di prova, messo e tolto qui dentro */
+    const vecchio = localStorage.getItem('zfl_app_v1');
+    const db = JSON.parse(vecchio || '{}');
+    db.clients = (db.clients || []).concat([{id:'cprovaseitu', nome:'Eliana', cognome:'Cascone', telefono:'3331234567', anamnesi:{}}]);
+    localStorage.setItem('zfl_app_v1', JSON.stringify(db));
+    startCheck(); scegliCliente('cprovaseitu');
+    const prima = document.querySelector('.trov .go').textContent;
+    await new Promise(r=> setTimeout(r, 1900));
+    const g = document.querySelector('.trov .go');
+    const dopo = g.textContent, tasto = g.classList.contains('avanti');
+    g.click();
+    const passo = passi()[PASSO].k;
+    go('idle');
+    if(vecchio === null) localStorage.removeItem('zfl_app_v1'); else localStorage.setItem('zfl_app_v1', vecchio);
+    return {prima, dopo, tasto, passo};
+  });
+  {
+    tac.t('riconosciuto il cliente compare «✓ Sei tu»', /Sei tu/.test(seitu.prima), seitu.prima);
+    tac.t('dopo un secondo e mezzo al suo posto c\'e\' AVANTI, e porta avanti',
+      /AVANTI/.test(seitu.dopo) && seitu.tasto && seitu.passo !== 'nome', JSON.stringify(seitu));
+  }
+
+  /* ── «Sono io» / «Non sono io» ──
+     con una scheda sola da confermare, AVANTI chiede prima chi sei */
+  const chi = await p.evaluate(()=>{
+    const vecchio = localStorage.getItem('zfl_app_v1');
+    const db = JSON.parse(vecchio || '{}');
+    db.clients = (db.clients || []).concat([{id:'cprovachi', nome:'Eliana', cognome:'Cascone', telefono:'3331234567', anamnesi:{}}]);
+    localStorage.setItem('zfl_app_v1', JSON.stringify(db));
+    const scrivi = ()=>{ startCheck(); D.nome=''; D.cogn=''; FIELD='nome';
+      ['E','L','I','A','N','A'].forEach(c=> kbType(c)); FIELD='cogn'; ['C','A','S'].forEach(c=> kbType(c)); };
+    const r = {};
+    scrivi();
+    r.dueTasti = !!document.querySelector('.trov .go') && !!document.querySelector('.scelta.piccola .no');
+    passoAvanti();
+    r.domanda = !!document.querySelector('.match.domanda') && passi()[PASSO].k === 'nome';
+    document.querySelector('.scelta .si').click();
+    r.si = D.clienteId === 'cprovachi';
+    scrivi(); passoAvanti();
+    document.querySelector('.match.domanda .scelta .no').click();
+    r.no = !D.clienteId && passi()[PASSO].k !== 'nome' && D.cogn === 'Cas';
+    scrivi(); kbGo();
+    r.tastiera = !!document.querySelector('.match.domanda') && !D.clienteId;
+    go('idle');
+    if(vecchio === null) localStorage.removeItem('zfl_app_v1'); else localStorage.setItem('zfl_app_v1', vecchio);
+    return r;
+  });
+  tac.t('«Sei tu?» ha «Sono io» e «Non sono io»', chi.dueTasti, JSON.stringify(chi));
+  tac.t('AVANTI con una scheda da confermare chiede «Sei tu?» invece di andare avanti', chi.domanda, JSON.stringify(chi));
+  tac.t('«Sì, sono io» apre la scheda', chi.si);
+  tac.t('«No, sono una persona nuova» va avanti col nome scritto, senza la scheda', chi.no, JSON.stringify(chi));
+  tac.t('anche l\'AVANTI della tastiera chiede, invece di scegliere da solo', chi.tastiera);
+
   await p.close();
   return tac;
 };

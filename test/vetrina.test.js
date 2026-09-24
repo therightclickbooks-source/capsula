@@ -24,6 +24,28 @@ module.exports = async function(browser){
     const p = await tac.pagina(browser, VETRINA, s);
     const q = s.n + ': ';
 
+    /* ── niente bande ai lati: in verticale il foglio riempie lo schermo ── */
+    if(s.h > s.w){
+      const riempie = await p.evaluate(()=>{
+        const r = document.getElementById('tot').getBoundingClientRect();
+        return {sx: r.left, dx: innerWidth - r.right, su: r.top, giu: innerHeight - r.bottom};
+      });
+      tac.t(q + 'il foglio arriva ai due lati dello schermo, senza bande',
+        Math.abs(riempie.sx) <= 2 && Math.abs(riempie.dx) <= 2, JSON.stringify(riempie));
+    }
+
+    /* ── la vetrina non si sposta strisciando ──
+       il contenitore non deve poter scorrere di lato: prima una mano sul
+       vetro spostava tutto a sinistra */
+    const ferma = await p.evaluate(()=>{
+      const f = document.getElementById('fit'), c = getComputedStyle(f);
+      f.scrollLeft = 300;
+      const dopo = f.scrollLeft; f.scrollLeft = 0;
+      return {x: c.overflowX, y: c.overflowY, dopo};
+    });
+    if(s.h > s.w) tac.t(q + 'la vetrina non scorre di lato', ferma.x !== 'auto' && ferma.x !== 'scroll'
+      && ferma.x !== 'visible' && ferma.dopo === 0, JSON.stringify(ferma));
+
     /* ── l'ordine della colonna ── */
     const colonna = await p.evaluate(()=>
       [...document.querySelector('.vetr').children].map(e=>{
