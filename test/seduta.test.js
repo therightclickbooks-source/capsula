@@ -257,6 +257,42 @@ module.exports = async function(browser){
   tac.t('nella scheda cliente 4D e airbag si fermano al 3, e il 3 salvato torna 3',
     scheda.alMassimo === '3' && scheda.scalaDiNuovo === 3, JSON.stringify(scheda, ['alMassimo','salvato','scalaDiNuovo']));
 
+  /* la chiusura: la compila l'operatore ma la legge anche il cliente */
+  const chiusura = await p.evaluate(()=>{
+    const c = DB.clients[0];
+    const base = {clientId:c.id, prog:'P08', zCode:'x', settings:{timer:25}, points:10,
+      quiz:{activity:'vacufit', goal:'drenaggio', mood:'stanco', zones:['gambe']}};
+    const r = {fam:{}, testi:[]};
+    Object.keys(ZFAM).forEach((f, i)=>{
+      const s = Object.assign({id:'schiu' + i, date:'2026-02-0' + (i + 1) + 'T10:00:00.000Z', fam:f}, base);
+      DB.sessions.push(s);
+      VIEW = {name:'closing', id:c.id, sid:s.id, lvUp:false}; render();
+      const t = document.getElementById('app').innerText;
+      r.fam[f] = document.querySelectorAll('.dopo .dx').length === 3 && !!document.querySelector('.prossima');
+      r.testi.push(t);
+      r.tasti = [...document.querySelectorAll('.fbtn .fbt')].map(b => b.textContent).join('|');
+      r.nome = (r.nome !== false) && !!document.querySelector('.lettera .nm') && /Prova/.test(document.querySelector('.ch-nome').textContent);
+      r.ids = (r.ids || []).concat([messaggioZenith(c, s).ids]);
+    });
+    DB.sessions = DB.sessions.filter(s => !/^schiu/.test(s.id));
+    return r;
+  });
+  tac.t('la chiusura ha le tre cose da portare a casa e la prossima, per ogni famiglia',
+    Object.values(chiusura.fam).every(Boolean), JSON.stringify(chiusura.fam));
+  tac.t('il messaggio di Zenith chiama il cliente per nome, in oro', chiusura.nome);
+  { let uguali = 0;
+    for(let i = 1; i < chiusura.ids.length; i++)
+      uguali += chiusura.ids[i].filter(x => chiusura.ids[i - 1].includes(x) && !/^c-fb|^a-liv|^a-dec/.test(x)).length;
+    tac.t('due sedute di fila non hanno frasi del messaggio in comune', !uguali, uguali + ' frasi ripetute ' + JSON.stringify(chiusura.ids)); }
+  { const sanitarie = chiusura.testi.filter(t => /Trombosi|Pacemaker|Gravidanza|Tumore|Diabete|certificato/i.test(t));
+    tac.t('il messaggio non tira mai fuori l\'anamnesi sanitaria', !sanitarie.length); }
+  tac.t('la pressione a fine seduta si sceglie come prima',
+    chiusura.tasti === 'Troppo forte|Perfetta|Troppo leggera', chiusura.tasti);
+  { const vietate = /vend|propor|lascialo parlare|silenzio|momento d.oro|ora ne ha\b/i;
+    const no = chiusura.testi.filter(t => vietate.test(t));
+    tac.t('la chiusura parla al cliente: niente copioni di vendita a vista', !no.length,
+      no.length ? (no[0].match(vietate) || [''])[0] : ''); }
+
   console.log('   (' + sedute.length + ' sedute passate al setaccio)');
   await p.close();
   return tac;
