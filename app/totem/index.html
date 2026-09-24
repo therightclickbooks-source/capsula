@@ -191,6 +191,24 @@ html,body{overscroll-behavior:none}
 
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
 .numeri{display:flex}
+.hp{flex-direction:column}
+.nastro{position:relative; overflow:hidden; width:432px; margin-top:46px; padding:18px 20px 20px;
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px;
+  border-radius:26px; cursor:pointer; border:2px solid rgba(230,198,92,.75);
+  background:linear-gradient(160deg, rgba(230,198,92,.24), rgba(226,189,212,.1) 70%);
+  box-shadow:0 0 38px rgba(230,198,92,.2)}
+/* un riflesso che passa ogni tanto: si nota senza disturbare */
+.nastro::after{content:""; position:absolute; top:0; bottom:0; width:140px; left:-180px;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent);
+  animation:riflesso 5.5s ease-in-out infinite}
+@keyframes riflesso{0%, 62%{left:-180px} 100%{left:110%}}
+.nastro .nsi{font-size:44px; line-height:1; animation:dondola 2.8s ease-in-out infinite}
+@keyframes dondola{0%,100%{transform:rotate(-7deg)} 50%{transform:rotate(7deg) scale(1.08)}}
+@media (prefers-reduced-motion:reduce){ .nastro::after, .nastro .nsi{animation:none} }
+.nastro .nst{display:flex; flex-direction:column; gap:5px}
+.nastro .nst b{font-size:27px; font-weight:800; letter-spacing:-.01em; color:#fff}
+.nastro .nst small{font-size:18px; line-height:1.35; color:rgba(255,255,255,.72)}
+.nastro .nsg{margin-top:4px; font-size:19px; font-weight:800; color:#1a1320; background:#e6c65c; padding:10px 20px; border-radius:999px}
 .nb{flex:1; padding:0 18px; display:flex; flex-direction:column; justify-content:center}
 .nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
 .nb .nv{font-size:46px; font-weight:800; line-height:1; letter-spacing:-.03em;
@@ -1044,6 +1062,7 @@ html,body{overscroll-behavior:none}
   display:flex; align-items:center; justify-content:center; font-size:104px;
   animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
 @keyframes pop{0%{transform:scale(.3); opacity:0} 100%{transform:scale(1); opacity:1}}
+.coriandoli{position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:999}
 .premibox{margin:34px auto 0; max-width:860px; padding:26px 32px; border-radius:30px; text-align:center;
   border:2px solid rgba(230,198,92,.6); background:linear-gradient(170deg, rgba(230,198,92,.13), rgba(230,198,92,.03))}
 .premibox:empty{display:none}
@@ -1381,6 +1400,15 @@ html,body{overscroll-behavior:none}
 <path d="M120 326 H500" stroke="#d4af37" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
 </svg>
           <div class="pill pb1"><span>🪶</span>Zero gravità</div>
+        </div>
+        <!-- i premi: tutti i clienti concorrono, e deve saltare all'occhio.
+             Sta sotto la capsula, nella colonna che la frase lascia libera:
+             cosi' non ruba altezza a nessuna fascia -->
+        <div class="nastro tocca" id="nastro" onclick="apriRegolamento()">
+          <span class="nsi">🎁</span>
+          <span class="nst"><b>Premi per tutti i clienti</b>
+            <small>Una seduta omaggio ogni 13, e una da regalare se ci arrivi in 100 giorni</small></span>
+          <span class="nsg">Scopri come ›</span>
         </div>
         </div>
       </div>
@@ -3247,6 +3275,39 @@ function premiStato(clienteId, oggi){
   return {n, k, tappa: tappa(k), manca: k - n, mancaDopoOggi: k - n - 1, scade, scaduto: ora > scade,
           daUsare: miei.length + ricevuti.length};
 }
+const FESTA_COLORI = ['#e6c65c','#f3dc8a','#e2bdd4','#b584a6','#7ecbe8','#88d9ae','#ffffff'];
+function coriandoli(durata){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = document.createElement('canvas');
+  cv.className = 'coriandoli';
+  document.body.appendChild(cv);
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.width = innerWidth * dpr, H = cv.height = innerHeight * dpr, k = Math.max(1, innerWidth / 700) * dpr;
+  const ctx = cv.getContext('2d'), pezzi = [];
+  const nuovo = (x, y, vx, vy) => pezzi.push({x, y, vx, vy, r: (6 + Math.random() * 7) * k,
+    c: FESTA_COLORI[Math.random() * FESTA_COLORI.length | 0], a: Math.random() * 6, va: (Math.random() - .5) * .3,
+    f: Math.random() < .3 ? 'o' : 'q'});
+  for(let i = 0; i < 110; i++){
+    nuovo(0, H * .85, (6 + Math.random() * 10) * k, -(14 + Math.random() * 16) * k);
+    nuovo(W, H * .85, -(6 + Math.random() * 10) * k, -(14 + Math.random() * 16) * k);
+  }
+  for(let i = 0; i < 100; i++) nuovo(Math.random() * W, -Math.random() * H * .5, (Math.random() - .5) * 3 * k, Math.random() * 3 * k);
+  const t0 = performance.now();
+  (function passo(t){
+    const vita = (t - t0) / (durata || 4600);
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = Math.max(0, Math.min(1, (1 - vita) * 3));
+    pezzi.forEach(p=>{
+      p.vy += .32 * k; p.vx *= .985; p.vy = Math.min(p.vy, 5 * k);
+      p.x += p.vx + Math.sin(p.a) * k; p.y += p.vy; p.a += p.va;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c;
+      if(p.f === 'o'){ ctx.beginPath(); ctx.arc(0, 0, p.r * .45, 0, 7); ctx.fill(); }
+      else ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2 * (0.4 + Math.abs(Math.cos(p.a))));
+      ctx.restore();
+    });
+    if(vita < 1) requestAnimationFrame(passo); else cv.remove();
+  })(t0);
+}
 function premiBoxHTML(){
   const data = t => new Date(t).toLocaleDateString('it-IT', {day:'numeric', month:'long'});
   const bonus = j => j === 4 ? '<b>2 sedute in più per te</b>' : '<b>1 seduta da regalare</b>';
@@ -3289,6 +3350,8 @@ function finisci(){
   document.getElementById('dchips').innerHTML =
     chips.map(c=> '<span class="chip">' + c + '</span>').join('');
   document.getElementById('dpremi').innerHTML = premiBoxHTML();
+  /* oggi sale di livello: la festa comincia gia' qui */
+  if(D.clienteId && premiStato(D.clienteId).mancaDopoOggi === 0) setTimeout(()=> coriandoli(), 500);
   salvaCheckin();
   disegnaProtocollo();
   document.getElementById('donewrap').scrollTop = 0;
@@ -3814,7 +3877,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v140.26.09(24)';
+const VETRINA_VERSION = 'v141.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

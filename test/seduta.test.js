@@ -338,6 +338,23 @@ module.exports = async function(browser){
       r.regalo.perSe = premiDaUsare(g13).length === prima && regaliRicevuti(amico).length === 0;
       VIEW = {name:'client', id:'cpremi'}; render();
       r.regalo.schedaPerSe = /era da regalare/.test(document.querySelector('.premicard').textContent); }
+    /* registrando una seduta, il gestionale chiede se e' omaggio e scala il buono */
+    { const c = DB.clients.find(x => x.id === 'cpremi');
+      const q = {clientId:'cpremi', activity:'riposo', goal:'relax', mood:'sereno', zones:[], pressione:'media', prefSoloAria:false};
+      quizState = Object.assign({}, q); currentProt = buildProtocol(c, q); VIEW = {name:'protocol'}; OMAGGIO = null;
+      const prima = buoniUsabili(c).length, nPrima = DB.sessions.length;
+      confirmSession();
+      r.omaggio = {prima, chiede: document.getElementById('modal').classList.contains('open') && DB.sessions.length === nPrima};
+      const b = buoniUsabili(c)[0];
+      OMAGGIO = {pid: b.id, owner: b.owner}; closeModal(); confirmSession();
+      const nuova = DB.sessions[DB.sessions.length - 1];
+      r.omaggio.registrata = DB.sessions.length === nPrima + 1 && nuova.omaggio && nuova.omaggio.pid === b.id;
+      r.omaggio.scalato = buoniUsabili(c).length === prima - 1;
+      /* cancellando la seduta il buono torna */
+      DB.sessions = DB.sessions.filter(x => x.id !== nuova.id);
+      if(nuova.omaggio){ const o = DB.clients.find(x => x.id === nuova.omaggio.da); delete o.premiUsati[nuova.omaggio.pid]; }
+      r.omaggio.torna = buoniUsabili(c).length === prima;
+      closeModal(); }
     DB.sessions = salva; DB.clients = clienti;
     delete r.settimana.c; delete r.dieci.c; delete r.due.c;
     return r;
@@ -356,6 +373,9 @@ module.exports = async function(browser){
   tac.t('la seduta regalata passa nella scheda dell\'amico, e lui la usa',
     premi.regalo.prima === 2 && premi.regalo.dopoGiver === 1 && premi.regalo.amico === 1 && premi.regalo.ricevuto
     && premi.regalo.scheda && premi.regalo.usato, JSON.stringify(premi.regalo));
+  tac.t('registrando una seduta chiede se e\' omaggio, e il si\' scala il buono da solo',
+    premi.omaggio && premi.omaggio.prima > 0 && premi.omaggio.chiede && premi.omaggio.registrata && premi.omaggio.scalato && premi.omaggio.torna,
+    JSON.stringify(premi.omaggio));
   tac.t('chi non ha nessuno a cui regalarla la tiene per se\'', premi.regalo.perSe && premi.regalo.schedaPerSe, JSON.stringify(premi.regalo));
   { const g = await p.evaluate(()=>{
       const salva = DB.sessions, clienti = DB.clients;
