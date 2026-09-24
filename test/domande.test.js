@@ -60,6 +60,17 @@ module.exports = async function(browser){
   const ind = (quiz.find(x => /Indietro/.test(x.t)) || {}).w;
   tac.t('nel quiz AVANTI resta piu\' grande di INDIETRO', av > ind * 1.5, av + ' contro ' + ind);
 
+  /* sul nome AVANTI sta solo sulla tastiera: in basso resta Indietro, a tutta riga */
+  const sunome = await p.evaluate(()=>{ go('form'); PASSO = 0; disegnaPasso();
+    const n = document.getElementById('fnext'), b = document.querySelector('#s-form .navrow .nav.back');
+    const r = {nascosto: n.offsetWidth === 0, largo: Math.abs(b.offsetWidth - b.parentElement.clientWidth) <= 1,
+      tastiera: !!document.querySelector('#kb .key.go')};
+    PASSO = 2; disegnaPasso(); r.torna = document.getElementById('fnext').offsetWidth > 0;
+    return r; });
+  tac.t('sul nome c\'e\' un solo AVANTI, quello della tastiera', sunome.nascosto && sunome.tastiera, JSON.stringify(sunome));
+  tac.t('sul nome «Indietro» si prende tutta la riga', sunome.largo, JSON.stringify(sunome));
+  tac.t('dopo il nome AVANTI torna in basso', sunome.torna, JSON.stringify(sunome));
+
   /* un tasto da solo si prende tutta la riga */
   await p.evaluate(()=>{ go('idle'); apriMacchine(); });
   await p.waitForTimeout(400);
@@ -217,7 +228,9 @@ module.exports = async function(browser){
       ['E','L','I','A','N','A'].forEach(c=> kbType(c)); FIELD='cogn'; ['C','A','S'].forEach(c=> kbType(c)); };
     const r = {};
     scrivi();
-    r.dueTasti = !!document.querySelector('.trov .go') && !!document.querySelector('.scelta.piccola .no');
+    r.dueTasti = !!document.querySelector('.scelta.pari .si') && !!document.querySelector('.scelta.pari .no');
+    { const a = document.querySelector('.scelta.pari .si'), b = document.querySelector('.scelta.pari .no');
+      r.uguali = Math.abs(a.offsetWidth - b.offsetWidth) <= 2 && a.offsetHeight === b.offsetHeight; }
     passoAvanti();
     r.domanda = !!document.querySelector('.match.domanda') && passi()[PASSO].k === 'nome';
     document.querySelector('.scelta .si').click();
@@ -232,6 +245,7 @@ module.exports = async function(browser){
     return r;
   });
   tac.t('«Sei tu?» ha «Sono io» e «Non sono io»', chi.dueTasti, JSON.stringify(chi));
+  tac.t('«Sono io» e «Non sono io» sono grandi uguali', chi.uguali, JSON.stringify(chi));
   tac.t('AVANTI con una scheda da confermare chiede «Sei tu?» invece di andare avanti', chi.domanda, JSON.stringify(chi));
   tac.t('«Sì, sono io» apre la scheda', chi.si);
   tac.t('«No, sono una persona nuova» va avanti col nome scritto, senza la scheda', chi.no, JSON.stringify(chi));

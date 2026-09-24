@@ -774,18 +774,14 @@ html,body{overscroll-behavior:none}
 .trov.fatto{border-color:#5fd08a; background:rgba(95,208,138,.1)}
 .trov{cursor:default}
 .trov .go{cursor:pointer}
-/* «Non sono io»: piccolo, sotto la scheda, a destra */
+.scelta.pari{margin-top:14px}
+.scelta.pari .si, .scelta.pari .no{flex:1; height:92px; font-size:26px; border:2px solid transparent}
+.scelta.pari .no{background:rgba(255,255,255,.06); border-color:rgba(230,198,92,.75); color:#fff}
+/* «Sono io» / «Non sono io»: due risposte grandi uguali, una accanto all'altra */
 .scelta{display:flex; gap:14px; margin-top:14px}
-.scelta.piccola{justify-content:flex-end; margin-top:10px}
 .scelta span{display:flex; align-items:center; justify-content:center; border-radius:18px;
   font-weight:800; cursor:pointer}
-.scelta.piccola .no{padding:14px 28px; font-size:21px; color:rgba(255,255,255,.72);
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18)}
-/* la domanda dopo AVANTI: due risposte grandi, una accanto all'altra */
-.scelta .si, .match.domanda .scelta .no{flex:1; height:92px; font-size:26px}
 .scelta .si{background:linear-gradient(135deg,#b584a6,#7a496c); color:#fff}
-.match.domanda .scelta .no{background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.25);
-  color:rgba(255,255,255,.9)}
 .match.domanda{border-color:rgba(230,198,92,.85); box-shadow:0 0 0 6px rgba(230,198,92,.12)}
 .trov.fatto .go{background:rgba(95,208,138,.2); color:#5fd08a; transition:opacity .22s ease, transform .22s ease}
 .trov.fatto .go.cambia{opacity:0; transform:scale(.9)}
@@ -999,6 +995,10 @@ html,body{overscroll-behavior:none}
    scappatoia, quindi li' le due misure devono restare diverse */
 .form .navrow .nav.next{flex:1 1 0}
 .form .navrow .nav.back{flex:.5 1 0}
+/* sul nome la tastiera ha gia' il suo AVANTI: in basso resta solo la
+   via d'uscita, cosi' il dito non deve scegliere fra due tasti uguali */
+.form.sunome #fnext{display:none}
+.form.sunome .navrow .nav.back{flex:1 1 auto}
 .nav.back{background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14);
   font-size:25px; color:rgba(255,255,255,.7)}
 /* la via di casa: da una risposta si deve poter tornare alla vetrina
@@ -1514,8 +1514,8 @@ html,body{overscroll-behavior:none}
             <span class="c1">Resta vestito, comodo</span>
             <span class="c2">Non serve spogliarsi. Meglio senza cinture o zip rigide sulla schiena.</span></span></span>
           <span class="co"><span class="ci">🩴</span><span class="cx">
-            <span class="c1">Metti i calzari accanto alla capsula</span>
-            <span class="c2">Si entra senza scarpe: sotto i piedi ci sono i rulli plantari.</span></span></span>
+            <span class="c1">Togli le scarpe e metti i calzini antiscivolo</span>
+            <span class="c2">Quelli di Zenith, che ti diamo noi: sotto i piedi ci sono i rulli plantari.</span></span></span>
         </span>
       </div>
 
@@ -1527,10 +1527,10 @@ html,body{overscroll-behavior:none}
         <span class="cose">
           <span class="co"><span class="ci">🪑</span><span class="cx">
             <span class="c1">Siediti e appoggia la schiena allo schienale</span>
-            <span class="c2">La capsula misura le tue spalle da sola: dura pochi secondi, è normale.</span></span></span>
+            <span class="c2">Mettiti comodo: il resto lo fa chi è con te.</span></span></span>
           <span class="co"><span class="ci">🤝</span><span class="cx">
             <span class="c1">L'operatore ti sistema la posizione</span>
-            <span class="c2">Resta accanto a te: regola la seduta e imposta il tuo programma.</span></span></span>
+            <span class="c2">Regola la seduta su di te, poi la capsula misura le tue spalle da sola: pochi secondi, è normale.</span></span></span>
           <span class="co"><span class="ci">😌</span><span class="cx">
             <span class="c1">Poi non fai più niente</span>
             <span class="c2">Chiudi gli occhi. Da lì in avanti lavora la capsula, e tu ti godi la seduta.</span></span></span>
@@ -1893,8 +1893,8 @@ const QA = [
   {ic:'⏳', t:'pratica', alt:'attesa aspetto fila coda arrivo puntuale', q:'Quando arrivo, quanto devo aspettare?',
    a:'<b>Niente.</b> È tutto su prenotazione: quando arrivi la capsula è già libera e preparata per te.',
    piu:'Il check-in che puoi fare qui serve proprio a questo: quando l\'operatore ti raggiunge ha già tutte le tue risposte.'},
-  {ic:'👟', t:'seduta', alt:'calzari ciabatte ciabattine calze scarpe trucco truccata makeup piedi', q:'Devo togliere le scarpe? Posso venire truccata?',
-   a:'<b>Le scarpe sì</b>: si entra con i calzari, perché sotto i piedi ci sono i rulli plantari. <b>Il trucco non è un problema</b>: puoi venire come sei.',
+  {ic:'👟', t:'seduta', alt:'calzini antiscivolo calzari ciabatte ciabattine calze scarpe trucco truccata makeup piedi', q:'Devo togliere le scarpe? Posso venire truccata?',
+   a:'<b>Le scarpe sì</b>: si entra con i <b>calzini antiscivolo di Zenith</b>, che ti diamo noi, perché sotto i piedi ci sono i rulli plantari. <b>Il trucco non è un problema</b>: puoi venire come sei.',
    piu:'Togli invece orologio, bracciali, collane e anelli, e svuota le tasche: gli airbag stringono braccia e spalle.'},
   {ic:'🧼', t:'seduta', alt:'igiene sanificazione disinfezione sudore pulizia pulita sporca', q:'La capsula viene pulita fra un cliente e l\'altro?',
    a:'Sì. <b>Viene igienizzata da un cliente all\'altro</b>, ogni volta, senza eccezioni.',
@@ -2400,6 +2400,10 @@ function ultimaSeduta(c){
    e' solo proposta («Sei tu?») il tasto resta «Sono io», perche' un
    AVANTI li' potrebbe voler dire «vado avanti come persona nuova». */
 let SEITU_VISTO = null, SEITU_T = null;
+/* «Sono io» e «Non sono io» sono due tasti grandi uguali, sotto la
+   scheda: dire «non sono io» deve costare lo stesso gesto di «sono io».
+   E' la stessa forma della domanda «Sei tu, Eliana?» dopo AVANTI: il
+   cliente trova sempre i due tasti nello stesso posto. */
 /* ── «SONO IO» / «NON SONO IO» ──
    Finche' la scheda e' solo proposta, AVANTI non puo' voler dire due cose.
    Se il cliente tocca AVANTI (quello in fondo o quello della tastiera)
@@ -2481,18 +2485,19 @@ function pannelloNome(){
       + '<span class="av">' + esc(iniziali(nomePieno(c))) + '</span>'
       + '<span class="tx"><span class="t1">' + esc(nomePieno(c)) + '</span>'
       + '<span class="t2">' + telMascherato(c) + ' · ' + ultimaSeduta(c) + '</span></span>'
-      + (chiedo ? '' : '<span class="go" onclick="sonoIo(\'' + c.id + '\')">Sono io ›</span>') + '</div>';
+      + '</div>';
     if(chiedo) return '<div class="match uno domanda"><div class="mh"><span class="mn">?</span>'
       + '<span class="mt"><span class="mt1">Sei tu, ' + esc(c.nome) + '?</span>'
       + '<span class="mt2">Prima di andare avanti: questa scheda è la tua?</span></span></div>'
       + scheda
-      + '<div class="scelta"><span class="si" onclick="sonoIo(\'' + c.id + '\')">✓ Sì, sono io</span>'
-      + '<span class="no" onclick="nonSonoIo(\'' + c.id + '\', true)">No, sono una persona nuova</span></div></div>';
+      + '<div class="scelta pari"><span class="si" onclick="sonoIo(\'' + c.id + '\')">✓ Sì, sono io</span>'
+      + '<span class="no" onclick="nonSonoIo(\'' + c.id + '\', true)">✕ No, è la prima volta</span></div></div>';
     return '<div class="match uno"><div class="mh"><span class="mn">✓</span>'
       + '<span class="mt"><span class="mt1">Sei tu?</span>'
       + '<span class="mt2">Resta una scheda sola: confermala, o dimmi che non sei tu</span></span></div>'
       + scheda
-      + '<div class="scelta piccola"><span class="no" onclick="nonSonoIo(\'' + c.id + '\')">Non sono io</span></div></div>';
+      + '<div class="scelta pari"><span class="si" onclick="sonoIo(\'' + c.id + '\')">✓ Sono io</span>'
+      + '<span class="no" onclick="nonSonoIo(\'' + c.id + '\')">✕ Non sono io</span></div></div>';
   }
 
   if(omonimia(l)){
@@ -2546,14 +2551,14 @@ const PASSI_TUTTI = [
     ['riposo','😌','Nessun allenamento','giornata senza attività']]},
   {k:'zones', q:'Su quali zone lavoriamo?',
    qs:'Tocca la figura, o le etichette qui sotto', zone:true},
-  {k:'goal', q:'Qual è l\'obiettivo di questa sessione?', opts:[
+  {k:'goal', q:'Come vuoi sentirti quando esci?', opts:[
     ['recupero','💪','Recupero muscolare','defaticare e rigenerare dopo il lavoro fisico'],
     ['sollievo','🎯','Sollievo mirato','tensioni o fastidi in una zona precisa'],
     ['drenaggio','💧','Leggerezza & drenaggio','gambe leggere, contrasto al gonfiore'],
     ['relax','🧘','Relax profondo','sciogliere corpo e mente'],
     ['sonno','🌙','Verso il sonno','prepararsi a una notte migliore'],
     ['energia','☀️','Energia','attivarsi e ripartire']]},
-  {k:'mood', q:'Come ti senti in questo momento?', due:true, opts:[
+  {k:'mood', q:'E adesso, come ti senti?', due:true, opts:[
     ['sereno','🙂','Sereno','tutto nella norma'],
     ['stanco','🥱','Stanco','giornata pesante'],
     ['stressato','😣','Stressato','mente sotto pressione'],
@@ -2849,6 +2854,7 @@ function disegnaPasso(){
   }).join('');
   const c = document.getElementById('fcorpo');
   c.classList.remove('connome');
+  c.closest('.form').classList.toggle('sunome', P.k === 'nome');
 
   if(P.k === 'nome'){
     const l = corrispondenze();
@@ -3400,6 +3406,7 @@ const F_OBIETT = {recupero:'vuole recuperare', sollievo:'cerca sollievo dove tir
   sonno:'punta a dormire meglio', energia:'vuole ripartire'};
 const F_PRESS = {dolce:'più dolce del solito', decisa:'più decisa',
   media:'la media', abituale:'quella che fa sempre'};
+const PIL_PRESS = {dolce:'più dolce', decisa:'più decisa', media:'media', abituale:'come sempre'};
 function nomeZone(){
   if(D.zones.length) return D.zones.map(ZNOME).join(' e ').toLowerCase();
   if(D.zmode === 'totale') return 'tutto il corpo';
@@ -3421,7 +3428,7 @@ function disegnaProtocollo(){
     +     pr.fam + ' · ' + F.name + '</div>'
     +   '<div class="nom">' + pr.prog + ' · “' + P.o + '”</div>'
     +   '<div class="rig"><span class="pil oro">⏱ ' + S.timer + ' min</span>'
-    +     '<span class="pil">Pressione ' + (F_PRESS[D.pressione] || 'media') + '</span>'
+    +     '<span class="pil">Pressione ' + (PIL_PRESS[D.pressione] || 'media') + '</span>'
     +     (pr.soloAria ? '<span class="pil">💨 Solo aria</span>' : '') + '</div>'
     + '</div></div>';
 
@@ -3660,7 +3667,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v136.26.09(24)';
+const VETRINA_VERSION = 'v137.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
