@@ -664,6 +664,46 @@ html,body{height:100%; background:#000; overflow:hidden;
   border:1px solid rgba(255,255,255,.22);
   box-shadow:0 3px 0 rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.12)}
 .nwrap .key.go{font-size:26px}
+
+/* ══ LA TASTIERA DEL TELEFONO ══
+   Nella schermata del nome il corpo occupa tutto lo spazio fra la domanda
+   e i tasti di navigazione: campi e riquadro dei nomi salgono sotto la
+   domanda, dove prima c'era un vuoto, e la tastiera si appoggia in fondo,
+   larga quanto lo schermo, dentro una base scura come quella del
+   telefono. Tasti piu' alti e piu' larghi, meno spazio morto fra l'uno e
+   l'altro: si sbaglia meno lettera. */
+.corpo.connome{top:26.6%; height:auto; bottom:13.6%; justify-content:flex-start; overflow:visible}
+.connome .nwrap{flex:1; min-height:0}
+.connome .nwrap .kb{margin:auto -44px 0; padding:18px 14px 20px; gap:14px;
+  background:linear-gradient(180deg, rgba(34,28,40,.96), rgba(22,18,27,.98));
+  border:1px solid rgba(255,255,255,.09); border-radius:30px;
+  box-shadow:0 -10px 40px rgba(0,0,0,.45)}
+.connome .nwrap .kbrow{gap:9px}
+.connome .nwrap .kbrow.r2{padding:0 calc((100% - 9 * 9px) / 20)}
+.connome .nwrap .key{height:124px; font-size:46px; font-weight:600; border-radius:16px;
+  background:linear-gradient(180deg, #3a3240, #2f2835); border:0;
+  box-shadow:0 3px 0 rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.09)}
+.connome .nwrap .key.fn{flex:1.5; font-size:40px; background:linear-gradient(180deg, #2a2330, #221c28);
+  color:rgba(255,255,255,.85)}
+.connome .nwrap .key.acc{font-size:28px}
+.connome .nwrap .key.ap{flex:1.5}
+.connome .nwrap .key.sp{flex:5.4; font-size:30px; font-weight:600; color:rgba(255,255,255,.75)}
+.connome .nwrap .key.go{flex:2.6; font-size:30px; font-weight:800;
+  background:linear-gradient(135deg,#b584a6,#7a496c); box-shadow:0 3px 0 rgba(0,0,0,.45)}
+.connome .nwrap .key:active{transform:scale(.94); background:#7a496c}
+/* il tastierino del cellulare nella stessa base, in fondo */
+.connome .nwrap .numpad{margin:auto -44px 0; padding:18px 14px 20px;
+  background:linear-gradient(180deg, rgba(34,28,40,.96), rgba(22,18,27,.98));
+  border:1px solid rgba(255,255,255,.09); border-radius:30px; box-shadow:0 -10px 40px rgba(0,0,0,.45)}
+.connome .nwrap .numpad{gap:12px}
+.connome .nwrap .numpad .key{height:128px; flex-direction:column; gap:2px}
+.connome .nwrap .numpad .key .nd{font-size:54px; font-weight:600; line-height:1}
+.connome .nwrap .numpad .key .nl{font-size:15px; letter-spacing:.24em; font-weight:700;
+  color:rgba(255,255,255,.45); line-height:1}
+.connome .nwrap .numpad .key.go{font-size:30px; font-weight:800}
+.connome .nwrap .numpad .key.fn{font-size:44px; opacity:1}
+/* nel campo il numero si legge grande, a gruppi */
+.connome #f-cell span:not(.et){font-size:52px; letter-spacing:.06em; font-variant-numeric:tabular-nums}
 .ncome{display:flex; gap:14px; justify-content:center}
 .ncome .nc{flex:1; max-width:300px; background:rgba(255,255,255,.05);
   border:2px solid rgba(255,255,255,.14); border-radius:18px; padding:14px 10px;
@@ -2694,7 +2734,8 @@ function disegnaPasso(){
   document.getElementById('fstep').textContent = etichettaPasso(L, PASSO);
   document.getElementById('fq').textContent = P.q;
   const qs = document.getElementById('fqs');
-  qs.textContent = P.qs || '';
+  /* col cellulare il sottotitolo parla del numero, non del nome */
+  qs.textContent = (P.k === 'nome' && MODO === 'cell') ? 'Scrivi il tuo numero di cellulare' : (P.qs || '');
   qs.style.display = P.qs ? 'block' : 'none';
   document.getElementById('progbar').style.width = (PASSO / L.length * 100) + '%';
   document.getElementById('fdots').innerHTML = L.map((_,i)=>
@@ -2705,6 +2746,7 @@ function disegnaPasso(){
       + v + '</div>' : '';
   }).join('');
   const c = document.getElementById('fcorpo');
+  c.classList.remove('connome');
 
   if(P.k === 'nome'){
     const l = corrispondenze();
@@ -2721,6 +2763,7 @@ function disegnaPasso(){
         + '<span id="v-' + k + '"' + (val || attivo ? '' : ' class="ph"') + '>'
         + mostra + (attivo ? '<span class="caret"></span>' : '') + '</span></div>';
     };
+    c.classList.add('connome');
     c.innerHTML = '<div class="nwrap">'
       + '<div class="ncome">'
       +   '<div class="nc' + (MODO === 'nome' ? ' on' : '') + '" onclick="cambiaModo(\'nome\')">NOME E COGNOME</div>'
@@ -2728,7 +2771,7 @@ function disegnaPasso(){
       + '</div>'
       + '<div class="fields">'
       +   (MODO === 'cell'
-            ? campo('cell', 'IL TUO CELLULARE', D.cell, '3•• ••• ••••')
+            ? campo('cell', 'IL TUO CELLULARE', cellLeggibile(D.cell), '3•• ••• ••••')
             : campo('nome', 'NOME', D.nome, 'Nome') + campo('cogn', 'COGNOME', D.cogn, 'Cognome'))
       + '</div>'
       + pannelloNome()
@@ -2791,11 +2834,24 @@ function disegnaPasso(){
 
 function setField(f){ FIELD = f; disegnaPasso(); idleReset(); }
 
+/* Il tastierino del telefono, quello che si usa per chiamare: la cifra
+   grande e sotto le lettere piccole, come sul tastierino di ogni cellulare.
+   Le lettere non servono a niente qui, ma fanno riconoscere il tastierino
+   a colpo d'occhio: e' quello su cui il numero si scrive da sempre. */
+const LETTERE_TEL = {2:'ABC', 3:'DEF', 4:'GHI', 5:'JKL', 6:'MNO', 7:'PQRS', 8:'TUV', 9:'WXYZ', 0:'+'};
 function buildNum(){
   document.getElementById('kb').innerHTML =
     [1,2,3,4,5,6,7,8,9,'⌫',0,'✓'].map(k=>
-      '<div class="key' + (k === '⌫' ? ' dim' : '') + '" onclick="numType(\'' + k + '\')">'
-      + k + '</div>').join('');
+      '<div class="key' + (k === '⌫' ? ' dim fn' : k === '✓' ? ' go' : '') + '" onclick="numType(\'' + k + '\')">'
+      + (k === '✓' ? 'AVANTI ›'
+         : typeof k === 'number' ? '<span class="nd">' + k + '</span><span class="nl">' + (LETTERE_TEL[k] || '&nbsp;') + '</span>'
+         : k) + '</div>').join('');
+}
+/* il numero si legge a gruppi, come si detta: 333 123 4567 */
+function cellLeggibile(t){
+  const d = cifreDi(t);
+  return d.length <= 3 ? d : d.length <= 6 ? d.slice(0,3) + ' ' + d.slice(3)
+    : d.slice(0,3) + ' ' + d.slice(3,6) + ' ' + d.slice(6);
 }
 function numType(k){
   const suCifre = (MODO === 'nome');   /* qui il tastierino serve solo alle ultime cifre */
@@ -2813,20 +2869,21 @@ function numType(k){
   disegnaPasso(); idleReset();
 }
 function buildKb(){
-  const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
-  let h = '';
-  rows.forEach((r,i)=>{
-    h += '<div class="kbrow">';
-    if(i === 2) h += '<div class="key wide dim" onclick="kbDel()">⌫</div>';
-    h += [...r].map(c=> '<div class="key" onclick="kbType(\'' + c + '\')">' + c + '</div>').join('');
-    if(i === 2) h += '<div class="key wide go" onclick="kbGo()">AVANTI ›</div>';
-    h += '</div>';
-  });
-  /* l'apostrofo e l'accento: D'Angelo, D'Amico, Nicolò. Senza, qui a
-     Pompei mezza anagrafica non si poteva scrivere com'e' */
-  h += '<div class="kbrow"><div class="key kx" onclick="kbType(String.fromCharCode(39))">\'</div>'
-    + '<div class="key wide sp" onclick="kbType(\' \')">spazio</div>'
-    + '<div class="key kx acc" onclick="kbAccento()">à è ò</div></div>';
+  /* La tastiera come quella del telefono, che tutti hanno in mano ogni
+     giorno: dieci tasti sopra, nove rientrati di mezzo tasto, poi le
+     sette lettere in mezzo a due tasti larghi, e in fondo lo spazio
+     lungo con l'invio — che qui e' AVANTI. Nessuno deve imparare niente:
+     le lettere stanno dove il pollice se le aspetta. */
+  const tasto = c => '<div class="key" onclick="kbType(\'' + c + '\')">' + c + '</div>';
+  let h = '<div class="kbrow">' + [...'QWERTYUIOP'].map(tasto).join('') + '</div>'
+    + '<div class="kbrow r2">' + [...'ASDFGHJKL'].map(tasto).join('') + '</div>'
+    + '<div class="kbrow"><div class="key fn acc" onclick="kbAccento()">à è ò</div>'
+    +   [...'ZXCVBNM'].map(tasto).join('')
+    +   '<div class="key fn" onclick="kbDel()">⌫</div></div>'
+    /* l'apostrofo e l'accento: D'Angelo, D'Amico, Nicolò */
+    + '<div class="kbrow"><div class="key fn ap" onclick="kbType(String.fromCharCode(39))">\'</div>'
+    +   '<div class="key sp" onclick="kbType(\' \')">spazio</div>'
+    +   '<div class="key go" onclick="kbGo()">AVANTI ›</div></div>';
   document.getElementById('kb').innerHTML = h;
 }
 /* Ogni lettera cambia quante schede corrispondono: il pannello si
@@ -3498,7 +3555,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v134.26.09(24)';
+const VETRINA_VERSION = 'v135.26.09(24)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

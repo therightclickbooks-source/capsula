@@ -163,6 +163,25 @@ module.exports = async function(browser){
   tac.t('«dangelo» senza apostrofo trova lo stesso D\'Angelo', tast.trova);
   tac.t('il passo non dice «di N»: il totale cambierebbe a meta\' strada', !/ DI /.test(tast.passo), tast.passo);
 
+  /* ── la tastiera del telefono ── */
+  const tel = await p.evaluate(()=>{
+    startCheck();
+    const kb = [...document.querySelectorAll('#kb .kbrow')].map(r=> r.children.length);
+    const alto = document.querySelector('#kb .key').offsetHeight;
+    cambiaModo('cell');
+    const soloNumeri = !!document.querySelector('#kb.numpad') && !document.querySelector('#kb .kbrow');
+    ['3','3','3','1','2','3','4'].forEach(k=> numType(k));
+    const campo = document.querySelector('#f-cell').textContent;
+    const sotto = document.getElementById('fqs').textContent;
+    go('idle');
+    return {kb, alto, soloNumeri, campo, sotto};
+  });
+  tac.t('la tastiera ha le file del telefono: 10, 9, 9, 3', JSON.stringify(tel.kb) === '[10,9,9,3]', JSON.stringify(tel.kb));
+  tac.t('i tasti sono alti almeno 120 punti', tel.alto >= 120, tel.alto + '');
+  tac.t('toccando CELLULARE resta solo il tastierino dei numeri', tel.soloNumeri);
+  tac.t('il numero si legge a gruppi: 333 123 4', /333 123 4/.test(tel.campo), tel.campo);
+  tac.t('col cellulare la frase sotto parla del numero', /cellulare/i.test(tel.sotto), tel.sotto);
+
   await p.close();
   return tac;
 };
