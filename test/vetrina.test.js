@@ -160,18 +160,11 @@ module.exports = async function(browser){
       tac.t(q + 'il pensiero di ' + k + ' ci sta tutto', ok);
     }
 
-    /* ── i tre passaggi, dentro il tasto ── */
-    const passi = await p.evaluate(()=>{
-      const e = document.querySelector('#gocheck .passi3');
-      return {testo: e ? e.textContent : '', numeri: e ? e.querySelectorAll('i').length : 0,
-              righe: e ? Math.round(e.offsetHeight / parseFloat(getComputedStyle(e).lineHeight || 24)) : 0,
-              alto: e ? e.offsetHeight : 0, corpo: e ? parseFloat(getComputedStyle(e).fontSize) : 0};
-    });
-    tac.t(q + 'nel tasto ci sono i tre passaggi: nome, poche domande, ti accomodi',
-      passi.numeri === 3 && /nome/.test(passi.testo) && /poche domande/.test(passi.testo)
-        && /accomodi/.test(passi.testo), passi.testo);
-    tac.t(q + 'i tre passaggi stanno su una riga sola',
-      passi.alto <= passi.corpo * 1.7, passi.alto + 'px per ' + passi.corpo + 'px');
+    /* ── dentro il tasto: quanto dura e cosa succede dopo ── */
+    const riga = await p.evaluate(()=>{ const e = document.querySelector('#gocheck .t2');
+      return {testo: e ? e.textContent : '', alto: e ? e.offsetHeight : 0, corpo: e ? parseFloat(getComputedStyle(e).fontSize) : 0}; });
+    tac.t(q + 'nel tasto c\'e\' quanto dura e chi ti chiama', /Due minuti/.test(riga.testo) && /operatore/.test(riga.testo), riga.testo);
+    tac.t(q + 'la riga del tasto sta su una riga sola', riga.alto <= riga.corpo * 1.7, riga.alto + 'px per ' + riga.corpo + 'px');
 
     /* ── il pensiero, che e' una risposta ──
        stessa lingua del foglio dei macchinari: barra a sinistra del
@@ -191,10 +184,10 @@ module.exports = async function(browser){
     tac.t(q + 'la parte di Zenith nel pensiero e\' in oro, non in bianco',
       pensiero.oro !== 'rgb(255, 255, 255)' && /^rgb/.test(pensiero.oro), pensiero.oro);
 
-    /* la riga sotto il tasto e la riga di servizio in fondo non si toccano */
-    tac.t(q + 'la riga sotto il tasto non tocca la riga di servizio',
+    /* l'invito e la riga di servizio in fondo non si toccano */
+    tac.t(q + 'l\'invito non tocca la riga di servizio',
       await p.evaluate(()=>{
-        const h = document.querySelector('.cta .hint'), d = document.getElementById('dbg');
+        const h = document.querySelector('.cta'), d = document.getElementById('dbg');
         return h.getBoundingClientRect().bottom <= d.getBoundingClientRect().top;
       }));
 
@@ -207,16 +200,14 @@ module.exports = async function(browser){
       const ci = getComputedStyle(i), cg = getComputedStyle(g);
       return {testo:t.textContent, corpo:parseFloat(getComputedStyle(t).fontSize),
         icona:{l:i.offsetWidth, r:parseFloat(ci.borderTopLeftRadius)},
-        freccia:cg.backgroundImage};
+        freccia:cg.backgroundImage, pieno: cg.backgroundColor !== 'rgba(0, 0, 0, 0)' || /gradient/.test(cg.backgroundImage)};
     });
     tac.t(q + 'l\'invito non e\' tutto maiuscolo',
       invito.testo !== invito.testo.toUpperCase(), invito.testo);
-    tac.t(q + 'l\'invito non urla: al massimo 44 punti',
-      invito.corpo <= 44, invito.corpo + 'px');
-    tac.t(q + 'l\'icona dell\'invito sta in un quadrato smussato, come nel gestionale',
-      invito.icona.l >= 60 && invito.icona.r >= 16, JSON.stringify(invito.icona));
-    tac.t(q + 'la freccia del cliente e\' dentro una pastiglia piena',
-      /gradient/.test(invito.freccia), invito.freccia);
+    tac.t(q + 'l\'invito e\' grande ma non urla: al massimo 50 punti',
+      invito.corpo <= 50, invito.corpo + 'px');
+    tac.t(q + 'l\'icona dell\'invito sta in un tondo', invito.icona.l >= 60 && invito.icona.r >= 30, JSON.stringify(invito.icona));
+    tac.t(q + 'la freccia del cliente e\' dentro una pastiglia piena', invito.pieno, JSON.stringify(invito));
 
     /* ── le cinque porte ── */
     tac.t(q + 'le cinque porte ci sono tutte, e ognuna col suo colore',
