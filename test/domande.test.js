@@ -150,12 +150,12 @@ module.exports = async function(browser){
     const sot = document.getElementById('asksot').textContent;
     const nums = [...document.querySelectorAll('#filtri .fnum')].map(e=> +e.textContent);
     go('idle');
-    return {n: QA.length, sot, somma: nums.reduce((a,b)=> a+b, 0), bolle: BUBBLES.every(b=> b.includes('{N}'))};
+    return {n: QA.length, sot, somma: nums.reduce((a,b)=> a+b, 0), bolle: BUBBLES.some(b=> b.includes('{N}')) && !BUBBLES.some(b=> /\b3[0-9]\b/.test(b))};
   });
   tac.t('la pagina delle domande dice quante risposte ci sono',
     conta.sot.includes(conta.n + ' risposte'), conta.sot);
   tac.t('i numeri sui quattro temi fanno il totale', conta.somma === conta.n, conta.somma + ' su ' + conta.n);
-  tac.t('la faccina in home dice il numero delle risposte', conta.bolle);
+  tac.t('la riga delle domande dice il numero delle risposte, mai scritto a mano', conta.bolle);
 
   /* ── la tastiera del nome: apostrofo e accenti ── */
   const tast = await p.evaluate(()=>{
@@ -272,15 +272,16 @@ module.exports = async function(browser){
       ['E','L','I','A','N','A'].forEach(c=> kbType(c)); FIELD='cogn'; ['C','A','S'].forEach(c=> kbType(c)); };
     const r = {};
     scrivi();
-    r.dueTasti = !!document.querySelector('.scelta.pari .si') && !!document.querySelector('.scelta.pari .no');
-    { const a = document.querySelector('.scelta.pari .si'), b = document.querySelector('.scelta.pari .no');
-      r.uguali = Math.abs(a.offsetWidth - b.offsetWidth) <= 2 && a.offsetHeight === b.offsetHeight; }
+    r.dueTasti = !!document.querySelector('.trov .go.si') && !!document.querySelector('.scelta.sotto .no');
+    { const a = document.querySelector('.trov .go.si'), b = document.querySelector('.scelta.sotto .no'), t = document.querySelector('.trov');
+      r.posto = a.closest('.trov') === t && b.getBoundingClientRect().top > t.getBoundingClientRect().bottom
+        && Math.abs(b.offsetWidth - b.parentElement.clientWidth) <= 2; }
     passoAvanti();
     r.domanda = !!document.querySelector('.match.domanda') && passi()[PASSO].k === 'nome';
-    document.querySelector('.scelta .si').click();
+    document.querySelector('.trov .go.si').click();
     r.si = D.clienteId === 'cprovachi';
     scrivi(); passoAvanti();
-    document.querySelector('.match.domanda .scelta .no').click();
+    document.querySelector('.match.domanda .scelta.sotto .no').click();
     r.no = !D.clienteId && passi()[PASSO].k !== 'nome' && D.cogn === 'Cas';
     scrivi(); kbGo();
     r.tastiera = !!document.querySelector('.match.domanda') && !D.clienteId;
@@ -289,7 +290,7 @@ module.exports = async function(browser){
     return r;
   });
   tac.t('«Sei tu?» ha «Sono io» e «Non sono io»', chi.dueTasti, JSON.stringify(chi));
-  tac.t('«Sono io» e «Non sono io» sono grandi uguali', chi.uguali, JSON.stringify(chi));
+  tac.t('«Sono io» sta nella scheda, dove poi compare AVANTI; «Non sono io» sotto a tutta larghezza', chi.posto, JSON.stringify(chi));
   tac.t('AVANTI con una scheda da confermare chiede «Sei tu?» invece di andare avanti', chi.domanda, JSON.stringify(chi));
   tac.t('«Sì, sono io» apre la scheda', chi.si);
   tac.t('«No, sono una persona nuova» va avanti col nome scritto, senza la scheda', chi.no, JSON.stringify(chi));

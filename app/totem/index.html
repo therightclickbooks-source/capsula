@@ -128,7 +128,8 @@ html,body{overscroll-behavior:none}
    alzerebbe e si abbasserebbe. Qui invece si muove solo la frase, e
    dentro una casella che non cambia mai: 508 è la più alta delle
    sessanta, misurata (e la prova della vetrina le rimisura tutte). */
-.hero{display:flex; align-items:center; gap:20px; flex:none; min-height:508px}
+.hero{display:flex; align-items:stretch; gap:20px; flex:none; min-height:508px}
+#roams{align-self:flex-start}
 #roams{flex:1; min-width:0; pointer-events:none}
 .roam{opacity:0; transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
 .roam.on{opacity:1; transform:none}
@@ -170,7 +171,7 @@ html,body{overscroll-behavior:none}
    senza scriverlo. Il disegno è orizzontale, quindi la sua casella è
    larga e bassa, e sta in mezzo all'altezza della frase. */
 .hp{width:432px; flex:none; position:relative; display:flex; align-items:center;
-  justify-content:center; padding:34px 0}
+  justify-content:space-between; padding:0}
 @keyframes respira{0%,100%{transform:scale(1); opacity:.9} 50%{transform:scale(1.05); opacity:.5}}
 .pod{position:relative; width:432px; height:206px}
 /* il disegno e' lo stesso di prima, ma pesa meno: fili piu' sottili, il
@@ -192,11 +193,14 @@ html,body{overscroll-behavior:none}
 /* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
 .numeri{display:flex}
 .hp{flex-direction:column}
-.nastro{position:relative; overflow:hidden; width:432px; margin-top:46px; padding:18px 20px 20px;
-  display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px;
-  border-radius:26px; cursor:pointer; border:2px solid rgba(230,198,92,.75);
-  background:linear-gradient(160deg, rgba(230,198,92,.24), rgba(226,189,212,.1) 70%);
-  box-shadow:0 0 38px rgba(230,198,92,.2)}
+.hp .nastro{margin-top:0}
+.nastro{--nc:#e6c65c; position:relative; overflow:hidden; width:432px; height:222px; box-sizing:border-box;
+  padding:16px 20px 18px; display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  text-align:center; border-radius:26px; cursor:pointer;
+  border:2px solid color-mix(in srgb, var(--nc) 80%, transparent);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--nc) 22%, transparent), rgba(230,198,92,.08) 75%);
+  box-shadow:0 0 38px color-mix(in srgb, var(--nc) 26%, transparent);
+  transition:border-color .9s ease, box-shadow .9s ease, background .9s ease}
 /* un riflesso che passa ogni tanto: si nota senza disturbare */
 .nastro::after{content:""; position:absolute; top:0; bottom:0; width:140px; left:-180px;
   background:linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent);
@@ -205,9 +209,16 @@ html,body{overscroll-behavior:none}
 .nastro .nsi{font-size:44px; line-height:1; animation:dondola 2.8s ease-in-out infinite}
 @keyframes dondola{0%,100%{transform:rotate(-7deg)} 50%{transform:rotate(7deg) scale(1.08)}}
 @media (prefers-reduced-motion:reduce){ .nastro::after, .nastro .nsi{animation:none} }
-.nastro .nst{display:flex; flex-direction:column; gap:5px}
-.nastro .nst b{font-size:27px; font-weight:800; letter-spacing:-.01em; color:#fff}
+.nastro .nst{display:flex; flex-direction:column; gap:5px; transition:opacity .38s ease, transform .38s ease}
+.nastro .nst.cambia{opacity:0; transform:translateY(8px)}
+.nastro .nst b{font-size:26px; white-space:nowrap; font-weight:800; letter-spacing:-.01em; color:#fff}
 .nastro .nst small{font-size:18px; line-height:1.35; color:rgba(255,255,255,.72)}
+.cta{position:relative}
+.cartellino{position:absolute; right:26px; top:-30px; display:flex; align-items:center; gap:10px;
+  padding:10px 20px 10px 14px; border-radius:999px; cursor:pointer; z-index:5;
+  background:linear-gradient(100deg,#f3dc8a,#d4af37); color:#1a1320; font-weight:800; font-size:22px;
+  box-shadow:0 8px 26px rgba(212,175,55,.45)}
+.cartellino span{font-size:28px; animation:dondola 2.8s ease-in-out infinite}
 .nastro .nsg{margin-top:4px; font-size:19px; font-weight:800; color:#1a1320; background:#e6c65c; padding:10px 20px; border-radius:999px}
 .nb{flex:1; padding:0 18px; display:flex; flex-direction:column; justify-content:center}
 .nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
@@ -300,25 +311,27 @@ html,body{overscroll-behavior:none}
 @keyframes nastro{
   from{background-position:0 0, 0 50%}
   to  {background-position:0 0, 320% 50%}}
-/* il colore che si legge — freccia e «TOCCAMI» — cambia insieme alla
+/* il colore che si legge — freccia e «TOCCA E LEGGI» — cambia insieme alla
    frase, cosi' il cambio si vede anche a colpo d'occhio */
 .avatar .frecc, .bubble .mini{transition:color .6s ease, border-color .6s ease}
 .bubble .mini{color:var(--tc)}
 /* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
 .avatar .frecc{position:static; flex:none}
-.orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none;
-  background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
-  box-shadow:0 0 0 2px rgba(255,255,255,.16), 0 14px 34px rgba(122,73,108,.6);
+.orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none; padding:10px; box-sizing:border-box;
+  background:radial-gradient(circle at 34% 30%, #3b2638, #140f19 72%);
+  box-shadow:0 0 0 2px rgba(230,198,92,.6), 0 10px 30px rgba(212,175,55,.28);
   display:flex; align-items:center; justify-content:center;
   animation:breathe 4.4s ease-in-out infinite}
 @keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-6px) scale(1.03)}}
 .orb::after{content:""; position:absolute; inset:-9px; border-radius:50%;
-  border:2px solid rgba(169,119,154,.45); animation:halo 3.2s ease-out infinite}
+  border:2px solid rgba(230,198,92,.45); animation:halo 3.2s ease-out infinite}
+.qico{width:100%; height:100%; display:block; overflow:visible}
+/* le due scintille si accendono a turno */
+.qico .sc1, .qico .sc2{transform-box:fill-box; transform-origin:50% 50%; animation:scintilla 3.6s ease-in-out infinite}
+.qico .sc2{animation-delay:1.8s}
+@keyframes scintilla{0%,100%{opacity:.35; transform:scale(.7)} 50%{opacity:1; transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){ .qico .sc1, .qico .sc2{animation:none} }
 @keyframes halo{0%{transform:scale(.9); opacity:.8} 100%{transform:scale(1.28); opacity:0}}
-.orb .face{width:84%; height:84%}
-.orb .eye{transform-box:fill-box; transform-origin:50% 50%; animation:blink 6s ease-in-out infinite}
-@keyframes blink{0%,88%,100%{transform:scaleY(1)} 92%{transform:scaleY(.08)}}
-.orb .pupil, .orb .hl{transition:transform .18s ease-out}
 .alogo{display:none}
 .bubble{flex:1; min-width:0; font-size:27px; font-weight:800; line-height:1.22}
 .bubble .mini{display:block; font-size:19px; font-weight:800; letter-spacing:.14em;
@@ -478,11 +491,10 @@ html,body{overscroll-behavior:none}
    ══════════════════════════════════════════════════════════════ */
 .ask{position:absolute; inset:12% 44px 6%; display:flex; flex-direction:column}
 .ask .capo{display:flex; align-items:center; gap:22px; flex:none}
-.ask .orbs{width:112px; height:112px; border-radius:50%; flex:none;
-  background:radial-gradient(circle at 34% 30%, #b98aa9, #7a496c 55%, #4a2b42);
+.ask .orbs{width:112px; height:112px; border-radius:50%; flex:none; padding:14px; box-sizing:border-box;
+  background:radial-gradient(circle at 34% 30%, #3b2638, #140f19 72%);
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 18px 50px rgba(122,73,108,.55); animation:breathe 4.4s ease-in-out infinite}
-.ask .orbs .face{width:74%; height:74%}
+  box-shadow:0 0 0 2px rgba(230,198,92,.6), 0 14px 40px rgba(212,175,55,.3); animation:breathe 4.4s ease-in-out infinite}
 .ask .capo .tit{font-size:38px; font-weight:800; line-height:1.2}
 .ask .capo .sot{font-size:21px; color:rgba(255,255,255,.55); margin-top:6px}
 /* ── la ricerca e i filtri ──
@@ -792,10 +804,11 @@ html,body{overscroll-behavior:none}
 .trov.fatto{border-color:#5fd08a; background:rgba(95,208,138,.1)}
 .trov{cursor:default}
 .trov .go{cursor:pointer}
-.scelta.pari{margin-top:14px}
-.scelta.pari .si, .scelta.pari .no{flex:1; height:92px; font-size:26px; border:2px solid transparent}
-.scelta.pari .no{background:rgba(255,255,255,.06); border-color:rgba(230,198,92,.75); color:#fff}
-/* «Sono io» / «Non sono io»: due risposte grandi uguali, una accanto all'altra */
+.trov .go{min-width:220px; box-sizing:border-box; display:flex; align-items:center; justify-content:center}
+.trov .go.si{background:linear-gradient(135deg,#b584a6,#7a496c); color:#fff; animation:chiama 1.8s ease-in-out infinite}
+.scelta.sotto .no{flex:1; height:78px; font-size:24px; color:rgba(255,255,255,.78);
+  background:rgba(0,0,0,.22); border:1.5px solid rgba(255,255,255,.16)}
+/* «Non sono io»: sotto la scheda, a tutta larghezza */
 .scelta{display:flex; gap:14px; margin-top:14px}
 .scelta span{display:flex; align-items:center; justify-content:center; border-radius:18px;
   font-weight:800; cursor:pointer}
@@ -878,7 +891,11 @@ html,body{overscroll-behavior:none}
 .opt.sel .oi{background:rgba(212,175,55,.2); border-color:rgba(230,198,92,.6)}
 .opt .ox{flex:1; min-width:0; display:flex; flex-direction:column}
 .opt .ot{font-size:30px; font-weight:800; line-height:1.2}
-.opt .od{font-size:19px; color:rgba(255,255,255,.56); margin-top:5px; line-height:1.32}
+.opt .od{font-size:23px; color:rgba(255,255,255,.82); font-weight:500; margin-top:5px; line-height:1.3}
+/* dove conta la situazione, il nome va in targhetta e la situazione in grande */
+.opts.spiega .opt .ot{font-size:17px; letter-spacing:.16em; text-transform:uppercase; color:#e6c65c; margin-bottom:6px}
+.opts.spiega .opt .od{font-size:26px; color:#fff; font-weight:700; line-height:1.22; margin-top:0}
+.opts.spiega .opt.sel .ot{color:#f3dc8a}
 /* La spunta compare solo su quella scelta. Prima c'erano sei cerchietti
    vuoti in colonna, e sei cerchietti vuoti sembrano sei caselle da
    riempire tutte. */
@@ -1112,6 +1129,8 @@ html,body{overscroll-behavior:none}
   border:1px solid color-mix(in srgb, var(--sc) 24%, transparent);
   border-radius:22px; padding:17px 22px}
 .tappa .co .ci{font-size:34px; flex:none; width:50px; text-align:center}
+/* la poltrona della capsula, non una sedia: il suo profilo, in piccolo */
+.tappa .co .ci .cicaps{width:62px; height:38px; display:block; margin:0 auto; overflow:visible}
 .tappa .co .cx{flex:1; min-width:0}
 .tappa .co .c1{display:block; font-size:25px; font-weight:800; line-height:1.2}
 .tappa .co .c2{display:block; font-size:18.5px; color:rgba(255,255,255,.55);
@@ -1406,8 +1425,8 @@ html,body{overscroll-behavior:none}
              cosi' non ruba altezza a nessuna fascia -->
         <div class="nastro tocca" id="nastro" onclick="apriRegolamento()">
           <span class="nsi">🎁</span>
-          <span class="nst"><b>Premi per tutti i clienti</b>
-            <small>Una seduta omaggio ogni 13, e una da regalare se ci arrivi in 100 giorni</small></span>
+          <span class="nst" id="nastrot"><b>La costanza ha il suo premio</b>
+            <small>Ogni seduta ti avvicina a una seduta in regalo.</small></span>
           <span class="nsg">Scopri come ›</span>
         </div>
         </div>
@@ -1432,7 +1451,7 @@ html,body{overscroll-behavior:none}
       <div class="sezione porte">
         <div class="sezt"><span class="seze"><i></i>IL TUO ALLENAMENTO</span><span
           class="sezh">Cosa hai fatto oggi, qui da noi?</span>
-          <span class="sezd">Tocca un macchinario: scopri se fa per te e cosa ci aggiunge Zenith</span></div>
+          <span class="sezd">Tocca quello che hai fatto: scopri cosa ci aggiunge Zenith</span></div>
         <div class="centro" id="centro"></div>
         <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
       </div>
@@ -1445,6 +1464,9 @@ html,body{overscroll-behavior:none}
             <span class="t2 passi3"><i>1</i> il tuo nome<em>·</em><i>2</i> poche domande<em>·</em><i>3</i> ti accomodi</span></span>
           <span class="go">›</span>
         </div>
+        <!-- il cartellino dei premi, agganciato al tasto: fuori dal tasto,
+             che taglia quello che sporge -->
+        <span class="cartellino" onclick="apriRegolamento()"><span>🎁</span>La costanza qui viene premiata ›</span>
         <div class="hint">Due minuti, lo fai da solo · poi ti chiama il tuo operatore</div>
           <!-- la faccina: sta sotto il tasto, come seconda strada. È una
                scorciatoia, non un passo del percorso: per questo non ha né
@@ -1539,9 +1561,9 @@ html,body{overscroll-behavior:none}
     <div class="done">
       <div class="ring">✓</div>
       <div class="big">Ci siamo,<br><span id="dnome">Giulia</span></div>
-      <div class="sit">La tua seduta è pronta.</div>
-      <div class="msg" id="dmsg">Ho passato tutto al tuo operatore: la capsula ti aspetta
-        già impostata su di te. Adesso tocca a te — e non c'è niente di difficile.</div>
+      <div class="sit">Il tuo programma è pronto.</div>
+      <div class="msg" id="dmsg">Ho passato tutto al tuo operatore: tra poco ti chiama. Ti fa accomodare
+        nella capsula, ti sistema la posizione e solo dopo imposta il tuo programma. Tu pensa a rilassarti.</div>
       <div class="chips" id="dchips"></div>
       <div class="premibox" id="dpremi"></div>
       <div class="wait">Questa schermata si chiude da sola</div>
@@ -1564,7 +1586,7 @@ html,body{overscroll-behavior:none}
           <span class="co"><span class="ci">👕</span><span class="cx">
             <span class="c1">Resta vestito, comodo</span>
             <span class="c2">Non serve spogliarsi. Meglio senza cinture o zip rigide sulla schiena.</span></span></span>
-          <span class="co"><span class="ci">🩴</span><span class="cx">
+          <span class="co"><span class="ci">🧦</span><span class="cx">
             <span class="c1">Togli le scarpe e metti i calzini antiscivolo</span>
             <span class="c2">Quelli di Zenith, che ti diamo noi: sotto i piedi ci sono i rulli plantari.</span></span></span>
         </span>
@@ -1576,7 +1598,11 @@ html,body{overscroll-behavior:none}
         <span class="tt">Ti siedi, e basta</span>
         <span class="td">Alla capsula ci pensa il tuo operatore: tu non devi toccare niente.</span>
         <span class="cose">
-          <span class="co"><span class="ci">🪑</span><span class="cx">
+          <span class="co"><span class="ci"><svg class="cicaps" viewBox="66 50 480 300" aria-hidden="true">
+            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="rgba(230,198,92,.32)"/>
+            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="#e6c65c" stroke-width="22" stroke-linecap="round"/>
+            <circle cx="180" cy="130" r="30" fill="#fff"/>
+            <path d="M170 150 C176 146 196 144 204 152 C222 176 244 200 272 214 L336 176 C344 172 352 174 356 180 L424 194 C432 196 432 208 424 210 L352 202 L282 238 C270 244 256 242 246 236 C214 218 186 190 168 166 C164 160 164 154 170 150 Z" fill="#f3e6ee"/></svg></span><span class="cx">
             <span class="c1">Siediti e appoggia la schiena allo schienale</span>
             <span class="c2">Mettiti comodo: il resto lo fa chi è con te.</span></span></span>
           <span class="co"><span class="ci">🤝</span><span class="cx">
@@ -1688,57 +1714,19 @@ document.getElementById('logo').src = LOGO;
 document.getElementById('alogo').src = LOGO;
 
 /* ─────────── il volto della mascotte ─────────── */
-/* ─────────── il volto ───────────
-   L'occhio non è più un punto nero su un tondo bianco. Ha un'iride vera,
-   con l'oro che sfuma nel prugna del marchio, e DUE riflessi: uno grande
-   in alto e uno piccolo in basso. È il secondo che conta — è quello che
-   fa sembrare un occhio bagnato, cioè vivo; con uno solo resta un
-   disegno. Sotto, una linea d'ombra fa la palpebra inferiore: dà
-   profondità senza appesantire il tratto.
-   La bocca è un sorriso chiuso, con l'angolo destro appena più alto:
-   uno spalancato è simpatico, uno accennato è sicuro di sé.
-   Le guance non sono più due macchie rosa ma tre puntini d'oro per
-   parte — non lentiggini: una costellazione.
-   Iride, pupilla e riflessi si muovono insieme quando lo sguardo segue
-   il dito: se si muovesse la sola pupilla, l'occhio si scucirebbe. */
-const VOLTO = '<svg class="face" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">'
-  + '<defs>'
-  +   '<radialGradient id="zIride" cx=".38" cy=".32" r=".78">'
-  +     '<stop offset="0" stop-color="#f6d98f"/>'
-  +     '<stop offset=".5" stop-color="#c98fb4"/>'
-  +     '<stop offset="1" stop-color="#4a2b42"/></radialGradient>'
-  +   '<radialGradient id="zGuancia" cx=".5" cy=".5" r=".5">'
-  +     '<stop offset="0" stop-color="#e6c65c" stop-opacity=".22"/>'
-  +     '<stop offset="1" stop-color="#e6c65c" stop-opacity="0"/></radialGradient>'
-  + '</defs>'
-  + '<ellipse cx="50" cy="120" rx="22" ry="15" fill="url(#zGuancia)"/>'
-  + '<ellipse cx="150" cy="120" rx="22" ry="15" fill="url(#zGuancia)"/>'
-  + '<g class="eye eyeL">'
-  +   '<ellipse cx="71" cy="88" rx="17" ry="19" fill="#fbf6ef"/>'
-  +   '<circle class="pupil" cx="72.5" cy="89" r="11" fill="url(#zIride)"/>'
-  +   '<circle class="pupil" cx="72.5" cy="89" r="5.2" fill="#1d1520"/>'
-  +   '<circle class="hl" cx="76" cy="84.5" r="4.2" fill="#fff"/>'
-  +   '<circle class="hl" cx="68" cy="94.5" r="2.1" fill="#fff" opacity=".8"/>'
-  +   '<path d="M56 98 Q71 107 86 98" fill="none" stroke="#7a496c" stroke-opacity=".45"'
-  +     ' stroke-width="2.6" stroke-linecap="round"/></g>'
-  + '<g class="eye eyeR">'
-  +   '<ellipse cx="129" cy="88" rx="17" ry="19" fill="#fbf6ef"/>'
-  +   '<circle class="pupil" cx="130.5" cy="89" r="11" fill="url(#zIride)"/>'
-  +   '<circle class="pupil" cx="130.5" cy="89" r="5.2" fill="#1d1520"/>'
-  +   '<circle class="hl" cx="134" cy="84.5" r="4.2" fill="#fff"/>'
-  +   '<circle class="hl" cx="126" cy="94.5" r="2.1" fill="#fff" opacity=".8"/>'
-  +   '<path d="M114 98 Q129 107 144 98" fill="none" stroke="#7a496c" stroke-opacity=".45"'
-  +     ' stroke-width="2.6" stroke-linecap="round"/></g>'
-  + '<g fill="#e6c65c" opacity=".55">'
-  +   '<circle cx="43" cy="112" r="2"/><circle cx="52" cy="119" r="1.6"/>'
-  +   '<circle cx="40" cy="123" r="1.4"/>'
-  +   '<circle cx="157" cy="112" r="2"/><circle cx="148" cy="119" r="1.6"/>'
-  +   '<circle cx="160" cy="123" r="1.4"/></g>'
-  + '<path d="M75 130 Q100 147 127 127" fill="none" stroke="#fbf6ef" stroke-width="6.4"'
-  +   ' stroke-linecap="round"/>'
-  + '</svg>';
-document.getElementById('orb').innerHTML = VOLTO;
-document.getElementById('orbs').innerHTML = VOLTO;
+/* La faccina e' andata in pensione: sul totem era minuscola dentro la
+   palla e faceva giocattolo. Al suo posto un fumetto d'oro col punto di
+   domanda, che dice «qui ci sono le risposte» senza bisogno di leggere. */
+const ICONA_DOMANDE = '<svg class="qico" viewBox="0 0 100 100" aria-hidden="true"><defs>'
+  + '<linearGradient id="qa1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2a0"/><stop offset="1" stop-color="#d4af37"/></linearGradient></defs>'
+  + '<path d="M24 26 h52 a11 11 0 0 1 11 11 v24 a11 11 0 0 1 -11 11 h-28 l-15 13 v-13 h-9 a11 11 0 0 1 -11 -11 v-24 a11 11 0 0 1 11 -11z"'
+  +   ' fill="rgba(212,175,55,.16)" stroke="url(#qa1)" stroke-width="4.5" stroke-linejoin="round"/>'
+  + '<path d="M42 42 a8 8 0 1 1 11 7.4 c-2.4 1 -3 2.4 -3 4.6" fill="none" stroke="url(#qa1)" stroke-width="5" stroke-linecap="round"/>'
+  + '<circle cx="50" cy="62" r="3.4" fill="#f3dc8a"/>'
+  + '<path class="sc1" d="M83 12 l1.8 4.6 4.6 1.8 -4.6 1.8 -1.8 4.6 -1.8 -4.6 -4.6 -1.8 4.6 -1.8z" fill="#f6e2a0"/>'
+  + '<path class="sc2" d="M13 76 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3z" fill="#e2bdd4"/></svg>';
+document.getElementById('orb').innerHTML = ICONA_DOMANDE;
+document.getElementById('orbs').innerHTML = ICONA_DOMANDE;
 
 /* ══════════ LE FRASI DELLA VETRINA ══════════
    Tre famiglie, alternate: una frase per tipo, poi si ricomincia.
@@ -1875,12 +1863,14 @@ const RTAG = {beneficio:'TI SUCCEDE?', curiosita:'CURIOSITÀ', domanda:'LO CHIED
 const COLORI_BUB = ['#e6c65c', '#e2bdd4', '#8fd3ec', '#88d9ae'];
 /* {N} diventa il numero vero delle domande, contato al momento */
 const BUBBLES = [
-  'Hai una domanda? Ho {N} risposte pronte',
-  '{N} domande che ci fanno tutti. Curiosa pure',
-  'Chiedimi tutto: {N} risposte, un tocco ciascuna',
-  'La gravità zero? Gli ioni? {N} risposte qui',
-  'Fa male? Quanto dura? {N} risposte pronte',
-  'Chiedi quello che vuoi: {N} risposte, o esplora'
+  'Hai una domanda? Qui trovi {N} risposte',
+  'Fa male? Quanto dura? Te lo diciamo qui',
+  'Prima volta? Scopri com\'è una seduta',
+  'Gravità zero, ioni, rulli: cosa sono?',
+  'Le {N} domande che ci fanno tutti',
+  'Posso venire anche senza allenarmi?',
+  'Come si vincono le sedute in regalo?',
+  'Curiosità su Zenith? Chiedi pure'
 ];
 
 /* ══════════ LE DOMANDE ══════════
@@ -2039,7 +2029,7 @@ function roamStep(){
   if(roamI % 3 === 0){
     const giro = Math.floor(roamI / 3);
     document.getElementById('bub').innerHTML =
-      BUBBLES[giro % BUBBLES.length].replace('{N}', QA.length) + '<span class="mini">TOCCAMI</span>';
+      BUBBLES[giro % BUBBLES.length].replace('{N}', QA.length) + '<span class="mini">TOCCA E LEGGI</span>';
     document.getElementById('avatar').style
       .setProperty('--tc', COLORI_BUB[giro % COLORI_BUB.length]);
   }
@@ -2081,6 +2071,25 @@ function centroBuild(){
    cambio morbido, quello che si leggerebbe toccandola. Il pensiero e'
    anche lui un tasto: porta alla stessa scheda della porta accesa. */
 let centroI = 0, centroTimer = null, CENTRO_ACCESO = ORDINE_CENTRO[0];
+/* Il riquadro dei premi cambia frase insieme alla porta accesa qui
+   sotto, e ne prende il colore: cinque frasi quanti sono i macchinari.
+   Nessun numero: le regole si scoprono toccando. E mai «clienti»: chi
+   viene da Zenith fa parte di qualcosa, anche chi non si allena qui. */
+const NASTRO = {
+  ems:     ['La costanza ha il suo premio', 'Ogni seduta ti avvicina a una seduta in regalo.'],
+  matrix:  ['Chi si prende cura di sé, vince', 'Più tempo dedichi al tuo benessere, più Zenith ti regala.'],
+  vacufit: ['Il tuo benessere è premiato', 'Chi torna a stare bene con Zenith vince sedute in regalo.'],
+  ems2:    ['Un regalo da condividere', 'Con la costanza vinci anche una seduta da donare a chi vuoi bene.'],
+  riposo:  ['Anche se non ti alleni qui', 'Basta venire a stare bene con Zenith: i premi sono anche tuoi.']
+};
+function disegnaNastro(k){
+  const n = document.getElementById('nastro'), t = document.getElementById('nastrot');
+  if(!n || !t || !NASTRO[k]) return;
+  n.style.setProperty('--nc', COL_MAC[k]);
+  t.classList.add('cambia');
+  setTimeout(()=>{ t.innerHTML = '<b>' + NASTRO[k][0] + '</b><small>' + NASTRO[k][1] + '</small>';
+    t.classList.remove('cambia'); }, 380);
+}
 function centroSpotStep(){
   const carte = [...document.querySelectorAll('#centro .ccard')];
   if(!carte.length) return;
@@ -2089,6 +2098,7 @@ function centroSpotStep(){
     c.getAttribute('onclick').indexOf("'" + k + "'") >= 0));
   CENTRO_ACCESO = k;
   disegnaPensiero(k);
+  disegnaNastro(k);
   centroI++;
 }
 function disegnaPensiero(k){
@@ -2549,23 +2559,25 @@ function pannelloNome(){
 
   if(l.length === 1){
     const c = l[0], chiedo = CHIEDI === c.id;
+    /* «Sono io» sta dentro la scheda, a destra: e' lo stesso punto dove
+       subito dopo compaiono «✓ Sei tu» e poi AVANTI, cosi' il dito tocca
+       sempre li'. «Non sono io» sta sotto, piu' quieto: e' la via d'uscita */
     const scheda = '<div class="trov' + (chiedo ? ' chiedo' : '') + '">'
       + '<span class="av">' + esc(iniziali(nomePieno(c))) + '</span>'
       + '<span class="tx"><span class="t1">' + esc(nomePieno(c)) + '</span>'
       + '<span class="t2">' + telMascherato(c) + ' · ' + ultimaSeduta(c) + '</span></span>'
+      + '<span class="go si" onclick="sonoIo(\'' + c.id + '\')">✓ ' + (chiedo ? 'Sì, sono io' : 'Sono io') + '</span>'
       + '</div>';
     if(chiedo) return '<div class="match uno domanda"><div class="mh"><span class="mn">?</span>'
       + '<span class="mt"><span class="mt1">Sei tu, ' + esc(c.nome) + '?</span>'
       + '<span class="mt2">Prima di andare avanti: questa scheda è la tua?</span></span></div>'
       + scheda
-      + '<div class="scelta pari"><span class="si" onclick="sonoIo(\'' + c.id + '\')">✓ Sì, sono io</span>'
-      + '<span class="no" onclick="nonSonoIo(\'' + c.id + '\', true)">✕ No, è la prima volta</span></div></div>';
+      + '<div class="scelta sotto"><span class="no" onclick="nonSonoIo(\'' + c.id + '\', true)">✕ No, non sono io: è la prima volta</span></div></div>';
     return '<div class="match uno"><div class="mh"><span class="mn">✓</span>'
       + '<span class="mt"><span class="mt1">Sei tu?</span>'
       + '<span class="mt2">Resta una scheda sola: confermala, o dimmi che non sei tu</span></span></div>'
       + scheda
-      + '<div class="scelta pari"><span class="si" onclick="sonoIo(\'' + c.id + '\')">✓ Sono io</span>'
-      + '<span class="no" onclick="nonSonoIo(\'' + c.id + '\')">✕ Non sono io</span></div></div>';
+      + '<div class="scelta sotto"><span class="no" onclick="nonSonoIo(\'' + c.id + '\')">✕ Non sono io</span></div></div>';
   }
 
   if(omonimia(l)){
@@ -2619,26 +2631,30 @@ const PASSI_TUTTI = [
     ['riposo','😌','Nessun allenamento','giornata senza attività']]},
   {k:'zones', q:'Su quali zone lavoriamo?',
    qs:'Tocca la figura, o le etichette qui sotto', zone:true},
-  {k:'goal', q:'Come vuoi sentirti quando esci?', opts:[
-    ['recupero','💪','Recupero muscolare','defaticare e rigenerare dopo il lavoro fisico'],
-    ['sollievo','🎯','Sollievo mirato','tensioni o fastidi in una zona precisa'],
-    ['drenaggio','💧','Leggerezza & drenaggio','gambe leggere, contrasto al gonfiore'],
-    ['relax','🧘','Relax profondo','sciogliere corpo e mente'],
-    ['sonno','🌙','Verso il sonno','prepararsi a una notte migliore'],
-    ['energia','☀️','Energia','attivarsi e ripartire']]},
-  {k:'mood', q:'E adesso, come ti senti?', due:true, opts:[
-    ['sereno','🙂','Sereno','tutto nella norma'],
-    ['stanco','🥱','Stanco','giornata pesante'],
-    ['stressato','😣','Stressato','mente sotto pressione'],
-    ['dolorante','😖','Indolenzito','muscoli che si fanno sentire'],
-    ['carico','🔥','Carico','pieno di energia']]},
-  {k:'pressione', q:'Che pressione desideri oggi?', due:true, opts:[
-    ['dolce','🪶','Più dolce del solito','giornata delicata: alleggeriamo'],
-    ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità'],
-    ['media','⚖️','Pressione media','la regolazione standard']]},
-  {k:'aria', q:'Come vuoi il massaggio oggi?', qs:'Rulli e aria insieme, oppure solo la compressione ad aria', due:true, opts:[
-    ['completo','🌀','Massaggio completo','rulli e aria insieme: il lavoro più profondo'],
-    ['soloaria','💨','Solo aria','compressione ad aria, come una pressoterapia: niente rulli']]},
+  /* spiega:true — la frase grande e' la situazione in cui il cliente si
+     riconosce, e il nome della risposta diventa una targhetta sopra: nel
+     modulo l'occhio va al grassetto, quindi il grassetto deve aiutare a
+     scegliere. I nomi restano quelli (li usa il riepilogo e il gestionale) */
+  {k:'goal', q:'Come vuoi sentirti quando esci?', spiega:true, opts:[
+    ['recupero','💪','Recupero muscolare','Hai fatto fatica e vuoi muscoli di nuovo freschi'],
+    ['sollievo','🎯','Sollievo mirato','C\'è un punto preciso che tira o fa male'],
+    ['drenaggio','💧','Leggerezza & drenaggio','Senti le gambe pesanti o gonfie'],
+    ['relax','🧘','Relax profondo','Vuoi staccare la testa e sciogliere il corpo'],
+    ['sonno','🌙','Verso il sonno','Dormi male o vuoi una sera più tranquilla'],
+    ['energia','☀️','Energia','Ti serve una carica per affrontare la giornata']]},
+  {k:'mood', q:'E adesso, come ti senti?', due:true, spiega:true, opts:[
+    ['sereno','🙂','Sereno','Nessun fastidio particolare: stai bene'],
+    ['stanco','🥱','Stanco','La giornata ti ha svuotato, poche energie'],
+    ['stressato','😣','Stressato','Testa piena, nervi tesi, pensieri che corrono'],
+    ['dolorante','😖','Indolenzito','Muscoli doloranti o rigidi, magari da ieri'],
+    ['carico','🔥','Carico','Tanta energia e voglia di muoverti']]},
+  {k:'pressione', q:'Che pressione desideri oggi?', due:true, spiega:true, opts:[
+    ['dolce','🪶','Più dolce del solito','Oggi è una giornata delicata: la capsula ci va piano'],
+    ['decisa','💎','Più decisa','Vuoi sentire il lavoro in profondità'],
+    ['media','⚖️','Pressione media','Né troppo né poco: la regolazione di base']]},
+  {k:'aria', q:'Come vuoi il massaggio oggi?', qs:'Rulli e aria insieme, oppure solo la compressione ad aria', due:true, spiega:true, opts:[
+    ['completo','🌀','Massaggio completo','Rulli e aria insieme: il lavoro più profondo'],
+    ['soloaria','💨','Solo aria','Solo compressione ad aria, come una pressoterapia: niente rulli']]},
 ];
 
 /* ─── la prima volta ───────────────────────────────────────────────
@@ -3038,7 +3054,7 @@ function disegnaPasso(){
       + '<div class="zhint">Fino a <b>3 zone</b> · la <b>prima</b> guida il programma</div>';
   }
   else {
-    c.innerHTML = '<div class="opts' + (P.due ? ' due' : '') + '">' + P.opts.map(o=>
+    c.innerHTML = '<div class="opts' + (P.due ? ' due' : '') + (P.spiega ? ' spiega' : '') + '">' + P.opts.map(o=>
       '<div class="opt' + (D[P.k] === o[0] ? ' sel' : '') + '" data-v="' + o[0] + '"'
       + ' onclick="scegli(\'' + P.k + '\',\'' + o[0] + '\')">'
       + '<span class="oi">' + o[1] + '</span>'
@@ -3335,12 +3351,15 @@ function premiBoxHTML(){
 function finisci(){
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
   /* chi lo segue ha un nome: «ho passato tutto a Raffaele» vale piu' di
-     «al tuo operatore», e il cliente sa chi aspettare */
+     «al tuo operatore», e il cliente sa chi aspettare. E l'ordine e'
+     quello vero: la capsula non e' gia' pronta ad aspettarlo, prima ci si
+     siede, l'operatore sistema la posizione, e solo dopo imposta il
+     programma */
   const op = operatori().find(x=> x.id === D.op);
   document.getElementById('dmsg').innerHTML = (op
-      ? 'Ho passato tutto a <b>' + esc(op.nome) + '</b>: ti chiama appena la capsula è pronta, già impostata su di te. '
-      : 'Ho passato tutto al tuo operatore: la capsula ti aspetta già impostata su di te. ')
-    + 'Adesso tocca a te — e non c\'è niente di difficile.';
+      ? 'Ho passato tutto a <b>' + esc(op.nome) + '</b>: tra poco ti chiama. '
+      : 'Ho passato tutto al tuo operatore: tra poco ti chiama. ')
+    + 'Ti fa accomodare nella capsula, ti sistema la posizione e solo dopo imposta il tuo programma. Tu pensa a rilassarti.';
   const chips = [NOMI[D.activity], NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione],
                  serveDomandaAria(D) ? NOMI[D.aria] : '']
     .concat(D.zones.length ? D.zones.map(ZNOME)
@@ -3651,7 +3670,7 @@ function disegnaProtocollo(){
     +   '<div class="fm">' + S.timer + '′</div><div class="fd">' + P.d + '</div>'
     +   '<div class="fa">Lascialo lavorare</div></div>'
     + '<div class="fase" style="--fc:#7ecbe8"><div class="fq">ALLA FINE</div>'
-    +   '<div class="fm">⏹</div><div class="fd">Ci dici com\'era l\'intensità: '
+    +   '<div class="fm">🏁</div><div class="fd">Ci dici com\'era l\'intensità: '
     +   'la prossima si regola su di te.</div><div class="fa">💬 Com\'era?</div></div>'
     + '</div>';
 
@@ -3726,21 +3745,6 @@ function reset(){
   go('idle');
 }
 
-/* ─────────── lo sguardo segue il dito ─────────── */
-function seguiSguardo(x, y){
-  const orb = document.getElementById('orb');
-  const r = orb.getBoundingClientRect();
-  if(!r.width) return;
-  const cx = r.left + r.width/2, cy = r.top + r.height/2;
-  const MAX = 4.5;
-  let dx = (x - cx) / (r.width/2), dy = (y - cy) / (r.height/2);
-  const d = Math.hypot(dx, dy) || 1;
-  if(d > 1){ dx/=d; dy/=d; }
-  const tx = (dx * MAX).toFixed(1), ty = (dy * MAX).toFixed(1);
-  orb.querySelectorAll('.pupil, .hl').forEach(el=>
-    el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)');
-}
-addEventListener('pointermove', e=> seguiSguardo(e.clientX, e.clientY));
 
 /* ─────────── il ritorno automatico alla vetrina ───────────
    Un chiosco non deve mai restare fermo sui dati di qualcuno: se nessuno
@@ -3877,7 +3881,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v141.26.09(24)';
+const VETRINA_VERSION = 'v142.26.09(25)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
