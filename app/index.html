@@ -1604,6 +1604,8 @@
   }
   .daypanel .herorot .hr-txt{font-size:14.5px; line-height:1.42; width:100%; min-width:0; margin-block:auto}
   .daypanel .herorot .hr-tag{font-size:9.5px; padding:3px 10px; letter-spacing:.15em}
+  /* sul tablet le frasi stanno in una o due righe: niente vuoto sotto */
+  @media (min-width:700px){ .daypanel .herorot{min-height:86px} }
 
   /* ===== HOME: sezioni raggruppate per argomento ===== */
 /* ══ IL GRADINO, come sulla vetrina ══
@@ -3662,8 +3664,8 @@ function rigaBackup(){
   const mano = giornoCorto(DB.lastBackup), auto = giornoCorto(DB.lastAuto);
   return `<div class="bkline">
     <span class="b1">ultima copia a mano ${mano ? '<b>'+mano+'</b>' : '<i>mai fatta</i>'}</span>
-    <span class="b2${auto?'':' mai'}">ultimo backup automatico ${auto
-      ? '<b>'+auto+'</b>'+quantoFa(DB.lastAuto) : '<i>mai fatto</i>'}</span>
+    ${auto || DB.driveUrl ? `<span class="b2${auto?'':' mai'}">ultimo backup automatico ${auto
+      ? '<b>'+auto+'</b>'+quantoFa(DB.lastAuto) : '<i>mai fatto</i>'}</span>` : ''}
   </div>`;
 }
 
@@ -4642,7 +4644,7 @@ const CK_STYLE = 'a';
 function ckButton(){
   return `<button class="ckbtn v-${CK_STYLE}" onclick="go('checkin')">
     <span class="ck-ic">${icon('enter',26)}</span>
-    <span class="ck-tx"><b>Check-in sessione</b><small>Chi sta entrando in capsula?</small></span>
+    <span class="ck-tx"><b>Check-in seduta</b><small>Chi sta entrando in capsula?</small></span>
     <span class="ck-go"><span class="ck-lb">Inizia</span><i>›</i></span>
   </button>`;
 }
@@ -4685,15 +4687,6 @@ function vHome(){
     ${bkPromemoria()}
     ${fasciaCheckin()}
     ${ckButton()}
-
-    <div class="secgroup g-day">
-      <div class="sg-lab"><span>Ogni giorno</span></div>
-      <div class="tilegrid three">
-        <div class="tile c-clienti" data-c onclick="go('clients')"><div class="ic">${icon('users',26)}</div><div class="tt">Clienti</div><div class="td">Anagrafica e anamnesi</div></div>
-        <div class="tile c-storico" data-c onclick="go('history')"><div class="ic">${icon('history',26)}</div><div class="tt">Storico</div><div class="td">Sessioni effettuate</div></div>
-        <div class="tile c-stat" data-c onclick="go('stats')"><div class="ic">${icon('chart',26)}</div><div class="tt">Statistiche</div><div class="td">Andamento e record</div></div>
-      </div>
-    </div>
 
     <div class="secgroup g-ref">
       <div class="sg-lab"><span>Da consultare</span></div>

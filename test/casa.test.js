@@ -44,7 +44,7 @@ module.exports = async function(browser){
           };
         }));
 
-      tac.t(q + 'i gruppi della home ci sono tutti', m.length === 3, String(m.length));
+      tac.t(q + 'i gruppi della home ci sono tutti', m.length === 2, String(m.length));
       tac.t(q + 'ogni gruppo sta dentro il suo riquadro',
         m.every(x => x.gruppo.bordo > 0 && x.gruppo.raggio >= 16
           && x.gruppo.fondo !== 'rgba(0, 0, 0, 0)'),
