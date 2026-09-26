@@ -3597,7 +3597,7 @@ function costruisciProtocollo(q){
   /* la durata: la prima volta resta sempre una prova breve di 15 minuti */
   if(prima){
     S.timer = 15;
-    const zc0 = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
+    const zc0 = fam + '·' + prog + '·D' + S.fourD + 'A' + S.airbag + (S.ioni ? 'I' : '')
       + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
     return {prog, fam, S, why, zCode: zc0, manualRef, soloAria};
   }
@@ -3610,7 +3610,7 @@ function costruisciProtocollo(q){
   else if(fam === 'Z4' || fam === 'Z5'){ rec = 20; dwhy = 'Sollievo mirato: 20 minuti concentrati sulla zona.'; }
   S.timer = rec; why.push(dwhy);
 
-  const zCode = fam + '·' + prog + '·I' + S.intensita + 'D' + S.fourD + 'A' + S.airbag
+  const zCode = fam + '·' + prog + '·D' + S.fourD + 'A' + S.airbag + (S.ioni ? 'I' : '')
     + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
   return {prog, fam, S, why, zCode, manualRef, soloAria};
 }

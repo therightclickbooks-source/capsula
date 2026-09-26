@@ -171,6 +171,35 @@ module.exports = async function(browser){
   tac.t('con la taratura «troppo leggera» il 4D passa da 3 a 4',
     tarato.fourD === 4, JSON.stringify(tarato));
 
+  /* ── il codice della seduta ──
+     La I non e' piu' un'«intensita'» (ripeteva la D): vuol dire ioni
+     accesi, come C e G. Il codice deve essere lo stesso nei due motori,
+     e c'e' la I solo quando gli ioni sono accesi. */
+  const codici = await Promise.all([
+    g.evaluate(({lista})=> lista.map(q => { const p = buildProtocol(DB.clients[0], q); return p.zCode + '|' + (p.S.ioni?1:0); }), {lista}),
+    v.evaluate(({lista})=> lista.map(q => costruisciProtocollo(Object.assign({clienteId:'cprova'}, q)).zCode), {lista})
+  ]);
+  const forma = codici[0].filter(x => !/^Z\d·P\d\d·D\dA\dI?C?G?\|[01]$/.test(x));
+  tac.t('il codice e\' «Z·P·D·A» e poi le lettere di quello che e\' acceso',
+    forma.length === 0, forma.slice(0, 2).join(' '));
+  const ioni = codici[0].filter(x => { const [z, i] = x.split('|'); return /\d(I)C?G?$/.test(z) !== (i === '1'); });
+  tac.t('la I c\'e\' solo quando gli ioni sono accesi', ioni.length === 0, ioni.slice(0, 2).join(' '));
+  const cdiv = codici[0].filter((x, i) => x.split('|')[0] !== codici[1][i]);
+  tac.t('il totem scrive lo stesso codice del gestionale', cdiv.length === 0, cdiv.slice(0, 2).join(' '));
+
+  /* le sedute salvate con la vecchia I si riscrivono da sole all'apertura */
+  const vecchio = Object.assign(archivio(), {sessions:[
+    {id:'v1', clientId:'cprova', date:'2026-09-01T10:00:00.000Z', zCode:'Z6·P18·I1D2A2CG', settings:{ioni:true}},
+    {id:'v2', clientId:'cprova', date:'2026-09-02T10:00:00.000Z', zCode:'Z2·P07·I3D3A3G', settings:{ioni:false}},
+    {id:'v3', clientId:'cprova', date:'2026-09-03T10:00:00.000Z', zCode:'Z3·P08·D1A3ICG', settings:{ioni:true}}]});
+  const pm = await browser.newPage();
+  await pm.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, vecchio);
+  await pm.goto(GESTIONALE); await pm.waitForTimeout(500);
+  const migrati = await pm.evaluate(()=> DB.sessions.map(s => s.zCode).join(' '));
+  await pm.close();
+  tac.t('i codici vecchi diventano nuovi: la I col numero sparisce, gli ioni diventano I',
+    migrati === 'Z6·P18·D2A2ICG Z2·P07·D3A3G Z3·P08·D1A3ICG', migrati);
+
   console.log('   (' + confrontati + ' combinazioni confrontate, '
     + diversi.filter(x => x !== '…').length + ' divergenze)');
 

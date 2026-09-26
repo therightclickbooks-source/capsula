@@ -1954,6 +1954,27 @@
   .bnav .bni:active{transform:scale(.96)}
   .bnav .bni.on{color:var(--accent-hi)}
   .bnav .bni.on::after{content:""; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--accent-hi)}
+  /* ognuno il suo colore, lo stesso del suo riquadro: si riconoscono a
+     colpo d'occhio. Spenti restano tenui; quello premuto si accende del
+     tutto e il nome prende un alone dello stesso colore. */
+  .bnav .bni.n-home   {--nc:#e3c46a}
+  .bnav .bni.n-clients{--nc:#d38fb6}
+  .bnav .bni.n-history{--nc:#a88cf6}
+  .bnav .bni.n-stats  {--nc:#5fc9ad}
+  .bnav .bni[class*="n-"]{color:var(--faint)}
+  .bnav .bni[class*="n-"] svg{color:color-mix(in srgb, var(--nc) 78%, var(--faint))}
+  .bnav .bni[class*="n-"].on svg{color:var(--nc)}
+  .bnav .bni[class*="n-"].on{background:radial-gradient(60% 55% at 50% 38%, color-mix(in srgb, var(--nc) 20%, transparent), transparent 75%)}
+  html.light .bnav .bni.n-home   {--nc:#a8821a}
+  html.light .bnav .bni.n-clients{--nc:#a24d7d}
+  html.light .bnav .bni.n-history{--nc:#6a4fd2}
+  html.light .bnav .bni.n-stats  {--nc:#23866b}
+  html.light .bnav .bni[class*="n-"].on span{text-shadow:0 0 10px color-mix(in srgb, var(--nc) 45%, transparent)}
+  .bnav .bni[class*="n-"] svg{opacity:.9}
+  .bnav .bni[class*="n-"].on{color:var(--nc)}
+  .bnav .bni[class*="n-"].on svg{opacity:1; filter:drop-shadow(0 0 6px color-mix(in srgb, var(--nc) 70%, transparent))}
+  .bnav .bni[class*="n-"].on span{text-shadow:0 0 8px color-mix(in srgb, var(--nc) 90%, transparent), 0 0 16px color-mix(in srgb, var(--nc) 55%, transparent)}
+  .bnav .bni[class*="n-"].on::after{background:var(--nc); box-shadow:0 0 6px var(--nc)}
   .bnav .fab{
     flex:none; width:56px; height:56px; border-radius:50%; margin:-26px 4px 4px; border:none; cursor:pointer;
     background:linear-gradient(150deg, #a9779a, #7a496c); color:#fff;
@@ -3018,6 +3039,19 @@ const OP_COLORI = ['#7cc6b8','#c084c4','#dba86a','#8fb2c9','#9aa66f','#cf94b4','
   delete DB.pinHash; delete DB.delHash; delete DB.adminHash;
   delete DB.adminEnc; delete DB.pinLock;
   persist();
+})();
+/* La I del codice: da «intensita'» (che ripeteva la D) a «ioni accesi».
+   «Z6·P18·I1D2A2CG» diventa «Z6·P18·D2A2ICG» se gli ioni erano accesi,
+   «Z6·P18·D2A2CG» se no. D e A restano quelli scritti allora. */
+(function migraCodiceIoni(){
+  let cambiato = false;
+  (DB.sessions||[]).forEach(s=>{
+    const z = String(s.zCode || '');
+    const n = z.replace(/·I\d+D(\d+)A(\d+)(C?)(G?)$/, (m, d, a, c, g)=>
+      '·D' + d + 'A' + a + (s.settings && s.settings.ioni ? 'I' : '') + c + g);
+    if(n !== z){ s.zCode = n; cambiato = true; }
+  });
+  if(cambiato) persist();
 })();
 if (DB.codeLen === undefined) DB.codeLen = 4;
 if (DB.secQ === undefined) DB.secQ = null;   /* [{q, aHash} x3] — l'unico modo per rientrare */
@@ -4124,8 +4158,13 @@ function buildProtocol(client, quiz){
   if (prog==='P23' || (quiz.zones||[]).length || (an.zone||[]).length) why.push('💨 ' + aria.testo);
   return { prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, cal, calTuned: !!client.calTuned, aria };
 }
+/* Il codice della seduta: D e A sono i due valori che si regolano sulla
+   capsula (scala 0-3), le lettere dopo dicono cosa e' acceso — I ioni,
+   C calore, G zero gravity. Fino alla v143 la I era un'«intensita'» che
+   la capsula non ha e che ripeteva la D: migraCodiceIoni() riscrive i
+   codici gia' salvati. */
 function zCodeOf(fam, prog, S){
-  return `${fam}·${prog}·I${S.intensita}D${S.fourD}A${S.airbag}${S.calore?'C':''}${S.zerog?'G':''}`;
+  return `${fam}·${prog}·D${S.fourD}A${S.airbag}${S.ioni?'I':''}${S.calore?'C':''}${S.zerog?'G':''}`;
 }
 
 /* ---------- passi guidati con schermate ---------- */
@@ -4434,7 +4473,7 @@ function bottomNav(){
   const act = n => (VIEW.name===n || (n==='clients'&&['client','editClient'].includes(VIEW.name))) ? ' on':'';
   return `<nav class="bnav">${items.map(m=> m===null
     ? `<button class="fab" ${ztAttr({t:'Check-in', s:'comincia una sessione', b:'Scegli chi entra in capsula: il gestionale controlla se può, fa le domande e costruisce la seduta.'}, 'var(--accent-hi)')} onclick="NAV=[]; go('checkin')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`
-    : `<button class="bni${act(m[0])}" onclick="NAV=[]; go('${m[0]}')">${icon(m[1],21)}<span>${m[2]}</span></button>`).join('')}</nav>`;
+    : `<button class="bni n-${m[0]}${act(m[0])}" onclick="NAV=[]; go('${m[0]}')">${icon(m[1],21)}<span>${m[2]}</span></button>`).join('')}</nav>`;
 }
 
 /* Logo ufficiale ZENITH Fitness Lab — PNG originale fornito dal titolare (sfondo reso trasparente) */
@@ -4929,7 +4968,6 @@ function effMacro(c){
 }
 function macroCells(S){
   return `
-   <div class="setcell"><div class="sv">${S.intensita}</div><div class="sl">Intensità</div></div>
    <div class="setcell"><div class="sv">${S.fourD}</div><div class="sl">4D</div></div>
    <div class="setcell"><div class="sv">${S.airbag}</div><div class="sl">Airbag</div></div>
    <div class="setcell"><div class="sv">${S.calore?'ON':'OFF'}</div><div class="sl">Calore</div></div>
@@ -4998,9 +5036,9 @@ const GIUDIZI = {
   ok:   { t:'Perfetta', col:'var(--ok)',
     b:'Il cliente ha detto che l&#39;intensità era <b>giusta così</b>. Il gestionale <b>non cambia niente</b>: la prossima seduta di questa persona riparte esattamente da questi valori.' },
   soft: { t:'Troppo forte', col:'var(--danger)',
-    b:'Il cliente l&#39;ha sentita <b>troppo intensa</b>. Il gestionale <b>abbassa da solo</b> intensità e profondità 4D per la sua prossima seduta.' },
+    b:'Il cliente l&#39;ha sentita <b>troppo intensa</b>. Il gestionale <b>abbassa da solo</b> la profondità 4D per la sua prossima seduta.' },
   hard: { t:'Troppo leggera', col:'#5eb7f0',
-    b:'Il cliente <b>non l&#39;ha sentita abbastanza</b>. Il gestionale <b>alza da solo</b> intensità e profondità 4D per la sua prossima seduta.' },
+    b:'Il cliente <b>non l&#39;ha sentita abbastanza</b>. Il gestionale <b>alza da solo</b> la profondità 4D per la sua prossima seduta.' },
 };
 function ztGiudizio(k){
   const g = GIUDIZI[k]; if(!g) return '';
@@ -5168,7 +5206,7 @@ function sessRow(s, opt){
   const onClick = opt.showClient ? ` onclick="go('client',{id:'${s.clientId}'})"` : '';
   /* il colore della famiglia governa fascia e pastiglia della riga */
   const stile = ` style="--zc:${fam.color}${opt.showClient ? '; cursor:pointer' : ''}"`;
-  /* la sigla esce dal codice: «Z2·P06·I3D2A4» diventa «Z2» + «P06·I3D2A4» */
+  /* la sigla esce dal codice: «Z2·P06·D2A4IC» diventa «Z2» + «P06·D2A4IC» */
   const zc = String(s.zCode || '');
   const resto = zc.indexOf(s.fam + '·') === 0 ? zc.slice(String(s.fam).length + 1) : zc;
   return `<div class="sessrow ${durClass(s)}${(s.fav&&!first)?' isfav fav-'+FAV_STYLE:''}" data-sid="${s.id}"${onClick}${stile}>
@@ -5342,7 +5380,6 @@ function vEditClient(){
     <h2>Macro-parametri di default</h2>
     <p class="hint">Il punto di partenza per ogni sessione di questo cliente. Se non li tocchi, il gestionale li ricava dalle preferenze qui sopra. La durata non c'è: la decide ogni volta il protocollo.</p>
     <div class="card">
-      ${capRow('intensita','Intensità trattamento',M)}
       ${capRow('fourD','Profondità 4D',M)}
       ${capRow('airbag','Forza airbag',M)}
       <div class="paramrow"><div class="pl">Leg Kneading (polpacci)<small>si accende e basta, non ha livelli</small></div><div class="sw ${M.polpacci?'on':''}" onclick="m_onoff('polpacci',this)"></div></div>
@@ -5991,14 +6028,14 @@ function vProposal(){
             ? 'L\'ultima volta è andata perfetta: questi sono i suoi valori giusti, il sistema li mantiene.'
             : (currentProt.cal<0
               ? (currentProt.soloAria ? 'Aveva riferito che era troppo forte: la forza dell\'aria è già stata abbassata dal sistema.'
-                                      : 'Aveva riferito che era troppo forte: intensità e profondità sono già state abbassate dal sistema.')
+                                      : 'Aveva riferito che era troppo forte: la profondità 4D è già stata abbassata dal sistema.')
               : (currentProt.soloAria ? 'Aveva riferito che era troppo leggera: la forza dell\'aria è già stata alzata dal sistema.'
-                                      : 'Aveva riferito che era troppo leggera: intensità e profondità sono già state alzate dal sistema.'))}</small></span>
+                                      : 'Aveva riferito che era troppo leggera: la profondità 4D è già stata alzata dal sistema.'))}</small></span>
         </div>`:''}
         ${nExtra?`<div class="exnote"><span class="exdot">＋</span><span>Questo protocollo ha <b>${nExtra} ${nExtra>1?'sezioni extra facoltative':'sezione extra facoltativa'}</b>: la riconosci dal colore azzurro</span></div>`:''}
         <div class="pwhy" style="margin-top:8px">${P.d}<br><span style="color:var(--faint)">“${P.o}” è il nome che leggi sul touchscreen della capsula</span></div>
-        <div class="zline"><span class="zpill">${zCode}</span><button class="zhelp" onclick="openLegend()" ${ztAttr({t:'Il codice della seduta', s:'la targa di questa sessione', b:'Famiglia, programma e tutte le regolazioni in una riga sola. Serve a <b>ripetere identica</b> una seduta riuscita, anche fra mesi.', extra:'<div class="zt-b" style="margin-top:8px"><b>I</b> intensità · <b>D</b> profondità 4D · <b>A</b> forza airbag (0–3) · <b>C</b> calore acceso · <b>G</b> zero gravity acceso</div>', f:'Tocca per la spiegazione completa'})}>?</button></div>
-        <div class="zkey"><b>I</b> intensità · <b>D</b> profondità 4D · <b>A</b> forza airbag · <b>C</b> calore · <b>G</b> zero gravity — valori sulla scala 0–3</div>
+        <div class="zline"><span class="zpill">${zCode}</span><button class="zhelp" onclick="openLegend()" ${ztAttr({t:'Il codice della seduta', s:'la targa di questa sessione', b:'Famiglia, programma e tutte le regolazioni in una riga sola. Serve a <b>ripetere identica</b> una seduta riuscita, anche fra mesi.', extra:'<div class="zt-b" style="margin-top:8px"><b>D</b> profondità 4D · <b>A</b> forza airbag (0–3) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity acceso</div>', f:'Tocca per la spiegazione completa'})}>?</button></div>
+        <div class="zkey"><b>D</b> profondità 4D · <b>A</b> forza airbag, sulla scala 0–3 · <b>I</b> ioni · <b>C</b> calore · <b>G</b> zero gravity: accesi se la lettera c'è</div>
         <button class="qrcta" onclick="apriQR()">
           <span class="qc-ic">📲</span>
           <span class="qc-tx"><b>Porta il setup sul telefono</b>
@@ -6030,8 +6067,7 @@ function vProposal(){
         <div class="settinggrid">${macroCells(S)}</div>
         ${isRep ? `<div class="card" style="margin-top:10px">
           <p class="hint" style="margin:0 0 6px"><b>Ritocca la ripetizione</b> — i valori qui sotto partono da quelli della sessione originale. Scala della capsula: 0 spento · 1 basso · 2 medio · 3 massimo; oltre il 3 solo a tua discrezione.</p>
-          ${prog==='P23'?`<p class="hint" style="margin:0 0 8px">💨 Seduta solo aria: intensità e profondità 4D regolano i rulli, che qui restano fermi — si ritocca solo la forza dell'aria.</p>`:`
-          <div class="paramrow"><div class="pl">Intensità<small>0–3 · oltre, a tua discrezione</small></div><div class="stepper"><button onclick="repAdj('intensita',-1,6)">−</button><span class="val">${S.intensita}</span><button onclick="repAdj('intensita',1,6)">＋</button></div></div>
+          ${prog==='P23'?`<p class="hint" style="margin:0 0 8px">💨 Seduta solo aria: la profondità 4D regola i rulli, che qui restano fermi — si ritocca solo la forza dell'aria.</p>`:`
           <div class="paramrow"><div class="pl">Profondità 4D<small>0–3 · oltre, a tua discrezione</small></div><div class="stepper"><button onclick="repAdj('fourD',-1,6)">−</button><span class="val">${S.fourD}</span><button onclick="repAdj('fourD',1,6)">＋</button></div></div>`}
           <div class="paramrow"><div class="pl">Forza airbag<small>0–3 · oltre, a tua discrezione</small></div><div class="stepper"><button onclick="repAdj('airbag',-1,6)">−</button><span class="val">${S.airbag}</span><button onclick="repAdj('airbag',1,6)">＋</button></div></div>
           <div class="paramrow"><div class="pl">Calore</div><div class="sw ${S.calore?'on':''}" onclick="repToggle('calore')"></div></div>
@@ -7254,10 +7290,10 @@ function vManual(){
         <div class="gv"><div class="gw">Sessione<small>o seduta</small></div><div class="gd">una volta dentro la capsula, dall'inizio alla fine. Sono la stessa cosa.</div></div>
         <div class="gv"><div class="gw">Programma<small>P01 … P24</small></div><div class="gd">il movimento che la capsula esegue. Sono ventiquattro, ognuno con un nome scritto anche sul touchscreen della macchina.</div></div>
         <div class="gv"><div class="gw">Famiglia<small>Z1 … Z9</small></div><div class="gd">il motivo della sessione: recupero, gambe leggere, schiena, sonno… Serve a raggruppare i programmi che servono alla stessa cosa.</div></div>
-        <div class="gv"><div class="gw">Codice<small>protocollo</small></div><div class="gd">la targa della sessione: famiglia, programma e tutte le regolazioni in una riga sola. Esempio: <b>Z1·P22·I2D2A2CG</b>. Serve a ripetere identica una sessione riuscita.</div></div>
+        <div class="gv"><div class="gw">Codice<small>protocollo</small></div><div class="gd">la targa della sessione: famiglia, programma e tutte le regolazioni in una riga sola. Esempio: <b>Z2·P07·D2A2ICG</b>. Serve a ripetere identica una sessione riuscita.</div></div>
         <div class="gv"><div class="gw">Codice Zenith</div><div class="gd">l'<b>unico</b> codice del gestionale: apre l'app e conferma ogni cancellazione. Si cambia da ${gear} → <b>Sicurezza</b>.</div></div>
         <div class="gv"><div class="gw">Health Check</div><div class="gd">la misura dei parametri col dito sul sensore: funzione generale della capsula, fuori dalla seduta. Capitolo 7.</div></div>
-        <div class="gv"><div class="gw">Macro-parametri</div><div class="gd">i valori di partenza di quella persona (durata, intensità, calore…). Il gestionale li propone, tu li puoi cambiare.</div></div>
+        <div class="gv"><div class="gw">Macro-parametri</div><div class="gd">i valori di partenza di quella persona (4D, forza airbag, calore, ioni…). Il gestionale li propone, tu li puoi cambiare.</div></div>
         <div class="gv"><div class="gw">Airbag</div><div class="gd">i cuscini gonfiabili della capsula. Sono quelli che stringono le gambe: la parte «pressoterapia».</div></div>
         <div class="gv"><div class="gw">Anello 0–6</div><div class="gd">il cerchio graduato che si vede sul touchscreen della capsula. Mostra <b>quanto è forte</b> una regolazione: arriva a 6, ma il protocollo lo usa da 0 a 3. Non è mai una mappa del corpo.</div></div>
         <div class="gv"><div class="gw">Punti<small>e livelli</small></div><div class="gd">10 punti a sessione, non si azzerano mai. I livelli salgono ogni 13 sedute: Iron → Silver → Gold → Platinum → Diamond.</div></div>
@@ -7478,7 +7514,7 @@ pool:[
   </ol>
   <h2>Leggere un codice protocollo</h2>
   <div class="card">
-    <p style="margin:0 0 8px">Esempio <b>Z2·P21·I3D3A3CG</b>: famiglia <b>Z</b> (il perché della seduta) · programma <b>P</b> (P01–P24) · <b>I</b> intensità · <b>D</b> profondità 4D · <b>A</b> forza airbag, tutte sulla scala della capsula 0–3 (4 e oltre solo con la taratura o a mano) · <b>C</b> calore attivo · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
+    <p style="margin:0 0 8px">Esempio <b>Z2·P21·D3A3ICG</b>: famiglia <b>Z</b> (il perché della seduta) · programma <b>P</b> (P01–P24) · <b>D</b> profondità 4D e <b>A</b> forza airbag, sulla scala della capsula 0–3 (4 e oltre solo con la taratura o a mano) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
     <p class="hint" style="margin:0">Le famiglie Z sono <b>9</b>, e la <b>Z1 è il Benvenuto</b>: la prima sessione di ogni cliente è sempre dolce, <b>15 minuti</b>, per far conoscere ogni sensazione.</p>
   </div>
   <h2>Durate e tipo di seduta</h2>
@@ -7497,8 +7533,8 @@ pool:[
  ['Alla prima sessione, quale domanda NON compare?',['L\'attività di oggi','Le zone','La pressione desiderata','L\'umore'],2,'La 5ª (pressione) non compare alla prima sessione: si impara dalle successive.'],
  ['Quante sono le famiglie Z e qual è la Z1?',['7, Z1 = Energia','9, Z1 = Benvenuto','9, Z1 = Schiena','12, Z1 = Relax'],1,'Le famiglie sono 9 e la Z1 è il Benvenuto, dedicata alla prima volta.'],
  ['La prima sessione di un cliente dura…',['15 minuti, dolce','20 minuti standard','25 minuti','30 minuti'],0,'Sempre una prova breve e dolce di 15 minuti, per far conoscere le sensazioni.'],
- ['Nel codice Z2·P21·I3D3A3CG, la lettera I indica…',['Gli ioni','L\'intensità (0–3)','Il numero della seduta','L\'inclinazione'],1,'I = intensità della seduta, sulla scala della capsula 0–3.'],
- ['Cosa indicano C e G nel codice?',['Comfort e grado','Calore attivo e zero Gravity attivo','Cliente e genere','Ciclo e giri'],1,'C = calore lombare acceso, G = zero gravity attivo; se mancano sono spenti.'],
+ ['Nel codice Z2·P21·D3A3ICG, la lettera I indica…',['L\'intensità','Gli ioni negativi accesi','Il numero della seduta','L\'inclinazione'],1,'I = ioni accesi: come C e G, se la lettera manca sono spenti.'],
+ ['Cosa indicano I, C e G nel codice?',['Intensità, comfort e grado','Ioni, calore e zero gravity accesi','Cliente, genere e giorno','Inizio, ciclo e giri'],1,'I = ioni accesi, C = calore lombare acceso, G = zero gravity attivo; se la lettera manca, è spento.'],
  ['«Solo aria» (P23) significa…',['Solo la musica, niente massaggio','Solo compressione ad aria: nessun rullo, né schiena né polpacci né piedi','Aria condizionata attiva','Solo rulli plantari'],1,'P23 Airbag Massage = effetto pressoterapia, senza alcun rullo.'],
  ['Chi decide il programma della sessione?',['Il cliente dal listino','Il motore, incrociando anamnesi e risposte del giorno','Sempre l\'operatore a memoria','Il caso'],1,'Il motore propone; l\'operatore rifinisce e spiega il perché.'],
  ['Quante zone si possono scegliere nel quiz e quale guida?',['Una sola','Fino a 3: la prima guida il programma','Fino a 5, tutte uguali','Nessuna'],1,'Massimo 3 zone: la prima guida il programma, le altre rifiniscono.'],
@@ -8043,15 +8079,15 @@ function vLegend(){
 
     <h2>Come si legge un codice protocollo</h2>
     <div class="card">
-      <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · I2 D2 A2 C G</div>
+      <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · D2 A2 I C G</div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della sessione (vedi elenco sotto)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24; qui “Gently Rub Soothing”, il nome che leggi sul touchscreen)</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità della seduta, scala 0–3</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–3</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">A2</b> — Forza <b>A</b>irbag, scala 0–3</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I</b> — <b>I</b>oni negativi accesi (se la lettera manca, sono spenti)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">C</b> — <b>C</b>alore lombare acceso (se la lettera manca, è spento)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">G</b> — Zero <b>G</b>ravity attivo (se la lettera manca, posizione normale)</span></div>
-      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione. Sulla scala 0–3 il 3 è il massimo del protocollo: un 4 o più compare solo con la taratura «troppo leggera» o se l'hai alzato tu.</p>
+      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione. Nelle sedute salvate fino alla versione 143 c'era una «I» con un numero (per esempio I2D2A2CG): era un'intensità che ripeteva la 4D, ed è stata tolta. Oggi la I senza numero vuol dire ioni accesi. Sulla scala 0–3 il 3 è il massimo del protocollo: un 4 o più compare solo con la taratura «troppo leggera» o se l'hai alzato tu.</p>
     </div>
 
     <h2>Come si arriva a 20,3 milioni <span style="font-weight:400; font-size:14px; color:var(--faint)">— da sapere a memoria per i titubanti</span></h2>
