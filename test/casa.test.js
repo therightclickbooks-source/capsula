@@ -67,6 +67,18 @@ module.exports = async function(browser){
       tac.t(q + 'la home non sborda di lato', await p.evaluate(()=>
         document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1));
 
+      /* il ＋ non ripete il check-in: apre le azioni veloci, e si chiude
+         toccando fuori */
+      await p.click('.bnav .fab'); await p.waitForTimeout(250);
+      const az = await p.evaluate(()=> ({aperto: document.getElementById('modal').classList.contains('open'),
+        voci: [...document.querySelectorAll('#modal .azv b')].map(b=> b.textContent)}));
+      tac.t(q + 'il ＋ apre le azioni veloci, con la nuova seduta in cima',
+        az.aperto && az.voci[0] === 'Nuova seduta' && az.voci.includes('Nuovo cliente') && az.voci.includes('Sedute omaggio'),
+        JSON.stringify(az));
+      await p.mouse.click(5, 5); await p.waitForTimeout(150);
+      tac.t(q + 'toccando fuori le azioni si chiudono',
+        await p.evaluate(()=> !document.getElementById('modal').classList.contains('open')));
+
       await p.close();
     }
   }

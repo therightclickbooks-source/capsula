@@ -2810,6 +2810,31 @@
   @keyframes sheetup{from{transform:translateY(48px); opacity:.5} to{transform:none; opacity:1}}
   @media (prefers-reduced-motion:reduce){ #modal .mcard{animation:none} }
   #modal .mt{font-weight:800; font-size:17px; margin-bottom:6px}
+  /* le azioni veloci del ＋ */
+  #modal .azioni .mt{font-size:19px; margin-bottom:12px}
+  .azv{--ac:var(--accent-hi); width:100%; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer;
+    font-family:inherit; color:var(--text); background:var(--surface2); border:1px solid color-mix(in srgb, var(--ac) 28%, var(--line));
+    border-radius:16px; padding:12px 14px; margin-bottom:10px; transition:transform .12s ease, border-color .12s ease}
+  .azv:active{transform:scale(.98); border-color:var(--ac)}
+  .azv .az-ic{flex:none; width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+    color:var(--ac); background:color-mix(in srgb, var(--ac) 16%, transparent); font-weight:800; font-size:14px}
+  .azv .az-tx{flex:1; min-width:0; display:flex; flex-direction:column; gap:1px}
+  .azv .az-tx b{font-size:15px}
+  .azv .az-tx small{font-size:12px; color:var(--muted)}
+  .azv .az-n{flex:none; min-width:30px; height:30px; padding:0 8px; border-radius:999px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:14px; color:#111; background:var(--ac)}
+  .azv .az-n.zero{background:var(--surface); color:var(--faint); border:1px solid var(--line)}
+  .azv .az-go{flex:none; font-size:22px; color:var(--faint)}
+  .azv.prima{--ac:#fff; background:linear-gradient(135deg, #a9779a, #7a496c); border:none; padding:15px 16px; margin-bottom:12px;
+    box-shadow:0 10px 26px -12px rgba(122,73,108,.8)}
+  .azv.prima .az-ic{background:rgba(255,255,255,.16); color:#fff}
+  .azv.prima .az-tx b{font-size:17px; color:#fff} .azv.prima .az-tx small{color:rgba(255,255,255,.8)} .azv.prima .az-go{color:#fff}
+  html.light .azv .az-ic{color:color-mix(in srgb, var(--ac) 62%, #2a1a26)}
+  html.light .azv.prima .az-ic{color:#fff}
+  .azgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .azgrid .azv{flex-direction:column; align-items:flex-start; gap:8px; margin:0; position:relative; padding:14px}
+  .azgrid .azv .az-n{position:absolute; top:12px; right:12px}
+  .azgrid .azv .az-tx b{font-size:14.5px}
   #modal .mm{font-size:14px; color:var(--muted); margin-bottom:14px}
   #modal input{margin-bottom:14px; text-align:center; letter-spacing:.3em; font-size:20px}
   /* le etichette e le risposte scritte a parole restano allineate a sinistra */
@@ -4472,8 +4497,62 @@ function bottomNav(){
   const items = [['home','house','Home'],['clients','users','Clienti'],null,['history','history','Storico'],['stats','chart','Statistiche']];
   const act = n => (VIEW.name===n || (n==='clients'&&['client','editClient'].includes(VIEW.name))) ? ' on':'';
   return `<nav class="bnav">${items.map(m=> m===null
-    ? `<button class="fab" ${ztAttr({t:'Check-in', s:'comincia una sessione', b:'Scegli chi entra in capsula: il gestionale controlla se può, fa le domande e costruisce la seduta.'}, 'var(--accent-hi)')} onclick="NAV=[]; go('checkin')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`
+    ? `<button class="fab" ${ztAttr({t:'Azioni veloci', s:'da qualunque schermata', b:'Nuova seduta, nuovo cliente, ricerca, sedute omaggio da usare, chi richiamare: tutto a un tocco.'}, 'var(--accent-hi)')} onclick="apriAzioni()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>`
     : `<button class="bni n-${m[0]}${act(m[0])}" onclick="NAV=[]; go('${m[0]}')">${icon(m[1],21)}<span>${m[2]}</span></button>`).join('')}</nav>`;
+}
+
+/* ── IL TASTO ＋ ──
+   Il check-in ha gia' il suo tasto grande in Home: il ＋ apre le azioni
+   veloci, da qualunque schermata. Ogni riquadro dice quanti sono, cosi'
+   si vede subito se c'e' qualcosa da fare. Si chiude toccando fuori. */
+function apriAzioni(){
+  const m = document.getElementById('modal');
+  const tot = checkinAttesa().length, rich = clientiDaRichiamare().length, oggi = statSedute();
+  const om = DB.clients.filter(c=> buoniUsabili(c).length).length;
+  const az = (ic, col, t, sub, fa, n) => `<button class="azv" style="--ac:${col}" onclick="closeModal(); ${fa}">
+      <span class="az-ic">${icon(ic, 22)}</span>
+      <span class="az-tx"><b>${t}</b><small>${sub}</small></span>
+      ${n !== undefined ? `<span class="az-n${n ? '' : ' zero'}">${n}</span>` : ''}
+    </button>`;
+  m.innerHTML = `<div class="mcard azioni">
+    <div class="mt">Cosa vuoi fare?</div>
+    <button class="azv prima" onclick="closeModal(); NAV=[]; go('checkin')">
+      <span class="az-ic">${icon('enter', 24)}</span>
+      <span class="az-tx"><b>Nuova seduta</b><small>check-in: chi sta entrando in capsula?</small></span>
+      <span class="az-go">›</span>
+    </button>
+    ${tot ? az('totem', '#7cc6b8', 'Check-in dal totem', 'hanno già risposto da soli', "NAV=[]; go('home')", tot) : ''}
+    <div class="azgrid">
+      ${az('userplus', '#e3c46a', 'Nuovo cliente', 'scheda e anamnesi', 'NAV=[]; newClient()')}
+      ${az('search', '#d38fb6', 'Cerca un cliente', 'per nome o cognome', "NAV=[]; go('clients'); cercaSubito()")}
+      ${az('gift', '#e2bdd4', 'Sedute omaggio', om === 1 ? '1 cliente ne ha da usare' : om + ' clienti ne hanno da usare', 'apriOmaggi()', om)}
+      ${az('phone', '#e0997d', 'Da richiamare', 'fermi da ' + RICHIAMO_GIORNI + '+ giorni', "NAV=[]; go('stats',{period:0, mira:'richiami'})", rich)}
+      ${az('cal', '#a88cf6', 'Sedute di oggi', 'chi è già passato', 'NAV=[]; apriOggi()', oggi)}
+      ${az('trophy', '#5fc9ad', 'Premi Zenith', 'il regolamento', 'apriRegolamento()')}
+    </div>
+  </div>`;
+  m.classList.add('open');
+  m.onclick = e => { if(e.target === m) closeModal(); };
+}
+function cercaSubito(){
+  requestAnimationFrame(()=>{ const i = document.querySelector('.searchbar input'); if(i) i.focus(); });
+}
+/* chi ha sedute omaggio da usare: un tocco e si apre la sua scheda */
+function apriOmaggi(){
+  const m = document.getElementById('modal');
+  const l = DB.clients.map(c=> ({c, b: buoniUsabili(c)})).filter(x=> x.b.length)
+    .sort((a,b)=> a.b[0].entro < b.b[0].entro ? -1 : 1);
+  m.innerHTML = `<div class="mcard azioni">
+    <div class="mt">🎁 Sedute omaggio da usare</div>
+    <div class="mm">${l.length ? 'Dalla più vicina alla scadenza. Tocca un nome per aprire la sua scheda.' : 'Nessun cliente ha sedute omaggio da usare, per ora.'}</div>
+    ${l.map(({c, b})=> `<button class="azv" style="--ac:#e2bdd4" onclick="closeModal(); NAV=[{name:'home'},{name:'clients'}]; go('client',{id:'${c.id}'})">
+      <span class="az-ic">${esc(initials(c))}</span>
+      <span class="az-tx"><b>${esc(c.nome)} ${esc(c.cognome)}</b><small>${b.length === 1 ? '1 seduta' : b.length + ' sedute'} · la prima scade il ${dataLunga(b[0].entro)}</small></span>
+      <span class="az-go">›</span></button>`).join('')}
+    <div class="mrow"><button class="btn sec" onclick="apriAzioni()">‹ Indietro</button></div>
+  </div>`;
+  m.classList.add('open');
+  m.onclick = e => { if(e.target === m) closeModal(); };
 }
 
 /* Logo ufficiale ZENITH Fitness Lab — PNG originale fornito dal titolare (sfondo reso trasparente) */
@@ -4483,6 +4562,11 @@ function logoIMG(w){ return `<span class="logowrap" style="display:block; width:
 /* Set di icone dell'app — tratto uniforme 1.8, colore ereditato (currentColor) */
 const ICONS = {
   enter:   '<path d="M15 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-4"/><path d="M3 12h10"/><path d="m9 8 4 4-4 4"/>',
+  userplus:'<circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M18 8v6"/><path d="M15 11h6"/>',
+  search:  '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+  gift:    '<rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5V20h14v-7.5"/><path d="M12 8.5V20"/><path d="M12 8.5C10.5 5 7 5 7 7s3 1.5 5 1.5c2 0 5 .5 5-1.5s-3.5-2-5 1.5Z"/>',
+  phone:   '<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5.5a2 2 0 0 1 2-2Z"/>',
+  totem:   '<rect x="7" y="2.5" width="10" height="15" rx="2"/><path d="M10 21.5h4"/><path d="M12 17.5v4"/>',
   users:   '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M15.5 5.6a3.2 3.2 0 0 1 0 6"/><path d="M17.6 15.4c1.8.8 2.9 2.4 2.9 4.6"/>',
   history: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
   chart:   '<path d="M4 20v-4"/><path d="M9.3 20v-7"/><path d="M14.6 20V9"/><path d="M20 20V5"/><path d="M3 20h18"/>',
@@ -5249,7 +5333,7 @@ function askCode(title, message, cb){
   m._cb = cb;
   setTimeout(()=>{ const i=document.getElementById('mcode'); if(i) i.focus(); }, 50);
 }
-function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('open'); m._cb=null; m.innerHTML=''; }
+function closeModal(){ const m=document.getElementById('modal'); m.classList.remove('open'); m._cb=null; m.onclick=null; m.innerHTML=''; }
 function confirmCode(){
   const m = document.getElementById('modal');
   const v = document.getElementById('mcode').value;
@@ -7043,7 +7127,7 @@ function vManual(){
     <div class="card">
       <div class="qrow"><span class="qt"><b>🏠 Home</b> — la schermata di partenza. Se ti perdi, tocca questo.</span></div>
       <div class="qrow"><span class="qt"><b>👥 Clienti</b> — l'elenco delle persone. Da qui si cerca una persona o se ne aggiunge una nuova.</span></div>
-      <div class="qrow"><span class="qt"><b>＋ (il tondo grande)</b> — <b>comincia una sessione</b>. È il tasto che userai più di tutti. Si chiama <b>check-in</b>.</span></div>
+      <div class="qrow"><span class="qt"><b>＋ (il tondo grande)</b> — le <b>azioni veloci</b>, da qualunque schermata: nuova seduta (il <b>check-in</b>), nuovo cliente, cerca un cliente, sedute omaggio da usare, chi richiamare, le sedute di oggi. Accanto a ognuna c'è quanti sono.</span></div>
       <div class="qrow"><span class="qt"><b>🕐 Storico</b> — tutte le sessioni già fatte, dalla più recente.</span></div>
       <div class="qrow" style="border-bottom:none"><span class="qt"><b>📊 Statistiche</b> — i numeri del centro: quante sessioni, chi non torna da un po', quali programmi vanno di più.</span></div>
     </div>
@@ -7128,7 +7212,7 @@ function vManual(){
       <li><b>La persona arriva.</b> Se non è mai venuta, prima crea la sua scheda: capitolo 4.</li>
       <li><b>Apri il check-in.</b> Se la persona ha già risposto da sola sul totem, in Home c'è il suo
         biglietto nella fascia <b>check-in in attesa dal totem</b>: toccalo e le risposte sono già dentro.
-        Altrimenti tocca il <b>＋</b> tondo della barra dei cinque tasti, cerca il nome e toccalo.</li>
+        Altrimenti tocca <b>Check-in seduta</b> in Home (oppure <b>＋</b> → <b>Nuova seduta</b>), cerca il nome e toccalo.</li>
       <li><b>Il gestionale controlla se può entrare.</b> Lo fa da solo, leggendo il questionario.
         Se non può, te lo dice subito e ti spiega perché.</li>
       <li><b>Rispondi alle domande.</b> Sono cinque, una per schermata:
@@ -7286,7 +7370,7 @@ function vManual(){
         <div class="gv"><div class="gw">Scheda</div><div class="gd">la pagina di una persona: dati, questionario di salute, preferenze, sessioni fatte.</div></div>
         <div class="gv"><div class="gw">Questionario<small>di salute</small></div><div class="gd">le domande sulla salute a cui la persona risponde SÌ o NO, e che poi firma. Su carta si chiama <i>scheda anamnestica</i>.</div></div>
         <div class="gv"><div class="gw">Anamnesi</div><div class="gd">la stessa cosa del questionario di salute. È la parola che si usa in ambito sanitario.</div></div>
-        <div class="gv"><div class="gw">Check-in</div><div class="gd">l'inizio di una sessione: si sceglie chi entra in capsula. È il tasto <b>＋</b> tondo della barra dei cinque tasti.</div></div>
+        <div class="gv"><div class="gw">Check-in</div><div class="gd">l'inizio di una sessione: si sceglie chi entra in capsula. È il tasto grande <b>Check-in seduta</b> in Home, oppure <b>＋</b> → <b>Nuova seduta</b>.</div></div>
         <div class="gv"><div class="gw">Sessione<small>o seduta</small></div><div class="gd">una volta dentro la capsula, dall'inizio alla fine. Sono la stessa cosa.</div></div>
         <div class="gv"><div class="gw">Programma<small>P01 … P24</small></div><div class="gd">il movimento che la capsula esegue. Sono ventiquattro, ognuno con un nome scritto anche sul touchscreen della macchina.</div></div>
         <div class="gv"><div class="gw">Famiglia<small>Z1 … Z9</small></div><div class="gd">il motivo della sessione: recupero, gambe leggere, schiena, sonno… Serve a raggruppare i programmi che servono alla stessa cosa.</div></div>
