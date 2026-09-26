@@ -2682,6 +2682,12 @@
   .clientrow.ck .ckmain{padding:14px 16px; align-items:flex-start}
   .ckstars{margin-top:5px; font-size:14px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; min-height:22px}
   .ckstars .stars{color:#d4af37; letter-spacing:-1px}
+  /* l'elenco dell'anagrafica: tutte le righe alte uguali, lo stato solo se serve */
+  .clientrow.anrow .ckmain{align-items:center; min-height:76px}
+  .clientrow.anrow .sub .stars{color:#d4af37; letter-spacing:-1px}
+  .clientrow.anrow .ckstato{margin-top:6px}
+  .frow.due{grid-template-columns:1fr 1fr}
+  @media (max-width:560px){ .frow.due{grid-template-columns:1fr} }
   .ckright{display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex:none}
   /* preferite: un solo elemento (stelle + apri) */
   .favpill{
@@ -4549,7 +4555,7 @@ const HERO_MSGS = [
   {k:'sale', t:'Il calore lombare d’inverno vende da solo: <b>accendilo e lascia parlare la schiena</b>.'},
   // Zenith — unicità e leadership
   {k:'unique', t:'<b>20,3 milioni</b> di combinazioni: la sessione di oggi non esiste da nessun’altra parte al mondo.'},
-  {k:'unique', t:'Siamo i <b>primi</b> ad aver portato una capsula di recupero biomuscolare in un centro fitness. È una chicca: facciamolo percepire.'},
+  {k:'unique', t:'In Italia c’è <b>solo qui</b>: la capsula e il sistema che la regola sono un’esclusiva nazionale del nostro centro. Dillo con semplicità: il valore lo sentono da soli.'},
   {k:'unique', t:'Non è «una poltrona massaggiante»: è un <b>protocollo su misura</b> tra 20,3 milioni di possibilità, con tanto di codice nello storico.'},
   {k:'unique', t:'Il corpo si abitua a ciò che si ripete: <b>qui non si ripete mai niente</b>. Ecco perché continua a funzionare.'},
   {k:'unique', t:'Ogni codice Z è unico: era la seduta di <b>una persona precisa, in un giorno preciso</b>. Irripetibile.'},
@@ -4557,15 +4563,15 @@ const HERO_MSGS = [
   {k:'unique', t:'Zenith legge <b>lo stato d’animo e i bisogni del momento</b>, a ogni singola sessione. Nessun’altra macchina del settore lo fa.'},
   // Procedura — rituale, sicurezza, dati
   {k:'proc', t:'Prima di avviare: <b>tasche vuote, niente gioielli, schiena aderente</b>. La cura dei dettagli è vendita silenziosa.'},
-  {k:'proc', t:'Una seduta dura <b>20–30 minuti</b>; poi almeno 30 di pausa sulla stessa zona. «Di più» non è «meglio».'},
+  {k:'proc', t:'Una seduta dura <b>da 15 a 30 minuti</b>; poi almeno 30 di pausa sulla stessa zona. «Di più» non è «meglio».'},
   {k:'proc', t:'L’anamnesi prima di tutto: la domanda non è «quale programma?», ma «<b>questa persona può usare Zenith?</b>».'},
-  {k:'proc', t:'Esporta il <b>backup</b> almeno una volta a settimana: i dati vivono solo sul dispositivo. Se passa una settimana, il gestionale te lo ricorda da solo in Home.'},
+  {k:'proc', t:'Esporta il <b>backup completo</b> almeno una volta a settimana. Se passa una settimana, il gestionale te lo ricorda da solo in Home.'},
   // Mindset — sicurezza e motivazione dell’operatore
   {k:'mind', t:'Se <b>tu per primo</b> credi che questi minuti siano preziosi, il cliente lo sentirà dalla tua voce prima delle parole.'},
   {k:'mind', t:'Nessuna esperienza richiesta: il gestionale ti guida passo passo. <b>Tu porta il sorriso, alla capsula pensa Zenith.</b>'},
   {k:'mind', t:'La prima seduta di un cliente nuovo? Restagli accanto e <b>anticipa ogni sensazione</b> prima che arrivi.'},
   {k:'mind', t:'Cinque minuti nella <b>Scuola di vendita</b> valgono più di un’ora di tentativi: ripassa le risposte alle obiezioni.'},
-  {k:'mind', t:'Un cliente Silver è a un passo dal Gold: <b>diglielo</b>. I punti motivano più di quanto pensi.'},
+  {k:'mind', t:'Un cliente è vicino al prossimo livello? <b>Diglielo</b>: a ogni livello vince una seduta omaggio.'},
   {k:'mind', t:'La sicurezza si trasmette: conosci i codici, i tempi e il rituale, e <b>il cliente si affida</b>.'},
   {k:'mind', t:'C’è sempre un <b>giorno record</b> da battere: guardalo nelle Statistiche e prova a superarlo oggi.'}
 ];
@@ -4706,7 +4712,7 @@ function vHome(){
     </div>
 
     ${rigaBackup()}
-    <div class="minirem">${icon('info',15)}<span>Sessione max <b>20–30 min</b> · almeno <b>30 min</b> di pausa sulla stessa zona · strumento di benessere, non sostituisce il parere medico.</span></div>`;
+    <div class="minirem">${icon('info',15)}<span>Seduta da <b>15 a 30 min</b> · almeno <b>30 min</b> di pausa sulla stessa zona · strumento di benessere, non sostituisce il parere medico.</span></div>`;
 }
 
 /* ---------- CLIENTI ---------- */
@@ -4728,19 +4734,20 @@ function clientRows(list){
     const pts = clientPoints(c), lv = clientLevel(pts), st = idoneita(c);
     const nSess = DB.sessions.filter(s=>s.clientId===c.id).length;
     const nFav = DB.sessions.filter(s=>s.clientId===c.id && s.fav && !isFirstSession(s)).length;
-    return `<div class="clientrow ck" onclick="go('client',{id:'${c.id}'})">
+    return `<div class="clientrow ck anrow" onclick="go('client',{id:'${c.id}'})">
       <div class="ckmain">
         <div class="avatar" style="background:${lv.color}; color:#111">${esc(initials(c))}</div>
         <div class="cn">
           <div class="nm">${esc(c.nome)} ${esc(c.cognome)}</div>
-          <div class="sub">${nSess} sessioni · <b style="color:var(--accent-strong)">${pts} punti</b>${st!=='ok'?' · ':''}${st!=='ok'?idoneitaChip(st):''}</div>
-          <div class="ckstars">${nFav?`<span class="stars">${'★'.repeat(Math.min(nFav,8))}</span>`:''}</div>
+          <div class="sub">${quanteSedute(nSess)} · <b style="color:var(--accent-strong)">${pts} punti</b>${nFav?` · <span class="stars">${'★'.repeat(Math.min(nFav,8))}</span>`:''}</div>
+          ${st!=='ok'?`<div class="ckstato">${idoneitaChip(st)}</div>`:''}
         </div>
         <span class="badge" style="background:${lv.color}">${lv.emoji} ${lv.name}</span>
       </div>
     </div>`;
   }).join('');
 }
+function quanteSedute(n){ return n === 1 ? '1 seduta' : n + ' sedute'; }
 function refreshList(){
   const q=(VIEW.q||'').toLowerCase();
   document.getElementById('clientlist').innerHTML = clientRows(
@@ -4770,7 +4777,7 @@ function vClient(){
           <div class="avatar chsq" style="background:${lv.color};color:#111">${esc(initials(c))}</div>
           <div class="chtx">
             <div class="chnome">${esc(c.nome)} ${esc(c.cognome)}</div>
-            <div class="chmeta">${c.nascita?('nato/a '+fmtBirth(c.nascita)):''}${c.telefono?(c.nascita?' · ':'')+esc(telCompleto(c)):''}</div>
+            <div class="chmeta">${c.nascita?((c.genere==='F'?'nata ':c.genere==='M'?'nato ':'nato/a ')+fmtBirth(c.nascita)):''}${c.telefono?(c.nascita?' · ':'')+esc(telCompleto(c)):''}</div>
             <div class="chmeta">${(c.attivita||[]).join(' · ')||'—'}</div>
             <div class="chtags">${idoneitaChip(st)}</div>
           </div>
@@ -5268,44 +5275,24 @@ function vEditClient(){
   const showCert = QB.some(([k])=>an[k]);
   return topbar(VIEW.isNew?'Nuovo cliente':'Modifica scheda', VIEW.isNew?'clients':'client') + `
     <h2>Anagrafica</h2>
-    <div class="card"><div class="frow">
+    <div class="card"><div class="frow due">
       <div><label class="f">Nome</label><input type="text" id="f_nome" autocapitalize="words"
         value="${esc(c.nome)}" onblur="this.value=titleCase(this.value)"></div>
       <div><label class="f">Cognome</label><input type="text" id="f_cognome" autocapitalize="words"
         value="${esc(c.cognome)}" onblur="this.value=titleCase(this.value)"></div>
       <div class="bdwrap"><label class="f">Data di nascita</label>${bdPicker(c)}</div>
+      <div><label class="f">Genere</label>
+        <div class="seg" id="seg_gen">${[['F','Donna'],['M','Uomo'],['Altro','Altro']].map(([g,l])=>`<span class="opt ${c.genere===g?'on':''}" onclick="draftClient.genere='${g}'; segRefresh('seg_gen','${g}')" data-v="${g}">${l}</span>`).join('')}</div></div>
       <div class="pfxwrap"><label class="f">Prefisso internazionale</label>${pfxPicker(c)}</div>
       <div><label class="f">Telefono <small class="fhint">senza prefisso</small></label>
         <input type="tel" id="f_tel" value="${esc(c.telefono)}"
           onblur="telNormalizza(this)" placeholder="es. 338 842 0870"></div>
     </div>
-    <label class="f">Genere</label>
-    <div class="seg" id="seg_gen">${['F','M','Altro'].map(g=>`<span class="opt ${c.genere===g?'on':''}" onclick="draftClient.genere='${g}'; segRefresh('seg_gen','${g}')">${g}</span>`).join('')}</div>
     <label class="f">Attività nel centro (anche più di una)</label>
     <div class="seg" id="seg_att">${attivitaChips(c.attivita||[])}</div>
     </div>
 
-    <h2>Preferenze e personalizzazione <small style="font-size:12px; font-weight:400; color:var(--faint)">sempre modificabili, anche dopo la firma</small></h2>
-    <div class="card">
-      <div class="mirablk" id="mira_calore">
-      <div class="paramrow"><div class="pl">Sensibile al calore<small>se sì, il riscaldamento resterà spento</small></div>
-      <div class="sw ${an.caloreSensibile?'on':''}" onclick="an_toggle('caloreSensibile',this)"></div></div>
-      </div>
-      <div class="mirablk" id="mira_zone">
-      <label class="f">Zone di tensione o fastidio ricorrente</label>
-      <div class="seg" id="seg_zone">${ZONE_C.map(z=>`<span class="opt ${(an.zone||[]).includes(z)?'on':''}" onclick="toggleZona('${z}',this)">${z}</span>`).join('')}</div>
-      </div>
-      <div class="mirablk" id="mira_pressione">
-      <label class="f">Pressione preferita</label>
-      <div class="seg" id="seg_int">${['delicato','medio','deciso'].map(v=>`<span class="opt ${an.prefIntensita===v?'on':''}" onclick="draftClient.anamnesi.prefIntensita='${v}'; segRefresh('seg_int','${v}')">${v}</span>`).join('')}</div>
-      </div>
-      <div class="mirablk" id="mira_sonno">
-      <label class="f">Qualità del sonno</label>
-      <div class="seg" id="seg_sonno">${['buono','discontinuo','scarso'].map(v=>`<span class="opt ${an.sonno===v?'on':''}" onclick="draftClient.anamnesi.sonno='${v}'; segRefresh('seg_sonno','${v}')">${v}</span>`).join('')}</div>
-      </div>
-    </div>
-
-    <h2>Questionario di salute <small>la scheda anamnestica che il cliente firma</small></h2>
+    <h2>Anamnesi <small>il questionario di salute che il cliente firma</small></h2>
     ${an.firma ? `<div class="card">
       <div class="siglocked">
         <span class="sigchip">🔏 Anamnesi firmata e bloccata il ${fmtDate(an.firmaData)}</span>
@@ -5333,14 +5320,34 @@ function vEditClient(){
         </div>
       </div>
     </div>`}
-    <div class="card" style="margin-top:12px">
-      <label class="f" style="margin-top:0">Note operatore</label>
+    <h2>Le preferenze che guidano la seduta <small style="font-size:12px; font-weight:400; color:var(--faint)">sempre modificabili, anche dopo la firma</small></h2>
+    <div class="card">
+      <div class="mirablk" id="mira_calore">
+      <div class="paramrow"><div class="pl">Sensibile al calore<small>se sì, il riscaldamento resterà spento</small></div>
+      <div class="sw ${an.caloreSensibile?'on':''}" onclick="an_toggle('caloreSensibile',this)"></div></div>
+      </div>
+      <div class="mirablk" id="mira_zone">
+      <label class="f">Zone di tensione o fastidio ricorrente</label>
+      <div class="seg" id="seg_zone">${ZONE_C.map(z=>`<span class="opt ${(an.zone||[]).includes(z)?'on':''}" onclick="toggleZona('${z}',this)">${cap(z)}</span>`).join('')}</div>
+      </div>
+      <div class="mirablk" id="mira_pressione">
+      <label class="f">Pressione preferita</label>
+      <div class="seg" id="seg_int">${['delicato','medio','deciso'].map(v=>`<span class="opt ${an.prefIntensita===v?'on':''}" onclick="draftClient.anamnesi.prefIntensita='${v}'; segRefresh('seg_int','${v}')" data-v="${v}">${cap(v)}</span>`).join('')}</div>
+      </div>
+      <div class="mirablk" id="mira_sonno">
+      <label class="f">Qualità del sonno</label>
+      <div class="seg" id="seg_sonno">${['buono','discontinuo','scarso'].map(v=>`<span class="opt ${an.sonno===v?'on':''}" onclick="draftClient.anamnesi.sonno='${v}'; segRefresh('seg_sonno','${v}')" data-v="${v}">${cap(v)}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <h2>Note operatore</h2>
+    <div class="card">
       <textarea id="f_note" rows="4" class="fissa"
         placeholder="Cose da ricordare su questo cliente: orari preferiti, obiettivi, come si trova">${esc(c.note||'')}</textarea>
     </div>
 
     <h2>Macro-parametri di default</h2>
-    <p class="hint">Il punto di partenza per ogni sessione di questo cliente. Se non li tocchi, vengono proposti in automatico dalla sezione C.</p>
+    <p class="hint">Il punto di partenza per ogni sessione di questo cliente. Se non li tocchi, il gestionale li ricava dalle preferenze qui sopra. La durata non c'è: la decide ogni volta il protocollo.</p>
     <div class="card">
       ${capRow('intensita','Intensità trattamento',M)}
       ${capRow('fourD','Profondità 4D',M)}
@@ -5350,8 +5357,6 @@ function vEditClient(){
       <div class="paramrow"><div class="pl">Calore lombare</div><div class="sw ${M.calore?'on':''}" onclick="m_toggle('calore',this)"></div></div>
       <div class="paramrow"><div class="pl">Ioni negativi</div><div class="sw ${M.ioni?'on':''}" onclick="m_toggle('ioni',this)"></div></div>
       <div class="paramrow"><div class="pl">Zero gravity</div><div class="sw ${M.zerog?'on':''}" onclick="m_toggle('zerog',this)"></div></div>
-      <div class="paramrow"><div class="pl">Timer</div>
-        <div class="seg" id="seg_timer">${[15,20,25,30].map(t=>`<span class="opt ${M.timer===t?'on':''}" onclick="MDRAFT.timer=${t}; segRefresh('seg_timer','${t}')">${t}′</span>`).join('')}</div></div>
     </div>
     ${VIEW.isNew?'':`<div class="dzcap">
       <div class="dzh"><span>⚠️</span><span>Zona pericolosa<small>l'unica cosa qui dentro che non si può disfare</small></span></div>
@@ -5513,7 +5518,7 @@ function toggleAtt(a){
   if(box) box.innerHTML = attivitaChips(draftClient.attivita);
 }
 function toggleZona(z,el){ const arr=draftClient.anamnesi.zone||(draftClient.anamnesi.zone=[]); const i=arr.indexOf(z); i>=0?arr.splice(i,1):arr.push(z); el.classList.toggle('on'); }
-function segRefresh(id,val){ document.querySelectorAll('#'+id+' .opt').forEach(o=>o.classList.toggle('on', o.textContent.replace('′','')==String(val))); }
+function segRefresh(id,val){ document.querySelectorAll('#'+id+' .opt').forEach(o=>o.classList.toggle('on', (o.dataset.v !== undefined ? o.dataset.v : o.textContent.replace('′',''))==String(val))); }
 /* La scheda parla la scala del display (0 spento · 1 basso · 2 medio ·
    3 massimo) ma in archivio il motore tiene la sua, piu' fine: il passo
    scelto qui si salva col valore che scalaCapsula() riporta allo stesso
@@ -5656,7 +5661,7 @@ function ckRows(list){
         <div class="avatar" style="background:${lv.color};color:#111">${esc(initials(c))}</div>
         <div class="cn">
           <div class="nm">${esc(c.nome)} ${esc(c.cognome)} ${nSess===0?'<span class="chip acc" style="font-size:10.5px">NUOVO — prima volta in capsula</span>':''}</div>
-          <div class="sub">${nSess} sessioni · <b style="color:var(--accent-strong)">${pts} punti</b>${st!=='ok'?' · ':''}${st!=='ok'?idoneitaChip(st):''}</div>
+          <div class="sub">${quanteSedute(nSess)} · <b style="color:var(--accent-strong)">${pts} punti</b>${st!=='ok'?' · ':''}${st!=='ok'?idoneitaChip(st):''}</div>
           ${nFav?`<button class="favpill" onclick="go('client',{id:'${c.id}',favOnly:true}); event.stopPropagation()"
             ${ztAttr({t:'★ Ha delle preferite', s:`${nFav} sedut${nFav>1?'e':'a'} da riproporre`,
               b:'Questa persona ha già delle sedute andate bene. Tocca per <b>vederle</b> prima di costruirne una nuova: spesso la risposta giusta è già lì.',
@@ -6864,8 +6869,9 @@ function vBackupGuide(){
   const sub = t => `<span style="font-weight:400; font-size:13.5px; color:var(--faint)"> — ${t}</span>`;
   return topbar('Salvare e trasferire i dati','settings') + `
     <div class="mindset" style="margin-top:16px">
-      <div class="mt">I dati vivono solo su questo dispositivo</div>
+      <div class="mt">I dati vivono su questo dispositivo</div>
       <p>Il gestionale salva clienti, check-in, sessioni e punti <b>dentro questo dispositivo</b>. Il link è lo stesso ovunque e gli aggiornamenti arrivano da soli, ma <b>i dati non viaggiano da soli</b>: per portarli su un nuovo dispositivo — o per tenere una copia di sicurezza — usa i comandi qui in ${gear} → “Backup ed esportazione dati”.</p>
+      <p>Se in ${gear} è acceso il <b>backup automatico su Drive</b>, il dispositivo ne manda anche una copia al giorno, da solo. Di norma lo fa solo il totem.</p>
     </div>
 
     <h2>A · Salva la copia ${sub('sul dispositivo che ha i dati adesso')}</h2>
@@ -6963,14 +6969,15 @@ function vManual(){
     da subito: la <b>capsula</b> (la macchina) e il <b>gestionale</b> (questo tablet).</p>
 
     <h3>La capsula</h3>
-    <p class="gp">È una poltrona chiusa in cui la persona si sdraia, vestita, per venti o trenta minuti.
-    Dentro fa quattro cose, tutte insieme o solo alcune:</p>
+    <p class="gp">È una poltrona chiusa in cui la persona si sdraia, vestita, da 15 a 30 minuti.
+    Dentro fa cinque cose, tutte insieme o solo alcune:</p>
     <div class="card">
-      <div class="qrow"><span class="qt"><b>Massaggio meccanico</b> — dei rulli scorrono lungo la schiena e le gambe. È la parte che si sente di più.</span></div>
+      <div class="qrow"><span class="qt"><b>Massaggio meccanico</b> — dei rulli scorrono lungo la schiena, dalla nuca ai glutei; altri lavorano i polpacci (<b>Leg Kneading</b>) e i piedi (<b>Foot Roller</b>). È la parte che si sente di più.</span></div>
       <div class="qrow"><span class="qt"><b>Compressione ad aria</b> — dei cuscini gonfiabili (si chiamano <b>airbag</b>) stringono e rilasciano gambe, fianchi e braccia. Serve a far circolare il sangue: è quello che rende le gambe leggere.</span></div>
       <div class="qrow"><span class="qt"><b>Calore</b> — una piastra tiepida sulla zona bassa della schiena.</span></div>
-      <div class="qrow" style="border-bottom:none"><span class="qt"><b>Misura dei parametri</b> — un sensore nel bracciolo destro legge alcuni valori del corpo appoggiandoci un dito. È il <b>Health Check</b>, capitolo 7.</span></div>
+      <div class="qrow" style="border-bottom:none"><span class="qt"><b>Gravità zero e ioni negativi</b> — la poltrona porta le gambe sopra il livello del cuore e scarica la colonna; intanto l'aria si arricchisce di ioni negativi, come al mare.</span></div>
     </div>
+    <p class="hint">Sul bracciolo destro c'è anche un sensore, quello dell'<b>Health Check</b>: è una funzione a parte, <b>fuori dalla seduta</b>. Capitolo 7.</p>
     <div class="call red"><b class="tt">Quello che la capsula NON è</b>
       Non è un dispositivo medico. Non cura niente, non fa diagnosi, non sostituisce il medico.
       Serve a <b>stare meglio</b>: recuperare dopo l'allenamento, alleggerire le gambe, sciogliere la schiena,
@@ -6980,17 +6987,20 @@ function vManual(){
     <p class="gp">Si chiama <b>Zenith Copilot</b>. È un'applicazione che si apre come un sito, e fa <b>tre cose</b>:</p>
     <ol class="msteps">
       <li><b>Tiene la scheda di ogni persona.</b> Dati, telefono, stato di salute, preferenze, storia delle sessioni fatte.</li>
-      <li><b>Decide la sessione di oggi.</b> Tu rispondi a quattro o cinque domande su come sta la persona
-        <i>adesso</i>, e il gestionale sceglie il programma e tutte le regolazioni. Poi ti mostra
+      <li><b>Decide la sessione di oggi.</b> Cinque domande su come sta la persona <i>adesso</i>
+        (quattro la prima volta): le fa lei da sola sul totem, oppure gliele fai tu a voce.
+        Il gestionale sceglie il programma e tutte le regolazioni. Poi ti mostra
         <b>le foto della capsula</b> con sopra i tasti da toccare: non devi conoscere la macchina.</li>
-      <li><b>Registra cosa è stato fatto.</b> Data, ora, programma, note. Così la volta dopo si riparte da lì.</li>
+      <li><b>Registra cosa è stato fatto.</b> Data, ora, programma, note, punti e premi. Così la volta dopo si riparte da lì.</li>
     </ol>
     <div class="call amb"><b class="tt">Due cose da sapere subito</b>
-      <b>1)</b> Il tablet è tuo, non del cliente: il cliente non lo guarda e non lo tocca.
-      Le domande gliele fai tu a voce.<br>
-      <b>2)</b> I dati stanno <b>solo dentro questo dispositivo</b>. Non c'è nessun archivio online.
-      Se il tablet si rompe o si perde, senza una copia i dati sono persi: per questo la copia
-      (il <b>backup</b>) è il primo passo del capitolo 3.</div>
+      <b>1)</b> Il gestionale è tuo: il cliente non lo tocca. Lui risponde alle domande sul <b>totem</b>,
+      la vetrina del centro, oppure a voce con te. Alla fine legge insieme a te la <b>schermata di chiusura</b>:
+      quella è scritta per lui, con il suo nome.<br>
+      <b>2)</b> I dati stanno <b>dentro questo dispositivo</b>. Se nelle Impostazioni è acceso il backup
+      automatico, ogni giorno ne parte da solo una copia su Google Drive. In più, una volta a settimana,
+      si scarica il <b>backup completo</b>: è il quarto passo del capitolo 3. Senza una copia, se il tablet
+      si rompe o si perde, i dati sono persi.</div>
 
     <h2 data-mira="g2">2 · Dove si tocca <small>la schermata spiegata</small></h2>
     <p class="gp">Prima di fare qualsiasi cosa conviene sapere <b>com'è fatta la schermata</b>.
@@ -7069,8 +7079,9 @@ function vManual(){
       <div class="qrow"><span class="qt"><b style="color:var(--danger)">Gruppo rosso</b> — un solo <b>SÌ</b> e la capsula <b>non si può usare</b>. Non è una valutazione tua, non si tratta: il gestionale blocca e basta.</span></div>
       <div class="qrow" style="border-bottom:none"><span class="qt"><b style="color:var(--warn)">Gruppo giallo</b> — un <b>SÌ</b> vuol dire che serve il <b>certificato medico</b>. Finché non arriva, la persona resta bloccata. Quando arriva, lo registri nella scheda e il blocco si toglie da solo.</span></div>
     </div>
-    <p class="gp">Poi si indicano le <b>zone che le interessano</b> (schiena, gambe, spalle…),
-    l'intensità che preferisce e come dorme. Servono al gestionale per scegliere.</p>
+    <p class="gp">Poi si indicano le <b>zone che le interessano</b> (schiena, gambe, spalle…), la pressione
+    che preferisce, se è sensibile al calore e come dorme. Servono al gestionale per scegliere,
+    e restano modificabili anche dopo la firma.</p>
 
     <h3>Terza parte: la firma</h3>
     <p class="gp">La persona firma con il dito, sullo schermo. Da quel momento la scheda
@@ -7082,38 +7093,46 @@ function vManual(){
 
     <h2 data-mira="g5">5 · Una sessione <small>dall'inizio alla fine</small></h2>
     <p class="gp">Questo è il giro che si ripete ogni volta, per ogni persona.
-    Dall'inizio alla fine sono <b>dieci passi</b>, e il gestionale te li fa fare uno per schermata:
+    Dall'inizio alla fine sono <b>dodici passi</b>, e il gestionale te li fa fare uno per schermata:
     non devi ricordarli a memoria.</p>
     <ol class="msteps">
       <li><b>La persona arriva.</b> Se non è mai venuta, prima crea la sua scheda: capitolo 4.</li>
-      <li><b>Tocca il ＋ tondo della barra dei cinque tasti.</b> Si apre il <b>check-in</b>: l'elenco delle persone.
-        Cerca il nome e toccalo.</li>
+      <li><b>Apri il check-in.</b> Se la persona ha già risposto da sola sul totem, in Home c'è il suo
+        biglietto nella fascia <b>check-in in attesa dal totem</b>: toccalo e le risposte sono già dentro.
+        Altrimenti tocca il <b>＋</b> tondo della barra dei cinque tasti, cerca il nome e toccalo.</li>
       <li><b>Il gestionale controlla se può entrare.</b> Lo fa da solo, leggendo il questionario.
         Se non può, te lo dice subito e ti spiega perché.</li>
-      <li><b>Rispondi alle domande.</b> Sono quattro o cinque, una per schermata:
-        cosa ha fatto oggi, dove lo sente, cosa vuole ottenere, come si sente, com'è la pressione.
-        <br>Le fai <b>tu</b> alla persona e tocchi la risposta. La stessa persona in giorni diversi
+      <li><b>Rispondi alle domande.</b> Sono cinque, una per schermata:
+        cosa ha fatto oggi, dove lo sente, cosa vuole ottenere, come si sente, che pressione vuole.
+        La prima volta sono quattro: la pressione non si chiede. Se ci sono operatori registrati,
+        prima c'è la <b>domanda 0</b>: chi segue la seduta.
+        <br>Le fai <b>tu</b> alla persona e tocchi la risposta, oppure le ritrovi già date dal totem. La stessa persona in giorni diversi
         riceve sessioni diverse: è tutto il senso di queste domande.
         <br>Hai sbagliato a toccare? Tocca <b>‹ Precedente</b>, oppure tocca la risposta già data
         nel riepilogo in alto: torni a quella domanda.</li>
       <li><b>Leggi la proposta.</b> Il gestionale sceglie la sessione e <b>ti spiega perché</b>
         l'ha scelta. Se non ti convince, torni indietro e cambi una risposta.</li>
-      <li><b>Regola la seduta con il monitor ancora spento.</b> La persona si accomoda, tu resti
-        accanto e sistemi la posizione dalla <b>pulsantiera sul lato destro</b> della capsula.</li>
+      <li><b>Regola la seduta con il monitor ancora spento.</b> La persona si accomoda — calzini
+        antiscivolo, tasche vuote, niente orologi né gioielli — tu resti accanto e sistemi la posizione
+        dalla <b>pulsantiera sul lato destro</b> della capsula.</li>
       <li><b>Accendi il tablet.</b> La capsula controlla la posizione da sola e fa partire
         <b>un programma di default</b>: tocca subito <b>Pausa</b>, poi <b>Home</b>.</li>
       <li><b>Imposta la capsula seguendo le foto.</b> Scegli il programma (parte appena lo tocchi),
         poi <b>per primo il Timing</b> — se lo cambi dopo, la seduta ricomincia da capo — e solo dopo
         tutto il resto. <b>Come si leggono le foto è spiegato nel capitolo 6</b>: leggilo
         prima della prima sessione vera.</li>
-      <li><b>Parte la sessione.</b> Venti o trenta minuti. Tu resti raggiungibile:
-        alla prima volta di una persona, resta accanto alla capsula.</li>
+      <li><b>Parte la sessione.</b> Da 15 a 30 minuti: la prima volta sono sempre 15.
+        Tu resti <b>accanto al cliente</b>, dall'inizio alla fine.</li>
       <li><b>Chiedi com'era l'intensità.</b> Troppo forte, perfetta o troppo leggera: la risposta
         tara da sola la seduta successiva.</li>
       <li><b>Salva.</b> Tocca <b>OK</b> sul tablet. Data, codice della sessione e note si salvano da soli,
-        e la persona guadagna <b>10 punti</b>, che non si perdono mai.
+        e la persona guadagna <b>10 punti</b>, che non si perdono mai. Se ha una seduta omaggio
+        vinta con i <b>Premi Zenith</b>, il gestionale ti chiede se è questa e scala il buono da solo.
         <br>Se c'è qualcosa da ricordare («preferisce il mattino», «gambe pesanti»), scrivi
         <b>una riga di nota</b> nella sua scheda: la volta dopo vale più di dieci parole.</li>
+      <li><b>Leggi con lui la schermata finale.</b> È scritta al cliente, con il suo nome: cosa
+        aspettarsi nelle prossime ore, quando conviene tornare, quanto manca al prossimo premio.
+        Se con questa seduta sale di livello, parte la festa con i coriandoli.</li>
     </ol>
 
     <h2 data-mira="g6">6 · Le foto della capsula <small>cerchi rossi, quadrati gialli</small></h2>
@@ -7157,6 +7176,10 @@ function vManual(){
       <div class="qrow"><span class="qt">Nella schermata del programma (“Auto”) ce ne sono <b>quattro</b>: profondità <b>4D</b>, <b>forza airbag</b>, <b>schienale</b> e <b>polpacci</b>. Ognuno ha accanto i suoi tasti <b>＋</b> e <b>−</b>: si tocca il tasto e il numero sull'anello si muove.</span></div>
       <div class="qrow" style="border-bottom:none"><span class="qt">Nella schermata “Airbag” ce n'è <b>uno</b>, attorno alla figura del corpo: è la <b>forza della compressione</b>.</span></div>
     </div>
+    <div class="call acc"><b class="tt">La nostra scala si ferma al 3</b>
+      L'anello arriva a 6, ma per 4D e forza degli airbag noi usiamo <b>0 spento · 1 basso · 2 medio · 3 massimo</b>.
+      Il protocollo non va mai oltre il 3: più su ci vai tu, a tua discrezione, oppure ci porta la taratura
+      quando il cliente l'ha trovata troppo leggera.</div>
     <div class="call red"><b class="tt">L'errore da non fare</b>
       L'anello attorno alla figura nella schermata “Airbag” <b>non è una mappa del corpo</b>:
       quei numeri non indicano le parti del corpo.<br>
@@ -7169,7 +7192,7 @@ function vManual(){
     <div class="call acc"><b class="tt">In una riga</b>
       <b style="color:#ff5f5f">● Rosso = premi.</b> &nbsp;
       <b style="color:#f0a832">■ Giallo = regola,</b> e il valore è scritto nella riga con lo stesso numero.
-      &nbsp;<b>I numeri sui segni sono l'ordine; i numeri sugli anelli della capsula sono un livello 0–6.</b><br>
+      &nbsp;<b>I numeri sui segni sono l'ordine; i numeri sugli anelli della capsula sono un livello, e noi lo usiamo da 0 a 3.</b><br>
       Un esempio vero, con le foto della capsula, è nel capitolo <b>12 · Programma su misura</b>.</div>
 
     <h2 data-mira="g7">7 · Health Check <small>la misura della capsula</small></h2>
@@ -7243,8 +7266,10 @@ function vManual(){
         <div class="gv"><div class="gw">Health Check</div><div class="gd">la misura dei parametri col dito sul sensore: funzione generale della capsula, fuori dalla seduta. Capitolo 7.</div></div>
         <div class="gv"><div class="gw">Macro-parametri</div><div class="gd">i valori di partenza di quella persona (durata, intensità, calore…). Il gestionale li propone, tu li puoi cambiare.</div></div>
         <div class="gv"><div class="gw">Airbag</div><div class="gd">i cuscini gonfiabili della capsula. Sono quelli che stringono le gambe: la parte «pressoterapia».</div></div>
-        <div class="gv"><div class="gw">Anello 0–6</div><div class="gd">il cerchio graduato che si vede sul touchscreen della capsula. Mostra <b>quanto è forte</b> una regolazione: 0 minimo, 6 massimo. Non è mai una mappa del corpo.</div></div>
-        <div class="gv"><div class="gw">Punti<small>e livelli</small></div><div class="gd">10 punti a sessione, non si azzerano mai. I livelli salgono: Iron → Silver → Gold → Platinum → Diamond.</div></div>
+        <div class="gv"><div class="gw">Anello 0–6</div><div class="gd">il cerchio graduato che si vede sul touchscreen della capsula. Mostra <b>quanto è forte</b> una regolazione: arriva a 6, ma il protocollo lo usa da 0 a 3. Non è mai una mappa del corpo.</div></div>
+        <div class="gv"><div class="gw">Punti<small>e livelli</small></div><div class="gd">10 punti a sessione, non si azzerano mai. I livelli salgono ogni 13 sedute: Iron → Silver → Gold → Platinum → Diamond.</div></div>
+        <div class="gv"><div class="gw">Premi Zenith</div><div class="gd">a ogni livello il cliente vince una seduta omaggio; se ci arriva entro 100 giorni, anche il Premio Costanza. Il regolamento è nella sua scheda.</div></div>
+        <div class="gv"><div class="gw">Totem<small>o vetrina</small></div><div class="gd">lo schermo per i clienti: presenta la capsula e fa fare il check-in da soli. Le risposte arrivano in Home come biglietto.</div></div>
         <div class="gv"><div class="gw">Backup</div><div class="gd">la copia di tutti i dati in un file. Senza, se il dispositivo si rompe non si recupera niente.</div></div>
         <div class="gv"><div class="gw">Slot</div><div class="gd">uno dei 6 spazi liberi nella memoria della capsula dove si può salvare un programma inventato da te. Capitolo 12.</div></div>
       </div>
@@ -7281,7 +7306,15 @@ function vManual(){
         <div class="fq"><span class="fi">!</span>Ho salvato una sessione sbagliata.</div>
         <ol class="fs">
           <li>${sto} → trova la sessione → tocca l'icona del <b>cestino</b>.</li>
-          <li>Inserisci il <b>Codice Zenith</b>. La sessione sparisce e i suoi 10 punti vengono tolti.</li>
+          <li>Inserisci il <b>Codice Zenith</b>. La sessione sparisce e i suoi 10 punti vengono tolti. Se era una seduta omaggio, il buono torna disponibile.</li>
+        </ol>
+      </div>
+      <div class="fx">
+        <div class="fq"><span class="fi">!</span>Il biglietto del totem dice «NON IN ANAGRAFICA».</div>
+        <ol class="fs">
+          <li>Toccalo: si apre una <b>scheda nuova</b> con il nome già scritto.</li>
+          <li>Compila anagrafica e questionario, fai firmare e salva.</li>
+          <li>Il gestionale torna da solo al check-in, con le risposte che ha dato al totem.</li>
         </ol>
       </div>
       <div class="fx">
@@ -7319,10 +7352,11 @@ function vManual(){
     <h2 data-mira="g11">11 · Regole d'oro <small>valgono sempre</small></h2>
     <div class="card">
       <div class="gold">
-        <div class="gr"><span class="gc">✓</span><span>Una sessione dura al massimo <b>20–30 minuti</b>.</span></div>
+        <div class="gr"><span class="gc">✓</span><span>Una sessione dura <b>da 15 a 30 minuti</b>, mai di più.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Almeno <b>30 minuti di pausa</b> prima di ripetere sulla stessa zona.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Tasche vuote, niente gioielli, <b>scarpe tolte e calzini antiscivolo Zenith</b>.</span></div>
         <div class="gr"><span class="gc">✓</span><span>La <b>prima volta</b> di una persona è sempre leggera: ci pensa il gestionale, non forzare.</span></div>
+        <div class="gr"><span class="gc">✓</span><span>Si resta <b>accanto al cliente</b> dall'inizio alla fine della seduta.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Se durante la sessione qualcosa non va: <b>si ferma, si parla, si riparte</b>.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Ogni seduta porta la <b>lettera di chi l'ha preparata</b> accanto alla data, e ogni nota scritta fuori dalla seduta porta <b>nome e ora</b> di chi l'ha scritta: si sa sempre chi ha fatto cosa. L'operatore si sceglie alla <b>domanda 0</b> del check-in, e le sedute per operatore si contano nelle Statistiche.</span></div>
         <div class="gz">La capsula è uno strumento di benessere. Non sostituisce mai il parere del medico.</div>
@@ -7376,6 +7410,7 @@ function vManual(){
       <div class="pquote"><b>La prima volta</b>«La nostra capsula ha 20,3 milioni di combinazioni possibili: la sessione di oggi è costruita su di te, su come stai adesso. Non esiste un'altra persona al mondo con la tua stessa sessione.»</div>
       <div class="pquote"><b>A chi torna</b>«Il tuo corpo non fa mai due allenamenti uguali: perché dovrebbe ricevere due recuperi uguali? Ogni volta ricalibriamo tutto su come stai oggi.»</div>
       <div class="pquote"><b>Quando mostri il codice</b>«Questo codice è la targa della tua sessione di oggi: unica, tracciata e registrata nel tuo storico.»</div>
+      <div class="pquote"><b>Sull'esclusiva</b>«Questa capsula, con il sistema che la guida, in Italia c'è solo qui da noi. Quello che provi oggi non lo trovi da nessun'altra parte.»</div>
       <div class="pquote"><b>Sul perché funziona</b>«Il corpo si abitua a ciò che si ripete: qui non si ripete mai niente. Per questo l'effetto resta forte sessione dopo sessione.»</div>
     </div>
 
@@ -7396,7 +7431,7 @@ const ACADEMY = [
 {t:'Zenith: il prodotto e il mindset', tag:'IL PRODOTTO', lesson:`
   <div class="mindset" style="margin-top:14px">
     <div class="mt">Il manifesto — il benessere senza sudore</div>
-    <p>Da sempre lo star bene ha un prezzo: <b>sudore, costanza, sacrificio</b>. La capsula Zenith ribalta la regola: per la prima volta puoi fare qualcosa di profondo per il tuo corpo <b>restando fermo</b>. Con le vite frenetiche che conduciamo, 20 minuti in capsula non sono un lusso: sono <b>manutenzione della persona</b>. E noi siamo <b>i primi ad averla portata in un centro fitness</b>: chi la prova da noi non la trova altrove — è un'esclusività da dire con orgoglio.</p>
+    <p>Da sempre lo star bene ha un prezzo: <b>sudore, costanza, sacrificio</b>. La capsula Zenith ribalta la regola: per la prima volta puoi fare qualcosa di profondo per il tuo corpo <b>restando fermo</b>. Con le vite frenetiche che conduciamo, 20 minuti in capsula non sono un lusso: sono <b>manutenzione della persona</b>. E in Italia c'è <b>solo qui</b>: la capsula e il sistema che la regola sono un'<b>esclusiva nazionale del nostro centro di Pompei</b>. Chi la prova da noi non la trova altrove — si dice con semplicità, senza vantarsi.</p>
   </div>
   <h2>Che cos'è davvero la capsula</h2>
   <div class="card">
@@ -7404,7 +7439,7 @@ const ACADEMY = [
       <li><b>Robot massaggiante 4D su binario SL</b>: segue la curva naturale della colonna, <b>dalla nuca ai glutei</b>.</li>
       <li><b>Compressione ad aria</b> su tutto il corpo, <b>calore in fibra di carbone</b> nella zona lombare, <b>rulli plantari</b> per i piedi.</li>
       <li><b>Zero gravity</b>: gambe sollevate <b>sopra il livello del cuore</b>, colonna scaricata.</li>
-      <li><b>Musica immersiva</b> e un <b>sensore dei parametri vitali</b> sul bracciolo destro (per l'Health Check).</li>
+      <li><b>Ioni negativi</b>: l'aria della capsula si arricchisce di ioni, come al mare — aiutano a rilassarsi.</li>
       <li><b>24 programmi</b> (P01–P24), ognuno regolabile in ogni parametro.</li>
     </ul>
   </div>
@@ -7416,7 +7451,7 @@ const ACADEMY = [
   <h2>Le regole che non si trattano</h2>
   <ol class="msteps">
     <li><b>Vendi il dopo, non la macchina.</b> Nessuno compra "una capsula": comprano come si sentiranno all'uscita. Descrivi le sensazioni («gambe che pesano la metà»), mai la meccanica.</li>
-    <li><b>Una sessione dura al massimo 20–30 minuti</b>, poi servono <b>almeno 30 minuti di pausa</b> prima di ripetere sulla stessa zona. "Di più" non è "meglio".</li>
+    <li><b>Una sessione dura da 15 a 30 minuti, mai di più</b>, poi servono <b>almeno 30 minuti di pausa</b> prima di ripetere sulla stessa zona. "Di più" non è "meglio".</li>
     <li><b>La capsula NON è un dispositivo medico.</b> È uno strumento di benessere: mai promettere cure, mai fare diagnosi. In caso di dubbio: prima il medico.</li>
   </ol>`,
 pool:[
@@ -7426,15 +7461,15 @@ pool:[
  ['La capsula è un dispositivo medico?',['Sì, certificato','Solo per la schiena','No: è uno strumento di benessere','Dipende dal programma'],2,'Mai promettere cure né fare diagnosi: è benessere, non medicina. La credibilità è il capitale del centro.'],
  ['Cosa segue il binario SL del robot massaggiante?',['Il perimetro del sedile','La curva naturale della colonna, dalla nuca ai glutei','Solo la zona lombare','Le braccia'],1,'Il binario SL accompagna la colonna dalla nuca fino ai glutei.'],
  ['Che cos\'è lo zero gravity?',['Un massaggio più leggero','Gambe sopra il livello del cuore e colonna scaricata','La modalità silenziosa','Un programma per lo sport'],1,'La posizione zero gravity solleva le gambe sopra il cuore e scarica la colonna.'],
- ['Quanto dura al massimo una sessione?',['10 minuti','20–30 minuti','45 minuti','1 ora'],1,'Massimo 20–30 minuti; poi almeno 30 minuti di pausa prima di ripetere sulla stessa zona.'],
+ ['Quanto dura al massimo una sessione?',['10 minuti','30 minuti','45 minuti','1 ora'],1,'Da 15 a 30 minuti, mai di più; poi almeno 30 minuti di pausa prima di ripetere sulla stessa zona.'],
  ['Perché il corpo "non si assuefà mai"?',['Perché il massaggio è leggero','Perché nessuna sessione è mai uguale, grazie ai 20,3 milioni di combinazioni','Perché si cambia poltrona','Perché si fa solo una volta a settimana'],1,'La varietà delle combinazioni impedisce l\'assuefazione: la sessione è sempre diversa.'],
- ['Cosa significa "siamo i primi"?',['I primi ad aprire al mattino','I primi ad avere una capsula di recupero biomuscolare in un centro fitness','I più economici','I primi a fare massaggi'],1,'Esclusività reale: chi la prova da noi non la trova altrove — va detta con orgoglio.'],
+ ['Cosa vuol dire che Zenith è un\'esclusiva nazionale?',['Che costa più che altrove','Che in Italia la capsula e il sistema che la regola ci sono solo nel nostro centro di Pompei','Che è stata inventata in Italia','Che la possono usare solo gli atleti'],1,'In Italia c\'è solo qui: chi la prova da noi non la trova altrove. Si dice con semplicità, senza vantarsi.'],
  ['Da cosa è generato il calore della capsula?',['Acqua calda','Fibra di carbone','Lampade a infrarossi esterne','Attrito dei rulli'],1,'Il calore è in fibra di carbone, concentrato nella zona lombare.'],
  ['Il cuore del manifesto Zenith è…',['Allenarsi di più','Benessere profondo restando fermi, senza sudore','Sostituire il medico','Vendere abbonamenti'],1,'La rivoluzione: qualcosa di profondo per il corpo senza sudore né sacrificio.'],
  ['Come si descrive la capsula al cliente?',['Coi codici dei programmi','Con le sensazioni («gambe che pesano la metà»)','Con la scheda tecnica','Col numero di rulli'],1,'Sempre sensazioni, mai meccanica né codici: quelli sono per lo staff.'],
  ['Quanti programmi ha la capsula?',['12','18','24','30'],2,'24 programmi, da P01 a P24.'],
  ['20 minuti in capsula sono…',['Un lusso da concedersi raramente','Manutenzione della persona','Tempo perso se non ci si allena','Utili solo agli sportivi'],1,'Il manifesto: non un lusso, ma manutenzione della persona.'],
- ['A cosa serve il sensore sul bracciolo destro?',['A regolare il volume','A leggere i parametri vitali per l\'Health Check','Ad aprire la capsula','A chiamare lo staff'],1,'È il sensore dell\'Health Check: vi si appoggia l\'indice per la lettura dei parametri.'],
+ ['Cosa fanno gli ioni negativi della capsula?',['Scaldano la schiena','Arricchiscono l\'aria: la sensazione è quella dell\'aria pulita, come al mare','Misurano il battito','Gonfiano gli airbag'],1,'Si accendono dalla schermata del programma: aria più fresca, e aiutano a rilassarsi.'],
 ]},
 
 {t:'Il metodo Copilot: da anamnesi a protocollo', tag:'IL METODO', lesson:`
@@ -7445,12 +7480,12 @@ pool:[
   <h2>Il flusso di ogni sessione</h2>
   <ol class="msteps">
     <li><b>Check-in</b>: si seleziona il cliente («chi sta entrando in capsula?»).</li>
-    <li><b>Micro-quiz di 5 domande</b>: attività di oggi, zone, obiettivo, umore, pressione desiderata. <b>Alla prima sessione la 5ª domanda non compare</b>: la pressione si impara dalle sessioni successive.</li>
+    <li><b>Micro-quiz di 5 domande</b>: attività di oggi, zone, obiettivo, umore, pressione desiderata. <b>Alla prima sessione la 5ª domanda non compare</b>: la pressione si impara dalle sessioni successive. Se il cliente ha già risposto da solo sul <b>totem</b>, le risposte arrivano già compilate.</li>
     <li><b>Il motore genera il protocollo</b>: incrocia anamnesi + risposte del giorno e propone famiglia Z, programma e regolazioni — con il <b>perché</b> scritto in chiaro nel riquadro «Perché questo protocollo». L'operatore rifinisce, non inventa.</li>
   </ol>
   <h2>Leggere un codice protocollo</h2>
   <div class="card">
-    <p style="margin:0 0 8px">Esempio <b>Z2·P21·I3D3A3CG</b>: famiglia <b>Z</b> (il perché della seduta) · programma <b>P</b> (P01–P24) · <b>I</b> intensità 0–6 · <b>D</b> profondità 4D 0–6 · <b>A</b> forza airbag 0–6 · <b>C</b> calore attivo · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
+    <p style="margin:0 0 8px">Esempio <b>Z2·P21·I3D3A3CG</b>: famiglia <b>Z</b> (il perché della seduta) · programma <b>P</b> (P01–P24) · <b>I</b> intensità · <b>D</b> profondità 4D · <b>A</b> forza airbag, tutte sulla scala della capsula 0–3 (4 e oltre solo con la taratura o a mano) · <b>C</b> calore attivo · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
     <p class="hint" style="margin:0">Le famiglie Z sono <b>9</b>, e la <b>Z1 è il Benvenuto</b>: la prima sessione di ogni cliente è sempre dolce, <b>15 minuti</b>, per far conoscere ogni sensazione.</p>
   </div>
   <h2>Durate e tipo di seduta</h2>
@@ -7469,7 +7504,7 @@ pool:[
  ['Alla prima sessione, quale domanda NON compare?',['L\'attività di oggi','Le zone','La pressione desiderata','L\'umore'],2,'La 5ª (pressione) non compare alla prima sessione: si impara dalle successive.'],
  ['Quante sono le famiglie Z e qual è la Z1?',['7, Z1 = Energia','9, Z1 = Benvenuto','9, Z1 = Schiena','12, Z1 = Relax'],1,'Le famiglie sono 9 e la Z1 è il Benvenuto, dedicata alla prima volta.'],
  ['La prima sessione di un cliente dura…',['15 minuti, dolce','20 minuti standard','25 minuti','30 minuti'],0,'Sempre una prova breve e dolce di 15 minuti, per far conoscere le sensazioni.'],
- ['Nel codice Z2·P21·I3D3A3CG, la lettera I indica…',['Gli ioni','L\'intensità (0–6)','Il numero della seduta','L\'inclinazione'],1,'I = intensità del trattamento, scala 0–6.'],
+ ['Nel codice Z2·P21·I3D3A3CG, la lettera I indica…',['Gli ioni','L\'intensità (0–3)','Il numero della seduta','L\'inclinazione'],1,'I = intensità della seduta, sulla scala della capsula 0–3.'],
  ['Cosa indicano C e G nel codice?',['Comfort e grado','Calore attivo e zero Gravity attivo','Cliente e genere','Ciclo e giri'],1,'C = calore lombare acceso, G = zero gravity attivo; se mancano sono spenti.'],
  ['«Solo aria» (P23) significa…',['Solo la musica, niente massaggio','Solo compressione ad aria: nessun rullo, né schiena né polpacci né piedi','Aria condizionata attiva','Solo rulli plantari'],1,'P23 Airbag Massage = effetto pressoterapia, senza alcun rullo.'],
  ['Chi decide il programma della sessione?',['Il cliente dal listino','Il motore, incrociando anamnesi e risposte del giorno','Sempre l\'operatore a memoria','Il caso'],1,'Il motore propone; l\'operatore rifinisce e spiega il perché.'],
@@ -7558,7 +7593,7 @@ pool:[
  ['«È solo una poltrona massaggiante»: la risposta vincente punta su…',['Il prezzo','Anamnesi + 5 domande + 20,3 milioni di combinazioni + codice nello storico','La marca','Il colore della capsula'],1,'La personalizzazione documentata chiude il paragone con le poltrone.'],
  ['«Costa troppo»: come si risponde?',['Abbassando subito il prezzo','«Meno di un caffè al giorno: il caffè dura un\'ora, questa ti rimette in piedi per giorni»','Cambiando discorso','Offrendo sessioni gratis illimitate'],1,'Il confronto col caffè sposta il valore dal costo al beneficio.'],
  ['«Non ho tempo»: la risposta è…',['«Torni quando ne ha»','«Esiste proprio per chi non ha tempo: 20 minuti, zero preparazione, zero doccia»','«Ci vogliono 2 ore»','«Allora non fa per lei»'],1,'Il no-tempo è il motivo per cui la capsula esiste.'],
- ['«Sarà la solita moda»: cosa si mette sul tavolo?',['Una brochure','Il confronto dei SUOI parametri ingresso/uscita, oggi, davanti a lui','Le recensioni online','Uno sconto'],1,'Decide coi suoi numeri, non con la nostra parola: è l\'argomento più onesto.'],
+ ['«Sarà la solita moda»: cosa si mette sul tavolo?',['Una brochure','Una prova, e alla fine la sua risposta a «come ti senti rispetto a quando sei entrato?»','Le recensioni online','Uno sconto'],1,'Decide con il suo corpo, non con la nostra parola: è l\'argomento più onesto.'],
  ['«Mi fa impressione»: come si rassicura?',['«Non è niente»','Col protocollo Benvenuto: il più dolce, 15 minuti, operatore accanto, comanda il cliente','Mostrando video','Insistendo'],1,'Prima sessione = Benvenuto: dolcezza, presenza e controllo al cliente.'],
  ['Quando si vende?',['All\'ingresso','All\'uscita, con la sensazione ancora addosso','A metà seduta','Il giorno dopo per messaggio'],1,'Mai all\'ingresso: si vende all\'uscita, dopo il rituale.'],
  ['Dopo il suo «che meraviglia», la frase giusta è…',['«Costa 50 euro»','«Questa sensazione si costruisce con la costanza: ti tengo il posto per la prossima?»','«Alla prossima!»','«Gliel\'avevo detto»'],1,'Si aggancia la costanza e si propone il posto: chiusura naturale.'],
@@ -7581,7 +7616,8 @@ pool:[
     <ul class="tick">
       <li>Ogni sessione vale <b>10 punti</b> — e i punti <b>non si azzerano mai</b>.</li>
       <li>Livelli: Iron → <b>Silver a 130</b> → <b>Gold a 260</b> → <b>Platinum a 390</b> → <b>Diamond a 520</b>.</li>
-      <li>Quando un cliente è vicino al livello successivo, <b>diglielo</b>: i punti motivano più di quanto pensi.</li>
+      <li>A ogni livello il cliente <b>vince 1 seduta omaggio</b>; se ci arriva <b>entro 100 giorni</b>, anche il <b>Premio Costanza</b>. Il regolamento è nella sua scheda, e sul totem.</li>
+      <li>Quando un cliente è vicino al livello successivo, <b>diglielo</b>: i premi motivano più di quanto pensi.</li>
     </ul>
   </div>
   <h2>Le preferite ⭐</h2>
@@ -7599,7 +7635,7 @@ pool:[
   <h2>La cura del sistema</h2>
   <ul class="tick">
     <li>C'è sempre un <b>giorno record</b> da battere: lo trovi nelle Statistiche — sfidarlo motiva il team.</li>
-    <li><b>Backup almeno una volta a settimana</b> dalle Impostazioni: i dati vivono solo sul dispositivo.</li>
+    <li><b>Backup almeno una volta a settimana</b> dalle Impostazioni: i dati vivono sul dispositivo, e la copia automatica su Drive è una rete in più.</li>
   </ul>`,
 pool:[
  ['Quanti punti vale una sessione?',['5','10','20','100'],1,'Ogni sessione registrata vale 10 punti, sempre.'],
@@ -7615,7 +7651,8 @@ pool:[
  ['Dove si salva il programma su misura?',['Nel telefono del cliente','In uno dei 6 slot della capsula, col nome del cliente','Su carta','Nel cloud'],1,'6 slot nella capsula: il programma porta il nome del cliente.'],
  ['La frase del su misura è…',['«Le ho fatto un programma»','«Da oggi Zenith ti riconosce: il tuo programma è salvato col tuo nome»','«Provi questo»','«È il programma standard»'],1,'Il nome sul programma è il momento più alto della fidelizzazione.'],
  ['Dove trovi il giorno record?',['Nelle Statistiche','Nel check-in','Nell\'anamnesi','Nella guida'],0,'Statistiche: c\'è sempre un record da battere — sfidarlo motiva.'],
- ['Ogni quanto va fatto il backup?',['Una volta all\'anno','Almeno una volta a settimana','Mai','Solo a Natale'],1,'I dati vivono solo sul dispositivo: backup settimanale dalle Impostazioni.'],
+ ['Ogni quanto va fatto il backup?',['Una volta all\'anno','Almeno una volta a settimana','Mai','Solo a Natale'],1,'I dati vivono sul dispositivo: backup completo ogni settimana dalle Impostazioni.'],
+ ['Cosa vince un cliente a ogni livello?',['Niente, solo il nome del livello','1 seduta omaggio, e il Premio Costanza se ci arriva entro 100 giorni','Uno sconto sul pacchetto','Un gadget del centro'],1,'A ogni livello c\'è sempre una seduta omaggio; il Premio Costanza premia chi ci arriva entro 100 giorni.'],
  ['Il cliente torna dove…',['Costa meno','Si sente ricordato: nome, preferenze, nota personale','C\'è meno fila','Ci sono più specchi'],1,'Memoria + attenzione: è il cuore della fidelizzazione Zenith.'],
 ]},
 ];
@@ -8016,12 +8053,12 @@ function vLegend(){
       <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · I2 D2 A2 C G</div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della sessione (vedi elenco sotto)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24; qui “Gently Rub Soothing”, il nome che leggi sul touchscreen)</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità del trattamento, scala 0–6</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–6</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">A2</b> — Forza <b>A</b>irbag, scala 0–6</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I2</b> — <b>I</b>ntensità della seduta, scala 0–3</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–3</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">A2</b> — Forza <b>A</b>irbag, scala 0–3</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">C</b> — <b>C</b>alore lombare acceso (se la lettera manca, è spento)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">G</b> — Zero <b>G</b>ravity attivo (se la lettera manca, posizione normale)</span></div>
-      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione.</p>
+      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione. Sulla scala 0–3 il 3 è il massimo del protocollo: un 4 o più compare solo con la taratura «troppo leggera» o se l'hai alzato tu.</p>
     </div>
 
     <h2>Come si arriva a 20,3 milioni <span style="font-weight:400; font-size:14px; color:var(--faint)">— da sapere a memoria per i titubanti</span></h2>
@@ -8036,7 +8073,7 @@ function vLegend(){
       <div class="qrow"><span class="qt">Zero gravity · acceso / spento</span><span class="chip acc">× 2</span></div>
       <div class="qrow"><span class="qt">Leg Kneading · acceso / spento</span><span class="chip acc">× 2</span></div>
       <div class="qrow"><span class="qt">Foot Roller · spento, oppure livello 1 / 2 / 3 (Plantar Roller Adjustment)</span><span class="chip acc">× 4</span></div>
-      <div class="qrow"><span class="qt"><b>Dalla regolazione manuale</b> (Up movement)</span></div>
+      <div class="qrow"><span class="qt"><b>Dalla regolazione manuale</b> (Up e Down movement)</span></div>
       <div class="qrow"><span class="qt">Tecnica di massaggio · Kneading, Tapping, Tap, Massage, Knead and Knock, Shiatsu</span><span class="chip acc">× 6</span></div>
       <div class="qrow"><span class="qt">Larghezza dei rulli · Narrow / Medium / Wide</span><span class="chip acc">× 3</span></div>
       <div class="qrow"><span class="qt">Intervallo · corpo intero / zona locale / punto fisso</span><span class="chip acc">× 3</span></div>
@@ -8069,22 +8106,20 @@ function vLegend(){
 
     <h2>I parametri regolabili e le loro scale</h2>
     <div class="card">
-      <div class="qrow"><span class="qt">Intensità trattamento<small style="display:block;color:var(--faint)">0 spento · 1 basso · 2 medio · 3 massimo — oltre, solo a mano</small></span><span class="chip acc">0 – 6</span></div>
-      <div class="qrow"><span class="qt">Profondità 4D dei rulli<small style="display:block;color:var(--faint)">0 spento · 1 basso · 2 medio · 3 massimo — oltre, solo a mano</small></span><span class="chip acc">0 – 6</span></div>
-      <div class="qrow"><span class="qt">Forza airbag<small style="display:block;color:var(--faint)">0 spento · 1 basso · 2 medio · 3 massimo — oltre, solo a mano</small></span><span class="chip acc">0 – 6</span></div>
+      <div class="qrow"><span class="qt">Profondità 4D dei rulli<small style="display:block;color:var(--faint)">per noi 0 spento · 1 basso · 2 medio · 3 massimo — oltre, solo a mano o con la taratura</small></span><span class="chip acc">anello 0 – 6</span></div>
+      <div class="qrow"><span class="qt">Forza airbag<small style="display:block;color:var(--faint)">per noi 0 spento · 1 basso · 2 medio · 3 massimo — oltre, solo a mano o con la taratura</small></span><span class="chip acc">anello 0 – 6</span></div>
       <div class="qrow"><span class="qt">Calore lombare</span><span class="chip acc">ON / OFF</span></div>
       <div class="qrow"><span class="qt">Ioni negativi</span><span class="chip acc">ON / OFF</span></div>
       <div class="qrow"><span class="qt">Zero gravity</span><span class="chip acc">ON / OFF</span></div>
       <div class="qrow"><span class="qt">Timer</span><span class="chip acc">15 · 20 · 25 · 30 min</span></div>
-      <div class="qrow"><span class="qt">Rulli plantari (Foot Roller)<small style="display:block;color:var(--faint)">si accende dalla schermata del programma · livello 1–3 da Up movement</small></span><span class="chip acc">spento · 1 – 3</span></div>
+      <div class="qrow"><span class="qt">Rulli plantari (Foot Roller)<small style="display:block;color:var(--faint)">nella seduta si accende e basta · il livello 1–3 c'è solo nella rifinitura manuale (Down movement)</small></span><span class="chip acc">acceso / spento</span></div>
       <div class="qrow"><span class="qt">Frizione polpacci (Leg Kneading)</span><span class="chip acc">solo acceso / spento</span></div>
-      <div class="qrow"><span class="qt">Musica<small style="display:block;color:var(--faint)">non si usa in seduta: sostituisce il programma</small></span><span class="chip acc">6 ambienti + Bluetooth</span></div>
-      <div class="qrow"><span class="qt">Health Check (sensore sul bracciolo destro)<small style="display:block;color:var(--faint)">funzione generale, fuori dalla seduta</small></span><span class="chip acc">5 parametri</span></div>
-      <div class="qrow"><span class="qt">Tecnica di massaggio (Up movement)</span><span class="chip acc">6 tecniche</span></div>
+      <div class="qrow"><span class="qt">Tecnica di massaggio (Up e Down movement)</span><span class="chip acc">6 tecniche</span></div>
       <div class="qrow"><span class="qt">Larghezza dei rulli</span><span class="chip acc">Narrow · Medium · Wide</span></div>
       <div class="qrow"><span class="qt">Intervallo (Massage interval adjustment)</span><span class="chip acc">intero · locale · fisso</span></div>
       <div class="qrow"><span class="qt">Velocità del massaggio</span><span class="chip acc">1 – 5</span></div>
-      <p class="hint" style="margin:12px 0 0">Sulla capsula esistono anche le posture G1–G3 e la selezione delle zone airbag: l'app le indica nei passi guidati quando servono.</p>
+      <p class="hint" style="margin:12px 0 0">Sulla capsula esistono anche le posture G1–G3 e la selezione delle zone airbag: l'app le indica nei passi guidati quando servono.
+        Nella seduta non si usano <b>Music</b>, che sostituisce il programma con uno suo, e <b>Health Check</b>, che è una funzione a parte (capitolo 7 della guida).</p>
     </div>`;
 }
 
@@ -8807,7 +8842,7 @@ function vSettings(){
         <span class="lvtx"><b>${L.name}</b><small>${L.d}</small></span>
         <span class="lvpt">${L.pts===0?'0':'da '+L.pts}<small>punti</small></span>
       </div>`).join('')}
-      <p class="hint" style="margin:12px 0 0">Ogni sessione vale <b>10 punti</b> e i punti non si azzerano mai: il livello può solo salire.</p>
+      <p class="hint" style="margin:12px 0 0">Ogni sessione vale <b>10 punti</b> e i punti non si azzerano mai: il livello può solo salire. A ogni livello il cliente vince <b>una seduta omaggio</b> (Premi Zenith).</p>
     </div>
     <h2>Aspetto</h2>
     <div class="card">
@@ -9122,7 +9157,7 @@ const MASCOT_TIPS = [
   'Prima sessione di un nuovo cliente? Resta accanto alla capsula e <b>anticipa ogni sensazione</b> prima che arrivi.',
   '<b>Zero gravity</b> è il tasto magia: gambe sopra il cuore, colonna scaricata. Quasi sempre un sì.',
   'Gambe pesanti stasera? Proponi la compressione ad aria: <b>«la nostra pressoterapia in capsula»</b>.',
-  'Un cliente Silver è a metà strada dal Gold: <b>diglielo</b> — i punti motivano più di quanto pensi.',
+  'Un cliente è vicino al prossimo livello? <b>Diglielo</b>: a ogni livello vince una seduta omaggio.',
   'Dopo un leg day su Matrix: <b>P10 o P08</b> e domani le scale non faranno paura.',
   'Il calore lombare d\'inverno vende da solo: <b>accendilo e lascia parlare la schiena</b>.',
   'EMS2 fatto? Gambe sotto carico per tutta la camminata: <b>compressione e rulli plantari</b> chiudono il cerchio.',
