@@ -83,10 +83,11 @@ function rispondi(p){
   const nome = pulito(p.nome), cognome = pulito(p.cognome);
   const chi = (nome + ' ' + cognome).trim();
   const io = nome && cognome ? chiave(chi) : '';
-  const ss = SpreadsheetApp.getActive();
   const oggi = Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd');
+  /* guardare i posti e' quasi tutto il lavoro: si risponde dalla copia, senza nemmeno aprire il foglio */
   if(p.azione !== 'prenota' && p.azione !== 'annulla' && p.azione !== 'attesa') return stato(io, oggi);
   if(!io) return {ok:false, messaggio:'Scrivi nome e cognome.'};
+  const ss = SpreadsheetApp.getActive();
 
   /* l'elenco degli iscritti, se c'e', decide chi puo' prenotare */
   const iscritti = ss.getSheetByName('Iscritti').getDataRange().getValues().slice(1)
@@ -95,9 +96,14 @@ function rispondi(p){
     return {ok:false, messaggio:'Non ti troviamo tra gli iscritti con pacchetto attivo: controlla come hai scritto nome e cognome, o chiedici in reception.'};
 
   const posti = ss.getSheetByName('Posti');
+  /* Le mail partono DOPO il blocco: spedirne una richiede un secondo o due, e
+     tenere fermi gli altri per tutto quel tempo, con tanti che prenotano
+     insieme, vuol dire metterli in fila. */
+  const posta = [];
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try{
+    svuotaCopia();   /* da qui il foglio cambia: la copia dei posti non vale piu' */
     const dati = posti.getDataRange().getValues();
     const mia = dati.findIndex((r, i) => i > 0 && chiave(r[2]) === io);
     /* il giorno stesso della prova non si cambia piu' */
@@ -108,7 +114,7 @@ function rispondi(p){
       const att = ss.getSheetByName('Attesa');
       if(!att.getDataRange().getValues().some((r, i) => i > 0 && chiave(r[0]) === io)){
         att.appendRow([chi, '', Utilities.formatDate(new Date(), FUSO, 'dd/MM HH:mm')]);
-        avvisa('Zenith · lista d\'attesa: ' + chi, ['In lista d\'attesa: ' + chi]);
+        posta.push(['Zenith · lista d\'attesa: ' + chi, ['In lista d\'attesa: ' + chi]]);
       }
     }
     if(p.azione === 'prenota'){
@@ -119,32 +125,58 @@ function rispondi(p){
       if(mia > 0 && mia !== riga){ prima = ilGiorno(String(dati[mia][0]), String(dati[mia][1])); posti.getRange(mia + 1, 3, 1, 3).clearContent(); }
       posti.getRange(riga + 1, 3, 1, 3).setValues([[chi, '', Utilities.formatDate(new Date(), FUSO, 'dd/MM HH:mm')]]);
       const q = ilGiorno(String(dati[riga][0]), String(dati[riga][1]));
-      avvisa('Zenith · ' + (prima ? 'prova spostata' : 'nuova prova') + ': ' + q + ' · ' + chi,
+      posta.push(['Zenith · ' + (prima ? 'prova spostata' : 'nuova prova') + ': ' + q + ' · ' + chi,
         [(prima ? 'Prova SPOSTATA' : 'Nuova prova prenotata'), '', 'Quando: ' + q, 'Chi: ' + chi]
-          .concat(prima ? ['', 'Prima era: ' + prima + ' (ora libero)'] : []));
+          .concat(prima ? ['', 'Prima era: ' + prima + ' (ora libero)'] : [])]);
     }
     if(p.azione === 'annulla' && mia > 0){
       const q = ilGiorno(String(dati[mia][0]), String(dati[mia][1]));
       posti.getRange(mia + 1, 3, 1, 3).clearContent();
-      avvisa('Zenith · prova annullata: ' + q + ' · ' + dati[mia][2], ['Prova ANNULLATA (orario di nuovo libero)', '', 'Quando: ' + q, 'Chi: ' + dati[mia][2]]);
+      posta.push(['Zenith · prova annullata: ' + q + ' · ' + dati[mia][2], ['Prova ANNULLATA (orario di nuovo libero)', '', 'Quando: ' + q, 'Chi: ' + dati[mia][2]]]);
     }
     SpreadsheetApp.flush();
+    svuotaCopia();   /* e di nuovo a modifica fatta: chi guarda subito dopo vede il posto preso */
   } finally { lock.releaseLock(); }
+  posta.forEach(m => avvisa(m[0], m[1]));
   return stato(io, oggi, nome);
 }
 
-function stato(io, oggi, nome){
+/* ── la copia dei posti ──
+   Quasi tutte le richieste sono «stato»: la pagina chiede quali orari sono
+   liberi. Aprire il foglio e leggerlo e' la parte piu' lenta, quindi le righe
+   restano per pochi secondi nella cache di Google e le risposte successive
+   partono da li'. Chi prenota, cambia o annulla svuota la copia. Nella copia
+   ci sono anche i nomi, ma non escono mai: la pagina riceve solo libero o
+   preso. */
+const COPIA_SEC = 30;
+function righe(){
+  const cache = CacheService.getScriptCache();
+  const copia = cache.get('righe');
+  if(copia){ try{ return JSON.parse(copia); }catch(e){} }
   const ss = SpreadsheetApp.getActive();
-  const dati = ss.getSheetByName('Posti').getDataRange().getValues().slice(1);
+  const posti = ss.getSheetByName('Posti').getDataRange().getValues().slice(1).map(r => ({
+    id: String(r[6]),
+    data: String(r[0]).length > 10 ? Utilities.formatDate(new Date(r[0]), FUSO, 'yyyy-MM-dd') : String(r[0]),
+    ora: typeof r[1] === 'object' ? Utilities.formatDate(r[1], FUSO, 'HH:mm') : String(r[1]),
+    chi: String(r[2]).trim(),
+    chiuso: !!String(r[5]).trim()
+  }));
+  const attesa = ss.getSheetByName('Attesa').getDataRange().getValues().slice(1).map(r => chiave(r[0]));
+  const out = {posti, attesa};
+  try{ cache.put('righe', JSON.stringify(out), COPIA_SEC); }catch(e){}
+  return out;
+}
+function svuotaCopia(){ try{ CacheService.getScriptCache().remove('righe'); }catch(e){} }
+
+function stato(io, oggi, nome){
+  const R = righe();
   let mia = null, suo = nome || '';
   const posti = [];
-  dati.forEach(r => {
-    const data = String(r[0]).length > 10 ? Utilities.formatDate(new Date(r[0]), FUSO, 'yyyy-MM-dd') : String(r[0]);
-    const ora = typeof r[1] === 'object' ? Utilities.formatDate(r[1], FUSO, 'HH:mm') : String(r[1]);
-    const p = {id: String(r[6]), data, ora, libero: !String(r[2]).trim()};
-    if(io && chiave(r[2]) === io){ mia = p; if(!suo) suo = String(r[2]).split(' ')[0]; }
-    if(!String(r[5]).trim() && data >= oggi) posti.push(p);
+  R.posti.forEach(r => {
+    const p = {id: r.id, data: r.data, ora: r.ora, libero: !r.chi};
+    if(io && chiave(r.chi) === io){ mia = p; if(!suo) suo = r.chi.split(' ')[0]; }
+    if(!r.chiuso && r.data >= oggi) posti.push(p);
   });
-  const inAttesa = !!io && ss.getSheetByName('Attesa').getDataRange().getValues().some((r, i) => i > 0 && chiave(r[0]) === io);
+  const inAttesa = !!io && R.attesa.includes(io);
   return {ok:true, nome: suo, posti, mia, inAttesa};
 }
