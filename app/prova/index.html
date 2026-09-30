@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Zenith Fitness Lab">
 <meta property="og:title" content="Un regalo per te 🎁 La prima prova è gratis">
-<meta property="og:description" content="Solo dal 5 al 10 ottobre, riservata a chi si allena con noi. I posti non bastano per tutti.">
+<meta property="og:description" content="Sabato 3, ore 8–12: aperitivo insieme. Prima prova gratis dal 5 al 10 ottobre.">
 <meta property="og:url" content="https://therightclickbooks-source.github.io/capsula/app/prova/">
 <meta property="og:image" content="https://therightclickbooks-source.github.io/capsula/app/prova/regalo.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -106,6 +106,8 @@ input.tel:focus{border-color:var(--oro)}
 .ora.preso{cursor:default; color:rgba(255,255,255,.25); background:transparent; border-style:dashed; border-color:rgba(255,255,255,.1); text-decoration:line-through}
 .ora.mio{border-color:var(--oro); color:var(--oro); background:rgba(230,198,92,.12); cursor:default}
 .ora.mio::after{content:"IL TUO"; display:block; font-size:9.5px; letter-spacing:.16em; margin-top:1px}
+.evento{margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(230,198,92,.1); border:1.5px solid rgba(230,198,92,.45); display:flex; flex-direction:column; gap:2px; font-size:14.5px; line-height:1.4; color:var(--muted)}
+.evento b{color:var(--oro); font-size:16.5px}
 .cambio{display:none; margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(230,198,92,.09); border:1.5px solid rgba(230,198,92,.4); font-size:14.5px; line-height:1.45; color:var(--muted)}
 .cambio b{color:var(--oro)}
 .cambio .tieni{display:block; margin-top:8px; background:none; border:none; padding:0; font:inherit; font-size:14px; font-weight:700; color:var(--oro); text-decoration:underline; cursor:pointer}
@@ -155,6 +157,7 @@ input.tel:focus{border-color:var(--oro)}
       <span class="tag">🔒 ACCESSO RISERVATO</span>
       <h1 id="titolo">La novità del nostro centro: <em>provala per primo.</em></h1>
       <p class="lead" id="lead">La prima prova è un nostro regalo, gratuita solo dal 5 al 10 ottobre. Tocca il giorno, poi l'orario che preferisci: i posti non bastano per tutti.</p>
+      <div class="evento" id="evento"><b>🥂 Sabato 3, dalle 8 alle 12</b><span>Facciamo l'aperitivo insieme: vieni a scoprirla!</span></div>
     </div>
     <div class="cambio" id="cambio"></div>
     <div class="errore" id="errCal"></div>
@@ -233,6 +236,7 @@ const DEMO = !ENDPOINT || /[?&]demo=1/.test(location.search);
 let STATO = null, GIORNO = null, SCELTO = null, MODO = 'prenota';
 
 if(DEMO){ const d = document.createElement('div'); d.className = 'demo'; d.textContent = 'PROVA DIMOSTRATIVA'; document.body.appendChild(d); }
+if(Date.now() >= Date.parse('2026-10-03T12:00:00')) $('evento').style.display = 'none';   /* la presentazione e' finita */
 if(Date.now() >= Date.parse(SVELA))
   $('titolo').innerHTML = 'Zenith, la capsula per il recupero: <em>provala per primo.</em>';
 
