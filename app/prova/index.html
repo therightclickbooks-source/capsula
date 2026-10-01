@@ -108,6 +108,27 @@ input.tel:focus{border-color:var(--oro)}
 .ora.mio::after{content:"IL TUO"; display:block; font-size:9.5px; letter-spacing:.16em; margin-top:1px}
 .evento{margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(230,198,92,.1); border:1.5px solid rgba(230,198,92,.45); display:flex; flex-direction:column; gap:2px; font-size:14.5px; line-height:1.4; color:var(--muted)}
 .evento b{color:var(--oro); font-size:16.5px}
+.v-evento{margin-top:14px}
+/* variante 2 · due schede affiancate, come nella foto */
+.due-schede{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:14px 0 6px}
+.sch{border-radius:18px; padding:14px 13px 15px; display:flex; flex-direction:column; gap:3px; min-height:176px}
+.sch i{font-style:normal; font-size:28px; line-height:1.1}
+.sch small{font-size:10.5px; letter-spacing:.14em; font-weight:800}
+.sch b{font-size:22px; line-height:1.08; letter-spacing:-.015em; margin-top:2px}
+.sch span{font-size:13.2px; line-height:1.35}
+.sch.sab{background:linear-gradient(160deg,rgba(122,73,108,.55),rgba(60,30,56,.55)); border:1.5px solid rgba(226,189,212,.35)}
+.sch.sab small{color:var(--rosa)} .sch.sab span{color:var(--muted)}
+.sch.dono{background:linear-gradient(140deg,#f7e39a,#e6c65c 55%,#c9a13a); color:#1a1320; box-shadow:0 14px 34px -14px rgba(212,175,55,.7)}
+.sch.dono small{color:#5a3a12} .sch.dono span{color:#33240f; font-weight:600}
+.sch .giu{margin-top:auto; font-size:24px; font-weight:800; line-height:1; animation:rimbalza 1.2s ease-in-out infinite}
+@keyframes rimbalza{50%{transform:translateY(5px)}}
+h1.piccolo{font-size:27px; margin:12px 0 2px}
+/* variante 3 · due tasti */
+.tabs{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:5px; border-radius:16px; background:var(--card); border:1px solid var(--line); margin:14px 0 4px}
+.tabs button{font:inherit; font-size:15px; font-weight:800; padding:13px 6px; border-radius:12px; border:none; background:transparent; color:var(--muted); cursor:pointer}
+.tabs button.on{background:linear-gradient(120deg,var(--oro2),var(--oro)); color:#1a1320}
+#pane-sab{display:none}
+.vsab #pane-sab{display:block} .vsab #pane-pren, .vsab #calblocco{display:none}
 .cambio{display:none; margin-top:14px; padding:12px 14px; border-radius:14px; background:rgba(230,198,92,.09); border:1.5px solid rgba(230,198,92,.4); font-size:14.5px; line-height:1.45; color:var(--muted)}
 .cambio b{color:var(--oro)}
 .cambio .tieni{display:block; margin-top:8px; background:none; border:none; padding:0; font:inherit; font-size:14px; font-weight:700; color:var(--oro); text-decoration:underline; cursor:pointer}
@@ -153,18 +174,15 @@ input.tel:focus{border-color:var(--oro)}
 
   <!-- 1 · il calendario, subito -->
   <section class="scena" id="s-cal">
-    <div class="intro">
-      <span class="tag">🔒 ACCESSO RISERVATO</span>
-      <h1 id="titolo">La novità del nostro centro: <em>provala per primo.</em></h1>
-      <p class="lead" id="lead">La prima prova è un nostro regalo, gratuita solo dal 5 al 10 ottobre. Tocca il giorno, poi l'orario che preferisci: chi prima arriva, sceglie.</p>
-    </div>
+    <div class="intro" id="intro"></div>
+    <div id="calblocco">
     <div class="cambio" id="cambio"></div>
     <div class="errore" id="errCal"></div>
     <div class="posti"><div style="flex:1"><span>Posti ancora liberi</span><div class="barra"><i id="barra"></i></div></div><b id="restano">–</b></div>
     <div class="giorni" id="giorni"></div>
     <div id="orari"></div>
     <div class="nota">Gli orari barrati sono già presi. Puoi cambiare il tuo fino al giorno prima.</div>
-    <div class="evento" id="evento"><b>🥂 Sabato 3, dalle 8 alle 12</b><span>Aperitivo insieme, per scoprire la novità da vicino. Non serve prenotare.</span></div>
+    </div>
     <button class="btn sec" id="riprova" style="display:none; margin-top:14px">Riprova</button>
   </section>
 
@@ -236,9 +254,41 @@ const DEMO = !ENDPOINT || /[?&]demo=1/.test(location.search);
 let STATO = null, GIORNO = null, SCELTO = null, MODO = 'prenota';
 
 if(DEMO){ const d = document.createElement('div'); d.className = 'demo'; d.textContent = 'PROVA DIMOSTRATIVA'; document.body.appendChild(d); }
-if(Date.now() >= Date.parse('2026-10-03T12:00:00')) $('evento').style.display = 'none';   /* la presentazione e' finita */
-if(Date.now() >= Date.parse(SVELA))
-  $('titolo').innerHTML = 'Zenith, la capsula per il recupero: <em>provala per primo.</em>';
+/* ══════════ LA PRIMA SCHERMATA ══════════
+   Chi tocca il link arriva qui, e deve capire in tre secondi due cose
+   distinte: sabato 3 si va a scoprire (senza prenotare), e il regalo e' la
+   prova gratis da prenotare qui sotto. Tre versioni da provare dal
+   telefono: ?v=1 regalo e calendario, sabato sotto · ?v=2 due schede
+   affiancate, come nella foto (quella di base) · ?v=3 due tasti. */
+const VAR = (location.search.match(/[?&]v=([123])/) || [])[1] || '2';
+const NOVITA = Date.now() >= Date.parse(SVELA) ? 'Zenith' : 'la novità';   /* il nome da sabato alle 8 */
+const SAB_FINITO = Date.now() >= Date.parse('2026-10-03T12:00:00');         /* l'aperitivo e' finito */
+function costruisciIntro(){
+  const lead = t => '<p class="lead" id="lead">' + t + '</p>';
+  const tag = '<span class="tag">🎁 ECCO IL TUO REGALO</span>';
+  const corpoLead = 'Dal 5 al 10 ottobre. Scegli giorno e orario qui sotto: chi prima arriva, sceglie.';
+  const sabaTesto = 'Aperitivo insieme, per scoprire ' + NOVITA + ' da vicino. Non serve prenotare.';
+  const intro = $('intro');
+  if(VAR === '1'){
+    intro.innerHTML = tag + '<h1 id="titolo">Prova gratis <em>' + NOVITA + '</em></h1>' + lead(corpoLead);
+    if(!SAB_FINITO) $('calblocco').insertAdjacentHTML('beforeend', '<div class="evento v-evento"><b>🥂 Sabato 3, dalle 8 alle 12</b><span>' + sabaTesto + '</span></div>');
+  } else if(VAR === '3'){
+    intro.innerHTML = tag
+      + '<div class="tabs"><button id="t-pren" class="on">🎁 Prenota la prova</button>' + (SAB_FINITO ? '' : '<button id="t-sab">🥂 Sabato 3</button>') + '</div>'
+      + '<div id="pane-pren"><h1 id="titolo" class="piccolo">Prova gratis <em>' + NOVITA + '</em></h1>' + lead(corpoLead) + '</div>'
+      + (SAB_FINITO ? '' : '<div id="pane-sab"><h1 class="piccolo">🥂 Sabato 3, dalle 8 alle 12</h1><p class="lead">' + sabaTesto + ' Passa quando vuoi.</p>'
+        + '<button class="btn oro" id="t-torna">🎁 Prenota la tua prova gratis ›</button></div>');
+    const vai = sab => { $('s-cal').classList.toggle('vsab', sab); $('t-pren').classList.toggle('on', !sab); if($('t-sab')) $('t-sab').classList.toggle('on', sab); };
+    $('t-pren').onclick = ()=> vai(false);
+    if($('t-sab')){ $('t-sab').onclick = ()=> vai(true); $('t-torna').onclick = ()=> vai(false); }
+  } else {
+    intro.innerHTML = tag + '<h1 id="titolo" class="piccolo">Due cose per te</h1><div class="due-schede">'
+      + (SAB_FINITO ? '' : '<div class="sch sab"><i>🥂</i><small>SABATO 3 · ORE 8–12</small><b>Aperitivo insieme</b><span>Vieni a scoprire ' + NOVITA + '. Non serve prenotare.</span></div>')
+      + '<div class="sch dono"><i>🎁</i><small>DAL 5 AL 10 OTTOBRE</small><b>Prova gratis</b><span>Prenota il tuo orario qui sotto</span><div class="giu">↓</div></div></div>'
+      + lead('Chi prima prenota, sceglie l\'orario.');
+  }
+}
+costruisciIntro();
 
 /* il telefono ricorda chi ha gia' prenotato, per ritrovare il biglietto */
 const ricordo = { get(){ try{ return JSON.parse(localStorage.getItem('zfl_prova_io')) || {}; }catch(e){ return {}; } },
