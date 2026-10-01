@@ -819,6 +819,11 @@ html,body{overscroll-behavior:none}
   font-weight:800; cursor:pointer; animation:chiama 1.8s ease-in-out infinite}
 @keyframes chiama{0%,100%{box-shadow:0 0 0 0 rgba(181,132,166,.0)} 50%{box-shadow:0 0 0 8px rgba(181,132,166,.28)}}
 
+.match.zero .go{flex:none; min-width:220px; box-sizing:border-box; display:flex; align-items:center; justify-content:center;
+  border-radius:16px; padding:22px 30px; font-size:26px; font-weight:800; color:#fff; cursor:pointer;
+  background:linear-gradient(135deg,#b584a6,#7a496c); animation:chiama 1.8s ease-in-out infinite}
+.match.zero .mh:has(.go){margin-bottom:0}
+
 /* le ultime cifre, quando due persone si chiamano uguale */
 .cifre{display:flex; gap:16px; justify-content:center; margin-top:6px}
 .cifre i{width:72px; height:88px; border-radius:18px; background:rgba(255,255,255,.05);
@@ -2592,11 +2597,15 @@ function pannelloNome(){
       + '<span class="mt"><span class="mt1">Non trovo questo numero</span>'
       + '<span class="mt2">Controlla le cifre, oppure passa a <b>nome e cognome</b> '
       + 'qui sopra</span></span></div></div>';
+    /* lo stesso AVANTI della scheda riconosciuta, qui a destra: appare quando nome e
+       cognome ci sono. Quello in basso resta, ma questo e' dove cade l'occhio */
     return '<div class="match zero"><div class="mh"><span class="mn">✦</span>'
       + '<span class="mt"><span class="mt1">È la tua prima volta da noi</span>'
       + '<span class="mt2">Nessuna scheda con questo nome — va benissimo: continua pure. '
       + 'Alla fine delle domande l\'operatore compila con te la <b>scheda anamnestica</b>, '
-      + 'e da lì si parte</span></span></div></div>';
+      + 'e da lì si parte</span></span>'
+      + (completo() ? '<span class="go avanti" id="avantiNuovo" onclick="passoAvanti()">AVANTI ›</span>' : '')
+      + '</div></div>';
   }
 
   /* più di una: si contano, non si mostrano */
@@ -3877,7 +3886,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v145.26.09(26)';
+const VETRINA_VERSION = 'v146.26.10(1)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();

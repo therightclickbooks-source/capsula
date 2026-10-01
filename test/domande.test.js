@@ -296,6 +296,24 @@ module.exports = async function(browser){
   tac.t('«No, sono una persona nuova» va avanti col nome scritto, senza la scheda', chi.no, JSON.stringify(chi));
   tac.t('anche l\'AVANTI della tastiera chiede, invece di scegliere da solo', chi.tastiera);
 
+  /* ── la prima volta: l'AVANTI sta anche dentro il riquadro, come per la scheda riconosciuta ── */
+  const nuovo = await p.evaluate(()=>{
+    const r = {};
+    startCheck(); D.nome = ''; D.cogn = ''; FIELD = 'nome'; ['Z','E','L','D','A'].forEach(c=> kbType(c));
+    r.soloNome = !!document.querySelector('.match.zero') && !document.querySelector('.match.zero .go');
+    FIELD = 'cogn'; ['Q','U','X'].forEach(c=> kbType(c));
+    const g = document.querySelector('.match.zero .go.avanti');
+    r.tasto = !!g && /AVANTI/.test(g.textContent);
+    r.dentro = !!g && g.closest('.match').getBoundingClientRect().width > 0 && g.getBoundingClientRect().width >= 180;
+    if(g) g.click();
+    r.avanza = passi()[PASSO].k !== 'nome' && D.nome === 'Zelda' && D.cogn === 'Qux';
+    go('idle');
+    return r;
+  });
+  tac.t('chi e\' alla prima volta, appena ha scritto nome e cognome, ha AVANTI dentro il riquadro', nuovo.tasto, JSON.stringify(nuovo));
+  tac.t('quel tasto e\' grande, e senza il cognome non compare', nuovo.dentro && nuovo.soloNome, JSON.stringify(nuovo));
+  tac.t('toccandolo si va al passo dopo, col nome scritto', nuovo.avanza, JSON.stringify(nuovo));
+
   await p.close();
   return tac;
 };
