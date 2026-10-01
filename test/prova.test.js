@@ -9,6 +9,9 @@ const path = require('path');
 const { Taccuino } = require('./aiuto');
 const PAGINA = 'file://' + path.join(__dirname, '..', 'app', 'prova', 'index.html') + '?demo=1';
 
+/* il primo passo e' obbligato: sabato, poi il bottone che apre il calendario */
+const vai = async pg => { const b = await pg.$('#vai'); if(b && await b.isVisible()) await b.click(); await pg.waitForTimeout(150); };
+
 module.exports = async function(browser){
   const tac = new Taccuino('la prenotazione della prova');
   const p = await browser.newPage({viewport:{width:390, height:844}});
@@ -17,6 +20,14 @@ module.exports = async function(browser){
   await p.goto(PAGINA);
   await p.evaluate(()=>{ localStorage.removeItem('zfl_prova_demo'); localStorage.removeItem('zfl_prova_io'); });
   await p.reload(); await p.waitForTimeout(400);
+  const ing = await p.evaluate(()=> ({on: document.getElementById('s-ingresso').classList.contains('on'), cal: document.getElementById('s-cal').classList.contains('on'),
+    testo: document.getElementById('s-ingresso').innerText, vai: (document.getElementById('vai') || {}).innerText || ''}));
+  tac.t('il primo passo e\' obbligato: si vede sabato 3, non il calendario', ing.on && !ing.cal && /SABATO/.test(ing.testo) && /8 alle 12/.test(ing.testo) && /Aperitivo/i.test(ing.testo) && /Non serve prenotare/.test(ing.testo), ing.testo);
+  tac.t('il bottone grande dice di prenotare la prova gratis ora', /CLICCA QUI/.test(ing.vai) && /PRENOTA LA TUA\s+PROVA GRATIS/.test(ing.vai), ing.vai);
+  tac.t('niente tasti per cambiare strada: o si preme il bottone o non si va avanti', await p.evaluate(()=> document.querySelectorAll('#s-ingresso button').length === 1 && !document.querySelector('.tabs')));
+  await vai(p);
+  const cal2 = await p.evaluate(()=> ({on: document.getElementById('s-cal').classList.contains('on'), ing: document.getElementById('s-ingresso').classList.contains('on'), periodo: document.querySelector('.periodo').innerText}));
+  tac.t('premuto il bottone si apre il calendario, con «dal 5 al 10 ottobre» in grande', cal2.on && !cal2.ing && /DAL 5 AL 10\s+OTTOBRE/.test(cal2.periodo), cal2.periodo);
 
   const cal = await p.evaluate(()=> ({on: document.getElementById('s-cal').classList.contains('on'),
     giorni: document.querySelectorAll('.giorno').length, presi: document.querySelectorAll('.ora.preso').length,
@@ -33,8 +44,8 @@ module.exports = async function(browser){
   const b = await p.evaluate(()=> ({on: document.getElementById('s-fatto').classList.contains('on'), ora: document.getElementById('bora').textContent}));
   tac.t('confermato, compare il biglietto con l\'orario', b.on && /^\d\d:\d\d$/.test(b.ora), JSON.stringify(b));
 
-  await p.reload(); await p.waitForTimeout(400);
-  tac.t('riaprendo il link ritrova la sua prenotazione', await p.evaluate(()=> document.getElementById('s-fatto').classList.contains('on')));
+  await p.reload(); await p.waitForTimeout(400); await vai(p);
+  tac.t('riaprendo il link ritrova la sua prenotazione (senza ripassare dal primo passo)', await p.evaluate(()=> document.getElementById('s-fatto').classList.contains('on') && !document.getElementById('s-ingresso').classList.contains('on')));
 
   const vecchio = await p.evaluate(()=> STATO.mia.id);
   await p.click('#cambia'); await p.waitForTimeout(100);
@@ -51,7 +62,7 @@ module.exports = async function(browser){
   const nuovo = await p.evaluate(()=> STATO.mia.id);
   tac.t('scelto l\'orario nuovo, il biglietto cambia e il vecchio si libera da solo',
     nuovo !== vecchio && await p.evaluate(v=> STATO.posti.find(x=> x.id === v).libero, vecchio), vecchio + ' → ' + nuovo);
-  await p.reload(); await p.waitForTimeout(400);
+  await p.reload(); await p.waitForTimeout(400); await vai(p);
   tac.t('anche riaprendo il link: un orario solo, quello nuovo', await p.evaluate(n=> STATO.mia.id === n, nuovo));
 
   p.removeAllListeners('dialog'); p.on('dialog', d => d.accept());
@@ -61,7 +72,7 @@ module.exports = async function(browser){
 
   await p.evaluate(()=>{ const db = {posti:{}, attesa:[]}; Object.entries(ORARI).forEach(([g, l])=> l.forEach(o=> db.posti[g + '_' + o] = 'altro'));
     localStorage.setItem('zfl_prova_demo', JSON.stringify(db)); });
-  await p.reload(); await p.waitForTimeout(400);
+  await p.reload(); await p.waitForTimeout(400); await vai(p);
   await p.click('#attesa'); await p.waitForTimeout(200); await p.click('#ok'); await p.waitForTimeout(300);
   tac.t('tutto pieno: si entra in lista d\'attesa', await p.evaluate(()=> document.getElementById('s-pieno').classList.contains('on')
     && /lista d'attesa/.test(document.getElementById('attesa').textContent) && document.getElementById('attesa').disabled));
@@ -95,7 +106,7 @@ module.exports = async function(browser){
 
   {
     const {ctx, pg, chiamate} = await conScript(stato(false), 1500);
-    await pg.goto(REALE); await pg.waitForTimeout(500);
+    await pg.goto(REALE); await pg.waitForTimeout(500); await vai(pg);
     const subito = await vedi(pg);
     tac.t('mentre lo script risponde si vede gia\' il calendario, con giorni e orari in grigio',
       subito.on && subito.giorni === 6 && subito.sk > 0 && subito.veri === 0, JSON.stringify(subito));
@@ -122,7 +133,7 @@ module.exports = async function(browser){
     /* prenotare: il biglietto compare subito, la conferma vera arriva dopo */
     const conferma = {ok:true, nome:'Giulia', inAttesa:false, mia:{id:'2026-10-05_08:15', data:'2026-10-05', ora:'08:15', libero:false}, posti:stato(true).posti.map(x=> x.id === '2026-10-05_08:15' ? Object.assign({}, x, {libero:false}) : x)};
     const {ctx, pg} = await conScript(stato(true), 1500);
-    await pg.goto(REALE); await pg.waitForTimeout(1800);
+    await pg.goto(REALE); await pg.waitForTimeout(1800); await vai(pg);
     /* da qui lo script risponde con la conferma */
     await pg.unroute('https://script.google.com/**');
     await pg.route('https://script.google.com/**', async route=>{ await new Promise(r=> setTimeout(r, 1500));
@@ -149,7 +160,7 @@ module.exports = async function(browser){
     /* l'orario risulta preso mentre si confermava: si torna al calendario con la spiegazione */
     const preso = {ok:false, messaggio:'Questo orario è appena stato preso. Scegline un altro.', stato: stato(false)};
     const {ctx, pg} = await conScript(stato(true), 200);
-    await pg.goto(REALE); await pg.waitForTimeout(500);
+    await pg.goto(REALE); await pg.waitForTimeout(500); await vai(pg);
     await pg.unroute('https://script.google.com/**');
     await pg.route('https://script.google.com/**', async route=>{ await new Promise(r=> setTimeout(r, 400));
       await route.fulfill({status:200, contentType:'application/json', headers:{'access-control-allow-origin':'*'}, body: JSON.stringify(preso)}); });
@@ -165,7 +176,7 @@ module.exports = async function(browser){
   {
     /* senza rete: niente rotellina infinita, un messaggio e il tasto per riprovare */
     const {ctx, pg} = await conScript(null, 300);
-    await pg.goto(REALE); await pg.waitForTimeout(900);
+    await pg.goto(REALE); await pg.waitForTimeout(900); await vai(pg);
     const e = await pg.evaluate(()=> ({riprova: getComputedStyle(document.getElementById('riprova')).display,
       msg: document.getElementById('lead').textContent, sk: document.querySelectorAll('.sk').length,
       spinner: getComputedStyle(document.getElementById('carica')).display}));
