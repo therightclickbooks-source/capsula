@@ -22,7 +22,7 @@ module.exports = async function(browser){
   await p.reload(); await p.waitForTimeout(400);
   const ing = await p.evaluate(()=> ({on: document.getElementById('s-ingresso').classList.contains('on'), cal: document.getElementById('s-cal').classList.contains('on'),
     testo: document.getElementById('s-ingresso').innerText, vai: (document.getElementById('vai') || {}).innerText || ''}));
-  tac.t('il primo passo e\' obbligato: si vede sabato 3, non il calendario', ing.on && !ing.cal && /SABATO/.test(ing.testo) && /8 alle 12/.test(ing.testo) && /Aperitivo/i.test(ing.testo) && /Non serve prenotare/.test(ing.testo), ing.testo);
+  tac.t('il primo passo e\' obbligato: si vede sabato 3 (senza dire se serve prenotare) e la nuova macchina, non il calendario', ing.on && !ing.cal && /SABATO/.test(ing.testo) && /8 alle 12/.test(ing.testo) && /Aperitivo/i.test(ing.testo) && !/non serve prenotare/i.test(ing.testo) && /nuova macchina/.test(ing.testo), ing.testo);
   tac.t('il bottone grande dice di prenotare la prova gratis ora', /CLICCA QUI/.test(ing.vai) && /PRENOTA LA TUA\s+PROVA GRATIS/.test(ing.vai), ing.vai);
   tac.t('niente tasti per cambiare strada: o si preme il bottone o non si va avanti', await p.evaluate(()=> document.querySelectorAll('#s-ingresso button').length === 1 && !document.querySelector('.tabs')));
   await vai(p);
