@@ -2145,6 +2145,17 @@
   .machc .mc-d{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.45}
   .machc .mc-z{font-size:12.5px; margin-top:6px; line-height:1.45; color:var(--text)}
   .machc .mc-z b{color:var(--accent-hi); font-weight:700}
+  .machc .mc-z .pk-t{display:block; font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-strong); margin-bottom:3px}
+  .machc .mc-z .pk-r{display:block; margin-top:3px}
+  .machc .mc-z .pk-r > .pk-k{display:inline-block; min-width:56px; text-align:center; font-size:10.5px; padding:0 7px; border-radius:999px; background:var(--accent-dim); color:var(--accent-strong); margin-right:6px}
+  .machc .mc-z .pk-v{display:block; margin-top:6px; padding-top:5px; border-top:1px solid var(--line)}
+  .machc .mc-s{margin-top:8px; padding:8px 10px; border-radius:10px; border:1.4px dashed var(--line); font-size:12px; line-height:1.4; color:var(--muted)}
+  .machc .mc-s em{display:block; font-style:normal; font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-strong); margin-bottom:3px}
+  .machc .mc-s span{display:block; margin-top:2px}
+  .mc-vale{margin:6px 0 4px; padding:10px 12px; border-radius:var(--r-md); border:1.4px dashed var(--accent-strong); font-size:12.5px; line-height:1.45; text-align:left}
+  .mc-vale em{display:block; font-style:normal; font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-strong); margin-bottom:4px}
+  .mc-vale span{display:block; margin-top:3px}
+  .mc-vale .mc-nota{color:var(--muted); font-size:11.5px; margin-top:6px}
 
   /* v43 · seconda domanda: tutto il corpo a colpo d'occhio */
   .zwrap{max-width:640px; margin:10px auto 0}
@@ -5972,7 +5983,7 @@ function vQuiz(){
       ${opts.map(([v,ic,l,s])=>`<div class="qcard ${quizState[step.k]===v?'on':''}" onclick="quizPick('${step.k}','${v}')">
         <div class="qi">${ic}</div><div class="qtx"><div class="ql">${l}</div><div class="qs">${s}</div></div></div>`).join('')}
     </div>
-    ${step.k==='activity'?`<div class="qinfo" onclick="openMachines()">${icon('info',15)} Cosa lascia ogni macchinario nel corpo, e cosa fa Zenith</div>`:''}`;
+    ${step.k==='activity'?`<div class="qinfo" onclick="openMachines()">${icon('info',15)} Cosa fa ogni macchinario, e cosa fa Zenith dopo</div>`:''}`;
     /* alla prima domanda non c'e' niente da cui tornare indietro: niente riga vuota */
     nav = quizState.step>0
       ? `<div class="btnrow qb-nav"><button class="btn ghost" onclick="quizBack()">‹ Precedente</button></div>`
@@ -6037,6 +6048,63 @@ const PER_TE = {
             '<b>Dormi male</b> o sei spesso sotto stress']
 };
 const PER_TE_DI = {'EMS':'ems','EMS2':'ems2','Vacutherm':'vacufit','Matrix':'matrix','Nessun allenamento':'riposo'};
+const PERCORSO = {
+  ems: {
+    tempo:'20 minuti',
+    allena:'Venti minuti di contrazioni su <b>tutto il corpo</b>, schiena profonda compresa: hai dato ai muscoli uno <b>stimolo enorme</b> in pochissimo tempo.',
+    dopo:[['Subito','Gli <b>airbag</b> lavorano gambe, glutei, braccia e schiena, i <b>rulli</b> sciolgono ciò che hai contratto e il <b>calore</b> porta <b>sangue nuovo</b> dove serve.'],
+          ['Stasera','I muscoli sono <b>meno pieni e più morbidi</b>: la stanchezza c\'è, ma è quella buona.'],
+          ['Domani','È il giorno in cui di solito <b>tirano di più</b>: con Zenith li senti <b>meno rigidi</b>, pronti a ripartire.']],
+    vale:'L\'EMS dà lo <b>stimolo</b>, Zenith lo trasforma in <b>risultato</b>: così lo stesso allenamento rende molto di più.',
+    solo:'Solo EMS', con:'EMS + Zenith'},
+  ems2: {
+    tempo:'una camminata veloce',
+    allena:'<b>Impulsi e camminata</b> insieme: gambe, glutei, polpacci e addome hanno lavorato dal primo minuto, e il <b>fiato</b> è salito di giri.',
+    dopo:[['Subito','Le <b>gambe salgono sopra il cuore</b> (gravità zero), gli <b>airbag</b> comprimono a onde e i <b>rulli</b> lavorano polpacci e piedi: dove hai dato di più.'],
+          ['Stasera','Le gambe sono <b>più leggere</b> e meno cariche: salire le scale costa meno.'],
+          ['Domani','Polpacci e glutei di solito <b>tirano</b>: con Zenith li senti <b>meno rigidi</b>, e il corpo è pronto per la prossima camminata.']],
+    vale:'L\'EMS2 ti ha fatto lavorare <b>forza e fiato</b>; Zenith porta il recupero dove hai lavorato di più, e l\'effetto si moltiplica.',
+    solo:'Solo EMS2', con:'EMS2 + Zenith'},
+  vacufit: {
+    tempo:'una camminata in vuototerapia',
+    allena:'<b>Depressione, linfodrenaggio e infrarossi</b> insieme: hai messo in moto il circolo di gambe e glutei e tonificato l\'<b>addome</b>.',
+    dopo:[['Subito','Gambe e piedi <b>al centro</b>: gravità zero, <b>compressione a onde</b> e <b>rulli plantari</b> accompagnano i liquidi verso l\'alto e il circolo resta acceso.'],
+          ['Stasera','Le gambe restano <b>leggere per ore</b>: dieci minuti a gambe alzate, con un cuscino sotto i piedi, prolungano l\'effetto.'],
+          ['Domani','Le gambe arrivano a sera <b>meno pesanti</b>: è lì che si vede la differenza.']],
+    vale:'Il Vacutherm <b>accende</b> il circolo, Zenith lo <b>tiene acceso</b> per ore, non per dieci minuti: il risultato dura molto di più.',
+    solo:'Solo Vacutherm', con:'Vacutherm + Zenith'},
+  matrix: {
+    tempo:'carico preciso a ogni ripetizione',
+    allena:'Carico <b>preciso</b> a ogni ripetizione, in spinta e in ritorno: hai dato al muscolo il <b>segnale per crescere</b>, senza sbalzi per le articolazioni.',
+    dopo:[['Subito','Il lavoro va <b>proprio dove hai lavorato</b>: gambe e glutei, parte alta per le braccia, <b>allungamento stile Thai</b> se cerchi relax.'],
+          ['Stasera','Il muscolo cresce <b>nelle ore dopo il carico</b>: Zenith lo rende <b>più elastico e meno pieno</b>, nelle condizioni giuste per farlo.'],
+          ['Domani','Quando di solito si fa sentire l\'indolenzimento: senti <b>meno rigidità</b> e hai più voglia di tornare ad allenarti.']],
+    vale:'Matrix costruisce il segnale, Zenith gli dà il <b>tempo e le condizioni</b> per diventare muscolo: l\'allenamento rende molto di più.',
+    solo:'Solo Matrix', con:'Matrix + Zenith'},
+  riposo: {
+    tempo:'',
+    allena:'Oggi non ti alleni, e va benissimo: ore <b>alla scrivania, in auto o in piedi</b> si fanno sentire su <b>collo, spalle e colonna</b>.',
+    dopo:[['Subito','Il <b>calore</b> scioglie la schiena, i <b>rulli</b> lavorano lenti lungo la colonna e gli <b>airbag</b> liberano spalle e gambe. Scegli tu l\'obiettivo: leggerezza, sonno, decompressione o energia.'],
+          ['Stasera','Le <b>spalle sono più basse</b>, la schiena è sciolta e, se vuoi, il <b>sonno è più facile</b>.'],
+          ['Domani','Inizi la giornata con <b>meno tensione</b> su collo e schiena.']],
+    vale:'Non serve allenarsi per fare una cosa buona per il corpo: <b>mezz\'ora</b> in cui la schiena torna al suo posto.',
+    solo:'', con:''}
+};
+/* la stessa riga, compatta, per i fogli «I macchinari del centro» (vetrina e gestionale): stesse parole, stessi tempi */
+function percorsoCompatto(k){
+  const P = PERCORSO[k];
+  return '<span class="pk-t">Poi, in Zenith · da 20 a 30 minuti</span>'
+    + P.dopo.map(r=> '<span class="pk-r"><span class="pk-k">' + r[0] + '</span> ' + r[1] + '</span>').join('')
+    + '<span class="pk-v">' + P.vale + '</span>';
+}
+/* ── PER CHI LO SPIEGA: solo staff, non compare mai al cliente ── */
+const PER_SPIEGARE = {
+  ems:     {dire:'«Con l\'EMS hai fatto in venti minuti il lavoro di tre ore di sala pesi: con Zenith lo trasformi in risultato, e domani lo senti.»'},
+  ems2:    {dire:'«Hai lavorato forza e fiato insieme: Zenith porta il recupero su gambe e polpacci, dove hai dato di più.»'},
+  vacufit: {dire:'«Il Vacutherm accende il circolo; Zenith lo tiene acceso per ore, non per dieci minuti.»'},
+  matrix:  {dire:'«Il muscolo cresce nelle ore dopo il carico: Zenith gli dà le condizioni per farlo.»'},
+  riposo:  {dire:'«Non serve allenarsi per fare una cosa buona per il corpo: mezz\'ora e la schiena torna al suo posto.»'}
+};
 function openMachines(){
   const m=document.getElementById('modal');
   m.innerHTML=`<div class="mcard">
@@ -6047,8 +6115,18 @@ function openMachines(){
         <div class="mc-t"><span class="mc-ic">${ic}</span><span class="mc-n">${n}</span>${fam!=='—'?`<span class="mc-f">${fam}</span>`:''}</div>
         ${PER_TE[PER_TE_DI[n]] ? `<div class="mc-p"><em>${n==='Nessun allenamento'?'Zenith fa per te se…':'Fa per te se…'}</em>${PER_TE[PER_TE_DI[n]].map(x=>`<span>✓ ${x}</span>`).join('')}</div>` : ''}
         <div class="mc-d">${cosa}</div>
-        <div class="mc-z">${zen}</div>
+        <div class="mc-z">${percorsoCompatto(PER_TE_DI[n])}</div>
+        <div class="mc-s"><em>Per chi lo spiega · solo staff</em>
+          <span><b>Da dire a voce.</b> ${PER_SPIEGARE[PER_TE_DI[n]].dire}</span>
+          ${n==='Nessun allenamento' ? '' : '<span><b>Quando proporlo.</b> Subito dopo l\'allenamento: è il momento in cui Zenith rende di più.</span>'}
+        </div>
       </div>`).join('')}</div>
+    <div class="mc-vale"><em>Perché dopo l'allenamento vale molto di più</em>
+      <span><b>1 · Lo stimolo.</b> L'allenamento dà il segnale: il risultato si costruisce dopo, nel recupero.</span>
+      <span><b>2 · Subito.</b> In 20–30 minuti Zenith lavora proprio sui gruppi e sulle zone appena usati: sangue nuovo, liquidi, rigidità.</span>
+      <span><b>3 · Il giorno dopo.</b> Si sta meglio e si torna ad allenarsi prima: l'effetto si somma alla costanza, seduta dopo seduta.</span>
+      <span class="mc-nota">Nostra stima interna: l'allenamento da solo vale 1, con Zenith 2,5–3. È una stima, non una misura: ai clienti non si dice come numero, si dice «rende molto di più».</span>
+    </div>
     <button class="btn sec" style="width:100%; margin-top:8px" onclick="closeModal()">Chiudi</button>
   </div>`;
   m.classList.add('open');

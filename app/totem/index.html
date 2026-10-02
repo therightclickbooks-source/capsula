@@ -1011,6 +1011,10 @@ html,body{overscroll-behavior:none}
 .mac .mfz{font-size:19px; line-height:1.42; margin-top:11px; padding-left:20px;
   border-left:3px solid rgba(230,198,92,.6); color:rgba(255,255,255,.88)}
 .mac .mfz b{color:#eed37a}
+.mac .mfz .pk-t{display:block; font-size:14px; letter-spacing:.14em; font-weight:800; text-transform:uppercase; color:#eed37a; margin-bottom:6px}
+.mac .mfz .pk-r{display:block; margin-top:5px}
+.mac .mfz .pk-r > .pk-k{display:inline-block; min-width:92px; color:#1a1320; background:linear-gradient(120deg,#f3dc8a,#e6c65c); border-radius:999px; padding:1px 12px; font-size:16px; text-align:center; margin-right:8px}
+.mac .mfz .pk-v{display:block; margin-top:9px; padding-top:8px; border-top:1px solid rgba(255,255,255,.12); color:#fff}
 
 /* ══ LE ZONE DEL CORPO — LA SAGOMA RIFATTA DA CAPO ══
    Prima era la sagoma del gestionale ingrandita: un corpo intero, e
@@ -2498,6 +2502,13 @@ const PERCORSO = {
     vale:'Non serve allenarsi per fare una cosa buona per il corpo: <b>mezz\'ora</b> in cui la schiena torna al suo posto.',
     solo:'', con:''}
 };
+/* la stessa riga, compatta, per i fogli «I macchinari del centro» (vetrina e gestionale): stesse parole, stessi tempi */
+function percorsoCompatto(k){
+  const P = PERCORSO[k];
+  return '<span class="pk-t">Poi, in Zenith · da 20 a 30 minuti</span>'
+    + P.dopo.map(r=> '<span class="pk-r"><span class="pk-k">' + r[0] + '</span> ' + r[1] + '</span>').join('')
+    + '<span class="pk-v">' + P.vale + '</span>';
+}
 function percorsoHTML(k, mm){
   const P = PERCORSO[k];
   const tempoAll = P.tempo ? ' <small>' + P.tempo + '</small>' : '';
@@ -3060,7 +3071,7 @@ function apriMacchine(){
     + '<span class="mfn">' + m[1] + '</span></div>'
     + perTeHTML(m[4])
     + '<div class="mfd">' + m[2] + '</div>'
-    + '<div class="mfz">' + m[3] + '</div></div>').join('');
+    + '<div class="mfz">' + percorsoCompatto(m[4]) + '</div></div>').join('');
   document.getElementById('velo').classList.add('on');
   idleReset();
 }

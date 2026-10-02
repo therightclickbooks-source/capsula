@@ -37,7 +37,7 @@ module.exports = async function(browser){
   /* ── il foglio del gestionale ── */
   const g = await tac.pagina(browser, GESTIONALE, desktop);
   const fg = await g.evaluate(()=>{ openMachines();
-    const t = document.querySelector('.machlist').textContent; closeModal(); return t; });
+    const t = document.querySelector('.mcard').textContent; closeModal(); return t; });
 
   for(const [dove, testo] of [['vetrina', fv], ['gestionale', fg]]){
     const q = dove + ': ';
@@ -87,6 +87,25 @@ module.exports = async function(browser){
   tac.t('vetrina e gestionale raccontano gli stessi fatti',
     FATTI.every(f=> new RegExp(f,'i').test(fv) === new RegExp(f,'i').test(fg)),
     FATTI.filter(f=> new RegExp(f,'i').test(fv) !== new RegExp(f,'i').test(fg)).join(', '));
+
+  /* il percorso (subito, stasera, domani), al presente, con i tempi veri: da 20 a 30, e 15 solo la prova */
+  for(const [dove, testo] of [['vetrina', fv], ['gestionale', fg]]){
+    const q = dove + ': ';
+    tac.t(q + 'ogni macchinario ha subito, stasera e domani',
+      (testo.match(/Subito/g) || []).length >= 5 && (testo.match(/Stasera/g) || []).length >= 5 && (testo.match(/Domani/g) || []).length >= 5);
+    tac.t(q + 'nessun condizionale che fa dubitare', !/\b(potresti|dovresti|potrebbe|dovrebbe)\b/i.test(testo));
+    tac.t(q + 'la seduta dura da 20 a 30 minuti, mai «da 15 a 30»', /da 20 a 30 minuti/.test(testo) && !/da 15 a 30/.test(testo));
+  }
+  tac.t('la nota «solo staff» e la stima 2,5–3 stanno solo nel gestionale',
+    /solo staff/i.test(fg) && /2,5–3/.test(fg) && !/solo staff/i.test(fv) && !/2,5/.test(fv) && !/stima/i.test(fv));
+
+  /* le cinque schede «Il tuo caso» della vetrina */
+  const caso = await v.evaluate(()=> ['ems','ems2','vacufit','matrix','riposo'].map(k=>{
+    apriRispostaCaso(k); return document.getElementById('casoLista').textContent; }));
+  tac.t('«Il tuo caso»: tutte e cinque le schede hanno il percorso, al presente',
+    caso.every(t=> /Subito/.test(t) && /Stasera/.test(t) && /Domani/.test(t) && /da 20 a 30 minuti/.test(t) && !/\b(potresti|dovresti|potrebbe|dovrebbe)\b/i.test(t)));
+  tac.t('«Il tuo caso»: ogni scheda dice che insieme valgono di più, senza numeri',
+    caso.every(t=> /(Insieme valgono molto di più|Perché ti serve)/.test(t)) && caso.every(t=> !/\d,\d/.test(t.replace(/20,3/g,''))));
 
   await v.close(); await g.close();
   return tac;
