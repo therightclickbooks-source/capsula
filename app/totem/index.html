@@ -630,6 +630,33 @@ html,body{overscroll-behavior:none}
   background:rgba(255,255,255,.07);
   border:1.4px solid color-mix(in srgb, var(--rc) 55%, transparent)}
 .crow.on .crfr{display:none}
+
+/* il percorso: cosa ha fatto l'allenamento, cosa fa Zenith subito, stasera e domani, e quanto rende di piu' insieme */
+.crow .cal{display:block; font-size:20px; line-height:1.42; margin-top:14px; color:rgba(255,255,255,.9)}
+.crow .cal b{color:#fff}
+.crow.on em small{font-size:14px; letter-spacing:.06em; text-transform:none; font-weight:700; color:rgba(255,255,255,.6); margin-left:6px}
+.crow .cdz{display:block; margin-top:16px; padding:16px 18px 6px; border-radius:20px;
+  background:linear-gradient(160deg, rgba(122,73,108,.38), rgba(60,30,56,.3)); border:1px solid rgba(226,189,212,.32)}
+.crow.on .cdz em{color:#e2bdd4}
+.crow .cdr{display:flex; gap:16px; align-items:flex-start; padding:9px 0; border-top:1px solid rgba(255,255,255,.1)}
+.crow .cdz em + .cdr{border-top:none; padding-top:2px}
+.crow .cdk{flex:none; width:104px; text-align:center; padding:7px 0; border-radius:999px; font-size:17px; font-weight:800;
+  letter-spacing:.06em; color:#1a1320; background:linear-gradient(120deg,#f3dc8a,#e6c65c)}
+.crow .cdt{font-size:19.5px; line-height:1.4; color:rgba(255,255,255,.9)}
+.crow .cdt b{color:#fff}
+.crow .cvl{display:block; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.12)}
+.crow.on .cvl em{color:#e6c65c}
+.crow .cvb{display:block; margin:4px 0 12px}
+.crow .cv1,.crow .cv2{display:flex; align-items:center; gap:14px; height:44px; margin-top:8px}
+.crow .cv1 i,.crow .cv2 i{display:block; height:100%; border-radius:12px}
+.crow .cv1 i{background:rgba(255,255,255,.28)}
+.crow .cv2 i{background:linear-gradient(90deg, var(--rc), #e6c65c); box-shadow:0 0 28px -6px #e6c65c}
+.crow .cv1 b,.crow .cv2 b{font-size:18px; font-weight:800; white-space:nowrap; color:rgba(255,255,255,.7)}
+.crow .cv2 b{color:#e6c65c}
+.crow .cv1,.crow .cv2{position:relative}
+.crow .cv1 b,.crow .cv2 b{position:absolute; left:16px; color:#1a1320}
+.crow .cv1 b{color:#fff}
+.crow .cvt{display:block; font-size:20px; line-height:1.4; color:#fff}
 /* «fa per te se…»: la prima cosa che si legge, in chiaro e con la spunta */
 .perte{display:block; margin-top:12px; padding:14px 18px 12px; border-radius:18px;
   background:color-mix(in srgb, var(--rc, var(--mc, #e6c65c)) 14%, rgba(0,0,0,.2));
@@ -2337,6 +2364,72 @@ function chiudiRisposta(){
   idleReset();
 }
 /* dalla risposta si torna alla vetrina in un tocco, e si riparte pulito */
+
+/* ── IL PERCORSO: che cosa succede, e quando ──
+   Chi legge deve potersi VEDERE: cosa ha fatto il suo allenamento, cosa
+   fa Zenith subito dopo (sdraiato, vestito, da 15 a 30 minuti), e cosa si
+   sente stasera e domani. I tempi sono quelli veri della seduta; le
+   sensazioni sono dette come si dicono in capsula, «potresti», «dovresti»,
+   mai promesse. L'ultima riga dice, senza numeri, che l'allenamento e Zenith
+   insieme rendono molto di piu' dell'allenamento da solo: lo stimolo lo da'
+   chi si allena, il risultato lo costruisce il recupero. Chi fa solo il
+   macchinario ha fatto un allenamento serio, e la riga non lo dice mai al
+   contrario. */
+const PERCORSO = {
+  ems: {
+    tempo:'20 minuti',
+    allena:'Venti minuti di contrazioni su <b>tutto il corpo</b>, schiena profonda compresa: hai dato ai muscoli uno <b>stimolo enorme</b> in pochissimo tempo.',
+    dopo:[['Subito','Gli <b>airbag</b> lavorano gambe, glutei, braccia e schiena, i <b>rulli</b> sciolgono ciò che hai contratto e il <b>calore</b> porta <b>sangue nuovo</b> dove serve.'],
+          ['Stasera','Potresti sentire i muscoli <b>meno pieni e più morbidi</b>: la stanchezza c\'è, ma è quella buona.'],
+          ['Domani','È il giorno in cui di solito <b>tirano di più</b>: dovresti sentirli <b>meno rigidi</b>, pronti a ripartire.']],
+    vale:'L\'EMS dà lo <b>stimolo</b>, Zenith lo trasforma in <b>risultato</b>: così lo stesso allenamento rende molto di più.',
+    solo:'Solo EMS', con:'EMS + Zenith'},
+  ems2: {
+    tempo:'una camminata veloce',
+    allena:'<b>Impulsi e camminata</b> insieme: gambe, glutei, polpacci e addome hanno lavorato dal primo minuto, e il <b>fiato</b> è salito di giri.',
+    dopo:[['Subito','Le <b>gambe salgono sopra il cuore</b> (gravità zero), gli <b>airbag</b> comprimono a onde e i <b>rulli</b> lavorano polpacci e piedi: dove hai dato di più.'],
+          ['Stasera','Potresti sentire le gambe <b>più leggere</b> e meno cariche: salire le scale costa meno.'],
+          ['Domani','Polpacci e glutei di solito <b>tirano</b>: dovresti sentirli <b>meno rigidi</b>, e il corpo pronto per la prossima camminata.']],
+    vale:'L\'EMS2 ti ha fatto lavorare <b>forza e fiato</b>; Zenith porta il recupero dove hai lavorato di più, e l\'effetto si moltiplica.',
+    solo:'Solo EMS2', con:'EMS2 + Zenith'},
+  vacufit: {
+    tempo:'una camminata in vuototerapia',
+    allena:'<b>Depressione, linfodrenaggio e infrarossi</b> insieme: hai messo in moto il circolo di gambe e glutei e tonificato l\'<b>addome</b>.',
+    dopo:[['Subito','Gambe e piedi <b>al centro</b>: gravità zero, <b>compressione a onde</b> e <b>rulli plantari</b> accompagnano i liquidi verso l\'alto e il circolo resta acceso.'],
+          ['Stasera','Potresti avere le gambe <b>leggere per ore</b>: dieci minuti a gambe alzate, con un cuscino sotto i piedi, prolungano l\'effetto.'],
+          ['Domani','Le gambe dovrebbero arrivare a sera <b>meno pesanti</b>: è lì che si vede la differenza.']],
+    vale:'Il Vacutherm <b>accende</b> il circolo, Zenith lo <b>tiene acceso</b> per ore, non per dieci minuti: il risultato dura molto di più.',
+    solo:'Solo Vacutherm', con:'Vacutherm + Zenith'},
+  matrix: {
+    tempo:'carico preciso a ogni ripetizione',
+    allena:'Carico <b>preciso</b> a ogni ripetizione, in spinta e in ritorno: hai dato al muscolo il <b>segnale per crescere</b>, senza sbalzi per le articolazioni.',
+    dopo:[['Subito','Il lavoro va <b>proprio dove hai lavorato</b>: gambe e glutei, parte alta per le braccia, <b>allungamento stile Thai</b> se cerchi relax.'],
+          ['Stasera','Il muscolo cresce <b>nelle ore dopo il carico</b>: potresti sentirlo <b>più elastico e meno pieno</b>, nelle condizioni giuste per farlo.'],
+          ['Domani','Quando di solito si fa sentire l\'indolenzimento: dovresti notare <b>meno rigidità</b> e più voglia di tornare ad allenarti.']],
+    vale:'Matrix costruisce il segnale, Zenith gli dà il <b>tempo e le condizioni</b> per diventare muscolo: l\'allenamento rende molto di più.',
+    solo:'Solo Matrix', con:'Matrix + Zenith'},
+  riposo: {
+    tempo:'',
+    allena:'Oggi non ti alleni, e va benissimo: ore <b>alla scrivania, in auto o in piedi</b> si fanno sentire su <b>collo, spalle e colonna</b>.',
+    dopo:[['Subito','Il <b>calore</b> scioglie la schiena, i <b>rulli</b> lavorano lenti lungo la colonna e gli <b>airbag</b> liberano spalle e gambe. Scegli tu l\'obiettivo: leggerezza, sonno, decompressione o energia.'],
+          ['Stasera','Potresti sentire <b>spalle più basse</b>, schiena sciolta e, se vuoi, un <b>sonno più facile</b>.'],
+          ['Domani','Dovresti iniziare la giornata con <b>meno tensione</b> su collo e schiena.']],
+    vale:'Non serve allenarsi per fare una cosa buona per il corpo: <b>mezz\'ora</b> in cui la schiena torna al suo posto.',
+    solo:'', con:''}
+};
+function percorsoHTML(k, mm){
+  const P = PERCORSO[k];
+  const tempoAll = P.tempo ? ' <small>' + P.tempo + '</small>' : '';
+  const barre = P.solo
+    ? '<span class="cvb"><span class="cv1"><i style="width:34%"></i><b>' + P.solo + '</b></span>'
+      + '<span class="cv2"><i style="width:100%"></i><b>' + P.con + '</b></span></span>'
+    : '';
+  return '<span class="cal"><em>' + (k === 'riposo' ? 'La tua giornata' : 'Il tuo allenamento') + '</em>' + P.allena + '</span>'
+    + '<span class="cdz"><em>Poi, in Zenith · da 15 a 30 minuti, sdraiato e vestito</em>'
+    + P.dopo.map(r=> '<span class="cdr"><span class="cdk">' + r[0] + '</span><span class="cdt">' + r[1] + '</span></span>').join('')
+    + '</span>'
+    + '<span class="cvl"><em>' + (k === 'riposo' ? 'Perché ti serve' : 'Insieme valgono molto di più') + '</em>' + barre + '<span class="cvt">' + P.vale + '</span></span>';
+}
 /* ── il tuo caso: si apre toccando una delle cinque porte in home ── */
 function apriRispostaCaso(k){
   go('caso');
@@ -2365,9 +2458,7 @@ function apriRispostaCaso(k){
              cosa ci aggiunge Zenith e perché. In quest'ordine — il
              consiglio senza il fatto è una pubblicità, il fatto senza il
              consiglio è una lezione di fisiologia */
-          ? perTeHTML(kk)
-            + '<span class="crd"><em>Come funziona</em>' + mm[2] + '</span>'
-            + '<span class="crz"><em>Perché ti conviene anche Zenith</em>' + mm[3] + '</span>'
+          ? perTeHTML(kk) + percorsoHTML(kk, mm)
           : '<span class="crd">' + sub(kk) + '</span>')
       + '</span><span class="crfr">›</span></div>';
   }).join('');
