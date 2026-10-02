@@ -237,6 +237,22 @@ html,body{overscroll-behavior:none}
   color:#fff; background:color-mix(in srgb, var(--cc) 16%, transparent); border:1.4px solid color-mix(in srgb, var(--cc) 62%, transparent)}
 .combina .cbr i{width:10px; height:10px; border-radius:50%; background:var(--cc); display:block}
 
+
+/* ── i nove ingredienti si presentano, uno alla volta e a caso ──
+   Ogni tanto uno dei nove (i tre numeri e le sei pastiglie) diventa piu' grande degli altri,
+   che si abbassano di tono, e dice in una riga che cosa e'. Mai in fila, mai tutti: a caso, a
+   intervalli diversi, cosi' non diventa un'insegna che lampeggia. */
+.sezione.cifre .combina .cbk{min-height:2.6em; display:flex; align-items:center; justify-content:center; transition:opacity .35s ease}
+.sezione.cifre .combina .cbk.cambia{opacity:0}
+.sezione.cifre [data-sp]{transition:transform .55s cubic-bezier(.22,1,.36,1), opacity .55s ease, filter .55s ease, box-shadow .55s ease}
+.sezione.cifre.spot [data-sp]{opacity:.38; filter:saturate(.7)}
+.sezione.cifre.spot [data-sp].acceso{opacity:1; filter:none}
+.nb[data-sp] .nv{transform-origin:left bottom; transition:transform .55s cubic-bezier(.22,1,.36,1)}
+.nb[data-sp].acceso .nv{transform:scale(1.25)}
+.nb[data-sp].acceso .nl{color:rgba(255,255,255,.85)}
+.combina .cbr span[data-sp].acceso{transform:scale(1.32); box-shadow:0 0 30px -4px var(--cc); background:color-mix(in srgb, var(--cc) 30%, transparent); position:relative; z-index:2}
+@media (prefers-reduced-motion:reduce){ .nb[data-sp].acceso .nv, .combina .cbr span[data-sp].acceso{transform:none} }
+
 /* ══ LE SEZIONI DELLA VETRINA ══
    La colonna adesso e' divisa a occhio, non solo a spazi: sopra ogni
    parte che ha bisogno di essere presentata c'e' un filo che attraversa
@@ -1473,15 +1489,15 @@ html,body{overscroll-behavior:none}
       <!-- che cos'è Zenith, in tre numeri -->
       <div class="sezione cifre">
         <div class="numeri">
-          <div class="nb o"><div class="nv">20,3<small> mln</small></div>
+          <div class="nb o" data-sp="mln"><div class="nv">20,3<small> mln</small></div>
             <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
-          <div class="nb p"><div class="nv">20–30<small> min</small></div>
+          <div class="nb p" data-sp="min"><div class="nv">20–30<small> min</small></div>
             <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-          <div class="nb b"><div class="nv">24<small> programmi</small></div>
-            <div class="nl">da cui si parte: poi ogni cosa si regola e si combina con le altre</div></div>
+          <div class="nb b" data-sp="prog"><div class="nv">24<small> programmi</small></div>
+            <div class="nl">il punto di partenza: si abbina ai sei elementi qui sotto</div></div>
         </div>
-        <div class="combina"><span class="cbk">E poi tutto si combina: la seduta è fatta apposta per te</span>
-          <span class="cbr"><span style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span style="--cc:#e2bdd4"><i></i>Airbag</span><span style="--cc:#8fd3ec"><i></i>Rulli</span><span style="--cc:#f5851f"><i></i>Calore</span><span style="--cc:#b98adf"><i></i>Ioni</span><span style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
+        <div class="combina"><span class="cbk" id="cbk">Il programma si abbina a questi sei elementi: da qui nascono i 20,3 milioni</span>
+          <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
       </div>
 
       <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
@@ -2166,6 +2182,60 @@ function apriCasoAcceso(){ apriRispostaCaso(CENTRO_ACCESO); }
    tutt'e due. */
 const CENTRO_GIRO = 11000;
 function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, CENTRO_GIRO); }
+
+/* ── I NOVE INGREDIENTI SI PRESENTANO ──
+   Si estrae a sorte da un sacchetto di nove; quando e' vuoto si rimescola (e il primo
+   nuovo non e' mai l'ultimo uscito). Fra un'uscita e l'altra passano da 25 a 45 secondi,
+   scelti a caso: un giro completo dura circa cinque minuti, e due ingredienti di fila
+   non arrivano mai uno dietro l'altro. Succede solo con la home davanti. */
+const INGREDIENTI = {
+  mln:   'Programma, bracci, airbag, rulli, calore, ioni e gravità zero: insieme fanno 20,3 milioni di sedute diverse.',
+  min:   'Sdraiato e vestito, da 20 a 30 minuti: il tempo si sceglie in base a come stai.',
+  prog:  '24 programmi, dal recupero al sonno, dalla schiena alle gambe: da qui parte ogni seduta.',
+  bracci:'Due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. Come quattro mani.',
+  airbag:'Compressione a onde su spalle, braccia, vita e gambe: dalla più dolce alla più decisa.',
+  rulli: 'Rulli lungo la schiena, sui polpacci e sotto i piedi: lenti e profondi, o vivaci.',
+  calore:'Calore in fibra di carbonio sulla schiena: scioglie la tensione dove nasce.',
+  ioni:  'Ioni negativi: abbassano i giri e preparano al sonno.',
+  gz:    'Gravità zero: le gambe salgono sopra il livello del cuore e i liquidi tornano verso l\'alto.'
+};
+const TITOLO_INGREDIENTI = 'Il programma si abbina a questi sei elementi: da qui nascono i 20,3 milioni';
+let ingSacco = [], ingUltimo = null, ingTimer = null, ingSpegni = null;
+function ingEstrai(){
+  if(!ingSacco.length){
+    ingSacco = Object.keys(INGREDIENTI);
+    for(let i = ingSacco.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [ingSacco[i], ingSacco[j]] = [ingSacco[j], ingSacco[i]]; }
+    if(ingSacco[ingSacco.length - 1] === ingUltimo) ingSacco.unshift(ingSacco.pop());
+  }
+  return ingUltimo = ingSacco.pop();
+}
+function ingPresenta(k){
+  const sez = document.querySelector('.sezione.cifre'), cbk = document.getElementById('cbk');
+  if(!sez || !cbk) return;
+  sez.classList.add('spot');
+  sez.querySelectorAll('[data-sp]').forEach(e=> e.classList.toggle('acceso', e.dataset.sp === k));
+  cbk.classList.add('cambia');
+  setTimeout(()=>{ cbk.textContent = INGREDIENTI[k]; cbk.classList.remove('cambia'); }, 320);
+  clearTimeout(ingSpegni);
+  ingSpegni = setTimeout(ingRiposa, 5200);
+}
+function ingRiposa(){
+  const sez = document.querySelector('.sezione.cifre'), cbk = document.getElementById('cbk');
+  if(!sez || !cbk) return;
+  sez.classList.remove('spot');
+  sez.querySelectorAll('[data-sp]').forEach(e=> e.classList.remove('acceso'));
+  cbk.classList.add('cambia');
+  setTimeout(()=>{ cbk.textContent = TITOLO_INGREDIENTI; cbk.classList.remove('cambia'); }, 320);
+}
+function ingProssimo(primo){
+  clearTimeout(ingTimer);
+  ingTimer = setTimeout(()=>{
+    if(typeof SCENE === 'undefined' || SCENE === 'idle') ingPresenta(ingEstrai());
+    ingProssimo(false);
+  }, primo ? 9000 + Math.random() * 6000 : 25000 + Math.random() * 20000);
+}
+ingProssimo(true);
+
 function centroSpotStop(){
   clearInterval(centroTimer); centroTimer = null;
   document.querySelectorAll('#centro .ccard').forEach(c=> c.classList.remove('spot'));
