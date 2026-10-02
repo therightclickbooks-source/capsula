@@ -228,6 +228,15 @@ html,body{overscroll-behavior:none}
 .nb .nl{margin-top:7px; font-size:16.5px; line-height:1.3; color:rgba(255,255,255,.55)}
 .nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec}
 
+
+/* le sei cose che la capsula puo' accendere, e la frase che dice che si combinano: e' il «perche'» dei 20,3 milioni */
+.sezione.cifre .combina{margin:14px 18px 2px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; gap:9px; align-items:center}
+.combina .cbk{font-size:19px; font-weight:800; color:rgba(255,255,255,.92); text-align:center}
+.combina .cbr{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
+.combina .cbr span{display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; font-size:17px; font-weight:800; white-space:nowrap;
+  color:#fff; background:color-mix(in srgb, var(--cc) 16%, transparent); border:1.4px solid color-mix(in srgb, var(--cc) 62%, transparent)}
+.combina .cbr i{width:10px; height:10px; border-radius:50%; background:var(--cc); display:block}
+
 /* ══ LE SEZIONI DELLA VETRINA ══
    La colonna adesso e' divisa a occhio, non solo a spazi: sopra ogni
    parte che ha bisogno di essere presentata c'e' un filo che attraversa
@@ -248,7 +257,7 @@ html,body{overscroll-behavior:none}
    sopra il tasto, dove non si vede — un tasto piu' staccato dal resto
    non e' un difetto, un riquadro con dentro il vuoto si' */
 .sezione.porte{display:flex; flex-direction:column; flex:0 1 auto; min-height:0}
-.sezione.cifre{padding:14px 2px}
+.sezione.cifre{display:block; margin-top:14px; padding:14px 2px}   /* «cifre» e' anche la classe delle quattro cifre del cellulare: qui si annulla il suo flex */
 /* il titolo di sezione: prima era una riga sola di maiuscole piccole con
    un trattino davanti — si leggeva come un'etichetta di servizio, non
    come l'inizio di qualcosa. Adesso sono tre righe con tre pesi diversi:
@@ -1466,11 +1475,13 @@ html,body{overscroll-behavior:none}
         <div class="numeri">
           <div class="nb o"><div class="nv">20,3<small> mln</small></div>
             <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
-          <div class="nb p"><div class="nv">15–30<small> min</small></div>
+          <div class="nb p"><div class="nv">20–30<small> min</small></div>
             <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
           <div class="nb b"><div class="nv">4<small> mani</small></div>
             <div class="nl">due bracci, uno in 3D e uno in 4D, che lavorano insieme</div></div>
         </div>
+        <div class="combina"><span class="cbk">E poi tutto si combina: la seduta è fatta apposta per te</span>
+          <span class="cbr"><span style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span style="--cc:#e2bdd4"><i></i>Airbag</span><span style="--cc:#8fd3ec"><i></i>Rulli</span><span style="--cc:#f5851f"><i></i>Calore</span><span style="--cc:#b98adf"><i></i>Ioni</span><span style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
       </div>
 
       <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
@@ -1787,7 +1798,7 @@ const FRASI_PROBLEMA = [
   {ic:'⏰', tx:'Un massaggio sì,<br>ma <em>un\'ora</em> non ce l\'hai.',
         sub:'Con Z bastano venti minuti, e ogni minuto è scelto per te.'},
   {ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.',
-        sub:'Z ha un programma che ti rimette in moto: quindici minuti, ritmo vivo.'},
+        sub:'Z ha un programma che ti rimette in moto: venti minuti, ritmo vivo.'},
   {ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.',
         sub:'Z scioglie collo e schiena che il volante ha tenuto fermi per ore.'},
   {ic:'👟', tx:'In piedi tutto il giorno,<br>i piedi <em>non ne possono più</em>.',
@@ -1918,7 +1929,7 @@ const QA = [
    a:'Un operatore <b>certificato dalla Scuola Zenith</b>. Studia e supera un esame prima di poter condurre una seduta da solo.',
    piu:'È una cosa nostra: non la trovi in nessun altro centro.'},
   {ic:'⏱️', t:'seduta', alt:'minuti tempo durata lunga breve', q:'Quanto dura una seduta?',
-   a:'Dai <b>quindici ai trenta minuti</b>, secondo il protocollo. La prima volta sono sempre quindici: si parte piano.',
+   a:'Dai <b>venti ai trenta minuti</b>, secondo il protocollo. Solo la prima volta, la prova, sono quindici: si parte piano.',
    piu:'Dopo, almeno mezz\'ora di pausa sulla stessa zona. «Di più» non vuol dire «meglio».'},
   {ic:'🦵', t:'problema', alt:'gonfie gonfiore caviglie ritenzione circolazione drenaggio vene polpacci piedi', q:'Ho le gambe pesanti: cosa fate?',
    a:'C\'è una famiglia dedicata: <b>Zenith Gambe Leggere</b>. Compressione a onde, rulli sotto i piedi e posizione a gravità zero.',
@@ -2367,10 +2378,10 @@ function chiudiRisposta(){
 
 /* ── IL PERCORSO: che cosa succede, e quando ──
    Chi legge deve potersi VEDERE: cosa ha fatto il suo allenamento, cosa
-   fa Zenith subito dopo (sdraiato, vestito, da 15 a 30 minuti), e cosa si
+   fa Zenith subito dopo (sdraiato, vestito, da 20 a 30 minuti), e cosa si
    sente stasera e domani. I tempi sono quelli veri della seduta; le
-   sensazioni sono dette come si dicono in capsula, «potresti», «dovresti»,
-   mai promesse. L'ultima riga dice, senza numeri, che l'allenamento e Zenith
+   sensazioni sono dette al presente: e' quello che il lavoro in Zenith porta,
+   senza il condizionale che fa dubitare. L'ultima riga dice, senza numeri, che l'allenamento e Zenith
    insieme rendono molto di piu' dell'allenamento da solo: lo stimolo lo da'
    chi si allena, il risultato lo costruisce il recupero. Chi fa solo il
    macchinario ha fatto un allenamento serio, e la riga non lo dice mai al
@@ -2380,40 +2391,40 @@ const PERCORSO = {
     tempo:'20 minuti',
     allena:'Venti minuti di contrazioni su <b>tutto il corpo</b>, schiena profonda compresa: hai dato ai muscoli uno <b>stimolo enorme</b> in pochissimo tempo.',
     dopo:[['Subito','Gli <b>airbag</b> lavorano gambe, glutei, braccia e schiena, i <b>rulli</b> sciolgono ciò che hai contratto e il <b>calore</b> porta <b>sangue nuovo</b> dove serve.'],
-          ['Stasera','Potresti sentire i muscoli <b>meno pieni e più morbidi</b>: la stanchezza c\'è, ma è quella buona.'],
-          ['Domani','È il giorno in cui di solito <b>tirano di più</b>: dovresti sentirli <b>meno rigidi</b>, pronti a ripartire.']],
+          ['Stasera','I muscoli sono <b>meno pieni e più morbidi</b>: la stanchezza c\'è, ma è quella buona.'],
+          ['Domani','È il giorno in cui di solito <b>tirano di più</b>: con Zenith li senti <b>meno rigidi</b>, pronti a ripartire.']],
     vale:'L\'EMS dà lo <b>stimolo</b>, Zenith lo trasforma in <b>risultato</b>: così lo stesso allenamento rende molto di più.',
     solo:'Solo EMS', con:'EMS + Zenith'},
   ems2: {
     tempo:'una camminata veloce',
     allena:'<b>Impulsi e camminata</b> insieme: gambe, glutei, polpacci e addome hanno lavorato dal primo minuto, e il <b>fiato</b> è salito di giri.',
     dopo:[['Subito','Le <b>gambe salgono sopra il cuore</b> (gravità zero), gli <b>airbag</b> comprimono a onde e i <b>rulli</b> lavorano polpacci e piedi: dove hai dato di più.'],
-          ['Stasera','Potresti sentire le gambe <b>più leggere</b> e meno cariche: salire le scale costa meno.'],
-          ['Domani','Polpacci e glutei di solito <b>tirano</b>: dovresti sentirli <b>meno rigidi</b>, e il corpo pronto per la prossima camminata.']],
+          ['Stasera','Le gambe sono <b>più leggere</b> e meno cariche: salire le scale costa meno.'],
+          ['Domani','Polpacci e glutei di solito <b>tirano</b>: con Zenith li senti <b>meno rigidi</b>, e il corpo è pronto per la prossima camminata.']],
     vale:'L\'EMS2 ti ha fatto lavorare <b>forza e fiato</b>; Zenith porta il recupero dove hai lavorato di più, e l\'effetto si moltiplica.',
     solo:'Solo EMS2', con:'EMS2 + Zenith'},
   vacufit: {
     tempo:'una camminata in vuototerapia',
     allena:'<b>Depressione, linfodrenaggio e infrarossi</b> insieme: hai messo in moto il circolo di gambe e glutei e tonificato l\'<b>addome</b>.',
     dopo:[['Subito','Gambe e piedi <b>al centro</b>: gravità zero, <b>compressione a onde</b> e <b>rulli plantari</b> accompagnano i liquidi verso l\'alto e il circolo resta acceso.'],
-          ['Stasera','Potresti avere le gambe <b>leggere per ore</b>: dieci minuti a gambe alzate, con un cuscino sotto i piedi, prolungano l\'effetto.'],
-          ['Domani','Le gambe dovrebbero arrivare a sera <b>meno pesanti</b>: è lì che si vede la differenza.']],
+          ['Stasera','Le gambe restano <b>leggere per ore</b>: dieci minuti a gambe alzate, con un cuscino sotto i piedi, prolungano l\'effetto.'],
+          ['Domani','Le gambe arrivano a sera <b>meno pesanti</b>: è lì che si vede la differenza.']],
     vale:'Il Vacutherm <b>accende</b> il circolo, Zenith lo <b>tiene acceso</b> per ore, non per dieci minuti: il risultato dura molto di più.',
     solo:'Solo Vacutherm', con:'Vacutherm + Zenith'},
   matrix: {
     tempo:'carico preciso a ogni ripetizione',
     allena:'Carico <b>preciso</b> a ogni ripetizione, in spinta e in ritorno: hai dato al muscolo il <b>segnale per crescere</b>, senza sbalzi per le articolazioni.',
     dopo:[['Subito','Il lavoro va <b>proprio dove hai lavorato</b>: gambe e glutei, parte alta per le braccia, <b>allungamento stile Thai</b> se cerchi relax.'],
-          ['Stasera','Il muscolo cresce <b>nelle ore dopo il carico</b>: potresti sentirlo <b>più elastico e meno pieno</b>, nelle condizioni giuste per farlo.'],
-          ['Domani','Quando di solito si fa sentire l\'indolenzimento: dovresti notare <b>meno rigidità</b> e più voglia di tornare ad allenarti.']],
+          ['Stasera','Il muscolo cresce <b>nelle ore dopo il carico</b>: Zenith lo rende <b>più elastico e meno pieno</b>, nelle condizioni giuste per farlo.'],
+          ['Domani','Quando di solito si fa sentire l\'indolenzimento: senti <b>meno rigidità</b> e hai più voglia di tornare ad allenarti.']],
     vale:'Matrix costruisce il segnale, Zenith gli dà il <b>tempo e le condizioni</b> per diventare muscolo: l\'allenamento rende molto di più.',
     solo:'Solo Matrix', con:'Matrix + Zenith'},
   riposo: {
     tempo:'',
     allena:'Oggi non ti alleni, e va benissimo: ore <b>alla scrivania, in auto o in piedi</b> si fanno sentire su <b>collo, spalle e colonna</b>.',
     dopo:[['Subito','Il <b>calore</b> scioglie la schiena, i <b>rulli</b> lavorano lenti lungo la colonna e gli <b>airbag</b> liberano spalle e gambe. Scegli tu l\'obiettivo: leggerezza, sonno, decompressione o energia.'],
-          ['Stasera','Potresti sentire <b>spalle più basse</b>, schiena sciolta e, se vuoi, un <b>sonno più facile</b>.'],
-          ['Domani','Dovresti iniziare la giornata con <b>meno tensione</b> su collo e schiena.']],
+          ['Stasera','Le <b>spalle sono più basse</b>, la schiena è sciolta e, se vuoi, il <b>sonno è più facile</b>.'],
+          ['Domani','Inizi la giornata con <b>meno tensione</b> su collo e schiena.']],
     vale:'Non serve allenarsi per fare una cosa buona per il corpo: <b>mezz\'ora</b> in cui la schiena torna al suo posto.',
     solo:'', con:''}
 };
@@ -2425,7 +2436,7 @@ function percorsoHTML(k, mm){
       + '<span class="cv2"><i style="width:100%"></i><b>' + P.con + '</b></span></span>'
     : '';
   return '<span class="cal"><em>' + (k === 'riposo' ? 'La tua giornata' : 'Il tuo allenamento') + '</em>' + P.allena + '</span>'
-    + '<span class="cdz"><em>Poi, in Zenith · da 15 a 30 minuti, sdraiato e vestito</em>'
+    + '<span class="cdz"><em>Poi, in Zenith · da 20 a 30 minuti, sdraiato e vestito</em>'
     + P.dopo.map(r=> '<span class="cdr"><span class="cdk">' + r[0] + '</span><span class="cdt">' + r[1] + '</span></span>').join('')
     + '</span>'
     + '<span class="cvl"><em>' + (k === 'riposo' ? 'Perché ti serve' : 'Insieme valgono molto di più') + '</em>' + barre + '<span class="cvt">' + P.vale + '</span></span>';
@@ -3702,7 +3713,7 @@ function costruisciProtocollo(q){
     return {prog, fam, S, why, zCode: zc0, manualRef, soloAria};
   }
   let rec = 20, dwhy = 'Durata standard di 20 minuti.';
-  if(fam === 'Z7'){ rec = 15; dwhy = 'Energia: sessione breve e tonificante di 15 minuti — di più smorzerebbe l\'effetto sveglia.'; }
+  if(fam === 'Z7'){ rec = 20; dwhy = 'Energia: 20 minuti, ritmo vivace e tonificante. Ogni seduta, tranne la prova, dura da 20 a 30 minuti.'; }
   else if(fam === 'Z6'){ rec = q.goal === 'sonno' ? 30 : 25;
     dwhy = 'Relax/sonno: sessione lunga di ' + rec + ' minuti — il rilassamento profondo ha bisogno di tempo.'; }
   else if(fam === 'Z2'){ rec = 25; dwhy = 'Recupero post-allenamento: 25 minuti per un defaticamento completo dei gruppi muscolari.'; }

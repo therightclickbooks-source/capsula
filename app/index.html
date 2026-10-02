@@ -3952,7 +3952,7 @@ const ZFAM = {
   Z4:{name:'Zenith Schiena', color:'#dcab63', who:'Tensioni dorsali, lombari o ai glutei', why:'Calore in fibra di carbone + manovre lente e profonde lungo i paravertebrali, all\'origine della tensione.', adv:'Sollievo e scioglimento della rigidità di schiena e zona lombare.'},
   Z5:{name:'Zenith Collo & Spalle', color:'#8fb2c9', who:'Cervicale e spalle da ufficio o guida', why:'Ore di scrivania induriscono trapezi e collo: lavoro mirato sulla parte alta con airbag di spalle e braccia.', adv:'Spalle giù e collo libero: cancella la postura da monitor.'},
   Z6:{name:'Zenith Sonno & Relax', color:'#7d7ce0', who:'Stress, agitazione, sonno difficile', why:'Manovre lentissime, ioni negativi e dondolio per abbassare i giri del sistema nervoso.', adv:'Rilassamento profondo che prepara il corpo al sonno.'},
-  Z7:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione trattamento.', adv:'Accende corpo, circolazione e lucidità in 15 minuti.'},
+  Z7:{name:'Zenith Energia', color:'#e0997d', who:'Mattina presto · prima dell\'allenamento', why:'Ritmo vivace e tonificante, postura attiva, rulli plantari rapidi: il caffè in versione trattamento.', adv:'Accende corpo, circolazione e lucidità in 20 minuti.'},
   Z8:{name:'Zenith Total Body', color:'#9aa66f', who:'Benessere generale, nessuna esigenza specifica', why:'Riequilibrio completo dalla nuca ai piedi quando non c\'è una zona o un obiettivo dominante.', adv:'Il check-up del benessere: tutto il corpo, senza stressare nulla.'},
   Z9:{name:'Zenith Su Misura', color:'#cf94b4', who:'Clienti abituali di qualunque categoria', why:'Il programma costruito sulle preferenze del cliente e salvato col suo nome nella capsula (P24).', adv:'La sua sessione perfetta, ripetibile con un solo tasto.'}
 };
@@ -4168,7 +4168,7 @@ function buildProtocol(client, quiz){
     S.timer = 15; /* la prima volta resta sempre una prova breve di 15′ */
   } else {
     let rec = 20, dwhy = 'Durata standard di 20 minuti.';
-    if (fam==='Z7'){ rec = 15; dwhy = 'Energia: sessione breve e tonificante di 15 minuti — di più smorzerebbe l\'effetto sveglia.'; }
+    if (fam==='Z7'){ rec = 20; dwhy = 'Energia: 20 minuti, ritmo vivace e tonificante. Ogni seduta, tranne la prova, dura da 20 a 30 minuti.'; }
     else if (fam==='Z6'){ rec = quiz.goal==='sonno' ? 30 : 25; dwhy = 'Relax/sonno: sessione lunga di '+rec+' minuti — il rilassamento profondo ha bisogno di tempo.'; }
     else if (fam==='Z2'){ rec = 25; dwhy = 'Recupero post-allenamento: 25 minuti per un defaticamento completo dei gruppi muscolari.'; }
     else if (fam==='Z3'){ rec = 25; dwhy = 'Drenaggio: 25 minuti — la compressione a onde dà il meglio con la durata.'; }
@@ -4688,7 +4688,7 @@ const HERO_MSGS = [
   {k:'unique', t:'Zenith legge <b>lo stato d’animo e i bisogni del momento</b>, a ogni singola sessione. Nessun’altra macchina del settore lo fa.'},
   // Procedura — rituale, sicurezza, dati
   {k:'proc', t:'Prima di avviare: <b>tasche vuote, niente gioielli, schiena aderente</b>. La cura dei dettagli è vendita silenziosa.'},
-  {k:'proc', t:'Una seduta dura <b>da 15 a 30 minuti</b>; poi almeno 30 di pausa sulla stessa zona. «Di più» non è «meglio».'},
+  {k:'proc', t:'Una seduta dura <b>da 20 a 30 minuti</b> (solo la prova, la prima volta, è di 15); poi almeno 30 di pausa sulla stessa zona. «Di più» non è «meglio».'},
   {k:'proc', t:'L’anamnesi prima di tutto: la domanda non è «quale programma?», ma «<b>questa persona può usare Zenith?</b>».'},
   {k:'proc', t:'Esporta il <b>backup completo</b> almeno una volta a settimana. Se passa una settimana, il gestionale te lo ricorda da solo in Home.'},
   // Mindset — sicurezza e motivazione dell’operatore
@@ -6157,7 +6157,7 @@ function vProposal(){
           <div class="paramrow"><div class="pl">Calore</div><div class="sw ${S.calore?'on':''}" onclick="repToggle('calore')"></div></div>
           <div class="paramrow"><div class="pl">Ioni negativi</div><div class="sw ${S.ioni?'on':''}" onclick="repToggle('ioni')"></div></div>
           <div class="paramrow"><div class="pl">Zero gravity</div><div class="sw ${S.zerog?'on':''}" onclick="repToggle('zerog')"></div></div>
-          <div class="paramrow"><div class="pl">Timer</div><div class="seg">${[15,20,25,30].map(t=>`<span class="opt ${S.timer===t?'on':''}" onclick="repTimer(${t})">${t}′</span>`).join('')}</div></div>
+          <div class="paramrow"><div class="pl">Timer</div><div class="seg">${[20,25,30].map(t=>`<span class="opt ${S.timer===t?'on':''}" onclick="repTimer(${t})">${t}′</span>`).join('')}</div></div>
         </div>`:''}
       </div>
     </div>
@@ -7082,7 +7082,7 @@ function vManual(){
     da subito: la <b>capsula</b> (la macchina) e il <b>gestionale</b> (questo tablet).</p>
 
     <h3>La capsula</h3>
-    <p class="gp">È una poltrona chiusa in cui la persona si sdraia, vestita, da 15 a 30 minuti.
+    <p class="gp">È una poltrona chiusa in cui la persona si sdraia, vestita, da 20 a 30 minuti (15 solo la prima volta, la prova).
     Dentro fa cinque cose, tutte insieme o solo alcune:</p>
     <div class="card">
       <div class="qrow"><span class="qt"><b>Massaggio meccanico</b> — dei rulli scorrono lungo la schiena, dalla nuca ai glutei; altri lavorano i polpacci (<b>Leg Kneading</b>) e i piedi (<b>Foot Roller</b>). È la parte che si sente di più.</span></div>
@@ -7465,7 +7465,7 @@ function vManual(){
     <h2 data-mira="g11">11 · Regole d'oro <small>valgono sempre</small></h2>
     <div class="card">
       <div class="gold">
-        <div class="gr"><span class="gc">✓</span><span>Una sessione dura <b>da 15 a 30 minuti</b>, mai di più.</span></div>
+        <div class="gr"><span class="gc">✓</span><span>Una sessione dura <b>da 20 a 30 minuti</b>, mai di più. Solo la prova, la prima volta, è di 15.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Almeno <b>30 minuti di pausa</b> prima di ripetere sulla stessa zona.</span></div>
         <div class="gr"><span class="gc">✓</span><span>Tasche vuote, niente gioielli, <b>scarpe tolte e calzini antiscivolo Zenith</b>.</span></div>
         <div class="gr"><span class="gc">✓</span><span>La <b>prima volta</b> di una persona è sempre leggera: ci pensa il gestionale, non forzare.</span></div>
@@ -7564,7 +7564,7 @@ const ACADEMY = [
   <h2>Le regole che non si trattano</h2>
   <ol class="msteps">
     <li><b>Vendi il dopo, non la macchina.</b> Nessuno compra "una capsula": comprano come si sentiranno all'uscita. Descrivi le sensazioni («gambe che pesano la metà»), mai la meccanica.</li>
-    <li><b>Una sessione dura da 15 a 30 minuti, mai di più</b>, poi servono <b>almeno 30 minuti di pausa</b> prima di ripetere sulla stessa zona. "Di più" non è "meglio".</li>
+    <li><b>Una sessione dura da 20 a 30 minuti, mai di più</b> (la prova, la prima volta, è di 15), poi servono <b>almeno 30 minuti di pausa</b> prima di ripetere sulla stessa zona. "Di più" non è "meglio".</li>
     <li><b>La capsula NON è un dispositivo medico.</b> È uno strumento di benessere: mai promettere cure, mai fare diagnosi. In caso di dubbio: prima il medico.</li>
   </ol>`,
 pool:[
@@ -7604,7 +7604,7 @@ pool:[
   <h2>Durate e tipo di seduta</h2>
   <div class="card">
     <ul class="tick">
-      <li><b>Energia: 15 minuti</b> — di più smorzerebbe l'effetto sveglia. <b>Recupero: 25</b>. <b>Relax e sonno: 25–30</b> — il rilassamento profondo ha bisogno di tempo.</li>
+      <li><b>Energia: 20 minuti</b> — la durata minima, ritmo vivace. <b>Recupero: 25</b>. <b>Relax e sonno: 25–30</b> — il rilassamento profondo ha bisogno di tempo.</li>
       <li><b>Tipo di seduta</b>: 🌀 <b>Massaggio completo</b> (rulli + aria) oppure 💨 <b>Solo aria</b> → programma <b>P23 Airbag Massage</b>, effetto pressoterapia: <b>nessun rullo</b> — né schiena, né polpacci, né piedi.</li>
       <li>Se il cliente chiede un lavoro mirato coi rulli ma «Solo aria» è attivo, l'app mostra un <b>avviso di conflitto</b>: per i rulli va disattivato l'interruttore.</li>
       <li>Nel quiz si scelgono al massimo <b>3 zone</b>: <b>la prima guida il programma</b>, le altre si rifiniscono con airbag e regolazioni.</li>
@@ -7623,7 +7623,7 @@ pool:[
  ['Chi decide il programma della sessione?',['Il cliente dal listino','Il motore, incrociando anamnesi e risposte del giorno','Sempre l\'operatore a memoria','Il caso'],1,'Il motore propone; l\'operatore rifinisce e spiega il perché.'],
  ['Quante zone si possono scegliere nel quiz e quale guida?',['Una sola','Fino a 3: la prima guida il programma','Fino a 5, tutte uguali','Nessuna'],1,'Massimo 3 zone: la prima guida il programma, le altre rifiniscono.'],
  ['Coi clienti si parla in codici (P08, Z3…)?',['Sì, fa professionale','Mai: i codici sono per lo staff','Solo coi clienti esperti','Solo per iscritto'],1,'Per il cliente: «oggi ti alleggerisco le gambe» — mai i codici.'],
- ['Durata consigliata per l\'obiettivo Energia?',['15 minuti','20 minuti','25 minuti','30 minuti'],0,'Energia = 15 minuti: una sessione più lunga smorzerebbe l\'effetto sveglia.'],
+ ['Durata consigliata per l\'obiettivo Energia?',['15 minuti','20 minuti','25 minuti','30 minuti'],1,'Energia = 20 minuti, come la durata minima di ogni seduta: i 15 minuti sono solo per la prova della prima volta.'],
  ['Durata consigliata per relax e sonno?',['10–15 minuti','25–30 minuti','Sempre 20','45 minuti'],1,'Il rilassamento profondo ha bisogno di tempo: 25–30 minuti.'],
  ['Dove leggi la spiegazione del protocollo proposto?',['Nel riquadro «Perché questo protocollo»','Nelle Impostazioni','Sul touchscreen della capsula','Nel backup'],0,'Ogni proposta arriva con il perché scritto in chiaro, riga per riga.'],
 ]},
