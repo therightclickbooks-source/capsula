@@ -220,13 +220,13 @@ html,body{overscroll-behavior:none}
   box-shadow:0 8px 26px rgba(212,175,55,.45)}
 .cartellino span{font-size:28px; animation:dondola 2.8s ease-in-out infinite}
 .nastro .nsg{margin-top:4px; font-size:19px; font-weight:800; color:#1a1320; background:#e6c65c; padding:10px 20px; border-radius:999px}
-.nb{flex:1; padding:0 18px; display:flex; flex-direction:column; justify-content:center}
+.nb{flex:1; padding:0 14px; display:flex; flex-direction:column; justify-content:center}
 .nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
 .nb .nv{font-size:46px; font-weight:800; line-height:1; letter-spacing:-.03em;
   white-space:nowrap}
 .nb .nv small{font-size:21px; font-weight:800; letter-spacing:0}
 .nb .nl{margin-top:7px; font-size:16.5px; line-height:1.3; color:rgba(255,255,255,.55)}
-.nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec}
+.nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec} .nb.g .nv{color:#9fe0b8}
 
 
 /* le sei cose che la capsula puo' accendere, e la frase che dice che si combinano: e' il «perche'» dei 20,3 milioni */
@@ -1494,13 +1494,15 @@ html,body{overscroll-behavior:none}
       <div class="sezione cifre">
         <div class="numeri">
           <div class="nb o" data-sp="mln"><div class="nv">20,3<small> mln</small></div>
-            <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
-          <div class="nb p" data-sp="min"><div class="nv">20–30<small> min</small></div>
+            <div class="nl">programmi possibili: il tuo nasce oggi, non è fisso</div></div>
+          <div class="nb p" data-sp="fam"><div class="nv">9<small> famiglie</small></div>
+            <div class="nl">il perché della seduta: recupero, schiena, sonno…</div></div>
+          <div class="nb b" data-sp="prot"><div class="nv">24<small> protocolli</small></div>
+            <div class="nl">il modo di lavorare, dentro ogni famiglia</div></div>
+          <div class="nb g" data-sp="min"><div class="nv">20–30<small> min</small></div>
             <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-          <div class="nb b" data-sp="prog"><div class="nv">24<small> famiglie</small></div>
-            <div class="nl">di protocolli: la tua seduta nasce da una, con i sei elementi qui sotto</div></div>
         </div>
-        <div class="combina"><span class="cbk" id="cbk">Una famiglia di protocolli + questi sei elementi: da qui nascono i 20,3 milioni</span>
+        <div class="combina"><span class="cbk" id="cbk">Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi</span>
           <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
       </div>
 
@@ -1818,7 +1820,7 @@ const FRASI_PROBLEMA = [
   {ic:'⏰', tx:'Un massaggio sì,<br>ma <em>un\'ora</em> non ce l\'hai.',
         sub:'Con Z bastano venti minuti, e ogni minuto è scelto per te.'},
   {ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.',
-        sub:'Z ha un programma che ti rimette in moto: venti minuti, ritmo vivo.'},
+        sub:'Z ha un protocollo che ti rimette in moto: venti minuti, ritmo vivo.'},
   {ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.',
         sub:'Z scioglie collo e schiena che il volante ha tenuto fermi per ore.'},
   {ic:'👟', tx:'In piedi tutto il giorno,<br>i piedi <em>non ne possono più</em>.',
@@ -1844,7 +1846,7 @@ const FRASI_PROBLEMA = [
   {ic:'🥶', tx:'Mani e piedi<br>sempre <em>freddi</em>.',
         sub:'Z riattiva il circolo con compressione e calore, dai piedi in su.'},
   {ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.',
-        sub:'Z ha i programmi del sonno: il corpo impara di nuovo a staccare.'},
+        sub:'Z ha i protocolli del sonno: il corpo impara di nuovo a staccare.'},
   {ic:'🧘', tx:'Vorresti staccare,<br>ma <em>non sai come</em>.',
         sub:'Su Z non devi fare niente: ti siedi, e al resto pensa la capsula.'},
   {ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.',
@@ -1865,7 +1867,7 @@ const FRASI_CURIOSITA = [
         sub:'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'},
   {ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
         sub:'Ogni operatore supera la Scuola Zenith prima di condurre una seduta da solo.'},
-  {ic:'🗂️', tx:'<em>Ventiquattro</em> programmi.<br>Oggi uno solo è il tuo.'},
+  {ic:'🗂️', tx:'Nove famiglie, <em>ventiquattro</em> protocolli.<br>Il tuo programma è uno solo.'},
   {ic:'🔥', tx:'Calore in fibra di carbone<br>lungo la <em>schiena</em>.',
         sub:'Manovre lente e profonde là dove nasce la tensione, non dove si sente.'},
   {ic:'🌊', tx:'Compressione a onde,<br>dai <em>piedi verso l\'alto</em>.',
@@ -1977,7 +1979,7 @@ const QA = [
    piu:'La schiena va appoggiata bene allo schienale: la scansione delle spalle parte da sola.'},
   {ic:'📋', t:'pratica', alt:'incinta gravidanza pacemaker protesi cuore medico certificato anamnesi controindicazioni rischi sicuro pericoloso malattia', q:'Ci sono casi in cui non posso farlo?',
    a:'Sì, ed è la prima cosa che controlliamo. Prima della seduta c\'è una <b>scheda anamnestica</b>: alcune condizioni escludono la capsula, altre richiedono il certificato del medico.',
-   piu:'La domanda non è «quale programma?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
+   piu:'La domanda non è «quale protocollo?», ma «questa persona può usare Zenith?». Sempre in quest\'ordine.'},
   {ic:'🔁', t:'pratica', alt:'frequenza settimana volte spesso quante', q:'Ogni quanto posso venire?',
    a:'Anche <b>tutti i giorni</b>, e persino più volte al giorno. Il momento in cui rende di più è <b>subito dopo un macchinario</b>: qualunque cosa tu abbia fatto qui, Zenith la porta a casa.',
    piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 20,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
@@ -2193,17 +2195,18 @@ function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSp
    scelti a caso: un giro completo dura circa cinque minuti, e due ingredienti di fila
    non arrivano mai uno dietro l'altro. Succede solo con la home davanti. */
 const INGREDIENTI = {
-  mln:   'Famiglia di protocolli, bracci, airbag, rulli, calore, ioni e gravità zero: insieme fanno 20,3 milioni di sedute diverse.',
+  mln:   'Una famiglia, un protocollo, sei elementi e le loro regolazioni: insieme fanno 20,3 milioni di programmi. Il tuo è uno solo.',
+  fam:   'Nove famiglie, dal Benvenuto al Recupero, dalla Schiena al Sonno: dicono perché fai la seduta.',
+  prot:  'Ventiquattro protocolli dentro le famiglie: il modo di lavorare, dalle manovre lente alle pressioni profonde.',
   min:   'Sdraiato e vestito, da 20 a 30 minuti: il tempo si sceglie in base a come stai.',
-  prog:  '24 famiglie di protocolli, dal recupero al sonno, dalla schiena alle gambe: la tua seduta nasce da una di loro, costruita su di te, oggi.',
-  bracci:'Due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. Come quattro mani.',
-  airbag:'Compressione a onde su spalle, braccia, vita e gambe: dalla più dolce alla più decisa.',
-  rulli: 'Rulli lungo la schiena, sui polpacci e sotto i piedi: lenti e profondi, o vivaci.',
-  calore:'Calore in fibra di carbonio sulla schiena: scioglie la tensione dove nasce.',
-  ioni:  'Ioni negativi: abbassano i giri e preparano al sonno.',
+  bracci:'Due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. La profondità si regola.',
+  airbag:'Compressione a onde su spalle, braccia, vita e gambe: la forza si regola, dalla più dolce alla più decisa.',
+  rulli: 'Rulli lungo la schiena, sui polpacci e sotto i piedi: si accendono dove servono e si regolano.',
+  calore:'Calore in fibra di carbonio sulla schiena: scioglie la tensione dove nasce, quando serve.',
+  ioni:  'Ioni negativi: abbassano i giri e preparano al sonno, quando servono.',
   gz:    'Gravità zero: le gambe salgono sopra il livello del cuore e i liquidi tornano verso l\'alto.'
 };
-const TITOLO_INGREDIENTI = 'Una famiglia di protocolli + questi sei elementi: da qui nascono i 20,3 milioni';
+const TITOLO_INGREDIENTI = 'Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi';
 let ingSacco = [], ingUltimo = null, ingTimer = null, ingSpegni = null;
 function ingEstrai(){
   if(!ingSacco.length){
@@ -2966,7 +2969,7 @@ const MACCHINE = [
    + 'intenso e completo, con le articolazioni al riparo.',
    'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato: '
    + 'porta sangue nuovo dove è servito, mentre tu stai sdraiato. Se ti senti '
-   + 'già indolenzito parte il programma <b>anti-DOMS</b>; se oggi hai insistito '
+   + 'già indolenzito parte il protocollo <b>anti-DOMS</b>; se oggi hai insistito '
    + 'sulle braccia, il recupero della <b>parte alta</b>.', 'ems'],
   ['🌀','EMS2',
    'Gli stessi impulsi dell\'EMS, ma mentre <b>cammini</b>: muscoli e fiato '
@@ -3677,7 +3680,7 @@ function costruisciProtocollo(q){
     else if(has('braccia') && !painZone){ prog='P09'; fam='Z5';
       why.push('Parte alta al centro: braccia e spalle indicate come zone del giorno.'); }
     else { prog='P04'; fam='Z4';
-      why.push('Programma dedicato al tratto dorso-lombare con calore attivo.');
+      why.push('Protocollo dedicato al tratto dorso-lombare con calore attivo.');
       manualRef = {zona: has('lombare') && !has('dorsale') ? 'zona lombare' : 'tratto dorso-lombare',
                    tecnica:'Kneading (impastamento)'}; }
     S.intensita = Math.min(S.intensita, 3); S.calore = true;

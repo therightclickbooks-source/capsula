@@ -107,6 +107,13 @@ module.exports = async function(browser){
   tac.t('«Il tuo caso»: ogni scheda dice che insieme valgono di più, senza numeri',
     caso.every(t=> /(Insieme valgono molto di più|Perché ti serve)/.test(t)) && caso.every(t=> !/\d,\d/.test(t.replace(/20,3/g,''))));
 
+  /* le parole: 9 famiglie, 24 protocolli, e «programma» solo per il risultato fra i 20,3 milioni */
+  const home = await v.evaluate(()=> document.getElementById('s-idle').textContent);
+  tac.t('la home dice 9 famiglie e 24 protocolli, e non «24 programmi»',
+    /9\s*famiglie/.test(home) && /24\s*protocolli/.test(home) && !/24\s*programmi/i.test(home) && !/ventiquattro programmi/i.test(home), home.slice(0, 300));
+  tac.t('la home dice che il risultato dei 20,3 milioni e\' il programma, e che i sei elementi si regolano a parte',
+    /20,3[\s\S]{0,40}programmi possibili/.test(home) && /ognuno regolato a parte/.test(home));
+
   await v.close(); await g.close();
   return tac;
 };

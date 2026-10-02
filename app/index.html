@@ -3821,7 +3821,7 @@ function ztProgNum(code){
   const P = PROGRAMS[code]; if(!P) return '';
   return ztAttr({ t: code, k: esc(P.o), b: esc(P.d),
     chips: P.cat.map(c=>`<span class="chip">${esc(c)}</span>`).join(''),
-    f: 'Tocca per aprire l&#39;elenco completo dei 24 programmi' }, 'var(--accent-hi)');
+    f: 'Tocca per aprire l&#39;elenco completo dei 24 protocolli' }, 'var(--accent-hi)');
 }
 function ztProgNome(code){
   const P = PROGRAMS[code]; if(!P) return '';
@@ -4052,7 +4052,7 @@ function buildProtocol(client, quiz){
     else if (has('cervicale') && !has('dorsale') && !has('lombare')){ prog = quiz.activity==='riposo' ? 'P13':'P03'; fam='Z5'; why.push('Focus su collo, trapezi e spalle, le zone indicate come tese.');
       manualRef = {zona:'trapezi e base del collo', tecnica:'Shiatsu (digitopressione)', tkey:'SHIATSU', larghezza:'media', wkey:'W_MEDIUM'}; }
     else if (has('braccia') && !painZone){ prog='P09'; fam='Z5'; why.push('Parte alta al centro: braccia e spalle indicate come zone del giorno.'); }
-    else { prog='P04'; fam='Z4'; why.push('Programma dedicato al tratto dorso-lombare con calore attivo.');
+    else { prog='P04'; fam='Z4'; why.push('Protocollo dedicato al tratto dorso-lombare con calore attivo.');
       manualRef = {zona: has('lombare')&&!has('dorsale') ? 'zona lombare' : 'tratto dorso-lombare', tecnica:'Kneading (impastamento)', tkey:'KNEADING', larghezza:'stretta (paravertebrali)', wkey:'W_NARROW'}; }
     S.intensita=Math.min(S.intensita, 3); S.calore = !an.caloreSensibile;
     if (manualRef) why.push('Rifinitura manuale inclusa: a metà sessione si lavora sul punto esatto ('+manualRef.zona+') con tecnica '+manualRef.tecnica+'.');
@@ -4825,7 +4825,7 @@ function vHome(){
     <div class="secgroup g-ref">
       <div class="sg-lab"><span>Da consultare</span></div>
       <div class="tilegrid two">
-        <div class="tile c-prog" data-c onclick="go('legend')"><div class="ic">${icon('book',26)}</div><div class="tt">Programmi & Protocolli</div><div class="td">I 24 programmi e le famiglie Z</div></div>
+        <div class="tile c-prog" data-c onclick="go('legend')"><div class="ic">${icon('book',26)}</div><div class="tt">Famiglie & Protocolli</div><div class="td">Le 9 famiglie Z e i 24 protocolli</div></div>
         <div class="tile c-guida" data-c onclick="go('manual')"><div class="ic">${icon('manual',26)}</div><div class="tt">Guida all'uso</div><div class="td">Il manuale, passo per passo</div></div>
       </div>
     </div>
@@ -5092,7 +5092,7 @@ function ztFam(fam){
   const F = ZFAM[fam]; if(!F) return '';
   return ztAttr({ t: fam + ' · ' + F.name, k: F.who, b: F.why,
     extra: `<div class="zt-b" style="margin-top:9px"><b>Vantaggio principale.</b> ${F.adv}</div>`,
-    f: 'Le nove famiglie sono spiegate in Programmi e protocolli' }, F.color);
+    f: 'Le nove famiglie sono spiegate in Famiglie e protocolli' }, F.color);
 }
 /* La lettera dell'operatore: sta accanto alla data, in fondo alla riga che
    dice gia' chi e quando. Le sedute registrate prima che questa funzione
@@ -6012,7 +6012,7 @@ const QLBL = {operatore:'Operatore', activity:'Attività', zones:'Zone', goal:'O
 /* cosa fa ogni macchinario del centro e come Zenith gli risponde */
 const MACHINES = [
   ['⚡','EMS','Z2','Elettromiostimolazione: un <b>total body</b> in venti minuti. Il numero di contrazioni vale quanto <b>tre ore di sala pesi</b>, e arriva anche ai muscoli profondi della schiena — quelli che sostengono la <b>postura</b> — oltre a gambe, glutei, addome e braccia. Lavoro breve, intenso e completo, con le articolazioni al riparo.',
-   'Zenith risponde con un <b>defaticamento completo</b> dei gruppi lavorati. Se il cliente è già indolenzito passa al programma <b>anti-DOMS</b>; se le braccia sono la zona del giorno, al recupero della parte alta.'],
+   'Zenith risponde con un <b>defaticamento completo</b> dei gruppi lavorati. Se il cliente è già indolenzito passa al protocollo <b>anti-DOMS</b>; se le braccia sono la zona del giorno, al recupero della parte alta.'],
   ['🌀','EMS2','Z2 · Z3','Elettromiostimolazione abbinata a una <b>camminata veloce sul tapis roulant</b>: gli impulsi fanno contrarre i muscoli mentre il cliente cammina. Gambe, glutei e polpacci restano sotto carico dal primo minuto, l\'<b>addome</b> lavora per tenere l\'equilibrio e il cardio sale: <b>forza e resistenza</b> nella stessa seduta.',
    'Zenith alza la <b>compressione airbag ad almeno 4</b>, accende <b>zero gravity</b> e i <b>rulli su polpacci e piedi</b>: è lì che il corpo ha lavorato di più. Se il cliente è già indolenzito passa all\'<b>anti-DOMS</b>, se cerca un recupero totale al <b>defaticamento completo</b>.'],
   ['💨','Vacutherm','Z3','Camminata in vuototerapia, dentro una cabina a <b>depressione regolata</b>: il vuoto richiama il circolo verso <b>gambe e glutei</b>, e la stessa depressione fa lavorare molto anche l\'<b>addome</b>, che si tonifica durante la camminata. Il <b>linfodrenaggio</b> in abbinata favorisce l\'espulsione dei liquidi in eccesso; gli <b>infrarossi a onde medie</b> ossigenano le cellule adipose, alzano il consumo calorico e migliorano la resa estetica della pelle su gambe e glutei.',
@@ -6196,7 +6196,7 @@ function vProposal(){
         </div>`:''}
         ${nExtra?`<div class="exnote"><span class="exdot">＋</span><span>Questo protocollo ha <b>${nExtra} ${nExtra>1?'sezioni extra facoltative':'sezione extra facoltativa'}</b>: la riconosci dal colore azzurro</span></div>`:''}
         <div class="pwhy" style="margin-top:8px">${P.d}<br><span style="color:var(--faint)">“${P.o}” è il nome che leggi sul touchscreen della capsula</span></div>
-        <div class="zline"><span class="zpill">${zCode}</span><button class="zhelp" onclick="openLegend()" ${ztAttr({t:'Il codice della seduta', s:'la targa di questa sessione', b:'Famiglia, programma e tutte le regolazioni in una riga sola. Serve a <b>ripetere identica</b> una seduta riuscita, anche fra mesi.', extra:'<div class="zt-b" style="margin-top:8px"><b>D</b> profondità 4D · <b>A</b> forza airbag (0–3) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity acceso</div>', f:'Tocca per la spiegazione completa'})}>?</button></div>
+        <div class="zline"><span class="zpill">${zCode}</span><button class="zhelp" onclick="openLegend()" ${ztAttr({t:'Il codice della seduta', s:'la targa di questa sessione', b:'Famiglia, protocollo e tutte le regolazioni in una riga sola: è la targa del programma. Serve a <b>ripetere identica</b> una seduta riuscita, anche fra mesi.', extra:'<div class="zt-b" style="margin-top:8px"><b>D</b> profondità 4D · <b>A</b> forza airbag (0–3) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity acceso</div>', f:'Tocca per la spiegazione completa'})}>?</button></div>
         <div class="zkey"><b>D</b> profondità 4D · <b>A</b> forza airbag, sulla scala 0–3 · <b>I</b> ioni · <b>C</b> calore · <b>G</b> zero gravity: accesi se la lettera c'è</div>
         <button class="qrcta" onclick="apriQR()">
           <span class="qc-ic">📲</span>
@@ -6480,8 +6480,8 @@ function messaggioZenith(c, s){
   if(pfb === 'ok') C.push({id:'c-fbo', t:'L\'ultima volta la pressione era «perfetta»: oggi siamo ripartiti esattamente da lì.'});
   const volte = tutte.slice(0, idx + 1).filter(x => x.prog === s.prog).length;
   const provati = new Set(tutte.slice(0, idx + 1).map(x => x.prog).filter(Boolean)).size;
-  if(n > 1 && volte === 1) C.push({id:'c-new', t:'Era la prima volta con questo programma: ' + provati + (provati === 1 ? ' programma provato' : ' programmi diversi provati') + ' finora.'});
-  if(volte >= 3) C.push({id:'c-tuo', t:'È la ' + volte + 'ª volta con questo programma: ormai è il tuo.'});
+  if(n > 1 && volte === 1) C.push({id:'c-new', t:'Era la prima volta con questo protocollo: ' + provati + (provati === 1 ? ' protocollo provato' : ' protocolli diversi provati') + ' finora.'});
+  if(volte >= 3) C.push({id:'c-tuo', t:'È la ' + volte + 'ª volta con questo protocollo: ormai è il tuo.'});
   const fav = prima.filter(x => x.fav && !isFirstSession(x));
   if(fav.length) C.push({id:'c-fav', t:'Hai ' + (fav.length === 1 ? 'una seduta' : fav.length + ' sedute') + ' tra le preferite: al check-in le ritrovi col bottone oro «Scheda».'});
   const nota = fav.filter(x => x.favNote).slice(-1)[0];
@@ -7450,9 +7450,10 @@ function vManual(){
         <div class="gv"><div class="gw">Anamnesi</div><div class="gd">la stessa cosa del questionario di salute. È la parola che si usa in ambito sanitario.</div></div>
         <div class="gv"><div class="gw">Check-in</div><div class="gd">l'inizio di una sessione: si sceglie chi entra in capsula. È il tasto grande <b>Check-in seduta</b> in Home, oppure <b>＋</b> → <b>Nuova seduta</b>.</div></div>
         <div class="gv"><div class="gw">Sessione<small>o seduta</small></div><div class="gd">una volta dentro la capsula, dall'inizio alla fine. Sono la stessa cosa.</div></div>
-        <div class="gv"><div class="gw">Programma<small>P01 … P24</small></div><div class="gd">il movimento che la capsula esegue. Sono ventiquattro, ognuno con un nome scritto anche sul touchscreen della macchina.</div></div>
-        <div class="gv"><div class="gw">Famiglia<small>Z1 … Z9</small></div><div class="gd">il motivo della sessione: recupero, gambe leggere, schiena, sonno… Serve a raggruppare i programmi che servono alla stessa cosa.</div></div>
-        <div class="gv"><div class="gw">Codice<small>protocollo</small></div><div class="gd">la targa della sessione: famiglia, programma e tutte le regolazioni in una riga sola. Esempio: <b>Z2·P07·D2A2ICG</b>. Serve a ripetere identica una sessione riuscita.</div></div>
+        <div class="gv"><div class="gw">Programma</div><div class="gd">il <b>risultato</b>: una famiglia, un protocollo e i sei elementi (bracci 3D e 4D, airbag, rulli, calore, ioni, gravità zero), ognuno regolato a parte. È uno solo fra i 20,3 milioni possibili, e nasce per quella persona, in quel momento.</div></div>
+        <div class="gv"><div class="gw">Protocollo<small>P01 … P24</small></div><div class="gd">il modo di lavorare che la capsula esegue (sul suo touchscreen lo chiama «programma»). Sono ventiquattro, ognuno con un nome scritto anche sulla macchina.</div></div>
+        <div class="gv"><div class="gw">Famiglia<small>Z1 … Z9</small></div><div class="gd">il motivo della sessione: recupero, gambe leggere, schiena, sonno… Serve a raggruppare i protocolli che servono alla stessa cosa.</div></div>
+        <div class="gv"><div class="gw">Codice<small>programma</small></div><div class="gd">la targa del programma della sessione: famiglia, protocollo e tutte le regolazioni in una riga sola. Esempio: <b>Z2·P07·D2A2ICG</b>. Serve a ripetere identica una sessione riuscita.</div></div>
         <div class="gv"><div class="gw">Codice Zenith</div><div class="gd">l'<b>unico</b> codice del gestionale: apre l'app e conferma ogni cancellazione. Si cambia da ${gear} → <b>Sicurezza</b>.</div></div>
         <div class="gv"><div class="gw">Health Check</div><div class="gd">la misura dei parametri col dito sul sensore: funzione generale della capsula, fuori dalla seduta. Capitolo 7.</div></div>
         <div class="gv"><div class="gw">Macro-parametri</div><div class="gd">i valori di partenza di quella persona (4D, forza airbag, calore, ioni…). Il gestionale li propone, tu li puoi cambiare.</div></div>
@@ -7631,12 +7632,12 @@ const ACADEMY = [
       <li><b>Compressione ad aria</b> su tutto il corpo, <b>calore in fibra di carbone</b> nella zona lombare, <b>rulli plantari</b> per i piedi.</li>
       <li><b>Zero gravity</b>: gambe sollevate <b>sopra il livello del cuore</b>, colonna scaricata.</li>
       <li><b>Ioni negativi</b>: l'aria della capsula si arricchisce di ioni, come al mare — aiutano a rilassarsi.</li>
-      <li><b>24 programmi</b> (P01–P24), ognuno regolabile in ogni parametro.</li>
+      <li><b>24 protocolli</b> (P01–P24), ognuno regolabile in ogni parametro. Il risultato di ogni combinazione è il <b>programma</b> della seduta.</li>
     </ul>
   </div>
   <h2>Il numero che vince ogni paragone</h2>
   <div class="card">
-    <p style="margin:0 0 8px">La capsula regola <b>undici parametri indipendenti su 24 programmi</b>: sette dalla schermata del programma (4D, forza airbag, calore, ioni, zero gravity, Leg Kneading, Foot Roller) e quattro dalla regolazione manuale (tecnica, larghezza dei rulli, intervallo, velocità). La durata non si conta. I valori si moltiplicano tra loro. Il conto esatto è <b>24 × 7 × 7 × 2 × 2 × 2 × 2 × 4 × 6 × 3 × 3 × 5 = 20.321.280</b> → <b>20,3 milioni di combinazioni</b>.</p>
+    <p style="margin:0 0 8px">La capsula regola <b>undici parametri indipendenti su 24 protocolli</b>: sette dalla schermata del programma (4D, forza airbag, calore, ioni, zero gravity, Leg Kneading, Foot Roller) e quattro dalla regolazione manuale (tecnica, larghezza dei rulli, intervallo, velocità). La durata non si conta. I valori si moltiplicano tra loro. Il conto esatto è <b>24 × 7 × 7 × 2 × 2 × 2 × 2 × 4 × 6 × 3 × 3 × 5 = 20.321.280</b> → <b>20,3 milioni di combinazioni</b>.</p>
     <p class="hint" style="margin:0">Per questo <b>il corpo non si assuefà mai</b>: nessuna sessione è mai uguale alla precedente, e la sessione di oggi non esiste identica da nessun'altra parte al mondo.</p>
   </div>
   <h2>Le regole che non si trattano</h2>
@@ -7648,7 +7649,7 @@ const ACADEMY = [
 pool:[
  ['Che cosa vendiamo davvero al cliente?',['La tecnologia del robot 4D','Come si sentirà dopo la sessione','Il prezzo più basso della zona','Il numero di programmi'],1,'Pilastro fondamentale: si vende il dopo, la sensazione all\'uscita — mai la meccanica.'],
  ['Quante combinazioni possibili ha la capsula?',['Circa 20,3 milioni','Circa 1 milione','Esattamente 24','Circa 250 mila'],0,'24 × 7 × 7 × 2 × 2 × 2 × 2 × 4 × 6 × 3 × 3 × 5 = 20.321.280 → 20,3 milioni.'],
- ['Da dove nasce il numero 20.321.280?',['Da una stima di marketing','Dalla moltiplicazione di 11 parametri indipendenti sui 24 programmi','Dal numero di clienti serviti','Dal listino del costruttore'],1,'È il prodotto dei valori possibili di ogni parametro (4D, airbag, calore, ioni, zero-g, Leg Kneading, Foot Roller, tecnica, larghezza, intervallo, velocità) sui 24 programmi.'],
+ ['Da dove nasce il numero 20.321.280?',['Da una stima di marketing','Dalla moltiplicazione di 11 parametri indipendenti sui 24 protocolli','Dal numero di clienti serviti','Dal listino del costruttore'],1,'È il prodotto dei valori possibili di ogni parametro (4D, airbag, calore, ioni, zero-g, Leg Kneading, Foot Roller, tecnica, larghezza, intervallo, velocità) sui 24 programmi.'],
  ['La capsula è un dispositivo medico?',['Sì, certificato','Solo per la schiena','No: è uno strumento di benessere','Dipende dal programma'],2,'Mai promettere cure né fare diagnosi: è benessere, non medicina. La credibilità è il capitale del centro.'],
  ['Cosa segue il binario SL del robot massaggiante?',['Il perimetro del sedile','La curva naturale della colonna, dalla nuca ai glutei','Solo la zona lombare','Le braccia'],1,'Il binario SL accompagna la colonna dalla nuca fino ai glutei.'],
  ['Che cos\'è lo zero gravity?',['Un massaggio più leggero','Gambe sopra il livello del cuore e colonna scaricata','La modalità silenziosa','Un programma per lo sport'],1,'La posizione zero gravity solleva le gambe sopra il cuore e scarica la colonna.'],
@@ -7658,7 +7659,7 @@ pool:[
  ['Da cosa è generato il calore della capsula?',['Acqua calda','Fibra di carbone','Lampade a infrarossi esterne','Attrito dei rulli'],1,'Il calore è in fibra di carbone, concentrato nella zona lombare.'],
  ['Il cuore del manifesto Zenith è…',['Allenarsi di più','Benessere profondo restando fermi, senza sudore','Sostituire il medico','Vendere abbonamenti'],1,'La rivoluzione: qualcosa di profondo per il corpo senza sudore né sacrificio.'],
  ['Come si descrive la capsula al cliente?',['Coi codici dei programmi','Con le sensazioni («gambe che pesano la metà»)','Con la scheda tecnica','Col numero di rulli'],1,'Sempre sensazioni, mai meccanica né codici: quelli sono per lo staff.'],
- ['Quanti programmi ha la capsula?',['12','18','24','30'],2,'24 programmi, da P01 a P24.'],
+ ['Quanti protocolli ha la capsula?',['12','18','24','30'],2,'24 protocolli, da P01 a P24: da ognuno, con le regolazioni, nasce il programma della seduta.'],
  ['20 minuti in capsula sono…',['Un lusso da concedersi raramente','Manutenzione della persona','Tempo perso se non ci si allena','Utili solo agli sportivi'],1,'Il manifesto: non un lusso, ma manutenzione della persona.'],
  ['Cosa fanno gli ioni negativi della capsula?',['Scaldano la schiena','Arricchiscono l\'aria: la sensazione è quella dell\'aria pulita, come al mare','Misurano il battito','Gonfiano gli airbag'],1,'Si accendono dalla schermata del programma: aria più fresca, e aiutano a rilassarsi.'],
 ]},
@@ -7672,18 +7673,18 @@ pool:[
   <ol class="msteps">
     <li><b>Check-in</b>: si seleziona il cliente («chi sta entrando in capsula?»).</li>
     <li><b>Micro-quiz di 5 domande</b>: attività di oggi, zone, obiettivo, umore, pressione desiderata. <b>Alla prima sessione la 5ª domanda non compare</b>: la pressione si impara dalle sessioni successive. Se il cliente ha già risposto da solo sul <b>totem</b>, le risposte arrivano già compilate.</li>
-    <li><b>Il motore genera il protocollo</b>: incrocia anamnesi + risposte del giorno e propone famiglia Z, programma e regolazioni — con il <b>perché</b> scritto in chiaro nel riquadro «Perché questo protocollo». L'operatore rifinisce, non inventa.</li>
+    <li><b>Il motore genera il protocollo</b>: incrocia anamnesi + risposte del giorno e propone famiglia Z, protocollo e regolazioni: il risultato è il programma della seduta — con il <b>perché</b> scritto in chiaro nel riquadro «Perché questo protocollo». L'operatore rifinisce, non inventa.</li>
   </ol>
   <h2>Leggere un codice protocollo</h2>
   <div class="card">
-    <p style="margin:0 0 8px">Esempio <b>Z2·P21·D3A3ICG</b>: famiglia <b>Z</b> (il perché della seduta) · programma <b>P</b> (P01–P24) · <b>D</b> profondità 4D e <b>A</b> forza airbag, sulla scala della capsula 0–3 (4 e oltre solo con la taratura o a mano) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
+    <p style="margin:0 0 8px">Esempio <b>Z2·P21·D3A3ICG</b>: famiglia <b>Z</b> (il perché della seduta) · protocollo <b>P</b> (P01–P24) · <b>D</b> profondità 4D e <b>A</b> forza airbag, sulla scala della capsula 0–3 (4 e oltre solo con la taratura o a mano) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity attivo (se la lettera manca, è spento).</p>
     <p class="hint" style="margin:0">Le famiglie Z sono <b>9</b>, e la <b>Z1 è il Benvenuto</b>: la prima sessione di ogni cliente è sempre dolce, <b>15 minuti</b>, per far conoscere ogni sensazione.</p>
   </div>
   <h2>Durate e tipo di seduta</h2>
   <div class="card">
     <ul class="tick">
       <li><b>Energia: 20 minuti</b> — la durata minima, ritmo vivace. <b>Recupero: 25</b>. <b>Relax e sonno: 25–30</b> — il rilassamento profondo ha bisogno di tempo.</li>
-      <li><b>Tipo di seduta</b>: 🌀 <b>Massaggio completo</b> (rulli + aria) oppure 💨 <b>Solo aria</b> → programma <b>P23 Airbag Massage</b>, effetto pressoterapia: <b>nessun rullo</b> — né schiena, né polpacci, né piedi.</li>
+      <li><b>Tipo di seduta</b>: 🌀 <b>Massaggio completo</b> (rulli + aria) oppure 💨 <b>Solo aria</b> → protocollo <b>P23 Airbag Massage</b>, effetto pressoterapia: <b>nessun rullo</b> — né schiena, né polpacci, né piedi.</li>
       <li>Se il cliente chiede un lavoro mirato coi rulli ma «Solo aria» è attivo, l'app mostra un <b>avviso di conflitto</b>: per i rulli va disattivato l'interruttore.</li>
       <li>Nel quiz si scelgono al massimo <b>3 zone</b>: <b>la prima guida il programma</b>, le altre si rifiniscono con airbag e regolazioni.</li>
     </ul>
@@ -8233,7 +8234,7 @@ function filtraProgrammi(q){
   if(vuoto) vuoto.style.display = visti ? 'none' : '';
 }
 function vLegend(){
-  return topbar('Programmi & Protocolli', LEGEND_BACK) + `
+  return topbar('Famiglie & Protocolli', LEGEND_BACK) + `
     <div class="mindset" style="margin-top:14px">
       <div class="mt">Zenith Mindset</div>
       <p>Ogni codice in questa pagina è una delle <b>20,3 milioni di combinazioni</b> possibili. Quando ne leggi uno, ricorda: quella era la sessione di <b>una persona precisa, in un giorno preciso</b> — e non esisterà mai identica per nessun altro.</p>
@@ -8243,20 +8244,20 @@ function vLegend(){
     <div class="card">
       <div style="font-size:22px; font-weight:800; letter-spacing:.05em; text-align:center; margin-bottom:12px">Z1 · P22 · D2 A2 I C G</div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">Z1</b> — Famiglia del protocollo: il "perché" della sessione (vedi elenco sotto)</span></div>
-      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Programma della capsula usato (P01–P24; qui “Gently Rub Soothing”, il nome che leggi sul touchscreen)</span></div>
+      <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">P22</b> — Protocollo della capsula usato (P01–P24; qui “Gently Rub Soothing”, il nome che leggi sul touchscreen)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">D2</b> — Profondità 4<b>D</b> dei rulli, scala 0–3</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">A2</b> — Forza <b>A</b>irbag, scala 0–3</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">I</b> — <b>I</b>oni negativi accesi (se la lettera manca, sono spenti)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">C</b> — <b>C</b>alore lombare acceso (se la lettera manca, è spento)</span></div>
       <div class="qrow"><span class="qt"><b style="color:var(--accent-strong)">G</b> — Zero <b>G</b>ravity attivo (se la lettera manca, posizione normale)</span></div>
-      <p class="hint" style="margin:12px 0 0">Stesso programma + regolazioni diverse = codici diversi: il codice identifica l'esatta combinazione della sessione. Nelle sedute salvate fino alla versione 143 c'era una «I» con un numero (per esempio I2D2A2CG): era un'intensità che ripeteva la 4D, ed è stata tolta. Oggi la I senza numero vuol dire ioni accesi. Sulla scala 0–3 il 3 è il massimo del protocollo: un 4 o più compare solo con la taratura «troppo leggera» o se l'hai alzato tu.</p>
+      <p class="hint" style="margin:12px 0 0">Stesso protocollo + regolazioni diverse = programmi diversi, quindi codici diversi: il codice identifica l'esatta combinazione della sessione. Nelle sedute salvate fino alla versione 143 c'era una «I» con un numero (per esempio I2D2A2CG): era un'intensità che ripeteva la 4D, ed è stata tolta. Oggi la I senza numero vuol dire ioni accesi. Sulla scala 0–3 il 3 è il massimo del protocollo: un 4 o più compare solo con la taratura «troppo leggera» o se l'hai alzato tu.</p>
     </div>
 
     <h2>Come si arriva a 20,3 milioni <span style="font-weight:400; font-size:14px; color:var(--faint)">— da sapere a memoria per i titubanti</span></h2>
-    <p class="hint">La capsula regola <b>undici parametri in modo indipendente</b> su <b>24 programmi</b>: i valori si <b>moltiplicano</b> tra loro. Ecco il conto esatto, solo con quello che si tocca davvero sul display.</p>
+    <p class="hint">La capsula regola <b>undici parametri in modo indipendente</b> su <b>24 protocolli</b>: i valori si <b>moltiplicano</b> tra loro. Il risultato di ogni combinazione si chiama <b>programma</b>. Ecco il conto esatto, solo con quello che si tocca davvero sul display.</p>
     <div class="card">
       <div class="qrow"><span class="qt"><b>Dalla schermata del programma</b></span></div>
-      <div class="qrow"><span class="qt">Programma base · P01–P24</span><span class="chip acc">× 24</span></div>
+      <div class="qrow"><span class="qt">Protocollo base · P01–P24</span><span class="chip acc">× 24</span></div>
       <div class="qrow"><span class="qt">Profondità 4D · 7 valori, l'anello da 0 a 6</span><span class="chip acc">× 7</span></div>
       <div class="qrow"><span class="qt">Forza airbag · 7 valori, l'anello da 0 a 6</span><span class="chip acc">× 7</span></div>
       <div class="qrow"><span class="qt">Calore lombare · acceso / spento</span><span class="chip acc">× 2</span></div>
@@ -8272,10 +8273,10 @@ function vLegend(){
       <div class="qrow" style="border-bottom:none; padding-top:14px"><span class="qt"><b>Combinazioni distinte della macchina</b></span><span class="chip" style="background:#d4af37; color:#111; font-weight:800; font-size:14px">20.321.280</span></div>
     </div>
     <p class="hint"><b>24 × 7 × 7 × 2 × 2 × 2 × 2 × 4 × 6 × 3 × 3 × 5 = 20.321.280</b> → <b style="color:#d4af37">20,3 milioni</b>. Nel conto <b>non</b> ci sono la durata (il Timing: 15, 20, 25 o 30 minuti), la musica (in seduta non si usa: cambia programma) né le posizioni di schienale e polpacci, che si regolano a occhio. E le <b>5 domande + l'anamnesi</b> non si sommano sopra: <b>scelgono</b> quale di queste combinazioni diventa la sua sessione di oggi.</p>
-    <div class="pquote"><b>Frase pronta per il titubante</b>«Le poltrone del centro commerciale fanno a tutti lo stesso massaggio. Qui la capsula regola undici parametri indipendenti su 24 programmi: <b>20,3 milioni di combinazioni</b>. La sua sessione di oggi non esiste identica da nessun'altra parte al mondo.»</div>
+    <div class="pquote"><b>Frase pronta per il titubante</b>«Le poltrone del centro commerciale fanno a tutti lo stesso massaggio. Qui la capsula regola undici parametri indipendenti su 24 protocolli: <b>20,3 milioni di programmi possibili</b>. La sua sessione di oggi non esiste identica da nessun'altra parte al mondo.»</div>
 
     <h2>Le 9 famiglie di protocollo</h2>
-    <p class="hint">Le famiglie sono il motivo della seduta. Le combinazioni possibili — programmi, parametri e regolazioni manuali — sono 20,3 milioni.</p>
+    <p class="hint">Le famiglie sono il motivo della seduta. Le combinazioni possibili — protocolli, parametri e regolazioni — sono 20,3 milioni, e ognuna è un programma.</p>
     ${Object.entries(ZFAM).map(([k,F])=>`
       <div class="zfam" style="--zc:${F.color}">
         <div class="zf-h">
@@ -8288,12 +8289,12 @@ function vLegend(){
         </div>
       </div>`).join('')}
 
-    <h2>I 24 programmi della capsula</h2>
-    <p class="hint">Il codice P e il nome che compare sul touchscreen. “Indicato per” suggerisce macchinari e situazioni tipiche: il motore li usa come base, ma ogni programma resta utilizzabile da chiunque sia idoneo.</p>
-    <input type="text" id="pcerca" class="pcerca" placeholder="Cerca un programma: nome, codice o situazione"
+    <h2>I 24 protocolli della capsula</h2>
+    <p class="hint">Il codice P e il nome che compare sul touchscreen. “Indicato per” suggerisce macchinari e situazioni tipiche: il motore li usa come base, ma ogni protocollo resta utilizzabile da chiunque sia idoneo.</p>
+    <input type="text" id="pcerca" class="pcerca" placeholder="Cerca un protocollo: nome, codice o situazione"
       oninput="filtraProgrammi(this.value)" autocomplete="off">
     <div class="plist" id="plist">${listaProgrammi()}</div>
-    <p class="hint" id="pvuoto" style="display:none">Nessun programma corrisponde alla ricerca.</p>
+    <p class="hint" id="pvuoto" style="display:none">Nessun protocollo corrisponde alla ricerca.</p>
 
     <h2>I parametri regolabili e le loro scale</h2>
     <div class="card">
