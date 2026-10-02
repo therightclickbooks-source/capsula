@@ -1497,10 +1497,10 @@ html,body{overscroll-behavior:none}
             <div class="nl">combinazioni: la tua seduta nasce oggi, non è un programma fisso</div></div>
           <div class="nb p" data-sp="min"><div class="nv">20–30<small> min</small></div>
             <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-          <div class="nb b" data-sp="prog"><div class="nv">24<small> programmi</small></div>
-            <div class="nl">il punto di partenza: si abbina ai sei elementi qui sotto</div></div>
+          <div class="nb b" data-sp="prog"><div class="nv">24<small> famiglie</small></div>
+            <div class="nl">di protocolli: la tua seduta nasce da una, con i sei elementi qui sotto</div></div>
         </div>
-        <div class="combina"><span class="cbk" id="cbk">Il programma si abbina a questi sei elementi: da qui nascono i 20,3 milioni</span>
+        <div class="combina"><span class="cbk" id="cbk">Una famiglia di protocolli + questi sei elementi: da qui nascono i 20,3 milioni</span>
           <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
       </div>
 
@@ -2193,9 +2193,9 @@ function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSp
    scelti a caso: un giro completo dura circa cinque minuti, e due ingredienti di fila
    non arrivano mai uno dietro l'altro. Succede solo con la home davanti. */
 const INGREDIENTI = {
-  mln:   'Programma, bracci, airbag, rulli, calore, ioni e gravità zero: insieme fanno 20,3 milioni di sedute diverse.',
+  mln:   'Famiglia di protocolli, bracci, airbag, rulli, calore, ioni e gravità zero: insieme fanno 20,3 milioni di sedute diverse.',
   min:   'Sdraiato e vestito, da 20 a 30 minuti: il tempo si sceglie in base a come stai.',
-  prog:  '24 programmi, dal recupero al sonno, dalla schiena alle gambe: da qui parte ogni seduta.',
+  prog:  '24 famiglie di protocolli, dal recupero al sonno, dalla schiena alle gambe: la tua seduta nasce da una di loro, costruita su di te, oggi.',
   bracci:'Due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. Come quattro mani.',
   airbag:'Compressione a onde su spalle, braccia, vita e gambe: dalla più dolce alla più decisa.',
   rulli: 'Rulli lungo la schiena, sui polpacci e sotto i piedi: lenti e profondi, o vivaci.',
@@ -2203,7 +2203,7 @@ const INGREDIENTI = {
   ioni:  'Ioni negativi: abbassano i giri e preparano al sonno.',
   gz:    'Gravità zero: le gambe salgono sopra il livello del cuore e i liquidi tornano verso l\'alto.'
 };
-const TITOLO_INGREDIENTI = 'Il programma si abbina a questi sei elementi: da qui nascono i 20,3 milioni';
+const TITOLO_INGREDIENTI = 'Una famiglia di protocolli + questi sei elementi: da qui nascono i 20,3 milioni';
 let ingSacco = [], ingUltimo = null, ingTimer = null, ingSpegni = null;
 function ingEstrai(){
   if(!ingSacco.length){
