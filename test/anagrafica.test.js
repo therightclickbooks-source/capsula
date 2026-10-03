@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
    LA CONDIZIONE PER SALVARE UNA SCHEDA
-   Detta a voce, e senza mezzi termini: telefono obbligatorio, e tutte
-   e quindici le domande dell'anamnesi risposte SI' o NO. Conditio sine
+   Detta a voce, e senza mezzi termini: nome e cognome obbligatori (il
+   telefono no, e' facoltativo), e tutte e quindici le domande
+   dell'anamnesi risposte SI' o NO. Conditio sine
    qua non — senza, la scheda non si salva, la firma non si prende e il
    protocollo non parte.
    La parte pericolosa e' quella che non si vede: prima le risposte in
@@ -31,6 +32,8 @@ module.exports = async function(browser){
     out.completa      = cheManca(pieno());
     out.senzaTelefono = cheManca(Object.assign(pieno(), {telefono:''}));
     out.senzaNome     = cheManca(Object.assign(pieno(), {nome:'', cognome:''}));
+    out.senzaCognome  = cheManca(Object.assign(pieno(), {cognome:''}));
+    out.soloNomeCognome = cheManca(Object.assign(pieno(), {telefono:'', prefisso:''}));
 
     /* una sola risposta in bianco basta a fermare tutto */
     const una = pieno(); delete una.anamnesi.b7;
@@ -59,8 +62,10 @@ module.exports = async function(browser){
   });
 
   tac.t('una scheda completa si salva', r.completa === null, String(r.completa));
-  tac.t('senza telefono non si salva', /telefono/i.test(r.senzaTelefono || ''), String(r.senzaTelefono));
+  tac.t('il telefono e\' facoltativo: senza, la scheda si salva', r.senzaTelefono === null, String(r.senzaTelefono));
+  tac.t('servono nome E cognome: senza il cognome non si salva', /cognome/i.test(r.senzaCognome || ''), String(r.senzaCognome));
   tac.t('senza nome non si salva', /nome/i.test(r.senzaNome || ''), String(r.senzaNome));
+  tac.t('nome e cognome bastano, con l\'anamnesi completa', r.soloNomeCognome === null, String(r.soloNomeCognome));
   tac.t('basta una risposta in bianco per fermare tutto',
     /una risposta/i.test(r.unaSola || ''), String(r.unaSola));
   tac.t('e dice quale manca', r.unaSolaQuale.length === 1 && r.unaSolaQuale[0] === 'b7',

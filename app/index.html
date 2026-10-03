@@ -4480,7 +4480,7 @@ function topbar(title, backTo){
   return `<div class="topbar">
     ${backTo?`<button class="btn-back" onclick="goBack()">‹ Indietro</button>`:`<div class="brand">${logoIMG(126)}</div>`}
     ${backTo?`<h1>${title}</h1>`:`<div style="flex:1"></div>
-    ${DB.totemMode===true?`<button class="swbtn" ${ztAttr({t:'Vai alla vetrina', b:'Passa alla schermata che vedono i clienti sul totem. Per tornare qui, tieni premuto il logo Zenith.'}, 'var(--gold)')} onclick="location.href='totem/index.html'"><span class="sq"></span>Vetrina</button>`:''}
+    ${DB.totemMode===true?`<button class="swbtn" ${ztAttr({t:'Vai alla vetrina', b:'Passa alla schermata che vedono i clienti sul totem. Per tornare qui, tocca due volte il logo Zenith.'}, 'var(--gold)')} onclick="location.href='totem/index.html'"><span class="sq"></span>Vetrina</button>`:''}
     <button class="vbadge" ${ztAttr({t:'Versione del gestionale', b:'Tocca per vedere di che giorno è l&#39;aggiornamento. Se il numero è diverso da un altro dispositivo, <b>ricarica la pagina</b>.'}, 'var(--ok)')} onclick="showVersion()">${icon('cloud',19)}<span class="vb-n">v${APP_VERSION.split('.')[0].replace('v','')}</span></button>`}
     ${backTo?`<button class="lockbtn" ${ztAttr('Torna alla schermata iniziale')} onclick="NAV=[]; go('home')">${icon('house',21)}</button>`:''}
     ${DB.codeLock===true?`<button class="lockbtn" ${ztAttr({t:'Chiudi il gestionale', b:'Blocca subito l&#39;app: per rientrare servirà il <b>Codice Zenith</b>.'}, 'var(--danger)')} onclick="lockNow()">${icon('lock',19)}</button>`:''}
@@ -5410,7 +5410,7 @@ function vEditClient(){
       <div><label class="f">Genere</label>
         <div class="seg" id="seg_gen">${[['F','Donna'],['M','Uomo'],['Altro','Altro']].map(([g,l])=>`<span class="opt ${c.genere===g?'on':''}" onclick="draftClient.genere='${g}'; segRefresh('seg_gen','${g}')" data-v="${g}">${l}</span>`).join('')}</div></div>
       <div class="pfxwrap"><label class="f">Prefisso internazionale</label>${pfxPicker(c)}</div>
-      <div><label class="f">Telefono <small class="fhint">senza prefisso</small></label>
+      <div><label class="f">Telefono <small class="fhint">senza prefisso · facoltativo</small></label>
         <input type="tel" id="f_tel" value="${esc(c.telefono)}"
           onblur="telNormalizza(this)" placeholder="es. 338 842 0870"></div>
     </div>
@@ -5667,9 +5667,9 @@ function stepCap(k,d){
    e le domande non risposte venivano messe a «NO» in automatico. Cioe':
    il gestionale dichiarava idoneo alla capsula qualcuno a cui nessuno
    aveva chiesto niente. Adesso no.
-   · il TELEFONO e' obbligatorio: senza, il cliente non si puo' chiamare
-     quando la capsula e' pronta, ed e' l'unica cosa che il totem usa per
-     riconoscerlo;
+   · del cliente servono NOME e COGNOME, e basta: il telefono e' facoltativo
+     (se c'e', il totem lo usa per riconoscerlo e si puo' chiamare quando la
+     capsula e' pronta; se manca, il cliente si riconosce dal nome);
    · OGNI domanda dell'anamnesi va risposta, SI' o NO, una per una. Non
      risposto non e' «no»: e' non risposto, ed e' la differenza fra una
      scheda e un modulo lasciato a meta'.
@@ -5680,8 +5680,7 @@ function anamnesiMancanti(c){
   return QA.concat(QB).filter(([k])=> typeof an[k] !== 'boolean').map(([k])=>k);
 }
 function cheManca(c){
-  if(!(c.nome||'').trim() && !(c.cognome||'').trim()) return 'Inserisci almeno il nome';
-  if(!(c.telefono||'').trim()) return 'Manca il telefono: è obbligatorio';
+  if(!(c.nome||'').trim() || !(c.cognome||'').trim()) return 'Inserisci nome e cognome';
   const m = anamnesiMancanti(c);
   if(m.length) return m.length === 1
     ? 'Manca una risposta dell\'anamnesi: rispondi SÌ o NO a tutte'
@@ -9046,7 +9045,7 @@ function vSettings(){
       <div class="paramrow"><div class="pl">Modalità totem<small>solo sul totem del centro: in alto compare il tasto «Vetrina» per passare alla schermata dei clienti</small></div>
       <div class="sw ${DB.totemMode===true?'on':''}" onclick="toggleTotem()"></div></div>
       <p class="hint" style="margin:10px 0 0">Lasciala <b>spenta sui telefoni</b>: lì il gestionale resta
-        quello di sempre. Dalla vetrina si torna qui tenendo premuto il <b>logo Zenith</b> per due secondi.</p>
+        quello di sempre. Dalla vetrina si torna qui toccando due volte, in fretta, il <b>logo Zenith</b>.</p>
     </div>
     <h2>Backup automatico su Drive</h2>
     <div class="card">

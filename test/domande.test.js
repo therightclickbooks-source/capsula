@@ -314,6 +314,25 @@ module.exports = async function(browser){
   tac.t('quel tasto e\' grande, e senza il cognome non compare', nuovo.dentro && nuovo.soloNome, JSON.stringify(nuovo));
   tac.t('toccandolo si va al passo dopo, col nome scritto', nuovo.avanza, JSON.stringify(nuovo));
 
+  /* ── il logo: due tocchi veloci aprono il gestionale, e il menu del browser sul logo non c'e' ── */
+  const lg = await p.evaluate(()=>{
+    const l = document.getElementById('logo'), r = {};
+    r.menu = (()=>{ const e = new Event('contextmenu', {cancelable:true, bubbles:true}); l.dispatchEvent(e); return e.defaultPrevented; })();
+    r.nonTrascina = l.draggable === false;
+    const vecchio = Object.getOwnPropertyDescriptor(window, 'location');
+    let dest = null; const dbg = document.getElementById('dbg');
+    /* un solo tocco: non apre niente */
+    l.dispatchEvent(new PointerEvent('pointerup', {bubbles:true}));
+    r.unoSolo = dbg.textContent !== 'apro il gestionale…';
+    return r;
+  });
+  tac.t('il menu «copia / scarica immagine» sul logo e\' spento', lg.menu && lg.nonTrascina, JSON.stringify(lg));
+  tac.t('un solo tocco sul logo non apre il gestionale', lg.unoSolo, JSON.stringify(lg));
+  const nav = p.waitForNavigation({timeout:3000}).then(()=> true, ()=> false);
+  await p.evaluate(()=>{ const l = document.getElementById('logo');
+    l.dispatchEvent(new PointerEvent('pointerup', {bubbles:true})); l.dispatchEvent(new PointerEvent('pointerup', {bubbles:true})); });
+  tac.t('due tocchi veloci sul logo aprono il gestionale', await nav || (await p.evaluate(()=> document.getElementById('dbg').textContent === 'apro il gestionale…')));
+
   await p.close();
   return tac;
 };

@@ -53,7 +53,8 @@ html,body{overscroll-behavior:none}
 /* ═══════════ testata — BANDA 1 · 3%→11% ═══════════ */
 .head{position:absolute; top:3.2%; left:0; right:0; display:flex; flex-direction:column;
   align-items:center; z-index:20}
-#logo{height:70px; opacity:.97; transition:transform .18s, filter .18s}
+#logo{height:70px; opacity:.97; transition:transform .18s, filter .18s;
+  -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; -webkit-user-drag:none; touch-action:manipulation}
 #logo.press{transform:scale(.9); filter:drop-shadow(0 0 30px rgba(212,175,55,.85))}
 .head .ente{font-size:16px; letter-spacing:.44em; color:rgba(255,255,255,.45);
   font-weight:700; margin-top:20px}
@@ -1398,7 +1399,7 @@ html,body{overscroll-behavior:none}
 .avvio b{color:#8fd3ec}
 .nota{margin-top:18px; font-size:19px; color:rgba(255,255,255,.42); line-height:1.5;
   text-align:center}
-/* La via d'uscita per chi lavora. Il tocco lungo sul logo c'è sempre, ma
+/* La via d'uscita per chi lavora. Il doppio tocco sul logo c'è sempre, ma
    qui la testata è nascosta e un gesto che non si vede non è una via:
    in fondo al protocollo ci vuole un tasto vero.
    Ha la stessa forma dell'invito «porta il setup sul telefono» che sta nel
@@ -3985,34 +3986,31 @@ function vaiAlGestionale(){
 }
 
 /* ─────────── l'ingresso al gestionale ───────────
-   Due secondi di dito sul logo e si passa dall'altra parte. Niente
-   codice: il totem sta nel centro, e chi ci lavora deve fare un gesto
-   solo. L'anello d'oro che si chiude attorno al logo dice quanto manca,
-   così non è un gesto al buio. */
-let pressT = null, pressLungo = false;
-const logo = document.getElementById('logo'), ring = document.getElementById('lring');
-logo.addEventListener('pointerdown', ()=>{
-  pressLungo = false;
-  logo.classList.add('press'); ring.classList.add('on');
-  pressT = setTimeout(()=>{
-    pressLungo = true;
+   Due tocchi veloci sul logo e si passa dall'altra parte. Niente codice:
+   il totem sta nel centro, e chi ci lavora deve fare un gesto solo.
+   Prima era il dito tenuto fermo sul logo: sul tablet, dopo un secondo,
+   il browser apre il suo menu («copia immagine», «scarica immagine») e il
+   gesto non arrivava mai in fondo. Il doppio tocco non ha quel problema,
+   e il menu sul logo e' spento del tutto, cosi' non puo' comparire nemmeno
+   per sbaglio. Il primo tocco fa quello di sempre: riporta alla vetrina,
+   pulita, da qualunque schermata; il secondo, entro mezzo secondo, apre
+   il gestionale. */
+const logo = document.getElementById('logo');
+let ultimoToccoLogo = 0;
+logo.draggable = false;
+logo.addEventListener('contextmenu', e=> e.preventDefault());
+logo.addEventListener('pointerup', ()=>{
+  const ora = Date.now();
+  if(ora - ultimoToccoLogo < 500){
+    ultimoToccoLogo = 0;
+    logo.classList.add('press');
     document.getElementById('dbg').textContent = 'apro il gestionale…';
     location.href = '../index.html';
-  }, 3000);
+    return;
+  }
+  ultimoToccoLogo = ora;
+  if(SCENE !== 'idle') reset();
 });
-/* Il tocco corto sul logo riporta alla vetrina, da qualunque schermata —
-   e la riporta PULITA: chi tocca il logo mentre un altro stava a metà
-   del check-in non deve trovarsi il nome di quell'altro sullo schermo.
-   Il tocco lungo resta quello che era: tre secondi e si passa dall'altra
-   parte. Sono due gesti diversi sullo stesso posto, ed e' giusto cosi':
-   il logo e' l'unica cosa che sta ferma in cima a tutte le schermate. */
-logo.addEventListener('pointerup', ()=>{
-  if(!pressLungo && SCENE !== 'idle') reset();
-});
-['pointerup','pointerleave','pointercancel'].forEach(e=>
-  logo.addEventListener(e, ()=>{
-    clearTimeout(pressT); logo.classList.remove('press'); ring.classList.remove('on');
-  }));
 
 /* ─────────── la riga del backup, in fondo ───────────
    La stessa che si legge nel gestionale: sta nella striscia in basso,
