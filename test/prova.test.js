@@ -9,12 +9,15 @@ const path = require('path');
 const { Taccuino } = require('./aiuto');
 const PAGINA = 'file://' + path.join(__dirname, '..', 'app', 'prova', 'index.html') + '?demo=1';
 
+/* il tempo e' fermo al 2 ottobre: la pagina cambia da sabato 3 (il nome «Zenith», e dopo le 12 niente primo passo), e le prove non devono dipendere dal giorno in cui girano */
+const FERMA_IL_TEMPO = ()=>{ const T = Date.parse('2026-10-02T12:00:00'), R = Date;
+  window.Date = class extends R { constructor(...a){ if(a.length) super(...a); else super(T); } static now(){ return T; } }; };
 /* il primo passo e' obbligato: sabato, poi il bottone che apre il calendario */
 const vai = async pg => { const b = await pg.$('#vai'); if(b && await b.isVisible()) await b.click(); await pg.waitForTimeout(150); };
 
 module.exports = async function(browser){
   const tac = new Taccuino('la prenotazione della prova');
-  const p = await browser.newPage({viewport:{width:390, height:844}});
+  const p = await browser.newPage({viewport:{width:390, height:844}}); await p.addInitScript(FERMA_IL_TEMPO);
   p.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
   p.on('dialog', d => d.accept());
   await p.goto(PAGINA);
@@ -90,7 +93,7 @@ module.exports = async function(browser){
     ['2026-10-05','2026-10-06'].flatMap(g=> ['08:15','09:00','16:30'].map(o=> ({id:g+'_'+o, data:g, ora:o, libero: liberoTutto || o !== '09:00'})))});
   async function conScript(risposta, ritardo){
     const ctx = await browser.newContext({viewport:{width:390, height:844}});
-    const pg = await ctx.newPage();
+    const pg = await ctx.newPage(); await pg.addInitScript(FERMA_IL_TEMPO);
     pg.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
     let chiamate = 0;
     await pg.route('https://script.google.com/**', async route=>{

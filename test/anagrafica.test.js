@@ -141,6 +141,47 @@ module.exports = async function(browser){
   tac.t('un solo tocco: la scheda e\' salvata, firmata e bloccata, anche senza telefono',
     ok.salvate === 1 && ok.firmata && ok.telefono === '' && ok.att === 'EMS', JSON.stringify(ok));
 
+  /* ── «sensibile al calore» e i parametri acceso/spento: le due cose non si contraddicono ── */
+  const ca = await p.evaluate(()=>{
+    newClient({}); const r = {}; const q = s => document.querySelector(s);
+    r.tasti = !!q('#yn_cal button.si') && !!q('#yn_cal button.no') && !!q('#calic svg');
+    r.acceso = ['polpacci','plantari','calore','ioni','zerog'].every(k=> q('#mrow_' + k + ' .seg2') && q('#mrow_' + k + ' .seg2').children.length === 2);
+    r.vecchiInterruttori = document.querySelectorAll('#app .sw[onclick*="m_toggle"], #app .sw[onclick*="m_onoff"], #app .sw[onclick*="caloreSensibile"]').length;
+    r.calorePartenza = MDRAFT.calore;
+    setCaloreSens(true);
+    r.siBloccata = q('#mrow_calore').classList.contains('bloccata') && MDRAFT.calore === false && q('#mrow_calore .seg2 span:nth-child(2)').classList.contains('on');
+    r.siTesto = /sempre spento/i.test(q('#cal_esito').textContent) && /sensibile/i.test(q('#mrow_calore').textContent);
+    m_set('calore', true);
+    r.siNonSiAccende = MDRAFT.calore === false;
+    setCaloreSens(false);
+    r.noSbloccata = !q('#mrow_calore').classList.contains('bloccata') && MDRAFT.calore === r.calorePartenza && /può essere usato/i.test(q('#cal_esito').textContent);
+    m_set('ioni', true); r.ioni = MDRAFT.ioni === true;
+    m_set('polpacci', false); r.polpacci = MDRAFT.polpacci === 0;
+    m_set('plantari', true); r.plantari = MDRAFT.plantari > 0;
+    m_set('zerog', false); r.zerog = MDRAFT.zerog === false;
+    return r;
+  });
+  tac.t('«Sensibile al calore» ha l\'icona e i tasti SÌ / NO', ca.tasti, JSON.stringify(ca));
+  tac.t('leg, foot, calore, ioni e zero gravity sono ACCESO / SPENTO, niente interruttori', ca.acceso && ca.vecchiInterruttori === 0, JSON.stringify(ca));
+  tac.t('con SÌ il calore lombare va su spento e si blocca', ca.siBloccata && ca.siTesto && ca.siNonSiAccende, JSON.stringify(ca));
+  tac.t('con NO il calore lombare si sblocca e torna com\'era', ca.noSbloccata, JSON.stringify(ca));
+  tac.t('i parametri acceso/spento cambiano davvero il punto di partenza', ca.ioni && ca.polpacci && ca.plantari && ca.zerog, JSON.stringify(ca));
+
+  /* e il motore: sensibile = calore spento in ogni seduta, anche per un protocollo che lo userebbe */
+  const mo = await p.evaluate(()=>{
+    const base = {id:'k1', nome:'A', cognome:'B', genere:'F', macro:{intensita:3,fourD:3,airbag:3,calore:true,ioni:false,zerog:true,timer:20,plantari:2,polpacci:2}};
+    const tutte = {}; QA.concat(QB).forEach(([k])=> tutte[k] = false);
+    DB.sessions = DB.sessions || [];
+    const mk = sens => Object.assign({}, base, {anamnesi: Object.assign({}, tutte, {caloreSensibile: sens, zone:[], prefIntensita:'medio', sonno:'buono'})});
+    const quiz = {activity:'riposo', goal:'sollievo', zones:['lombare'], mood:'sereno', pressione:'media'};
+    const prima = DB.sessions.length;
+    DB.sessions.push({id:'s0', clientId:'k1', date:new Date().toISOString(), fam:'Z8', prog:'P01', quiz:{}, settings:{timer:20}});
+    const sens = buildProtocol(mk(true), quiz).S.calore, tol = buildProtocol(mk(false), quiz).S.calore;
+    DB.sessions.pop();
+    return {sens, tol};
+  });
+  tac.t('sensibile = nessun protocollo accende il calore; non sensibile = il protocollo per la schiena lo accende', mo.sens === false && mo.tol === true, JSON.stringify(mo));
+
   await p.close();
   return tac;
 };

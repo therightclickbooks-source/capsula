@@ -542,6 +542,28 @@
   .fine .stato{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px}
   .fine .stato span{font-size:11.5px; font-weight:800; padding:4px 9px; border-radius:99px; background:var(--surface2)}
   .fine .stato .ok{color:var(--ok)} .fine .stato .no{color:var(--danger)}
+
+  /* sensibile al calore (SI/NO con l'icona) e i parametri acceso/spento */
+  .calrow{display:grid; grid-template-columns:auto 1fr; gap:12px 14px; align-items:center; padding:6px 0 4px}
+  .calic{width:54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center; background:var(--surface2); position:relative; border:1.5px solid var(--line); transition:all .2s}
+  .calic.si{background:rgba(239,68,68,.12); border-color:var(--danger); color:var(--danger)} .calic.si::after{content:""; position:absolute; left:8px; right:8px; top:50%; height:3px; background:var(--danger); transform:rotate(-40deg); border-radius:2px}
+  .calic.no{background:rgba(245,158,11,.14); border-color:var(--warn); color:var(--warn)}
+  .caltx b{display:block; font-size:16px} .caltx small{display:block; color:var(--muted); font-size:12.5px; line-height:1.35; margin-top:2px}
+  .yn2{grid-column:1 / -1; display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .yn2 button{font:inherit; font-size:15px; font-weight:800; padding:13px 8px; border-radius:14px; border:1.5px solid var(--line); background:var(--surface2); color:var(--muted); cursor:pointer}
+  .yn2 button.on.si{background:var(--danger-dim); border-color:var(--danger); color:var(--danger)}
+  .yn2 button.on.no{background:rgba(245,158,11,.16); border-color:var(--warn); color:var(--warn)}
+  .yn2 button small{display:block; font-size:11px; font-weight:600; opacity:.85; margin-top:2px}
+  .esito{grid-column:1 / -1; font-size:13.5px; line-height:1.45; padding:10px 12px; border-radius:12px; color:var(--text)}
+  .esito.si{background:var(--danger-dim); border-left:4px solid var(--danger)} .esito.no{background:rgba(245,158,11,.12); border-left:4px solid var(--warn)}
+  .spiega{margin:2px 0 14px; padding:12px 14px; border-radius:14px; background:var(--accent-dim); border:1px solid var(--accent-strong); font-size:13.5px; line-height:1.5}
+  .spiega b{color:var(--accent-strong)}
+  .mrow{display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center; padding:10px 0; border-top:1px solid var(--line)}
+  .mrow .pl{font-weight:600} .mrow small{display:block; color:var(--faint); font-size:12px; margin-top:2px; font-weight:400}
+  .seg2{display:flex; gap:6px} .seg2 span{font-size:12px; font-weight:800; padding:8px 12px; border-radius:99px; background:var(--surface2); color:var(--faint); border:1.5px solid var(--line); cursor:pointer}
+  .seg2 span.on{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .mrow.bloccata{opacity:.62} .mrow.bloccata .seg2 span{cursor:not-allowed} .mrow.bloccata small{color:var(--danger); font-weight:700}
+  .notaop{font-size:12.5px; color:var(--muted); margin:0 0 8px; padding:8px 10px; border-radius:10px; background:var(--surface2)}
   .secband{font-size:12.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; padding:7px 12px; border-radius:8px; margin:18px 0 6px}
   .secband.red{color:var(--danger); background:var(--danger-dim)}
   .secband.amb{color:var(--warn); background:var(--warn-dim)}
@@ -5470,8 +5492,15 @@ function vEditClient(){
     <div class="sub">Preferenze che guidano la seduta</div>
     <div class="card">
       <div class="mirablk" id="mira_calore">
-      <div class="paramrow"><div class="pl">Sensibile al calore<small>se sì, il riscaldamento resterà spento</small></div>
-      <div class="sw ${an.caloreSensibile?'on':''}" onclick="an_toggle('caloreSensibile',this)"></div></div>
+      <div class="calrow">
+        <div class="calic ${an.caloreSensibile?'si':'no'}" id="calic">${iconaFiamma()}</div>
+        <div class="caltx"><b>Sensibile al calore?</b><small>Il calore lombare scalda la schiena durante la seduta.</small></div>
+        <div class="yn2" id="yn_cal">
+          <button class="si ${an.caloreSensibile?'on':''}" onclick="setCaloreSens(true)">SÌ<small>è sensibile</small></button>
+          <button class="no ${an.caloreSensibile?'':'on'}" onclick="setCaloreSens(false)">NO<small>lo tollera</small></button>
+        </div>
+        <div class="esito ${an.caloreSensibile?'si':'no'}" id="cal_esito">${esitoCalore(an.caloreSensibile)}</div>
+      </div>
       </div>
       <div class="mirablk" id="mira_zone">
       <label class="f">Zone di tensione o fastidio ricorrente</label>
@@ -5489,20 +5518,21 @@ function vEditClient(){
 
     <div class="sub">Note operatore</div>
     <div class="card">
+      <div class="notaop">📝 <b>Solo per voi.</b> Si legge nella scheda del cliente e non cambia nessun protocollo.</div>
       <textarea id="f_note" rows="4" class="fissa"
         placeholder="Cose da ricordare su questo cliente: orari preferiti, obiettivi, come si trova">${esc(c.note||'')}</textarea>
     </div>
 
     <div class="sub">Macro-parametri di default</div>
-    <p class="hint">Il punto di partenza per ogni sessione di questo cliente. Se non li tocchi, il gestionale li ricava dalle preferenze qui sopra. La durata non c'è: la decide ogni volta il protocollo.</p>
+    <div class="spiega"><b>Da dove parte la seduta.</b> Qui scegli il <b>punto di partenza</b> per questo cliente. Il protocollo del giorno parte da qui e lo adatta a come sta oggi (per esempio il sonno accende gli ioni). <b>Non sono divieti</b>: l’unico divieto è «Sensibile al calore». La durata non c’è: la decide il protocollo.</div>
     <div class="card">
       ${capRow('fourD','Profondità 4D',M)}
       ${capRow('airbag','Forza airbag',M)}
-      <div class="paramrow"><div class="pl">Leg Kneading (polpacci)<small>si accende e basta, non ha livelli</small></div><div class="sw ${M.polpacci?'on':''}" onclick="m_onoff('polpacci',this)"></div></div>
-      <div class="paramrow"><div class="pl">Foot Roller (piedi)<small>si accende e basta, non ha livelli</small></div><div class="sw ${M.plantari?'on':''}" onclick="m_onoff('plantari',this)"></div></div>
-      <div class="paramrow"><div class="pl">Calore lombare</div><div class="sw ${M.calore?'on':''}" onclick="m_toggle('calore',this)"></div></div>
-      <div class="paramrow"><div class="pl">Ioni negativi</div><div class="sw ${M.ioni?'on':''}" onclick="m_toggle('ioni',this)"></div></div>
-      <div class="paramrow"><div class="pl">Zero gravity</div><div class="sw ${M.zerog?'on':''}" onclick="m_toggle('zerog',this)"></div></div>
+      ${mSeg('polpacci','Leg Kneading (polpacci)','Con EMS2 e Vacutherm si accende comunque; con «solo aria» resta fermo.',M.polpacci>0)}
+      ${mSeg('plantari','Foot Roller (piedi)','Con EMS2 e Vacutherm si accende comunque; con «solo aria» resta fermo.',M.plantari>0)}
+      <div id="mrow_calore_box">${mSegCalore(M, !!an.caloreSensibile)}</div>
+      ${mSeg('ioni','Ioni negativi','I protocolli di relax e sonno lo accendono da soli.',!!M.ioni)}
+      ${mSeg('zerog','Zero gravity','Con EMS2, Vacutherm e leggerezza si accende comunque; con l’energia si spegne.',!!M.zerog)}
     </div>
     <h2><span class="nn">4</span><span>Firma e salva<small>Un solo tocco: salva tutto e blocca l’anamnesi</small></span></h2>
     <div class="card fine">
@@ -5684,6 +5714,51 @@ function segRefresh(id,val){ document.querySelectorAll('#'+id+' .opt').forEach(o
    scelto qui si salva col valore che scalaCapsula() riporta allo stesso
    numero, cosi' quello che l'operatore imposta e' quello che esce. */
 const DA_CAPSULA = [0, 2, 3, 4];
+/* ── ACCESO / SPENTO: i parametri che si accendono e si spengono ──
+   Sono il PUNTO DI PARTENZA della seduta di questo cliente, non divieti: il
+   protocollo del giorno li adatta (il sonno accende gli ioni, EMS2 e
+   Vacutherm accendono gravita' zero e rulli sulle gambe, «solo aria» ferma i
+   rulli). L'unico divieto vero e' «Sensibile al calore»: con il SI' il
+   motore spegne il calore in ogni seduta, e qui il «Calore lombare» si
+   porta su spento e si blocca, cosi' sullo schermo le due cose non si
+   contraddicono. Togliendo il SI' torna come l'aveva scelto l'operatore. */
+let CAL_PRIMA = null;
+function iconaFiamma(){
+  return '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M12.2 2.5c.4 2.6-.8 4.2-2.2 5.8C8.5 10 7 11.6 7 14.4A5.4 5.4 0 0 0 12.4 20c3 0 5.4-2.3 5.4-5.4 0-1.7-.7-3-1.6-4.2-.3 1.1-.9 1.9-1.8 2.3.5-3.6-.3-7.5-2.2-10.2Z"/></svg>';
+}
+function esitoCalore(sens){
+  return sens
+    ? '🚫 <b>Calore sempre spento.</b> In nessuna seduta di questo cliente si accende il riscaldamento, qualunque protocollo venga scelto.'
+    : '✓ <b>Il calore può essere usato.</b> I protocolli che lo prevedono (schiena, sollievo, dorso-lombare…) lo accendono.';
+}
+function mSeg(k, label, hint, on){
+  return `<div class="mrow" id="mrow_${k}"><div class="pl">${label}<small>${hint}</small></div>
+    <div class="seg2"><span class="${on?'on':''}" onclick="m_set('${k}',true)">ACCESO</span><span class="${on?'':'on'}" onclick="m_set('${k}',false)">SPENTO</span></div></div>`;
+}
+function mSegCalore(M, sens){
+  const on = !sens && !!M.calore;
+  return `<div class="mrow ${sens?'bloccata':''}" id="mrow_calore"><div class="pl">Calore lombare<small>${sens
+      ? '🔒 Bloccato su spento: il cliente è sensibile al calore.'
+      : 'I protocolli per la schiena e il sollievo lo accendono comunque.'}</small></div>
+    <div class="seg2"><span class="${on?'on':''}" onclick="m_set('calore',true)">ACCESO</span><span class="${on?'':'on'}" onclick="m_set('calore',false)">SPENTO</span></div></div>`;
+}
+function m_set(k, on){
+  if(k === 'calore' && draftClient.anamnesi.caloreSensibile) return;      /* bloccato dal divieto */
+  if(k === 'polpacci' || k === 'plantari') MDRAFT[k] = on ? (MDRAFT[k] > 0 ? MDRAFT[k] : 1) : 0;
+  else MDRAFT[k] = !!on;
+  const row = document.getElementById('mrow_' + k); if(!row) return;
+  const sp = row.querySelectorAll('.seg2 span');
+  sp[0].classList.toggle('on', !!on); sp[1].classList.toggle('on', !on);
+}
+function setCaloreSens(v){
+  const an = draftClient.anamnesi; an.caloreSensibile = !!v;
+  if(v){ if(CAL_PRIMA === null) CAL_PRIMA = !!MDRAFT.calore; MDRAFT.calore = false; }
+  else if(CAL_PRIMA !== null){ MDRAFT.calore = CAL_PRIMA; CAL_PRIMA = null; }
+  const ic = document.getElementById('calic'); if(ic) ic.className = 'calic ' + (v ? 'si' : 'no');
+  const es = document.getElementById('cal_esito'); if(es){ es.className = 'esito ' + (v ? 'si' : 'no'); es.innerHTML = esitoCalore(v); }
+  document.querySelectorAll('#yn_cal button').forEach(b=> b.classList.toggle('on', b.classList.contains('si') === !!v));
+  const box = document.getElementById('mrow_calore_box'); if(box) box.innerHTML = mSegCalore(MDRAFT, !!v);
+}
 function capRow(k,label,M){
   return `<div class="paramrow"><div class="pl">${label}<small>0 spento · 1 basso · 2 medio · 3 massimo</small></div>
     <div class="stepper">
@@ -9606,7 +9681,7 @@ function render(){
     case 'clients': html=vClients(); break;
     case 'client': html=vClient(); break;
     case 'closing': html=vClosing(); break;
-    case 'editClient': MDRAFT = draftClient.macro || effMacro(draftClient); html=vEditClient(); break;
+    case 'editClient': MDRAFT = draftClient.macro || effMacro(draftClient); CAL_PRIMA = null; if(draftClient.anamnesi && draftClient.anamnesi.caloreSensibile) MDRAFT.calore = false; html=vEditClient(); break;
     case 'checkin': html=vCheckin(); break;
     case 'quiz': html=vQuiz(); break;
     case 'proposal': html=vProposal(); break;
