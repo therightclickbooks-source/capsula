@@ -25,8 +25,11 @@ function doPost(e){
 
     const nCl = (corpo.dati.clients || []).length, nSe = (corpo.dati.sessions || []).length;
     const quando = Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd_HH-mm');
-    /* il nome dice quanti clienti e quante sedute: cosi' si riconosce da che dispositivo viene */
-    const nome = 'zenith-backup-' + quando + '_' + nCl + 'clienti-' + nSe + 'sedute.json';
+    /* il nome del dispositivo (scritto in Impostazioni dell'app), pulito: solo lettere, numeri e trattini */
+    const disp = String(corpo.dispositivo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 24);
+    /* il nome del file: data, dispositivo, e quanti clienti e quante sedute ci sono dentro */
+    const nome = 'zenith-backup-' + quando + (disp ? '_' + disp : '') + '_' + nCl + 'clienti-' + nSe + 'sedute.json';
     const cartella = trovaCartella();
     cartella.createFile(nome, JSON.stringify(corpo.dati), 'application/json');
     puliscivecchi(cartella);

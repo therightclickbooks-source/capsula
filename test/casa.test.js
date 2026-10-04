@@ -82,5 +82,32 @@ module.exports = async function(browser){
       await p.close();
     }
   }
+  /* il nome del dispositivo: va nel backup che parte per Drive, e non viaggia nei dati */
+  {
+    const p = await browser.newPage({viewport:{width:430, height:900}});
+    p.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
+    await p.addInitScript(()=>{ try{ localStorage.setItem('zfl_app_v1', JSON.stringify(
+      {codeHash:'x', codeLen:4, clients:[{id:'a',nome:'A',cognome:'B'}], sessions:[], checkins:[], operators:[]})); localStorage.removeItem('zfl_dispositivo'); }catch(e){} });
+    await p.goto(GESTIONALE); await p.waitForTimeout(700);
+    const r = await p.evaluate(async ()=>{
+      go('settings'); await new Promise(r=> setTimeout(r, 200));
+      const campo = document.getElementById('dr_nome');
+      const out = {campo: !!campo};
+      campo.value = 'Tablet Chiara è 1'; salvaDrive();
+      out.salvato = localStorage.getItem('zfl_dispositivo');
+      out.nomeFile = nomeDispositivoFile();
+      DB.driveUrl = 'https://script.google.com/macros/s/x/exec'; DB.driveKey = 'k';
+      let corpo = null; const vf = window.fetch;
+      window.fetch = async (u, o)=>{ corpo = JSON.parse(o.body); return {text: async ()=> '{"esito":"ok","salvato":"x"}'}; };
+      await inviaDrive(false); window.fetch = vf;
+      out.inviato = corpo && corpo.dispositivo;
+      out.nonNeiDati = corpo && !('zfl_dispositivo' in corpo.dati) && !JSON.stringify(corpo.dati).includes('Tablet Chiara');
+      return out;
+    });
+    tac.t('nelle Impostazioni c\'e\' il campo «Nome di questo dispositivo»', r.campo);
+    tac.t('il nome si salva su questo dispositivo, e il file lo scrive pulito', r.salvato === 'Tablet Chiara è 1' && r.nomeFile === 'Tablet-Chiara-e-1', JSON.stringify(r));
+    tac.t('il backup per Drive porta il nome del dispositivo, ma il nome non e\' nei dati', r.inviato === 'Tablet Chiara è 1' && r.nonNeiDati, JSON.stringify(r));
+    await p.close();
+  }
   return tac;
 };

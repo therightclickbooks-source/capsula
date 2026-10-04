@@ -3613,7 +3613,17 @@ function toggleTotem(){
                      : 'Modalità totem spenta');
   render();
 }
+/* Il nome di QUESTO dispositivo («Totem», «Tablet Chiara»): sta solo qui, in una
+   chiave a parte, e non viaggia nei backup, perche' importando una copia su un
+   altro dispositivo non deve prendere il nome di quello vecchio. Va nel nome del
+   file che parte per Drive, cosi' si riconosce da chi viene. */
+function nomeDispositivo(){ try{ return (localStorage.getItem('zfl_dispositivo') || '').trim(); }catch(e){ return ''; } }
+function nomeDispositivoFile(){
+  return nomeDispositivo().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,24);
+}
 function salvaDrive(){
+  const nd = ((document.getElementById('dr_nome')||{}).value || '').trim().slice(0,40);
+  try{ if(nd) localStorage.setItem('zfl_dispositivo', nd); else localStorage.removeItem('zfl_dispositivo'); }catch(e){}
   const u = ((document.getElementById('dr_url')||{}).value || '').trim();
   const k = ((document.getElementById('dr_key')||{}).value || '').trim();
   if(u && !/^https:\/\/script\.google\.com\/macros\/s\/[^\s]+\/exec$/.test(u)){
@@ -3643,7 +3653,7 @@ async function inviaDrive(manuale){
     const r = await fetch(DB.driveUrl, {
       method:'POST', redirect:'follow',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ segreto: DB.driveKey, dati: senzaChiavi() })
+      body: JSON.stringify({ segreto: DB.driveKey, dispositivo: nomeDispositivo(), dati: senzaChiavi() })
     });
     let esito = null;
     try{ esito = JSON.parse(await r.text()); }catch(e){}
@@ -7244,7 +7254,7 @@ function vBackupGuide(){
     <div class="card">
       <ol class="msteps">
         <li>Apri ${gear} e scendi fino a <b>“Backup ed esportazione dati”</b>.</li>
-        <li>Tocca ${bExp} — parte il download del file <b>capsula-zenith-backup-AAAA-MM-GG.json</b> (con la data di oggi).</li>
+        <li>Tocca ${bExp} — parte il download del file <b>capsula-zenith-backup-AAAA-MM-GG.json</b> (con la data di oggi, e il nome del dispositivo se l'hai scritto in Impostazioni).</li>
         <li>Ritrovi il file nella cartella <b>Download</b>. Contiene <b>tutto</b>: anagrafiche, anamnesi con firme, sessioni con codici e note, punti. I codici di sicurezza restano protetti.</li>
       </ol>
     </div>
@@ -9228,6 +9238,10 @@ function vSettings(){
     <div class="card">
       <div class="paramrow"><div class="pl">Backup automatico<small>parte da solo all'apertura dell'app, una volta al giorno</small></div>
       <div class="sw ${DB.driveOn===true?'on':''}" onclick="DB.driveOn=!(DB.driveOn===true); persist(); render()"></div></div>
+      <label class="f mlab">Nome di questo dispositivo <small style="font-weight:400">(per riconoscere le copie)</small></label>
+      <input type="text" id="dr_nome" spellcheck="false" autocomplete="off" maxlength="40"
+        placeholder="es. Totem, Tablet Chiara" value="${esc(nomeDispositivo())}">
+      <p class="hint" style="margin:6px 0 10px">Compare nel nome dei file di backup su Drive e nel backup scaricato a mano. Resta su questo dispositivo.</p>
       <label class="f mlab">Indirizzo dello script <small style="font-weight:400">(finisce con /exec)</small></label>
       <input type="text" id="dr_url" spellcheck="false" autocomplete="off"
         placeholder="https://script.google.com/macros/s/…/exec" value="${esc(DB.driveUrl||'')}">
@@ -9431,7 +9445,7 @@ function exportData(){
   a.href = URL.createObjectURL(blob);
   /* «capsula-» davanti: cosi' il file non si confonde mai con i backup
      dell'altro gestionale */
-  a.download = 'capsula-zenith-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.download = 'capsula-zenith-backup-'+new Date().toISOString().slice(0,10)+(nomeDispositivoFile() ? '-' + nomeDispositivoFile() : '')+'.json';
   a.click();
   /* la data si segna DOPO aver preparato il file: cosi' il file scaricato
      non contiene gia' se stesso come «ultimo backup» sbagliato di un attimo */
