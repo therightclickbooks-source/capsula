@@ -7,6 +7,14 @@
    ═══════════════════════════════════════════════════════════════ */
 /* un Google finto quanto basta per far girare Codice.gs: foglio, cache, blocco, mail */
 const vm = require('vm'), fs = require('fs');
+/* La prova gira sempre «il 2 ottobre a mezzogiorno»: lo script rifiuta di cambiare
+   una prenotazione che e' oggi o gia' passata, e i test non devono cambiare
+   risultato a seconda del giorno in cui girano. */
+const T_FERMO = Date.parse('2026-10-02T12:00:00+02:00');
+const DATA_FERMA = class extends Date {
+  constructor(...a){ if(a.length) super(...a); else super(T_FERMO); }
+  static now(){ return T_FERMO; }
+};
 function fmt(d, tz, f){
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})
     .formatToParts(d).map(x=>[x.type,x.value]));
@@ -30,7 +38,7 @@ function carica(file, dati, opz){
   opz = opz || {};
   const fogli = foglio(dati), cache = new Map(), mail = [], conta = {getActive:0, formatDate:0};
   const ctx = {
-    console, Date, JSON, String, Object, Array, Set, Math, Intl,
+    console, Date: DATA_FERMA, JSON, String, Object, Array, Set, Math, Intl,
     SpreadsheetApp: { getActive(){ conta.getActive++; return {getSheetByName: n => fogli[n]}; }, flush(){}, getUi(){ return {createMenu(){ return {addItem(){ return this; }, addToUi(){}}; }, alert(){}}; } },
     CacheService: { getScriptCache: ()=> ({ get: k => cache.has(k) ? cache.get(k) : null, put: (k,v)=> { cache.set(k,v); }, remove: k => cache.delete(k) }) },
     LockService: { getScriptLock: ()=> ({waitLock(){}, releaseLock(){}}) },
