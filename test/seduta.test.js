@@ -431,6 +431,62 @@ module.exports = async function(browser){
   tac.t('il telefono mostra gli stessi passi del tablet (' + conf.provati + ' sedute, ' + conf.conAnam + ' con zone in anamnesi)',
     conf.diversi.length === 0, conf.diversi.length + ' diverse, per es. ' + JSON.stringify(conf.diversi[0]));
 
+  /* e ora a tappeto: 12.000 sedute a caso (sempre le stesse, il generatore e' fisso), con tutto
+     quello che puo' cambiare — prima seduta o no, cliente sensibile al calore, profilo soft con
+     certificato, donna o uomo, taratura, zone di oggi e di anamnesi, umore, pressione, «solo aria».
+     Si confronta TUTTO il passo, anche il testo e i cerchietti, non solo il titolo. */
+  const tappeto = await p.evaluate(()=>{
+    let seme = 20261005; const rnd = n => { seme = (seme * 1664525 + 1013904223) >>> 0; return (seme >>> 12) % n; };   /* i bit alti: quelli bassi di questo generatore girano in cerchi corti */
+    const scelto = a => a[rnd(a.length)];
+    const attivita = ['ems','ems2','vacufit','matrix','riposo'], obiettivi = ['recupero','sollievo','drenaggio','relax','sonno','energia'];
+    const umori = ['sereno','stanco','stressato','dolorante','carico'], pressioni = ['dolce','media','decisa', 'abituale'];
+    const zoneTutte = ['cervicale','spalle','braccia','dorsale','lombare','glutei','gambe','piedi'];
+    const sottoinsieme = max => { const n = rnd(max + 1), r = []; while(r.length < n){ const z = scelto(zoneTutte); if(!r.includes(z)) r.push(z); } return r; };
+    const passi = prot => buildSteps(prot).map(s => ({img:s.img, kind:s.kind||'', t:s.title, x:s.extra||'', m:(s.markers||[]).map(m=> [(m.pos||[]).join(','), m.label, m.type||''])}));
+    const out = {n:0, diversi:0, esempio:null, conAria:0, conManuale:0, soloAria:0, prima:0};
+    for(let i = 0; i < 12000; i++){
+      const c = JSON.parse(JSON.stringify(DB.clients[0]));
+      c.genere = scelto(['F','M','']); c.cal = scelto([0,0,1,-1]);
+      c.anamnesi.zone = sottoinsieme(3); c.anamnesi.caloreSensibile = rnd(4) === 0; c.anamnesi.sonno = scelto(['buono','discontinuo','scarso']);
+      c.anamnesi.prefIntensita = scelto(['delicato','medio','deciso']);
+      if(rnd(6) === 0){ c.anamnesi.b2 = true; c.anamnesi.certificatoOk = true; }
+      const primaVolta = rnd(5) === 0; const sedutaFatta = DB.sessions.length;
+      if(primaVolta) DB.sessions = [];
+      const q = {activity:scelto(attivita), goal:scelto(obiettivi), zones:sottoinsieme(3), mood:scelto(umori), pressione:scelto(pressioni), prefSoloAria: rnd(5) === 0, when:scelto(['mattina','pranzo','sera'])};
+      let prot; try{ prot = buildProtocol(c, q); }catch(e){ continue; }
+      prot.quizZones = q.zones;
+      const A = JSON.stringify(passi(prot));
+      const dec = decodificaSeduta(codificaSeduta(prot, 'Prova', q.zones));
+      const B = dec ? JSON.stringify(passi(dec)) : 'NULL';
+      /* il codice deve stare in un QR: il piu' lungo possibile (nome da 30 lettere, indirizzo vero) */
+      try{ const t = linkSeduta(prot, 'Maria Antonietta di Savoia', q.zones, 'https://therightclickbooks-source.github.io/capsula/app/');
+        out.lungo = Math.max(out.lungo || 0, new TextEncoder().encode(t).length); if(i % 12 === 0) qrMatrice(t); else if(new TextEncoder().encode(t).length > capienza(10)) throw new Error('lungo'); }catch(e){ out.qrNo = (out.qrNo || 0) + 1; }
+      out.n++; if(primaVolta) out.prima++; if(prot.manualRef || prot.manualBasso) out.conManuale++; if(prot.prog === 'P23') out.soloAria++;
+      if(A.includes('zona degli airbag') || A.includes('zone degli airbag')) out.conAria++;
+      if(A !== B){ out.diversi++; if(!out.esempio) out.esempio = {q, anam:c.anamnesi.zone, sens:c.anamnesi.caloreSensibile, prog:prot.prog,
+        titoliTablet: JSON.parse(A).map(s=>s.t), titoliTelefono: dec ? JSON.parse(B).map(s=>s.t) : null}; }
+      if(primaVolta) DB.sessions = [{id:'s0', clientId:'cprova', date:'2026-01-01T10:00:00.000Z'}];
+    }
+    return out;
+  });
+  tac.t('il codice sta sempre in un QR (il piu\' lungo: ' + tappeto.lungo + ' byte, ne entrano 213)', !tappeto.qrNo && tappeto.lungo <= 213, 'QR impossibili: ' + tappeto.qrNo + ', max ' + tappeto.lungo);
+  tac.t('a tappeto: ' + tappeto.n + ' sedute a caso (' + tappeto.prima + ' prime volte, ' + tappeto.soloAria + ' solo aria, ' + tappeto.conManuale + ' con rifinitura manuale, ' + tappeto.conAria + ' col passo degli airbag): telefono e tablet mostrano passi, testi e cerchietti identici',
+    tappeto.n > 9000 && tappeto.diversi === 0, tappeto.diversi + ' diverse, per es. ' + JSON.stringify(tappeto.esempio));
+
+  /* e la prova vera: si apre il link che sta nel QR, in una pagina nuova (come fa il telefono) */
+  const codice = await p.evaluate(()=>{
+    const c = JSON.parse(JSON.stringify(DB.clients[0])); c.anamnesi.zone = ['lombare'];
+    const prot = buildProtocol(c, {activity:'ems', goal:'recupero', zones:[], mood:'sereno', pressione:'media', prefSoloAria:false}); prot.quizZones = [];
+    return {hash: codificaSeduta(prot, 'Giulia', []), titoli: buildSteps(prot).map(s=> s.title)};
+  });
+  const tel = await browser.newPage({viewport:{width:390, height:844}});
+  tel.on('pageerror', e => tac.rossi.push('errore di pagina (telefono): ' + e.message));
+  await tel.goto(GESTIONALE + '#s=' + codice.hash); await tel.waitForTimeout(900);
+  const sulTel = await tel.evaluate(()=> ({vista: VIEW.name, testo: document.getElementById('app').innerText}));
+  tac.t('aprendo il link del QR, il telefono mostra il passo «Accendi la zona degli airbag», come il tablet',
+    sulTel.vista === 'setupqr' && /Accendi la zona degli airbag/.test(sulTel.testo) && codice.titoli.includes('Accendi la zona degli airbag'), sulTel.vista + ' ' + sulTel.testo.slice(0, 200));
+  await tel.close();
+
   await p.close();
   return tac;
 };
