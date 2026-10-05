@@ -158,5 +158,26 @@ module.exports = async function(browser){
     tac.t('svuotare il serbatoio chiede conferma («per sempre»)', r.confSvuota && r.svuotato, JSON.stringify(r));
     await p.close();
   }
+  /* ── i check-in in attesa stanno dentro la cornice, su ogni schermo: telefono, tablet in piedi, pc, totem in verticale ── */
+  for(const sc of [{n:'iPhone', w:390, h:844}, {n:'Android', w:412, h:915}, {n:'tablet 3:4', w:768, h:1024}, {n:'tablet 10:16', w:800, h:1280},
+                   {n:'monitor 1280', w:1280, h:800}, {n:'monitor 16:9', w:1920, h:1080}, {n:'totem verticale', w:1080, h:1920}]){
+    const p = await browser.newPage({viewport:{width:sc.w, height:sc.h}});
+    p.on('pageerror', e => tac.rossi.push('errore di pagina su ' + sc.n + ': ' + e.message));
+    await p.addInitScript(()=>{ const now = Date.now(); const mk = (id,n,c,min,act,zm,goal,mood)=> ({id, nome:n, cognome:c, op:'o1', quando:new Date(now - min*60000).toISOString(), quiz:{activity:act, zmode:zm, zones:[], goal, mood}});
+      try{ localStorage.setItem('zfl_app_v1', JSON.stringify({codeHash:'x', codeLen:4, clients:[], sessions:[], operators:[{id:'o1', nome:'Raffaele'}],
+        checkinEliminati:[{...mk('e1','Marco','Rossi',130,'ems','totale','recupero','stanco'), eliminatoIl:new Date(now - 7200000).toISOString()}],
+        checkins:[mk('k1','Serena','Cecco',3,'matrix','totale','recupero','sereno'), mk('k2','Serena','Cecco',6,'ems2','nessuna','drenaggio','stanco'), mk('k3','Maria Antonietta','Cascone di Savoia',23,'ems2','totale','sollievo','dolorante')]})); }catch(e){} });
+    await p.goto(GESTIONALE); await p.waitForTimeout(800);
+    const r = await p.evaluate(()=>{
+      const w = document.querySelector('.ckwait').getBoundingClientRect(); const o = {fuori:[], sovrapposti:0, orizzontale: document.documentElement.scrollWidth - innerWidth};
+      document.querySelectorAll('.ckwait .cwline, .ckwait .cwline *, .ckwait .cw-x *, .ckwait .tank, .ckwait .tank *').forEach(e=>{ const b = e.getBoundingClientRect();
+        if(b.width && (b.right > w.right + 0.5 || b.left < w.left - 0.5)) o.fuori.push((e.className || e.tagName).toString()); });
+      /* i bollini non devono finire sotto «Apri · quanto tempo fa» */
+      document.querySelectorAll('.ckwait .cwline').forEach(l=>{ const tx = l.querySelector('.cw-tx').getBoundingClientRect(), tt = l.querySelector('.cw-t').getBoundingClientRect();
+        l.querySelectorAll('.cw-n > span').forEach(b=>{ if(b.getBoundingClientRect().right > tt.left + 0.5 && b.getBoundingClientRect().right > tx.right + 0.5) o.sovrapposti++; }); });
+      return o; });
+    tac.t(sc.n + ': i check-in e il tasto «Elimina» restano dentro la cornice', r.fuori.length === 0 && r.sovrapposti === 0 && r.orizzontale <= 2, JSON.stringify(r));
+    await p.close();
+  }
   return tac;
 };
