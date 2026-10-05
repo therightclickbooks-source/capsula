@@ -160,6 +160,21 @@
     margin-bottom:4px}
   .ckwait .cw-x b{font-size:13.5px}
   .ckwait > p{font-size:12.5px; color:var(--muted); line-height:1.5; margin:0 0 11px}
+  /* eliminare i check-in: il tasto, il bollino dei doppioni, il serbatoio */
+  .cwline{display:flex; align-items:stretch; gap:8px; margin-bottom:8px}
+  .cwline .cwrow{flex:1; width:auto; margin-bottom:0}
+  .ckwait .del{flex:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 14px; color:var(--danger); border:1.5px solid rgba(239,68,68,.45); background:rgba(239,68,68,.08); border-radius:13px; font:inherit; font-weight:800; font-size:12.5px; cursor:pointer}
+  .ckwait .cw-dop{margin-left:auto}
+  .btnp{font:inherit; font-size:12px; font-weight:800; padding:7px 12px; border-radius:99px; border:1.5px solid var(--accent); color:var(--accent-strong); background:var(--accent-dim); cursor:pointer}
+  .dopp{font-size:9.5px; font-weight:800; letter-spacing:.06em; padding:2px 8px; border-radius:99px; background:rgba(245,158,11,.16); color:var(--warn); margin-left:6px; border:1px solid rgba(245,158,11,.4); white-space:nowrap}
+  .tank{display:flex; align-items:center; gap:14px; margin-top:12px; padding:12px 14px; border-radius:16px; background:linear-gradient(160deg,rgba(122,73,108,.22),rgba(40,22,38,.35)); border:1.5px solid rgba(226,189,212,.25)}
+  .tank .tk{flex:none; width:44px; height:58px; border-radius:9px 9px 14px 14px; border:2.5px solid var(--accent-strong); position:relative; overflow:hidden; background:rgba(0,0,0,.25)}
+  .tank .tk i{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(180deg,#b584a6,#7a496c); transition:height .4s}
+  .tank .tkt{flex:1; min-width:0} .tank .tkt b{font-size:13.5px; display:block} .tank .tkt small{display:block; color:var(--muted); font-size:11.5px; margin-top:2px; line-height:1.4}
+  .ckvuota{padding-bottom:12px}
+  .sbl{margin:6px 0 10px; max-height:46vh; overflow-y:auto}
+  .sbr{display:flex; align-items:center; gap:10px; padding:9px 0; border-top:1px solid var(--line)}
+  .sbr .sbn{flex:1; min-width:0} .sbr .sbn small{display:block; color:var(--faint); font-size:11.5px; margin-top:2px}
   .cwrow{display:flex; align-items:center; gap:12px; background:var(--surface2);
     border:1px solid var(--line); border-radius:13px; padding:11px 13px; margin-bottom:8px;
     cursor:pointer; width:100%; text-align:left; font:inherit; color:var(--text)}
@@ -3459,7 +3474,12 @@ function codificaSeduta(prot, nome, zone){
     /* dalla v133: le icone degli airbag e le rifiniture manuali. Senza, il
        telefono mostrava meno passi del tablet — niente Down movement, niente
        rifinitura sul punto. Sono regolazioni della capsula, non dati di salute */
-    (prot.aria ? prot.aria.icone : []).join('~'),
+    /* e da dove vengono: «oggi» (le zone dette al totem) e «anam» (quelle segnate
+       in anamnesi). Senza, il telefono non sapeva piu' che le zone c'erano, e
+       non mostrava il passo «Accendi la zona degli airbag» che il tablet mostra */
+    (prot.aria ? prot.aria.icone.concat(
+        prot.aria.perche && /indicate oggi/.test(prot.aria.perche) ? ['oggi'] : [],
+        prot.aria.perche && /anamnesi/.test(prot.aria.perche) ? ['anam'] : []) : []).join('~'),
     prot.manualRef ? [prot.manualRef.tkey, prot.manualRef.wkey, pulito(prot.manualRef.zona)].join('~') : '',
     prot.manualBasso ? [prot.manualBasso.tkey, prot.manualBasso.velocita, prot.manualBasso.plantare,
       pulito(prot.manualBasso.zona)].join('~') : ''].join('.');
@@ -3481,7 +3501,10 @@ function decodificaSeduta(txt){
         musica: decodeURIComponent(p[11]||'')},
     nome: decodeURIComponent(p[12]||''),
     quizZones: (p[13]||'').split('~').filter(Boolean),
-    aria: p[14] ? {icone: p[14].split('~').filter(k=> ARIA_NOME[k]), perche:'scelte dal protocollo'} : null,
+    aria: p[14] ? (()=>{ const r = p[14].split('~'), oggi = r.includes('oggi'), anam = r.includes('anam');
+      return {icone: r.filter(k=> ARIA_NOME[k]),
+        perche: oggi && anam ? 'dalle zone indicate oggi e da quelle segnalate in anamnesi'
+              : oggi ? 'dalle zone indicate oggi' : anam ? 'dalle zone segnalate in anamnesi' : 'scelte dal protocollo'}; })() : null,
     manualRef: (()=>{ const r = (p[15]||'').split('~'); if(!TILE.manual[r[0]] || !TILE.manual[r[1]]) return null;
       return {tkey:r[0], tecnica:TECNICA_DI[r[0]] || r[0], wkey:r[1], larghezza:LARGHEZZA_DI[r[1]] || '',
               zona:decodeURIComponent(r[2]||'')}; })(),
@@ -3706,10 +3729,113 @@ function daQuanto(iso){
   return m < 1 ? 'adesso' : m < 60 ? m + ' min fa'
     : Math.floor(m/60) + (Math.floor(m/60) === 1 ? ' ora fa' : ' ore fa');
 }
-function scartaCheckin(id, ev){
+/* ── ELIMINARE I CHECK-IN CHE NON DIVENTERANNO SEDUTE ──
+   Al totem capita di creare piu' check-in della stessa persona, o per sbaglio.
+   Eliminarli costa una conferma, e non e' per sempre: finiscono nel SERBATOIO
+   (DB.checkinEliminati), dove restano 7 giorni e si ripristinano con un tocco.
+   I «doppioni» sono i check-in della stessa persona oltre il piu' recente:
+   si tiene l'ultimo, che e' quello con le risposte piu' fresche. */
+const SERBATOIO_GIORNI = 7;
+function serbatoioPulisci(){
+  const lim = Date.now() - SERBATOIO_GIORNI * 86400000;
+  const v = DB.checkinEliminati || [];
+  const n = v.filter(k=> Date.parse(k.eliminatoIl) >= lim);
+  if(n.length !== v.length){ DB.checkinEliminati = n; persist(); }
+  return DB.checkinEliminati || [];
+}
+function nomeCheckin(k){ return ((k.nome||'') + ' ' + (k.cognome||'')).trim() || 'Senza nome'; }
+function doppioniCheckin(){
+  const visti = new Set(), dop = [];
+  checkinAttesa().forEach(k=>{                       /* gia' dal piu' recente */
+    const ch = normA(k.nome) + '|' + normA(k.cognome);
+    if(visti.has(ch)) dop.push(k.id); else visti.add(ch);
+  });
+  return dop;
+}
+function chiediEliminaCheckin(id, ev){
   if(ev) ev.stopPropagation();
-  DB.checkins = (DB.checkins||[]).filter(k=> k.id !== id);
-  persist(); toast('Check-in scartato'); render();
+  const k = (DB.checkins||[]).find(x=> x.id === id); if(!k) return;
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">Eliminare questo check-in?</div>
+    <div class="mm"><b>${esc(nomeCheckin(k))}</b> · ${daQuanto(k.quando)}<br>Non diventa una seduta. Lo ritrovi nel <b>serbatoio</b> per ${SERBATOIO_GIORNI} giorni e lo puoi ripristinare.</div>
+    <div class="mrow">
+      <button class="btn sec" onclick="closeModal()">Annulla</button>
+      <button class="btn danger" onclick="eliminaCheckin('${k.id}')">Elimina</button>
+    </div></div>`;
+  m.classList.add('open');
+}
+function mettiNelSerbatoio(ids){
+  const lista = DB.checkins || [];
+  const via = lista.filter(k=> ids.includes(k.id));
+  DB.checkins = lista.filter(k=> !ids.includes(k.id));
+  DB.checkinEliminati = (DB.checkinEliminati || []).concat(via.map(k=> Object.assign({}, k, {eliminatoIl: new Date().toISOString()})));
+  persist();
+  return via.length;
+}
+function eliminaCheckin(id){
+  closeModal();
+  if(mettiNelSerbatoio([id])) toast('Check-in eliminato · lo trovi nel serbatoio');
+  render();
+}
+function chiediEliminaDoppioni(){
+  const ids = doppioniCheckin(); if(!ids.length) return;
+  const nomi = [...new Set(ids.map(i=> nomeCheckin((DB.checkins||[]).find(x=> x.id === i) || {})))];
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">Eliminare ${ids.length === 1 ? 'il doppione' : 'i ' + ids.length + ' doppioni'}?</div>
+    <div class="mm">Di ognuno si tiene il check-in <b>più recente</b>. Si eliminano quelli più vecchi di: <b>${nomi.map(esc).join(', ')}</b>.<br>Li ritrovi nel serbatoio per ${SERBATOIO_GIORNI} giorni.</div>
+    <div class="mrow">
+      <button class="btn sec" onclick="closeModal()">Annulla</button>
+      <button class="btn danger" onclick="eliminaDoppioni()">Elimina ${ids.length === 1 ? 'il doppione' : 'i doppioni'}</button>
+    </div></div>`;
+  m.classList.add('open');
+}
+function eliminaDoppioni(){
+  closeModal();
+  const n = mettiNelSerbatoio(doppioniCheckin());
+  if(n) toast(n + (n === 1 ? ' doppione eliminato' : ' doppioni eliminati') + ' · li trovi nel serbatoio');
+  render();
+}
+function apriSerbatoio(){
+  const v = serbatoioPulisci().slice().sort((a,b)=> Date.parse(b.eliminatoIl) - Date.parse(a.eliminatoIl));
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">Serbatoio · check-in eliminati</div>
+    <div class="mm">Restano qui ${SERBATOIO_GIORNI} giorni, poi si svuota da solo. Tocca <b>Ripristina</b> per riportarne uno tra quelli in attesa.</div>
+    <div class="sbl">${v.length ? v.map(k=> `<div class="sbr"><span class="sbn"><b>${esc(nomeCheckin(k))}</b><small>eliminato ${daQuanto(k.eliminatoIl)}</small></span>
+      <button class="btnp" onclick="ripristinaCheckin('${k.id}')">↩ Ripristina</button></div>`).join('') : '<p class="hint">Il serbatoio è vuoto.</p>'}</div>
+    <div class="mrow">
+      ${v.length ? '<button class="btn danger" onclick="chiediSvuotaSerbatoio()">Svuota</button>' : ''}
+      <button class="btn" onclick="closeModal()">Chiudi</button>
+    </div></div>`;
+  m.classList.add('open');
+}
+function ripristinaCheckin(id){
+  const v = DB.checkinEliminati || [];
+  const k = v.find(x=> x.id === id); if(!k) return;
+  DB.checkinEliminati = v.filter(x=> x.id !== id);
+  const r = Object.assign({}, k); delete r.eliminatoIl;
+  /* se era troppo vecchio per stare tra quelli in attesa, riparte da adesso: altrimenti sparirebbe di nuovo */
+  if(Date.now() - Date.parse(r.quando) > 5 * 3600000) r.quando = new Date().toISOString();
+  DB.checkins = (DB.checkins || []).concat([r]);
+  persist(); toast('Check-in ripristinato: è di nuovo in attesa');
+  closeModal(); render();
+}
+function chiediSvuotaSerbatoio(){
+  const n = (DB.checkinEliminati || []).length; if(!n) return;
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">Svuotare il serbatoio?</div>
+    <div class="mm">${n === 1 ? 'Il check-in eliminato verrà cancellato' : 'I ' + n + ' check-in eliminati verranno cancellati'} <b>per sempre</b>: non si potranno più ripristinare.</div>
+    <div class="mrow">
+      <button class="btn sec" onclick="apriSerbatoio()">Indietro</button>
+      <button class="btn danger" onclick="svuotaSerbatoio()">Svuota</button>
+    </div></div>`;
+  m.classList.add('open');
+}
+function svuotaSerbatoio(){
+  DB.checkinEliminati = []; persist(); toast('Serbatoio svuotato'); closeModal(); render();
 }
 function apriCheckin(id){
   const k = (DB.checkins||[]).find(x=> x.id === id); if(!k) return;
@@ -3747,11 +3873,22 @@ function apriCheckin(id){
     && (zone.length || q.zmode);
   go(completo ? 'proposal' : 'quiz');
 }
+function serbatoioHTML(){
+  const n = serbatoioPulisci().length; if(!n) return '';
+  const pct = Math.min(100, Math.round(n / 8 * 100));
+  return `<div class="tank"><div class="tk"><i style="height:${Math.max(12, pct)}%"></i></div>
+    <div class="tkt"><b>Serbatoio · ${n} check-in ${n === 1 ? 'eliminato' : 'eliminati'}</b>
+      <small>Restano ${SERBATOIO_GIORNI} giorni: se ne hai eliminato uno per sbaglio lo riprendi con «Ripristina». Poi si svuota da solo.</small></div>
+    <button class="btnp" onclick="apriSerbatoio()">Apri il serbatoio ›</button></div>`;
+}
 function fasciaCheckin(){
   const l = checkinAttesa();
-  if(!l.length) return '';
+  const serb = serbatoioHTML();
+  if(!l.length) return serb ? `<div class="ckwait ckvuota"><div class="cw-x">▣ <b>Nessun check-in in attesa dal totem</b></div>${serb}</div>` : '';
+  const dop = doppioniCheckin();
   return `<div class="ckwait">
-    <div class="cw-x">▣ <b>${l.length} check-in in attesa dal totem</b></div>
+    <div class="cw-x">▣ <b>${l.length} check-in in attesa dal totem</b>${dop.length
+      ? `<button class="btnp cw-dop" onclick="chiediEliminaDoppioni()">Elimina ${dop.length === 1 ? 'il doppione' : 'i ' + dop.length + ' doppioni'}</button>` : ''}</div>
     <p>Il cliente ha già risposto da solo alla vetrina. Toccalo: il check-in si apre
       <b>con le sue risposte dentro</b>, tu controlli e prosegui col rituale di sempre.</p>
     ${l.map(k=>{ const c = schedaDi(k); const q = k.quiz||{};
@@ -3762,15 +3899,17 @@ function fasciaCheckin(){
         (QUIZ_STEPS.find(s=>s.k==='goal').opts.find(o=>o[0]===q.goal)||[])[2]||null,
         (QUIZ_STEPS.find(s=>s.k==='mood').opts.find(o=>o[0]===q.mood)||[])[2]||null
       ].filter(Boolean).join(' · ');
-      return `<button class="cwrow" onclick="apriCheckin('${k.id}')">
+      return `<div class="cwline"><button class="cwrow" onclick="apriCheckin('${k.id}')">
         <span class="cw-av">${esc(opIniziali((k.nome||'')+' '+(k.cognome||'')))}</span>
         <span class="cw-tx">
-          <span class="cw-n">${esc(((k.nome||'')+' '+(k.cognome||'')).trim())}${
-            c?'':'<span class="cw-new">NON IN ANAGRAFICA</span>'}</span>
+          <span class="cw-n">${esc(nomeCheckin(k))}${
+            c?'':'<span class="cw-new">NON IN ANAGRAFICA</span>'}${
+            dop.includes(k.id)?'<span class="dopp">DOPPIONE · c’è uno più recente</span>':''}</span>
           <span class="cw-d">${esc(det)}</span>
         </span>
         <span class="cw-t"><i>Apri ›</i>${daQuanto(k.quando)}</span>
-      </button>`; }).join('')}
+      </button><button class="del" onclick="chiediEliminaCheckin('${k.id}', event)" title="Elimina questo check-in"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>Elimina</button></div>`; }).join('')}
+    ${serb}
   </div>`;
 }
 function giornoCorto(iso){

@@ -404,6 +404,33 @@ module.exports = async function(browser){
     tac.t('il regolamento dei premi e\' identico nel gestionale e nella vetrina', g && g === v); }
 
   console.log('   (' + sedute.length + ' sedute passate al setaccio)');
+  /* ── il telefono (il QR) deve mostrare gli stessi passi del tablet ──
+     Il QR porta solo il codice; il telefono si ricostruisce i passi da solo. Se
+     qualcosa non viaggia nel codice, il telefono ne mostra meno: e' successo
+     con le zone degli airbag segnate in anamnesi. Qui si confrontano i passi
+     veri con quelli ricostruiti dal codice, per tante sedute, con e senza
+     zone in anamnesi. */
+  const conf = await p.evaluate(()=>{
+    const out = {diversi:[], provati:0, conAnam:0};
+    const attivita = ['ems','ems2','vacufit','matrix','riposo'], obiettivi = ['recupero','sollievo','drenaggio','relax','sonno','energia'];
+    const zoneOggi = [[], ['gambe'], ['braccia','gambe'], ['cervicale']];
+    const zoneAnam = [[], ['lombare'], ['cervicale','spalle'], ['gambe','piedi']];
+    const riassunto = prot => buildSteps(prot).map(s => s.img + '|' + s.title + '|' + s.markers.map(m=> (m.pos||[]).join(',') + ':' + m.label).join(';'));
+    for(const za of zoneAnam) for(const zo of zoneOggi) for(const a of attivita) for(const g of obiettivi) for(const solo of [false, true]){
+      const c = JSON.parse(JSON.stringify(DB.clients[0])); c.anamnesi.zone = za;
+      const q = {activity:a, goal:g, zones:zo, pressione:'media', mood:'sereno', prefSoloAria:solo};
+      const prot = buildProtocol(c, q); prot.quizZones = zo;
+      const dec = decodificaSeduta(codificaSeduta(prot, 'Prova', zo));
+      out.provati++; if(za.length) out.conAnam++;
+      const A = riassunto(prot).join('\n'), B = riassunto(dec).join('\n');
+      if(A !== B && out.diversi.length < 3) out.diversi.push({q, za, titoliTablet: buildSteps(prot).map(s=> s.title), titoliTelefono: buildSteps(dec).map(s=> s.title)});
+      else if(A !== B) out.diversi.push(null);
+    }
+    return out;
+  });
+  tac.t('il telefono mostra gli stessi passi del tablet (' + conf.provati + ' sedute, ' + conf.conAnam + ' con zone in anamnesi)',
+    conf.diversi.length === 0, conf.diversi.length + ' diverse, per es. ' + JSON.stringify(conf.diversi[0]));
+
   await p.close();
   return tac;
 };

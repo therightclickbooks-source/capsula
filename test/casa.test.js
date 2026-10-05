@@ -109,5 +109,54 @@ module.exports = async function(browser){
     tac.t('il backup per Drive porta il nome del dispositivo, ma il nome non e\' nei dati', r.inviato === 'Tablet Chiara è 1' && r.nonNeiDati, JSON.stringify(r));
     await p.close();
   }
+  /* ── i check-in dal totem: eliminare (con conferma), doppioni, serbatoio, ripristino ── */
+  {
+    const p = await browser.newPage({viewport:{width:1100, height:800}});
+    p.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
+    await p.addInitScript(()=>{ const now = Date.now(); const mk = (id,n,c,min)=> ({id, nome:n, cognome:c, op:'o1', quando:new Date(now - min*60000).toISOString(), quiz:{activity:'matrix', zmode:'totale', zones:[], goal:'recupero', mood:'sereno'}});
+      try{ localStorage.setItem('zfl_app_v1', JSON.stringify({codeHash:'x', codeLen:4, clients:[], sessions:[], operators:[{id:'o1', nome:'Raffaele'}],
+        checkins:[mk('k1','Serena','Cecco',3), mk('k2','Serena','Cecco',6), mk('k3','Eliana','Cascone',23), mk('k4','Eliana','Cascone',37), mk('k5','Marco','Rossi',50)]})); }catch(e){} });
+    await p.goto(GESTIONALE); await p.waitForTimeout(800);
+    const r = await p.evaluate(()=>{
+      const o = {}; const q = s => document.querySelector(s);
+      o.righe = document.querySelectorAll('.cwline').length; o.tasti = document.querySelectorAll('.cwline .del').length;
+      o.bollini = document.querySelectorAll('.cwline .dopp').length;
+      o.dopp = doppioniCheckin().slice().sort().join(',');
+      o.btnDopp = /Elimina i 2 doppioni/.test(q('.ckwait .cw-x').textContent);
+      /* eliminare chiede conferma e non toglie niente da solo */
+      chiediEliminaCheckin('k5');
+      o.conferma = q('#modal').classList.contains('open') && /Eliminare questo check-in/.test(q('#modal').textContent) && /Marco Rossi/.test(q('#modal').textContent);
+      o.primaDellaConferma = DB.checkins.length;
+      eliminaCheckin('k5');
+      o.dopo = DB.checkins.length; o.nelSerbatoio = (DB.checkinEliminati||[]).map(k=>k.id).join(',');
+      o.serbatoioVisibile = !!q('.tank') && /1 check-in eliminato/.test(q('.tank').textContent);
+      /* i doppioni: si tiene il piu' recente */
+      chiediEliminaDoppioni(); o.confDopp = /Serena Cecco/.test(q('#modal').textContent) && /Eliana Cascone/.test(q('#modal').textContent);
+      eliminaDoppioni();
+      o.restano = DB.checkins.map(k=>k.id).sort().join(',');
+      o.serbatoioDopo = (DB.checkinEliminati||[]).length;
+      /* ripristino */
+      ripristinaCheckin('k2');
+      o.ripristinato = DB.checkins.some(k=> k.id === 'k2') && !(DB.checkinEliminati||[]).some(k=> k.id === 'k2') && !('eliminatoIl' in DB.checkins.find(k=> k.id === 'k2'));
+      /* un vecchio, dopo sette giorni, se ne va dal serbatoio */
+      DB.checkinEliminati.push({id:'vecchio', nome:'Vecchio', cognome:'Check', quando:new Date().toISOString(), eliminatoIl:new Date(Date.now() - 8*86400000).toISOString()});
+      o.scaduto = serbatoioPulisci().some(k=> k.id === 'vecchio') === false;
+      /* uno eliminato molto tempo dopo averlo creato, ripristinato, non sparisce subito */
+      DB.checkinEliminati.push({id:'tardi', nome:'Tardi', cognome:'Check', quando:new Date(Date.now() - 9*3600000).toISOString(), eliminatoIl:new Date().toISOString()});
+      ripristinaCheckin('tardi'); o.tardi = checkinAttesa().some(k=> k.id === 'tardi');
+      /* svuotare chiede conferma */
+      chiediSvuotaSerbatoio(); o.confSvuota = /per sempre/.test(q('#modal').textContent);
+      svuotaSerbatoio(); o.svuotato = (DB.checkinEliminati||[]).length === 0;
+      return o;
+    });
+    tac.t('ogni check-in ha il suo tasto «Elimina», e i doppioni hanno il bollino', r.righe === 5 && r.tasti === 5 && r.bollini === 2 && r.dopp === 'k2,k4' && r.btnDopp, JSON.stringify(r));
+    tac.t('eliminare chiede conferma e non toglie niente prima', r.conferma && r.primaDellaConferma === 5, JSON.stringify(r));
+    tac.t('l\'eliminato finisce nel serbatoio, che compare', r.dopo === 4 && r.nelSerbatoio === 'k5' && r.serbatoioVisibile, JSON.stringify(r));
+    tac.t('i doppioni: conferma, e si tiene il check-in piu\' recente di ognuno', r.confDopp && r.restano === 'k1,k3' && r.serbatoioDopo === 3, JSON.stringify(r));
+    tac.t('si ripristina un check-in eliminato', r.ripristinato, JSON.stringify(r));
+    tac.t('dopo sette giorni il serbatoio lo butta, e un vecchio ripristinato non sparisce subito', r.scaduto && r.tardi, JSON.stringify(r));
+    tac.t('svuotare il serbatoio chiede conferma («per sempre»)', r.confSvuota && r.svuotato, JSON.stringify(r));
+    await p.close();
+  }
   return tac;
 };
