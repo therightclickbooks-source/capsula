@@ -118,6 +118,18 @@ module.exports = async function(browser){
   tac.t('lo schermo viene tenuto acceso', via.lock === 1, JSON.stringify(via));
   tac.t('la barra riserva il suo spazio alla barra in alto (non la copre)', parseInt(via.tmh) > 40, JSON.stringify(via));
 
+  /* scorrendo la pagina in basso la barra resta in cima e la barra del titolo le sta sotto */
+  const scorri = await p.evaluate(async () => {
+    window.scrollTo(0, 2500); await new Promise(r => setTimeout(r, 400));
+    const bar = document.getElementById('tmr').getBoundingClientRect();
+    const top = document.querySelector('.topbar');
+    const tb = top ? top.getBoundingClientRect() : null;
+    const r = {y: Math.round(scrollY), barTop: Math.round(bar.top), barBottom: Math.round(bar.bottom), tbTop: tb ? Math.round(tb.top) : null, nascosta: document.body.classList.contains('tb-via') || document.documentElement.classList.contains('tb-via') || !!(top && top.closest('.tb-via'))};
+    window.scrollTo(0, 0); return r;
+  });
+  tac.t('scorrendo la pagina in basso il timer resta sempre in cima, e la barra del titolo non lo copre',
+    scorri.y > 500 && scorri.barTop === 0 && (scorri.tbTop === null || scorri.tbTop >= scorri.barBottom - 1 || scorri.nascosta), JSON.stringify(scorri));
+
   /* venti minuti, un secondo alla volta: quando suona cosa? */
   const giro = await p.evaluate(() => {
     const quando = []; let n = TM.log.length;
