@@ -3119,6 +3119,18 @@
   .tmgo.on .tmgo-l, .tmgo.on .tmgo-b, .tmgo.on .tmgo-n{display:none} .tmgo.on .tmgo-s{display:block}
   .tmchip{margin-left:auto; font-size:12px; font-weight:800; border-radius:99px; padding:3px 10px; color:#9fc2d6; border:1px solid rgba(143,178,201,.6); background:rgba(143,178,201,.16); white-space:nowrap}
   .topbar{top:var(--tmh,0px)} .stepbar{top:var(--tmh,0px)}
+  /* le domande di fine seduta: una riga per ogni cosa fatta */
+  .fbleg{display:flex; justify-content:flex-end; gap:7px; font-size:10.5px; color:var(--faint); margin:2px 14px -4px 0}
+  .fbleg span{width:54px; text-align:center; line-height:1.15}
+  .fbcard{padding:4px 14px}
+  .fbr{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line)}
+  .fbr:last-child{border-bottom:0}
+  .fbri{font-size:22px} .fbn{flex:1; min-width:0} .fbn b{display:block; font-size:15px} .fbn small{font-size:12px; color:var(--faint)}
+  .fbt3{display:flex; gap:7px}
+  .fbb{font:inherit; width:54px; height:46px; border-radius:13px; background:var(--surface2); border:1.5px solid var(--line); color:var(--muted); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center}
+  .fbb.nul{visibility:hidden; pointer-events:none}
+  .fbb.on{border-color:var(--accent-strong); background:rgba(156,109,142,.22); color:var(--text)}
+  .fbb.g.on{border-color:var(--ok); background:var(--ok-dim); color:var(--ok)}
   #app{padding-top:var(--tmh,0px)}
   #tmr.sgr{pointer-events:none; animation:tmSvan 2.1s ease-in forwards}
   #tmr.sgr > *:not(.tm-pz){animation:tmSfa 1.5s ease-in forwards}
@@ -4438,6 +4450,29 @@ function buildProtocol(client, quiz){
     why.push('🎚️ Taratura personale applicata ('+(cal>0?'+':'')+cal+' livell'+(Math.abs(cal)>1?'i':'o')+')'+
       (soloAria?' sulla forza dell\'aria':'')+': '+
       (cal<0 ? 'a fine seduta aveva riferito che era troppo forte.' : 'a fine seduta aveva riferito che era troppo leggera.'));
+  }
+
+  /* tarature per componente: ogni risposta di fine seduta tara SOLO la sua parte.
+     Gli airbag dopo un massaggio completo, la rifinitura manuale (Up), quella della
+     parte bassa (Down) e il calore hanno ciascuno la propria taratura, a parte da
+     quella del massaggio. Prima dei vincoli di sicurezza, che restano l'ultima parola. */
+  const cx = client.calx || {};
+  if (!firstTime){
+    const lim = (v, a, b) => Math.max(a, Math.min(b, v));
+    if (!soloAria && cx.aria){ S.airbag = lim(S.airbag + cx.aria, 0, 6);
+      why.push('🎚️ Airbag tarati ('+(cx.aria>0?'+':'')+cx.aria+'): '+(cx.aria<0?'li aveva trovati troppo forti.':'li aveva trovati troppo leggeri.')); }
+    if (manualRef && cx.up){
+      const W = ['W_NARROW','W_MEDIUM','W_WIDE'], i = W.indexOf(manualRef.wkey);
+      if (i >= 0){ const j = lim(i - Math.sign(cx.up), 0, 2);
+        if (j !== i){ manualRef.wkey = W[j]; manualRef.larghezza = LARGHEZZA_DI[W[j]];
+          why.push('🎚️ Rifinitura manuale '+(cx.up<0?'più larga e morbida':'più stretta e mirata')+': '+(cx.up<0?'la volta scorsa era troppo forte.':'la volta scorsa era troppo leggera.')); } }
+    }
+    if (manualBasso && cx.down){
+      manualBasso.velocita = lim(manualBasso.velocita + cx.down, 1, 3);
+      manualBasso.plantare = lim(manualBasso.plantare + cx.down, 1, 3);
+      why.push('🎚️ Rifinitura della parte bassa tarata ('+(cx.down>0?'+':'')+cx.down+'): '+(cx.down<0?'la volta scorsa era troppo forte.':'la volta scorsa era troppo leggera.'));
+    }
+    if (cx.calore < 0 && S.calore){ S.calore = false; why.push('🎚️ Calore spento: la volta scorsa era troppo caldo.'); }
   }
 
   /* vincoli anamnesi */
@@ -7174,7 +7209,8 @@ function messaggioZenith(c, s){
   if(nota) C.push({id:'c-nota', t:'La tua ultima preferita l\'avevi salvata così: «' + esc(nota.favNote) + '». Zenith se lo ricorda.'});
   const cal = c.cal | 0;
   if(cal) C.push({id:'c-cal', t:'La tua taratura personale è ' + (cal > 0 ? '+' : '') + cal + ': Zenith ormai sa quanta pressione ti piace.'});
-  if(an.caloreSensibile && !S.calore) C.push({id:'c-cal0', t:'Il calore è rimasto spento, come preferisci: è scritto nella tua scheda.'});
+  /* il calore spento si dice senza dire perche': e' un dato sanitario e a leggere c'e' chi sta accanto */
+  if(an.caloreSensibile && !S.calore) C.push({id:'c-cal0', t:'Oggi il calore è rimasto spento: l\'abbiamo scelto insieme, per te.'});
   if(an.prefIntensita === 'delicato' || an.prefIntensita === 'deciso')
     C.push({id:'c-pref', t:'Sappiamo che ti piace una pressione ' + (an.prefIntensita === 'delicato' ? 'più morbida' : 'più decisa') + ': la capsula ne tiene conto ogni volta.'});
   if(an.sonno === 'scarso' && S.ioni) C.push({id:'c-ioni', t:'Ci avevi detto che il sonno è un punto delicato: per questo gli ioni negativi erano accesi.'});
@@ -7660,17 +7696,11 @@ function vClosing(){
     ${premioVintoHTML(c, s)}
     ${letteraZenith(c, s)}
 
-    <h2>1 · ${esc(c.nome)}, com'era la pressione? <span style="font-weight:400; font-size:13.5px; color:var(--faint)">— dimmelo adesso, mentre la senti ancora</span></h2>
-    <p class="hint">Non c'è una risposta giusta: c'è la tua. La prossima seduta parte da qui.</p>
-    <div class="fbrow">
-      <button class="fbtn soft ${fb==='soft'?'on':''}" ${ztGiudizioCliente('soft')} onclick="setFeedback('${s.id}','soft')">
-        <span class="fbi">🪶</span><span class="fbt">Troppo forte</span><span class="fbs">alleggerisco</span></button>
-      <button class="fbtn ok ${fb==='ok'?'on':''}" ${ztGiudizioCliente('ok')} onclick="setFeedback('${s.id}','ok')">
-        <span class="fbi">✓</span><span class="fbt">Perfetta</span><span class="fbs">taratura giusta</span></button>
-      <button class="fbtn hard ${fb==='hard'?'on':''}" ${ztGiudizioCliente('hard')} onclick="setFeedback('${s.id}','hard')">
-        <span class="fbi">💪</span><span class="fbt">Troppo leggera</span><span class="fbs">rinforzo</span></button>
-    </div>
-    <div id="fbecho">${fb?closeEcho(c,fb):'<p class="hint" style="text-align:center; margin-top:2px">Tocca una risposta: la capsula si tara da sola per la prossima volta.</p>'}</div>
+    <h2>1 · ${esc(c.nome)}, com'è andata? <span style="font-weight:400; font-size:13.5px; color:var(--faint)">— dimmelo adesso, mentre la senti ancora</span></h2>
+    <p class="hint">Non c'è una risposta giusta: c'è la tua. Ogni cosa che abbiamo fatto oggi, la prossima volta parte da qui.</p>
+    <div class="fbleg"><span>troppo forte</span><span>giusta</span><span>troppo leggera</span></div>
+    <div class="card fbcard">${chiusuraComponenti(c, s).map(k => fbRigaHTML(s, k)).join('')}</div>
+    <div id="fbecho">${fbEcoHTML(c, s)}</div>
 
     ${first?'':`<h2>2 · Ti è piaciuta così?</h2>
     <div class="card">
@@ -7684,7 +7714,7 @@ function vClosing(){
 
     <h2>${first?'2':'3'} · Da portare a casa, ${esc(c.nome)} <span style="font-weight:400; font-size:13.5px; color:var(--faint)">— le prossime ore contano quanto la seduta</span></h2>
     <div class="dopo" style="--fc:${col}">
-      ${dopo.ore.map(([ic,t,sub])=>`<div class="dx"><span class="di">${ic}</span><span class="dt">${t}<small>${sub}</small></span></div>`).join('')}
+      ${dopo.ore.map(([ic,t,sub]) => (s.settings && s.settings.calore) || !/calore|caldo/i.test(t + ' ' + sub) ? [ic,t,sub] : ['🌿','La schiena è più libera di prima','Per un paio d\'ore evita pesi e movimenti bruschi.']).map(([ic,t,sub])=>`<div class="dx"><span class="di">${ic}</span><span class="dt">${t}<small>${sub}</small></span></div>`).join('')}
     </div>
     ${strada(c, n, pts, lv, nxt, s)}
     <div class="prossima">
@@ -7697,34 +7727,78 @@ function vClosing(){
     </div>`;
 }
 function clientSessions(id){ return DB.sessions.filter(x=>x.clientId===id); }
-function closeEcho(c, fb){
-  const cal = c.cal|0;
-  if (fb==='ok') return `<div class="call ok" style="margin-top:10px"><b class="tt">Allora la teniamo così</b>Questi sono i tuoi valori giusti: la prossima seduta riparte <b>esattamente da qui</b>, senza che tu debba ricordare niente.</div>`;
-  const dir = fb==='soft' ? 'abbassate' : 'alzate';
-  const seg = fb==='soft' ? 'più delicata' : 'più decisa';
-  return `<div class="call amb" style="margin-top:10px"><b class="tt">Ricevuto: la prossima volta ${seg}</b>
-    Intensità e profondità sono già state <b>${dir}</b> nel tuo programma
-    (taratura <b>${cal>0?'+':''}${cal}</b>). Non devi ricordartelo: lo ricorda Zenith.</div>`;
+/* ══ LE DOMANDE DI FINE SEDUTA ══
+   Si chiede solo di quello che in seduta e' stato davvero acceso: massaggio
+   (se i rulli hanno lavorato), airbag (se acceso), rifinitura manuale (Up),
+   rifinitura della parte bassa (Down), calore (se acceso). Mai di Zero
+   Gravity, mai di calore spento. Ogni risposta tara SOLO la sua parte:
+   massaggio e — nelle sedute solo aria — airbag vanno su c.cal; airbag dopo
+   un massaggio completo, Up, Down e calore hanno ciascuno la propria
+   taratura in c.calx (vedi buildProtocol). */
+function chiusuraComponenti(c, s){
+  const S = s.settings || {}, solo = s.prog === 'P23', out = [];
+  if(!solo) out.push({k:'rulli', ic:'🌀', n:'Massaggio',
+    sub:['schiena', S.polpacci > 0 ? 'polpacci' : '', S.plantari > 0 ? 'piedi' : ''].filter(Boolean).join(', ')});
+  if((S.airbag | 0) > 0){
+    const a = scegliZoneAirbag(s.quiz || {}, s.fam, (c.anamnesi || {}).zone);
+    out.push({k:'aria', ic:'💨', n:'Airbag', sub:a.icone.map(k => ARIA_NOME[k]).join(', ')});
+  }
+  if(s.manualRef) out.push({k:'up', ic:'✨', n:'Rifinitura manuale', sub:s.manualRef.zona});
+  if(s.manualBasso) out.push({k:'down', ic:'🦶', n:'Rifinitura parte bassa', sub:s.manualBasso.zona});
+  if(S.calore) out.push({k:'calore', ic:'🔥', n:'Calore', sub:'lombare', due:true});
+  return out;
 }
-function setFeedback(sid, fb){
+/* le risposte di una seduta; quelle vecchie, di prima delle domande per componente, avevano una sola */
+function fbDi(s){
+  if(s.fb) return s.fb;
+  if(!s.feedback) return {};
+  return {[s.prog === 'P23' ? 'aria' : 'rulli']: s.feedback};
+}
+function fbRigaHTML(s, k){
+  const fb = fbDi(s)[k.k] || null;
+  const b = (v, ic, lab) => `<button class="fbb ${v==='ok'?'g':''} ${fb===v?'on':''}" aria-label="${lab}" ${k.k==='rulli' ? ztGiudizioCliente(v) : ''} onclick="setFeedback('${s.id}','${k.k}','${v}')">${ic}</button>`;
+  return `<div class="fbr" id="fbr_${k.k}"><span class="fbri">${k.ic}</span><div class="fbn"><b>${k.n}</b><small>${esc(k.sub)}</small></div>
+    <div class="fbt3">${b('soft','🪶', k.due ? 'troppo caldo' : 'troppo forte')}${b('ok','✓','giusta')}${k.due ? `<span class="fbb nul"></span>` : b('hard','💪','troppo leggera')}</div></div>`;
+}
+const FB_ECO = {
+  rulli:{ ok:'il massaggio resta <b>così</b>', soft:'massaggio <b>più delicato</b>: intensità e profondità dei rulli scendono', hard:'massaggio <b>più deciso</b>: intensità e profondità dei rulli salgono' },
+  aria:{ ok:'airbag <b>così</b>', soft:'airbag <b>più dolci</b>', hard:'airbag <b>più decisi</b>' },
+  up:{ ok:'rifinitura manuale <b>così</b>', soft:'rifinitura manuale <b>più larga e morbida</b>', hard:'rifinitura manuale <b>più stretta e mirata</b>' },
+  down:{ ok:'parte bassa <b>così</b>', soft:'parte bassa <b>più piano</b>: velocità e rulli plantari scendono', hard:'parte bassa <b>più energica</b>: velocità e rulli plantari salgono' },
+  calore:{ ok:'calore <b>così</b>', soft:'calore <b>spento</b> la prossima volta' }
+};
+function fbEcoHTML(c, s){
+  const fbm = fbDi(s), righe = chiusuraComponenti(c, s).filter(k => fbm[k.k]);
+  if(!righe.length) return '<p class="hint" style="text-align:center; margin-top:2px">Tocca una risposta per ogni riga: la capsula si tara da sola per la prossima volta.</p>';
+  const tutteOk = righe.every(k => fbm[k.k] === 'ok');
+  return `<div class="call ${tutteOk?'ok':'amb'}" style="margin-top:10px"><b class="tt">${tutteOk ? 'Allora teniamo tutto così' : 'Ricevuto'}</b>`
+    + righe.map(k => FB_ECO[k.k][fbm[k.k]]).join(' · ') + '.<br>Non devi ricordartelo: lo ricorda Zenith.</div>';
+}
+function setFeedback(sid, k, fb){
   const s = DB.sessions.find(x=>x.id===sid); if(!s) return;
   const c = DB.clients.find(x=>x.id===s.clientId); if(!c) return;
-  const prev = s.feedback||null;
+  s.fb = Object.assign({}, fbDi(s));
+  const prev = s.fb[k] || null;
   if (prev===fb) return;
-  /* annulla l'effetto del feedback precedente, poi applica il nuovo */
+  c.calx = c.calx || {};
   const delta = f => f==='soft' ? -1 : f==='hard' ? 1 : 0;
-  let cal = (c.cal|0) - delta(prev) + delta(fb);
-  c.cal = Math.max(-2, Math.min(2, cal));
-  c.calTuned = true;
-  s.feedback = fb;
+  /* annulla l'effetto della risposta precedente, poi applica la nuova */
+  const sposta = (o, key, lo, hi) => { o[key] = Math.max(lo, Math.min(hi, (o[key]|0) - delta(prev) + delta(fb))); };
+  if (k==='rulli' || (k==='aria' && s.prog==='P23')){ sposta(c, 'cal', -2, 2); c.calTuned = true; }
+  else if (k==='aria') sposta(c.calx, 'aria', -2, 2);
+  else if (k==='up') sposta(c.calx, 'up', -2, 2);
+  else if (k==='down') sposta(c.calx, 'down', -2, 2);
+  else if (k==='calore') sposta(c.calx, 'calore', -1, 0);
+  s.fb[k] = fb;
+  s.feedback = s.fb.rulli || s.fb.aria || fb;
   s.feedbackAt = new Date().toISOString();
   persist();
+  const comp = chiusuraComponenti(c, s).find(x => x.k === k);
+  const riga = document.getElementById('fbr_' + k);
+  if(comp && riga) riga.outerHTML = fbRigaHTML(s, comp);
   const box = document.getElementById('fbecho');
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
-  const btn = document.querySelector('.fbtn.'+(fb==='soft'?'soft':fb==='hard'?'hard':'ok'));
-  if(btn) btn.classList.add('on');
-  if(box) box.innerHTML = closeEcho(c, fb);
-  toast(fb==='ok' ? '✓ Taratura confermata' : '🎚️ Taratura aggiornata per la prossima seduta');
+  if(box) box.innerHTML = fbEcoHTML(c, s);
+  toast(fb==='ok' ? '✓ Confermato' : '🎚️ Preso nota: la prossima seduta cambia');
 }
 function saveFavNote(sid, v){
   const s = DB.sessions.find(x=>x.id===sid); if(!s) return;

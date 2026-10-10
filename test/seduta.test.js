@@ -270,7 +270,7 @@ module.exports = async function(browser){
       const t = document.getElementById('app').innerText;
       r.fam[f] = document.querySelectorAll('.dopo .dx').length === 3 && !!document.querySelector('.prossima');
       r.testi.push(t);
-      r.tasti = [...document.querySelectorAll('.fbtn .fbt')].map(b => b.textContent).join('|');
+      r.tasti = [...document.querySelectorAll('.fbr .fbn b')].map(b => b.textContent).join('|');
       r.nome = (r.nome !== false) && !!document.querySelector('.lettera .nm') && /Prova/.test(document.querySelector('.ch-nome').textContent);
       r.ids = (r.ids || []).concat([messaggioZenith(c, s).ids]);
     });
@@ -286,8 +286,8 @@ module.exports = async function(browser){
     tac.t('due sedute di fila non hanno frasi del messaggio in comune', !uguali, uguali + ' frasi ripetute ' + JSON.stringify(chiusura.ids)); }
   { const sanitarie = chiusura.testi.filter(t => /Trombosi|Pacemaker|Gravidanza|Tumore|Diabete|certificato/i.test(t));
     tac.t('il messaggio non tira mai fuori l\'anamnesi sanitaria', !sanitarie.length); }
-  tac.t('la pressione a fine seduta si sceglie come prima',
-    chiusura.tasti === 'Troppo forte|Perfetta|Troppo leggera', chiusura.tasti);
+  tac.t('a fine seduta si chiede solo di ciò che c\'era: qui, con i soli rulli, il massaggio',
+    chiusura.tasti === 'Massaggio', chiusura.tasti);
   { const vietate = /vend|propor|lascialo parlare|silenzio|momento d.oro|ora ne ha\b/i;
     const no = chiusura.testi.filter(t => vietate.test(t));
     tac.t('la chiusura parla al cliente: niente copioni di vendita a vista', !no.length,
@@ -316,7 +316,7 @@ module.exports = async function(browser){
     VIEW = {name:'closing', id:'cpremi', sid:'sp11', lvUp:false}; render();
     r.conto = /Premio Costanza/.test((document.querySelector('.costanza') || {}).textContent || '');
     r.vuoto = messaggioZenith(g.c, DB.sessions.find(x => x.id === 'sp11')).frasi.map(f => f.t).join(' ');
-    r.tooltip = [...document.querySelectorAll('.fbtn')].map(b => b.getAttribute('data-zt') || '').join(' ');
+    r.tooltip = [...document.querySelectorAll('.fbb')].map(b => b.getAttribute('data-zt') || '').join(' ');
     /* la seduta da regalare: passa a un'altra scheda, o resta a lui */
     { const amico = {id:'camico', nome:'Marco', cognome:'Bianchi', anamnesi:{}};
       DB.clients = DB.clients.concat([amico]);
