@@ -133,7 +133,7 @@ module.exports = async function(browser){
   /* venti minuti, un secondo alla volta: quando suona cosa? */
   const giro = await p.evaluate(() => {
     const quando = []; let n = TM.log.length;
-    for(let s = 1; s <= 1210; s++){
+    for(let s = 1; s <= 1205; s++){
       window.__t += 1000; tmTick();
       while(n < TM.log.length){ quando.push(TM.log[n] + '@' + s); n++; }
     }
@@ -145,6 +145,32 @@ module.exports = async function(browser){
   tac.t('a 20 minuti il timer e\' finito e lo schermo viene rilasciato', giro.fine && giro.stato === 'fine', JSON.stringify(giro));
   const rilascio = await p.evaluate(() => window.__lock);
   tac.t('lo schermo torna libero a fine seduta', rilascio.rilasci >= 1, JSON.stringify(rilascio));
+
+  /* finita la seduta: resta «seduta finita» qualche secondo, poi si sgretola e sparisce da sola, ovunque */
+  const addio = await p.evaluate(async () => {
+    const r = {}; r.finito = !!TM && TM.fine; r.pezziPrima = document.querySelectorAll('.tm-pz').length; r.barra = !!document.querySelector('#tmr.bar');
+    window.__t += 20000; tmTick();
+    r.sgretola = !!document.querySelector('#tmr.sgr'); r.pezzi = document.querySelectorAll('.tm-pz').length;
+    await new Promise(x => setTimeout(x, 2600));
+    r.tolto = TM === null && document.getElementById('tmr').innerHTML === '' && localStorage.getItem('zfl_timer') === null;
+    return r;
+  });
+  tac.t('finita la seduta il timer si sgretola e sparisce da solo, senza restare in giro', addio.finito && addio.pezziPrima === 0 && addio.sgretola && addio.pezzi > 20 && addio.tolto, JSON.stringify(addio));
+
+  /* un timer vecchio (altra seduta) non deve mai restare al posto di quello nuovo */
+  const vecchio = await p.evaluate(() => {
+    timerChiudi();
+    const mk = (goal, zones, act) => { const pr = buildProtocol(DB.clients[0], {activity:act, goal, zones, pressione:'media', mood:'sereno', prefSoloAria:false}); pr.quizZones = zones; return pr; };
+    const A = mk('recupero', [], 'ems'); A.S.timer = 25; const B = mk('sollievo', ['lombare'], 'riposo');
+    const v = VIEW; VIEW = {name:'setupqr', prot:A}; timerAvvia(); const prima = {dur:TM.dur, ev:TM.eventi.length};
+    VIEW = {name:'setupqr', prot:B}; timerAvvia(); const dopo = {dur:TM.dur, ev:TM.eventi.length, titolo:TM.info.titolo};
+    const t0 = TM; timerAvvia(); const stesso = TM === t0;   /* stessa seduta: non riparte */
+    const barra = document.querySelector('#tmr .tm-who2'); const r = {prima, dopo, stesso, chi: barra ? barra.textContent : ''};
+    VIEW = v; timerChiudi(); return r;
+  });
+  tac.t('premendo Avvia con un timer vecchio acceso, parte quello della seduta di adesso (20′, con la rifinitura)',
+    vecchio.prima.dur === 25 && vecchio.prima.ev === 0 && vecchio.dopo.dur === 20 && vecchio.dopo.ev === 1 && vecchio.stesso, JSON.stringify(vecchio));
+  tac.t('la barra dice di quale programma e\' il timer', /“/.test(vecchio.chi), JSON.stringify(vecchio));
 
   /* l'avviso «attiva» resta finche' non si tocca «Fatto» (o passano 30″) */
   const fasi = await p.evaluate(() => {
