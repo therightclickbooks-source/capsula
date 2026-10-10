@@ -29,39 +29,25 @@ module.exports = async function(browser){
       }
       const q = schermo.n + ' ' + tema + ': ';
 
-      const m = await p.evaluate(()=>
-        [...document.querySelectorAll('.secgroup')].map(g=>{
-          const l = g.querySelector('.sg-lab'), pill = l && l.querySelector('span');
-          const cg = getComputedStyle(g), cl = l ? getComputedStyle(l) : null;
-          return {
-            gruppo:{bordo: parseFloat(cg.borderTopWidth), raggio: parseFloat(cg.borderTopLeftRadius),
-                    fondo: cg.backgroundColor},
-            ripiano: l ? {riga: parseFloat(cl.borderBottomWidth),
-                          largo: l.offsetWidth >= g.clientWidth - 1,
-                          fondo: cl.backgroundImage !== 'none'} : null,
-            pastiglia: pill ? {raggio: parseFloat(getComputedStyle(pill).borderTopLeftRadius),
-                               bordo: parseFloat(getComputedStyle(pill).borderTopWidth)} : null
-          };
-        }));
-
-      tac.t(q + 'i gruppi della home ci sono tutti', m.length === 2, String(m.length));
-      tac.t(q + 'ogni gruppo sta dentro il suo riquadro',
-        m.every(x => x.gruppo.bordo > 0 && x.gruppo.raggio >= 16
-          && x.gruppo.fondo !== 'rgba(0, 0, 0, 0)'),
-        JSON.stringify(m.map(x=>x.gruppo)));
-      tac.t(q + 'la testata e\' un ripiano che arriva ai bordi',
-        m.every(x => x.ripiano && x.ripiano.riga > 0 && x.ripiano.largo && x.ripiano.fondo),
-        JSON.stringify(m.map(x=>x.ripiano)));
-      tac.t(q + 'l\'etichetta e\' una pastiglia, come la targhetta della vetrina',
-        m.every(x => x.pastiglia && x.pastiglia.raggio > 20 && x.pastiglia.bordo > 0),
-        JSON.stringify(m.map(x=>x.pastiglia)));
-
-      /* le carte hanno il rilievo: filo di luce sopra e ombra colorata sotto */
-      tac.t(q + 'le carte hanno il rilievo', await p.evaluate(()=>
-        [...document.querySelectorAll('.tile[data-c]')].every(e=>{
-          const o = getComputedStyle(e).boxShadow;
-          return /inset/.test(o) && o.split('inset').length === 2 && o.length > 40;
-        })));
+      /* la home dell'operatore e' essenziale: check-in, due numeri, ricerca, quattro scorciatoie piccole */
+      const h = await p.evaluate(()=>({
+        check: !!document.querySelector('.ckbtn'),
+        stat: document.querySelectorAll('.hstat .stat').length,
+        cerca: !!document.querySelector('.cercahome'),
+        altro: [...document.querySelectorAll('.hmaltro .hmt')].map(b => b.textContent.trim()).join('|'),
+        frasi: !!document.querySelector('.herorot, .mindset'),
+        gruppi: document.querySelectorAll('.secgroup').length,
+        ordine: (()=>{ const c = document.querySelector('.ckbtn'), s = document.querySelector('.hstat'), r = document.querySelector('.cercahome'), a = document.querySelector('.hmaltro');
+          return c.offsetTop < s.offsetTop && s.offsetTop < r.offsetTop && r.offsetTop < a.offsetTop; })()
+      }));
+      tac.t(q + 'la home ha check-in, due numeri, ricerca e le quattro scorciatoie, in quest\'ordine',
+        h.check && h.stat === 2 && h.cerca && h.altro === 'Protocolli|Guida|Scuola|Impost.' && h.ordine, JSON.stringify(h));
+      tac.t(q + 'niente frasi a rotazione né Mindset in home, niente gruppi di riquadri', !h.frasi && h.gruppi === 0, JSON.stringify(h));
+      await p.click('.cercahome'); await p.waitForTimeout(250);
+      tac.t(q + 'toccando «Cerca un cliente» si apre l\'elenco con la tastiera pronta a scrivere',
+        await p.evaluate(()=> VIEW.name === 'clients' && document.activeElement && document.activeElement.tagName === 'INPUT'));
+      await p.evaluate(()=>{ NAV = []; go('home'); });
+      await p.waitForTimeout(150);
 
       /* niente deve sbordare in larghezza: la home si scorre in verticale */
       tac.t(q + 'la home non sborda di lato', await p.evaluate(()=>

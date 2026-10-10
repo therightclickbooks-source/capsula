@@ -54,9 +54,9 @@ module.exports = async function(browser){
       }));
     /* quattro fasce, un compito ciascuna: «cosa succede adesso» non e'
        piu' un riquadro a parte, i tre passaggi stanno dentro il tasto */
-    tac.t(q + 'la colonna e\' frase · numeri · allenamento · invito',
+    tac.t(q + 'la colonna e\' numeri · frase · allenamento · invito',
       colonna.length === 4
-      && colonna[0] === 'hero' && colonna[1] === 'sezione'
+      && colonna[0] === 'sezione' && colonna[1] === 'hero'
       && colonna[2].startsWith('Cosa hai fatto oggi')
       && colonna[3] === 'cta',
       colonna.join(' | '));

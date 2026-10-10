@@ -1434,6 +1434,32 @@ html,body{overscroll-behavior:none}
 .dbg .b2{display:block; font-size:18px; color:#5fd08a; font-weight:700; letter-spacing:.04em}
 .dbg .b2.mai{color:rgba(255,255,255,.22); font-weight:400}
 .dbg i{font-style:normal; opacity:.8}
+
+/* ══ LA HOME CHE SI LEGGE A COLPO D'OCCHIO (v158) ══
+   Chi passa non legge: guarda. Quindi in cima c'e' UNA cosa enorme — i 20,3
+   milioni di programmi, con sotto i sei elementi che li fanno — poi la
+   frase che gira, in piccolo; poi cosa hai fatto oggi, e il tasto. La
+   capsula disegnata e il nastro dei premi lasciano la home: il premio
+   resta nel cartellino agganciato al tasto. */
+.sezione.cifre{margin-top:0}
+.numeri{flex-wrap:wrap}
+.nb.o{flex:0 0 100%; align-items:center; text-align:center; padding:6px 20px 14px}
+.nb.o .nv{font-size:230px; line-height:.95; letter-spacing:-.05em}
+.nb.o .nv small{font-size:64px; letter-spacing:-.01em}
+.nb.o .nl{font-size:34px; margin-top:6px; color:rgba(255,255,255,.88); font-weight:700; line-height:1.25}
+.nb.o[data-sp].acceso .nv{transform:scale(1.04); transform-origin:center bottom}
+.numeri .nb:not(.o){padding-top:16px; border-top:1px solid rgba(255,255,255,.1)}
+.numeri .nb:not(.o) .nv{font-size:44px}
+.hp{display:none}
+.hero{min-height:0}
+.hero #roams{align-self:center}
+.hero .roam .tx{font-size:48px}
+.hero .roam.domanda .tx{font-size:44px}
+/* il tasto del cliente e' il gesto: piu' grande */
+.cta .btn{padding:28px 30px}
+.cta .t1{font-size:50px}
+.cta .t2{font-size:22px}
+.cta .ic{width:86px; height:86px}
 </style>
 </head>
 <body>
@@ -1451,6 +1477,22 @@ html,body{overscroll-behavior:none}
   <!-- ═══ 1 · VETRINA ═══ -->
   <section class="scene on" id="s-idle">
     <div class="vetr">
+
+      <!-- che cos'è Zenith, in tre numeri -->
+      <div class="sezione cifre">
+        <div class="numeri">
+          <div class="nb o" data-sp="mln"><div class="nv">20,3<small> mln</small></div>
+            <div class="nl">programmi possibili: il tuo nasce oggi, non è fisso</div></div>
+          <div class="nb p" data-sp="fam"><div class="nv">9<small> famiglie</small></div>
+            <div class="nl">il perché della seduta: recupero, schiena, sonno…</div></div>
+          <div class="nb b" data-sp="prot"><div class="nv">24<small> protocolli</small></div>
+            <div class="nl">il modo di lavorare, dentro ogni famiglia</div></div>
+          <div class="nb g" data-sp="min"><div class="nv">20–30<small> min</small></div>
+            <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
+        </div>
+        <div class="combina"><span class="cbk" id="cbk">Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi</span>
+          <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
+      </div>
 
       <!-- il manifesto: la frase che gira, e la capsula che ferma l'occhio -->
       <div class="hero">
@@ -1489,22 +1531,6 @@ html,body{overscroll-behavior:none}
           <span class="nsg">Scopri come ›</span>
         </div>
         </div>
-      </div>
-
-      <!-- che cos'è Zenith, in tre numeri -->
-      <div class="sezione cifre">
-        <div class="numeri">
-          <div class="nb o" data-sp="mln"><div class="nv">20,3<small> mln</small></div>
-            <div class="nl">programmi possibili: il tuo nasce oggi, non è fisso</div></div>
-          <div class="nb p" data-sp="fam"><div class="nv">9<small> famiglie</small></div>
-            <div class="nl">il perché della seduta: recupero, schiena, sonno…</div></div>
-          <div class="nb b" data-sp="prot"><div class="nv">24<small> protocolli</small></div>
-            <div class="nl">il modo di lavorare, dentro ogni famiglia</div></div>
-          <div class="nb g" data-sp="min"><div class="nv">20–30<small> min</small></div>
-            <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-        </div>
-        <div class="combina"><span class="cbk" id="cbk">Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi</span>
-          <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
       </div>
 
       <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
@@ -4070,7 +4096,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v157.26.10(10)';
+const VETRINA_VERSION = 'v158.26.10(10)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
