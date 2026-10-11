@@ -54,5 +54,6 @@ Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA*
 | **Stampa** | fronte-retro, ribaltamento sul lato lungo; **cordonatura** al centro (105 mm dal bordo), poi piega |
 | **Carta** | cartoncino opaco 300–350 g, «nero ricco» per i fondi scuri |
 
-Da compilare a mano: numero di sedute, per, da parte di, un pensiero, valido fino al.
-Carattere dei titoli: Cormorant Garamond (licenza libera SIL OFL), incorporato nel PDF.
+Da compilare a mano: numero di sedute, per, da parte di, valido fino al.
+Caratteri: Michroma per i titoli (il più vicino al logo Zenith) e Montserrat per i testi, entrambi a licenza libera SIL OFL e incorporati nel PDF.
+La capsula di Zenith è disegnata a filo d'oro su copertina, retro, dedica e, in filigrana, sulla pagina da compilare.
