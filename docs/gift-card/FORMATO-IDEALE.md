@@ -41,3 +41,18 @@ Il disegno è generato da codice (HTML con misure in millimetri → PDF). Per ca
 - `gift-card_zenith_da-compilare_anteprima.png` — per guardarla.
 
 Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA**, **VALIDA FINO AL**.
+
+## Gift card piegata (la versione elegante)
+
+| | |
+|---|---|
+| **Aperta** | A5 orizzontale, 210 × 148 mm |
+| **Chiusa** | A6 verticale, 105 × 148 mm — sta nella busta C6 |
+| **File per la tipografia** | `gift-card-piegata_A5-aperta_A6-chiusa_tipografia_abbondante-3mm.pdf`, 216 × 154 mm, 2 pagine |
+| **Pagina 1** | lato esterno: a sinistra il retro, a destra la copertina |
+| **Pagina 2** | lato interno: a sinistra la dedica, a destra i campi da compilare |
+| **Stampa** | fronte-retro, ribaltamento sul lato lungo; **cordonatura** al centro (105 mm dal bordo), poi piega |
+| **Carta** | cartoncino opaco 300–350 g, «nero ricco» per i fondi scuri |
+
+Da compilare a mano: numero di sedute, per, da parte di, un pensiero, valido fino al.
+Carattere dei titoli: Cormorant Garamond (licenza libera SIL OFL), incorporato nel PDF.
