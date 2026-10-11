@@ -48,7 +48,7 @@ Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA*
 |---|---|
 | **Aperta** | A5 orizzontale, 210 × 148 mm |
 | **Chiusa** | A6 verticale, 105 × 148 mm — sta nella busta C6 |
-| **File per la tipografia** | `gift-card-piegata_A5-aperta_A6-chiusa_tipografia_abbondante-3mm.pdf`, 216 × 154 mm, 2 pagine |
+| **File per la tipografia** | `gift-card-piegata_A5-aperta_A6-chiusa_tipografia_abbondante-3mm_definitiva.pdf`, 216 × 154 mm, 2 pagine |
 | **Pagina 1** | lato esterno: a sinistra il retro, a destra la copertina |
 | **Pagina 2** | lato interno: a sinistra la dedica, a destra i campi da compilare |
 | **Stampa** | fronte-retro, ribaltamento sul lato lungo; **cordonatura** al centro (105 mm dal bordo), poi piega |
@@ -56,4 +56,4 @@ Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA*
 
 Da compilare a mano: numero di sedute, per, da parte di, valido fino al.
 Caratteri: Michroma per i titoli (il più vicino al logo Zenith) e Montserrat per i testi, entrambi a licenza libera SIL OFL e incorporati nel PDF.
-Colori: bianco, nero e il viola del logo (#7a496c); l’oro solo su «Gift card» e sulle parole in evidenza dei titoli. La capsula di Zenith è disegnata a filo viola su copertina, retro, dedica e, in filigrana, sulla pagina da compilare.
+Colori: bianco, nero e il viola del logo (#7a496c); l’oro solo su «Gift card», sulle parole in evidenza dei titoli, sulla sagoma della persona dentro la capsula e su «Pompei». La capsula di Zenith è disegnata a filo viola su copertina, retro, dedica e, in filigrana, sulla pagina da compilare.
