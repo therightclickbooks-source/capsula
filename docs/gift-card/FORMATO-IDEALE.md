@@ -56,4 +56,4 @@ Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA*
 
 Da compilare a mano: numero di sedute, per, da parte di, valido fino al.
 Caratteri: Michroma per i titoli (il più vicino al logo Zenith) e Montserrat per i testi, entrambi a licenza libera SIL OFL e incorporati nel PDF.
-La capsula di Zenith è disegnata a filo d'oro su copertina, retro, dedica e, in filigrana, sulla pagina da compilare.
+Colori: bianco, nero e il viola del logo (#7a496c); l’oro solo su «Gift card» e sulle parole in evidenza dei titoli. La capsula di Zenith è disegnata a filo viola su copertina, retro, dedica e, in filigrana, sulla pagina da compilare.
