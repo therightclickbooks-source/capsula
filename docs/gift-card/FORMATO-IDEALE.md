@@ -33,3 +33,11 @@ Non ci sono prezzi, indirizzo, telefono o durata della validità: non erano stat
 ## Come rifare o cambiare il disegno
 
 Il disegno è generato da codice (HTML con misure in millimetri → PDF). Per cambiare numero di sedute, testi o colori, si rigenera: chiedere a Claude di «rigenerare la gift card» indicando cosa cambiare.
+
+## Modello da compilare (numero di sedute a penna)
+
+- `gift-card_zenith_da-compilare_A6_tipografia_abbondante-3mm.pdf` — per la tipografia (A6, 154 × 111 mm con abbondante).
+- `gift-card_zenith_da-compilare_A4-4-per-foglio_stampa-a-casa.pdf` — 4 card su un A4 orizzontale, con le linee tratteggiate dove tagliare (148 × 105 mm ciascuna). Stampare a dimensione reale (100 %), su cartoncino, possibilmente «senza bordi».
+- `gift-card_zenith_da-compilare_anteprima.png` — per guardarla.
+
+Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA**, **VALIDA FINO AL**.
