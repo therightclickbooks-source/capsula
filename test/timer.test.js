@@ -75,12 +75,13 @@ module.exports = async function(browser){
     }
     return r;
   });
-  /* le rifiniture stanno alla fine: in manuale la capsula ferma airbag e rulli di gambe e piedi */
-  tac.t('su 20 minuti le due rifiniture chiudono la seduta: alta dal 12 al 16, bassa dal 16 al 20', minuti[20] === '12-16 16-20', JSON.stringify(minuti));
-  tac.t('con 25 e 30 minuti scalano, una dopo l\'altra, fino alla fine', minuti[25] === '15-20 20-25' && minuti[30] === '18-24 24-30', JSON.stringify(minuti));
-  tac.t('anche sulla prova da 15 minuti le finestre sono sensate', minuti[15] === '9-12 12-15', JSON.stringify(minuti));
-  const una = await p.evaluate(() => [20,25,30].map(T => pianoSeduta({S:{timer:T}, manualRef:{zona:'x'}}).eventi.map(e => e.a + '-' + e.b).join(' ')).join(' | '));
-  tac.t('una rifinitura sola prende l\'ultimo quarto della seduta', una === '15-20 | 19-25 | 22-30', una);
+  /* le rifiniture stanno alla fine perche' una volta accese non si spengono piu' (provato in capsula):
+     l'alta a 8 minuti dalla fine, la bassa a 5, e lavorano insieme fino alla fine */
+  tac.t('su 20 minuti: alta dal minuto 12, bassa dal 15, tutte e due fino alla fine', minuti[20] === '12-20 15-20', JSON.stringify(minuti));
+  tac.t('con 25 e 30 minuti: sempre 8 e 5 minuti dalla fine', minuti[25] === '17-25 20-25' && minuti[30] === '22-30 25-30', JSON.stringify(minuti));
+  const una = await p.evaluate(() => [20,25,30].map(T => pianoSeduta({S:{timer:T}, manualRef:{zona:'x'}}).eventi.map(e => e.a + '-' + e.b).join(' ')).join(' | ')
+    + ' / ' + pianoSeduta({S:{timer:20}, manualBasso:{zona:'y'}}).eventi.map(e => e.a + '-' + e.b).join(' '));
+  tac.t('una rifinitura sola, alta o bassa, parte a 8 minuti dalla fine', una === '12-20 | 17-25 | 22-30 / 12-20', una);
 
   /* una seduta con zero gravity e tutte e due le rifiniture: collo (alta) e lombare (bassa) */
   const prot = await p.evaluate(() => {
@@ -98,7 +99,16 @@ module.exports = async function(browser){
   const prima = await p.evaluate(() => ({go: !!document.querySelector('.tmgo-b'), barra: !!document.querySelector('#tmr.bar'),
     chip: Array.from(document.querySelectorAll('.tmchip')).map(c => c.textContent)}));
   tac.t('sul telefono il passo del Timing ha il tasto «Avvia il timer»', prima.go && !prima.barra, JSON.stringify(prima));
-  tac.t('le due rifiniture portano i loro minuti scritti', prima.chip.join('|') === 'minuto 12 → 16|minuto 16 → 20', JSON.stringify(prima.chip));
+  tac.t('le due rifiniture portano i loro minuti scritti, ognuna seguita da «riaccendi gli airbag»',
+    prima.chip.join('|') === 'dal minuto 12 alla fine|subito dopo · minuto 12|dal minuto 15 alla fine|subito dopo · minuto 15', JSON.stringify(prima.chip));
+  /* dentro i passi: i tasti per riaccendere Leg Kneading e Foot Roller, e le zone degli airbag */
+  const passi = await p.evaluate(() => Array.from(document.querySelectorAll('.gstep')).filter(g => /Rifinitura|riaccendi gli airbag/.test(g.querySelector('.gt').textContent))
+    .map(g => ({t: g.querySelector('.gt').textContent, leg: /Riaccendi “Leg Kneading”/.test(g.textContent), foot: /Riaccendi “Foot Roller”/.test(g.textContent),
+      zone: Array.from(g.querySelectorAll('.glegend .gi')).filter(x => /Riaccendi “/.test(x.textContent) && !/Leg|Foot/.test(x.textContent)).length,
+      nota: (g.querySelector('.rianote') || {}).textContent || ''})));
+  tac.t('ogni rifinitura dice di riaccendere Leg Kneading e Foot Roller, e il passo dopo le zone degli airbag',
+    passi.length === 4 && passi[0].leg && passi[0].foot && passi[2].leg && passi[2].foot && passi[1].zone >= 1 && passi[3].zone >= 1
+    && /stacca gli airbag/.test(passi[0].nota) && /di nuovo/.test(passi[2].nota), JSON.stringify(passi));
 
   /* orologio finto: parte da zero e si avanza a mano */
   await p.evaluate(() => { window.__t = 1000000; TM_NOW = () => window.__t; });
@@ -133,9 +143,9 @@ module.exports = async function(browser){
     }
     return {quando, fine: TM.fine, stato: tmStato(tmEl()).fase};
   });
-  /* alta dal 12 al 16, bassa dal 16 al 20: si passa dall'una all'altra senza «spegni», e la bassa la chiude la fine */
-  const atteso = ['pre@710','on@720','pre@950','on@960','fine@1200'];
-  tac.t('i bip suonano al secondo giusto: leggero 10″ prima, bip all\'inizio, doppio alla fine, tre note a fine seduta',
+  /* alta al 12, bassa al 15, tutte e due fino alla fine: nessuno «spegni». Senza «Fatto» la musica torna dopo 20″ e 40″ */
+  const atteso = ['rifpre@710','rif@720','rif@740','rif@760','rifpre@890','rif@900','rif@920','rif@940','fine@1200'];
+  tac.t('i suoni al secondo giusto: campanella 10″ prima, musica delle rifiniture al minuto esatto (ripetuta se nessuno conferma), fine seduta',
     JSON.stringify(giro.quando) === JSON.stringify(atteso), JSON.stringify(giro.quando));
   tac.t('a 20 minuti il timer e\' finito e lo schermo viene rilasciato', giro.fine && giro.stato === 'fine', JSON.stringify(giro));
   const rilascio = await p.evaluate(() => window.__lock);
@@ -167,20 +177,47 @@ module.exports = async function(browser){
     vecchio.prima.dur === 25 && vecchio.prima.ev === 0 && vecchio.dopo.dur === 20 && vecchio.dopo.ev === 1 && vecchio.stesso, JSON.stringify(vecchio));
   tac.t('la barra dice di quale programma e\' il timer', /“/.test(vecchio.chi), JSON.stringify(vecchio));
 
-  /* l'avviso «attiva» resta finche' non si tocca «Fatto» (o passano 30″) */
+  /* l'avviso di una rifinitura resta finche' non si tocca «Fatto», e apre il timer a tutto schermo */
   const fasi = await p.evaluate(() => {
     timerChiudi(); window.__t = 5000000; timerAvvia();
     const r = {};
     const vai = s => { window.__t = 5000000 + s*1000; tmTick(); return tmStato(tmEl()); };
+    const box = () => document.getElementById('tmr');
     r.s100 = vai(100).fase; r.s705 = vai(705).fase; r.s715 = vai(715).fase; r.sec = Math.ceil(tmStato(tmEl()).sec);
-    r.s721 = vai(721).fase; timerFatto(); r.dopoFatto = tmStato(tmEl()).fase;
-    r.s900 = vai(900).fase; r.s955 = vai(955).fase; r.s961 = vai(961).fase; timerFatto(); r.dopoFatto2 = tmStato(tmEl()).fase;
+    r.oroPre = box().classList.contains('rif');
+    r.s721 = vai(721).fase; r.full721 = box().classList.contains('full'); r.testo721 = (box().querySelector('.tm-rt') || {}).textContent;
+    r.s800 = vai(800).fase;   /* nessuno ha toccato «Fatto»: l'avviso e' ancora li' */
+    timerFatto(); r.dopoFatto = tmStato(tmEl()).fase; r.fullDopo = box().classList.contains('full');
+    r.s880 = vai(880).fase; r.s895 = vai(895).fase; r.s901 = vai(901).fase; r.testo901 = (box().querySelector('.tm-rt') || {}).textContent;
+    r.insieme = (box().querySelector('.tm-rs') || {}).textContent;
+    timerFatto(); r.dopoFatto2 = tmStato(tmEl()).fase; r.chi = (box().querySelector('.tm-mt') || {}).textContent;
     r.s1195 = vai(1195).fase;
     return r;
   });
-  tac.t('le fasi: attesa → preavviso (10″) → ATTIVA alta → in corso → preavviso bassa → ATTIVA bassa → in corso fino alla fine',
-    fasi.s100 === 'attesa' && fasi.s705 === 'attesa' && fasi.s715 === 'pre' && fasi.sec === 5 && fasi.s721 === 'attiva' && fasi.dopoFatto === 'corso'
-    && fasi.s900 === 'corso' && fasi.s955 === 'pre' && fasi.s961 === 'attiva' && fasi.dopoFatto2 === 'corso' && fasi.s1195 === 'corso', JSON.stringify(fasi));
+  tac.t('le fasi: attesa → preavviso (10″) → ACCENDI alta → resta finché «Fatto» → in corso → preavviso bassa → ACCENDI ANCHE la bassa → in corso insieme fino alla fine',
+    fasi.s100 === 'attesa' && fasi.s705 === 'attesa' && fasi.s715 === 'pre' && fasi.sec === 5 && fasi.s721 === 'attiva' && fasi.s800 === 'attiva' && fasi.dopoFatto === 'corso'
+    && fasi.s880 === 'corso' && fasi.s895 === 'pre' && fasi.s901 === 'attiva' && fasi.dopoFatto2 === 'corso' && fasi.s1195 === 'corso', JSON.stringify(fasi));
+  tac.t('al minuto della rifinitura il timer diventa oro e si apre a tutto schermo; con «Fatto» torna com\'era',
+    fasi.oroPre && fasi.full721 && /ACCENDI LA RIFINITURA ALTA/.test(fasi.testo721) && !fasi.fullDopo, JSON.stringify(fasi));
+  tac.t('al minuto 15 «accendi anche la bassa»: l\'alta continua e lavorano insieme',
+    /ACCENDI ANCHE LA RIFINITURA BASSA/.test(fasi.testo901) && /continua/.test(fasi.insieme) && /alta \+ bassa/.test(fasi.chi), JSON.stringify(fasi));
+
+  /* «Cosa riaccendo?»: l'elenco si apre, ogni riga si spunta */
+  const ria = await p.evaluate(() => {
+    timerChiudi(); window.__t = 6000000; timerAvvia();
+    window.__t = 6000000 + 721*1000; tmTick();
+    const box = document.getElementById('tmr'), r = {};
+    const tasto = box.querySelector('[data-act="riatt"]'); r.tasto = tasto ? tasto.textContent : '';
+    tasto.click();
+    r.righe = Array.from(box.querySelectorAll('.tm-rv')).map(x => x.querySelector('b').textContent);
+    box.querySelector('.tm-rv[data-k$=":leg"]').click();
+    r.spuntata = !!box.querySelector('.tm-rv.ok[data-k$=":leg"]'); r.conto = (box.querySelector('.tm-n') || {}).textContent;
+    r.salvata = /leg/.test(localStorage.getItem('zfl_timer'));
+    timerChiudi(); return r;
+  });
+  tac.t('«Cosa riaccendo?» elenca Leg Kneading, Foot Roller, gli airbag con la forza e lo Zero Gravity; le righe si spuntano',
+    /Cosa riaccendo\?/.test(ria.tasto) && ria.righe.length === 4 && /Leg Kneading/.test(ria.righe[0]) && /Foot Roller/.test(ria.righe[1]) && /Airbag · forza/.test(ria.righe[2]) && /Zero Gravity/.test(ria.righe[3])
+    && ria.spuntata && ria.conto === '1/4' && ria.salvata, JSON.stringify(ria));
 
   /* pausa: il tempo non corre; ripresa: riparte da dove era */
   const pausa = await p.evaluate(() => {
@@ -194,14 +231,14 @@ module.exports = async function(browser){
 
   /* ricaricando la pagina il timer riparte da solo, senza rifare i suoni vecchi */
   const sal = await p.evaluate(() => {
-    timerChiudi(); window.__t = 20000000; timerAvvia(); window.__t += 780000; tmTick();   /* minuto 13: dentro la rifinitura alta */
+    timerChiudi(); window.__t = 20000000; timerAvvia(); window.__t += 780000; tmTick();   /* minuto 13: dentro la rifinitura alta, avviso non ancora confermato */
     const prima = tmEl(); const nLog = TM.log.length;
     const salvato = localStorage.getItem('zfl_timer');
     TM = null; clearInterval(TM_H); timerRipristina();
     return {prima, dopo: tmEl(), ce: !!salvato, logNuovo: TM.log.length, nLog, fase: tmStato(tmEl()).fase};
   });
   tac.t('dopo un ricaricamento il timer c\'e\' ancora e segna lo stesso minuto, senza ripetere i suoni vecchi',
-    sal.ce && Math.abs(sal.dopo - sal.prima) < 1 && sal.logNuovo === 0 && sal.fase === 'corso', JSON.stringify(sal));
+    sal.ce && Math.abs(sal.dopo - sal.prima) < 1 && sal.logNuovo === 0 && sal.fase === 'attiva', JSON.stringify(sal));
 
   /* ── a schermo pieno: dentro la cornice su ogni schermo ── */
   for(const [w,h] of [[390,844],[768,1024],[1080,1920],[1280,800]]){

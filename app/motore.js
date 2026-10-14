@@ -16,9 +16,10 @@
    · 4D e airbag seguono obiettivo, umore e pressione chiesta. Il motore
      non va mai oltre il 3: il 4 c'e' solo quando e' il cliente a
      chiederlo (pressione «decisa» e, in passato, «troppo leggera»);
-   · le rifiniture si fanno ALLA FINE: in modalita' manuale la capsula
-     ferma airbag e rulli di polpacci e piedi, quindi prima lavora il
-     programma completo e poi si rifinisce;
+   · le rifiniture si fanno ALLA FINE, perche' una volta accese non si
+     spengono piu': l'alta a 8 minuti dalla fine, la bassa a 5 (a 8 se e'
+     da sola), e lavorano insieme. Accendendole la capsula stacca airbag e
+     rulli di polpacci e piedi: riattivaDopo() dice cosa riaccendere;
    · mai due sedute uguali di fila: con le stesse risposte il motore
      ruota fra fino a quattro varianti adatte (l'altro programma adatto,
      l'altra tecnica adatta) guardando le ultime tre sedute. Le preferite
@@ -223,6 +224,32 @@ function firma(p){
     p.S.polpacci?1:0, p.S.plantari?1:0, r(p.manualRef), r(p.manualBasso)].join('|');
 }
 
+/* ══ DOPO UNA RIFINITURA: cosa si riaccende ══
+   Accendendo Up o Down movement la capsula stacca gli airbag e i rulli di
+   polpacci e piedi, e la rifinitura non si spegne piu' fino alla fine. Il
+   motore dice all'operatore cosa riaccendere a mano, e cosa no:
+   · di regola si riaccende quello che il programma aveva acceso (Leg
+     Kneading, Foot Roller, gli airbag sulle stesse zone);
+   · nei programmi del sonno e della sera (P17, P18) non si riaccende
+     niente: gli ultimi minuti restano tranquilli, lavora solo la rifinitura.
+   Usa solo cio' che viaggia anche nel QR (programma, valori, zone), cosi' il
+   telefono dice esattamente le stesse cose del tablet. */
+const QUIETE = ['P17', 'P18'];
+function riattivaDopo(p){
+  const S = (p && p.S) || {}, aria = (p && p.aria && p.aria.icone) || [];
+  if(QUIETE.includes(p && p.prog))
+    return {niente:true, perche:'programma per il sonno e la sera: gli ultimi minuti restano tranquilli, lavora solo la rifinitura', voci:[]};
+  const voci = [];
+  if(S.polpacci > 0) voci.push({k:'leg', nome:'Leg Kneading', dove:'tasto in basso, anche da questa schermata'});
+  if(S.plantari > 0) voci.push({k:'foot', nome:'Foot Roller', dove:'tasto in basso, accanto a Leg Kneading'});
+  if(S.airbag > 0 && aria.length) voci.push({k:'aria', nome:'Airbag', zone:aria.slice(), forza:S.airbag,
+    dove:'“Airbag” nella barra in alto → accendi ' + aria.map(k => ARIA_NOME[k] || k).join(', ')});
+  if(S.zerog && voci.some(v => v.k === 'aria'))
+    voci.push({k:'zerog', nome:'Zero Gravity', dove:'solo se aprendo gli airbag la poltrona si è rialzata: schermata Auto → Zero Gravity'});
+  if(!voci.length) return {niente:true, perche:'il programma non usava né airbag né rulli di gambe e piedi', voci};
+  return {niente:false, perche:'tornano a lavorare come nel programma, insieme alla rifinitura', voci};
+}
+
 /* le ultime tre sedute di un cliente, la piu' recente per prima: le
    leggono il gestionale e il totem dallo stesso archivio */
 function ultimeDa(sessions, clientId){
@@ -383,11 +410,16 @@ function motoreZenith(inp){
       if(scelta.cambiaTec) why.push('🔁 Per non ripetere le ultime sedute, la rifinitura oggi usa ' + tec + ', adatta allo stesso obiettivo.');
     }
   }
-  if(manualRef || manualBasso) why.push('✋ Rifinitura ' + [manualRef && ('alta su ' + manualRef.zona + ' con ' + manualRef.tecnica),
-    manualBasso && ('bassa su ' + manualBasso.zona + ' con ' + manualBasso.tecnica)].filter(Boolean).join(', poi ')
-    + ': si fa negli ultimi minuti, quando il programma ha già lavorato con airbag e rulli.');
-
   const aria = scegliZoneAirbag(q, fam, an.zone);
+  if(manualRef || manualBasso){
+    const rif = manualRef && manualBasso
+      ? 'alta su ' + manualRef.zona + ' con ' + manualRef.tecnica + ' a 8 minuti dalla fine, poi anche bassa su ' + manualBasso.zona + ' con ' + manualBasso.tecnica + ' a 5 minuti dalla fine: lavorano insieme'
+      : (manualRef ? 'alta su ' + manualRef.zona + ' con ' + manualRef.tecnica : 'bassa su ' + manualBasso.zona + ' con ' + manualBasso.tecnica) + ' negli ultimi 8 minuti';
+    const ri = riattivaDopo({prog, S, aria});
+    why.push('✋ Rifinitura ' + rif + ', e una volta accese non si spengono fino alla fine. '
+      + (ri.niente ? 'Dopo, non si riaccende niente: ' + ri.perche + '.'
+                   : 'Dopo, si riaccendono ' + ri.voci.filter(v => v.k !== 'zerog').map(v => v.k === 'aria' ? 'gli airbag' : v.nome).join(', ') + ': la rifinitura li stacca.'));
+  }
   if(prog === 'P23' || (q.zones||[]).length || (an.zone||[]).length) why.push('💨 ' + aria.testo);
   const zCode = fam + '·' + prog + '·D' + S.fourD + 'A' + S.airbag + (S.ioni ? 'I' : '') + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
   const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, pool, alternato};
@@ -395,6 +427,6 @@ function motoreZenith(inp){
   return out;
 }
 
-G.MOTORE = {motoreZenith, firma, ultimeDa, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
+G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
   TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE};
 })(typeof window !== 'undefined' ? window : globalThis);

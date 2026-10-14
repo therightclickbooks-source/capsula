@@ -74,6 +74,14 @@ module.exports = async function(browser){
       return seq; };
     out.rot = giri({activity:'ems', zones:['lombare'], goal:'recupero', mood:'carico', pressione:'media'});
     out.rot2 = giri({activity:'riposo', giornata:'tranquilla', zones:['cervicale'], goal:'relax', mood:'stressato', pressione:'media'});
+    /* dopo una rifinitura: cosa si riaccende */
+    const R = MOTORE.riattivaDopo;
+    out.ria = {
+      tutto: R({prog:'P04', S:{polpacci:1, plantari:1, airbag:2, zerog:true}, aria:{icone:['spalle','vita']}}),
+      sonno: R({prog:'P18', S:{polpacci:1, plantari:1, airbag:1, zerog:true}, aria:{icone:['tutto']}}),
+      vuoto: R({prog:'P13', S:{polpacci:0, plantari:0, airbag:0}, aria:{icone:[]}}),
+      perche: M(Object.assign({}, base, {quiz:{activity:'riposo', giornata:'tranquilla', zones:['cervicale','lombare'], goal:'sollievo', mood:'sereno', pressione:'media'}})).why.join(' ')
+    };
     /* la mattina il relax parte da P11 (a pranzo da P16, la sera da P18) */
     out.mattina = M(Object.assign({}, base, {ora:10, quiz:{activity:'riposo', giornata:'tranquilla', zones:[], goal:'relax', mood:'stanco', pressione:'media'}})).prog;
     out.sera = M(Object.assign({}, base, {ora:20, quiz:{activity:'riposo', giornata:'tranquilla', zones:[], goal:'relax', mood:'stanco', pressione:'media'}})).prog;
@@ -133,6 +141,12 @@ module.exports = async function(browser){
   tac.t('con le stesse risposte quattro sedute diverse di fila, poi si ricomincia dalla migliore (dopo EMS, lombare)', rotOk(r.rot), rotTxt(r.rot));
   tac.t('con le stesse risposte quattro sedute diverse di fila (relax, collo, stressato)', rotOk(r.rot2), rotTxt(r.rot2));
   console.log('   rotazione 1: ' + rotTxt(r.rot) + '\n   rotazione 2: ' + rotTxt(r.rot2));
+  const ri = r.ria;
+  tac.t('dopo una rifinitura si riaccende quello che il programma aveva acceso: Leg Kneading, Foot Roller, airbag sulle stesse zone, e lo Zero Gravity se serve',
+    !ri.tutto.niente && ri.tutto.voci.map(v => v.k).join(',') === 'leg,foot,aria,zerog' && ri.tutto.voci[2].zone.join(',') === 'spalle,vita' && ri.tutto.voci[2].forza === 2, JSON.stringify(ri.tutto));
+  tac.t('nei programmi del sonno e della sera non si riaccende niente, e lo dice', ri.sonno.niente && /sonno/.test(ri.sonno.perche), JSON.stringify(ri.sonno));
+  tac.t('se il programma non usava airbag né rulli di gambe e piedi, non c\'è niente da riaccendere', ri.vuoto.niente, JSON.stringify(ri.vuoto));
+  tac.t('il «perché» dice i minuti delle rifiniture e cosa riaccendere', /8 minuti dalla fine/.test(ri.perche) && /5 minuti dalla fine/.test(ri.perche) && /si riaccendono/.test(ri.perche), ri.perche);
   tac.t('il relax segue l\'ora: la mattina P11, la sera P18', r.mattina === 'P11' && r.sera === 'P18', JSON.stringify({mattina:r.mattina, sera:r.sera}));
   console.log('   (' + r.tot + ' sedute provate, ' + r.distinte + ' diverse; tecniche: ' + JSON.stringify(r.tecniche) + ')');
 
