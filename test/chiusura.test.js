@@ -35,17 +35,17 @@ module.exports = async function(browser){
                    zg: /zero gravity/i.test(document.querySelector('.fbcard').textContent),
                    sx: document.documentElement.scrollWidth <= innerWidth + 1,
                    casa: document.querySelector('.dopo').innerText}; };
-    mostra('completo', {prog:'P04', settings:{airbag:2, fourD:2, calore:false, zerog:true, polpacci:1, plantari:1, timer:20}, manualRef:{zona:'zona lombare'}});
+    mostra('completo', {prog:'P04', settings:{airbag:2, fourD:2, calore:false, zerog:true, polpacci:1, plantari:1, timer:20}, manualRef:{zona:'collo, trapezi e spalle'}});
     mostra('calore', {prog:'P04', settings:{airbag:2, fourD:2, calore:true, zerog:false, polpacci:0, plantari:0, timer:20}});
     mostra('soloAria', {prog:'P23', fam:'Z3', settings:{airbag:2, fourD:0, calore:false, zerog:false, polpacci:0, plantari:0, timer:25}});
-    mostra('basso', {prog:'P11', fam:'Z6', settings:{airbag:1, fourD:1, calore:false, zerog:true, polpacci:1, plantari:1, timer:30}, manualBasso:{zona:'gambe e piedi'}});
+    mostra('basso', {prog:'P11', fam:'Z6', settings:{airbag:1, fourD:1, calore:false, zerog:true, polpacci:1, plantari:1, timer:30}, manualBasso:{zona:'zona lombare'}});
     mostra('nudo', {prog:'P01', settings:{airbag:0, fourD:1, calore:false, zerog:false, polpacci:0, plantari:0, timer:20}});
     return out;
   });
-  tac.t('massaggio completo con manuale, senza calore: massaggio, airbag, rifinitura manuale', dom.completo.righe === 'Massaggio|Airbag|Rifinitura manuale', dom.completo.righe);
+  tac.t('massaggio completo con rifinitura alta, senza calore: massaggio, airbag, rifinitura alta', dom.completo.righe === 'Massaggio|Airbag|Rifinitura alta', dom.completo.righe);
   tac.t('con il calore acceso c\'e\' anche la riga del calore; spento, no', dom.calore.righe === 'Massaggio|Airbag|Calore' && !/Calore/.test(dom.completo.righe), dom.calore.righe);
   tac.t('seduta solo aria: niente massaggio, solo gli airbag', dom.soloAria.righe === 'Airbag', dom.soloAria.righe);
-  tac.t('la parte bassa compare solo se c\'e\' stata', dom.basso.righe === 'Massaggio|Airbag|Rifinitura parte bassa', dom.basso.righe);
+  tac.t('la rifinitura bassa compare solo se c\'e\' stata', dom.basso.righe === 'Massaggio|Airbag|Rifinitura bassa', dom.basso.righe);
   tac.t('a airbag spenti e rulli soli resta solo il massaggio', dom.nudo.righe === 'Massaggio', dom.nudo.righe);
   tac.t('mai una domanda sullo Zero Gravity', !dom.completo.zg && !dom.basso.zg);
   tac.t('i consigli a casa non parlano di calore se il calore era spento', !/calore|caldo/i.test(dom.completo.casa), dom.completo.casa);
@@ -69,7 +69,7 @@ module.exports = async function(browser){
   /* ── ogni risposta tara solo la sua parte, e il protocollo dopo ne tiene conto ── */
   const tar = await p.evaluate(() => {
     const c = DB.clients[0], r = {}; c.cal = 0; c.calx = {};
-    const q = {activity:'riposo', goal:'sollievo', zones:['lombare'], pressione:'media', mood:'sereno', prefSoloAria:false};
+    const q = {activity:'riposo', giornata:'tranquilla', goal:'sollievo', zones:['cervicale'], pressione:'media', mood:'sereno', prefSoloAria:false};
     const base = buildProtocol(c, q);
     const mk = (id, extra) => { const s = Object.assign({id, clientId:c.id, date:'2026-04-0' + id.length + 'T10:00:00Z', fam:base.fam, prog:base.prog, zCode:'x', points:10, quiz:q,
       settings:Object.assign({}, base.S, {calore:true}), manualRef:Object.assign({}, base.manualRef)}, extra); DB.sessions.push(s); return s; };
@@ -93,22 +93,22 @@ module.exports = async function(browser){
     n = buildProtocol(c, q); r.caloreOk = {calore:n.S.calore};
     r.primario = DB.sessions.find(x => x.id === 'tx1').feedback;
     /* solo aria: gli airbag tarano la taratura generale */
-    const qa = Object.assign({}, q, {prefSoloAria:true}); c.cal = 0; c.calx = {};
+    const qa = Object.assign({}, q, {prefSoloAria:true, pressione:'decisa'}); c.cal = 0; c.calx = {};
     const ba = buildProtocol(c, qa);
     DB.sessions.push({id:'tx2', clientId:c.id, date:'2026-05-01T10:00:00Z', fam:ba.fam, prog:ba.prog, zCode:'x', points:10, quiz:qa, settings:Object.assign({}, ba.S)});
     setFeedback('tx2','aria','hard');
     const na = buildProtocol(c, qa); r.solo = {cal:c.cal, air:na.S.airbag, base:ba.S.airbag};
     /* la parte bassa */
     c.cal = 0; c.calx = {};
-    const qb = {activity:'riposo', goal:'sonno', zones:['gambe'], pressione:'media', mood:'sereno', prefSoloAria:false};
+    const qb = {activity:'riposo', giornata:'tranquilla', goal:'sonno', zones:['lombare'], pressione:'media', mood:'sereno', prefSoloAria:false};
     const bb = buildProtocol(c, qb);
     r.hasBasso = !!bb.manualBasso;
     if(bb.manualBasso){
       DB.sessions.push({id:'tx3', clientId:c.id, date:'2026-06-01T10:00:00Z', fam:bb.fam, prog:bb.prog, zCode:'x', points:10, quiz:qb, settings:Object.assign({}, bb.S), manualBasso:Object.assign({}, bb.manualBasso)});
       setFeedback('tx3','down','hard'); const nb = buildProtocol(c, qb);
-      r.down = {base:[bb.manualBasso.velocita, bb.manualBasso.plantare], dopo:[nb.manualBasso.velocita, nb.manualBasso.plantare]};
+      r.down = {base:[bb.manualBasso.velocita, bb.manualBasso.wkey], dopo:[nb.manualBasso.velocita, nb.manualBasso.wkey]};
       setFeedback('tx3','down','soft'); setFeedback('tx3','down','soft'); const nb2 = buildProtocol(c, qb);
-      r.downMin = [nb2.manualBasso.velocita, nb2.manualBasso.plantare];
+      r.downMin = [nb2.manualBasso.velocita, nb2.manualBasso.wkey];
     }
     return r;
   });
@@ -118,8 +118,8 @@ module.exports = async function(browser){
   tac.t('la rifinitura manuale «troppo forte» si allarga, «troppo leggera» si stringe', tar.up.calx === -1 && tar.up.w === 'W_MEDIUM' || tar.base.w === 'W_MEDIUM' && tar.up.w === 'W_WIDE', JSON.stringify(tar.up) + ' ' + tar.base.w);
   tac.t('«troppo leggera» sulla manuale la stringe', (tar.base.w === 'W_MEDIUM' && tar.upHard.w === 'W_NARROW') || (tar.base.w === 'W_NARROW' && tar.upHard.w === 'W_NARROW'), JSON.stringify(tar.upHard) + ' ' + tar.base.w);
   tac.t('il calore «troppo caldo» lo spegne al protocollo dopo, e «giusto» lo rimette', tar.calore.calx === -1 && tar.calore.calore === false && tar.caloreOk.calore === true, JSON.stringify(tar.calore) + JSON.stringify(tar.caloreOk));
-  tac.t('nelle sedute solo aria gli airbag tarano la taratura generale', tar.solo.cal === 1 && tar.solo.air === tar.solo.base + 1, JSON.stringify(tar.solo));
-  tac.t('parte bassa: «troppo leggera» alza velocità e rulli plantari, e non scendono sotto 1', tar.hasBasso && tar.down.dopo[0] === Math.min(3, tar.down.base[0] + 1) && tar.down.dopo[1] === Math.min(3, tar.down.base[1] + 1) && tar.downMin[0] >= 1 && tar.downMin[1] >= 1, JSON.stringify(tar.down) + JSON.stringify(tar.downMin));
+  tac.t('nelle sedute solo aria gli airbag tarano la taratura generale: con la pressione decisa arrivano a 4', tar.solo.cal === 1 && tar.solo.base === 3 && tar.solo.air === 4, JSON.stringify(tar.solo));
+  tac.t('rifinitura bassa: «troppo leggera» la accelera e la stringe, «troppo forte» la rallenta (mai sotto 1) e la allarga', tar.hasBasso && tar.down.dopo[0] === tar.down.base[0] + 1 && tar.down.base[1] === 'W_WIDE' && tar.down.dopo[1] === 'W_MEDIUM' && tar.downMin[0] >= 1 && tar.downMin[1] === 'W_WIDE', JSON.stringify(tar.down) + JSON.stringify(tar.downMin));
   tac.t('la risposta principale resta in s.feedback come prima', tar.primario === 'ok', tar.primario);
 
   /* ── il messaggio al cliente non fa mai capire una sensibilita' dall'anamnesi ── */

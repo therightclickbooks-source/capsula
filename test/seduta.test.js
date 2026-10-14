@@ -147,28 +147,30 @@ module.exports = async function(browser){
   tac.t('ripetere una seduta vecchia con airbag a 5 la riporta a 3', ripetuta.airbag === 3 && !ripetuta.testo,
     JSON.stringify(ripetuta));
 
-  /* ── la parte bassa: Down movement con ioni, velocita' e rulli plantari ──
-     relax o sonno con gambe o piedi, e nessun allenamento: comanda
-     l'obiettivo, e le gambe si curano dalla pagina Down movement */
+  /* ── le rifiniture: UP dal collo al centro schiena, DOWN dalla lombare ai
+     glutei; gambe e piedi hanno i loro rulli (Leg Kneading, Foot Roller) ── */
   const basso = await p.evaluate(()=>{
     const c = DB.clients[0];
-    const giro = q => { const pr = buildProtocol(c, Object.assign({prefSoloAria:false}, q));
+    const giro = q => { const pr = buildProtocol(c, Object.assign({prefSoloAria:false}, q), {senzaVarieta:true});
       pr.quizZones = q.zones; const st = buildSteps(pr).find(x => x.img === 'manualDown');
-      return {prog: pr.prog, ioni: pr.S.ioni, plantari: pr.S.plantari, mb: pr.manualBasso,
+      return {prog: pr.prog, ioni: pr.S.ioni, polpacci: pr.S.polpacci, plantari: pr.S.plantari, mb: pr.manualBasso,
         passo: st ? st.markers.map(m => m.label) : null}; };
     return {
-      relax: giro({activity:'riposo', zones:['gambe'], goal:'relax', mood:'sereno', pressione:'media'}),
-      sonno: giro({activity:'riposo', zones:['gambe','piedi'], goal:'sonno', mood:'stanco', pressione:'media'}),
-      drenaggio: giro({activity:'riposo', zones:['gambe'], goal:'drenaggio', mood:'sereno', pressione:'media'})
+      gambe: giro({activity:'riposo', giornata:'tranquilla', zones:['gambe'], goal:'relax', mood:'sereno', pressione:'media'}),
+      relax: giro({activity:'riposo', giornata:'tranquilla', zones:['lombare'], goal:'relax', mood:'sereno', pressione:'media'}),
+      sonno: giro({activity:'riposo', giornata:'tranquilla', zones:['lombare','glutei'], goal:'sonno', mood:'stanco', pressione:'media'}),
+      drenaggio: giro({activity:'riposo', giornata:'tranquilla', zones:['gambe'], goal:'drenaggio', mood:'sereno', pressione:'media'})
     };
   });
-  tac.t('relax con le gambe: Down movement, ioni accesi, velocita\' e rulli plantari a 2',
-    !!basso.relax.passo && basso.relax.ioni && basso.relax.plantari === 1
-      && /Down movement/.test(basso.relax.passo[0]) && /velocità a <b>2<\/b>/.test(basso.relax.passo.join())
-      && /livello <b>2<\/b>/.test(basso.relax.passo.join()), JSON.stringify(basso.relax));
-  tac.t('sonno con gambe e piedi: tutto piu\' lento, velocita\' e rulli plantari a 1',
-    !!basso.sonno.passo && basso.sonno.ioni && /velocità a <b>1<\/b>/.test(basso.sonno.passo.join())
-      && /livello <b>1<\/b>/.test(basso.sonno.passo.join()), JSON.stringify(basso.sonno));
+  tac.t('relax con le gambe: Leg Kneading acceso e ioni, nessuna rifinitura bassa (le gambe hanno i loro rulli)',
+    !basso.gambe.passo && basso.gambe.ioni && basso.gambe.polpacci === 1, JSON.stringify(basso.gambe));
+  tac.t('relax con la lombare: Down movement con Massage, rulli larghi, tutta la zona, velocità 2',
+    !!basso.relax.passo && /Down movement/.test(basso.relax.passo[0]) && /Massage/.test(basso.relax.passo.join())
+      && /larga/.test(basso.relax.passo.join()) && /tutta la zona/.test(basso.relax.passo.join())
+      && /velocità a <b>2<\/b>/.test(basso.relax.passo.join()), JSON.stringify(basso.relax));
+  tac.t('sonno su lombare e glutei: Massage, velocità 1',
+    !!basso.sonno.passo && basso.sonno.ioni && /Massage/.test(basso.sonno.passo.join())
+      && /velocità a <b>1<\/b>/.test(basso.sonno.passo.join()), JSON.stringify(basso.sonno));
   tac.t('il drenaggio con le gambe resta la leggerezza, senza Down movement',
     basso.drenaggio.prog === 'P08' && !basso.drenaggio.passo, JSON.stringify(basso.drenaggio));
 
@@ -186,8 +188,8 @@ module.exports = async function(browser){
     DB.sessions = DB.sessions.filter(x => x.id !== 'srip');
     return {prog: pr.prog, titoli: st};
   });
-  tac.t('ripetendo il P04 torna la rifinitura manuale sul punto',
-    rip.titoli.some(t => /Rifinitura manuale sul punto/.test(t)), JSON.stringify(rip));
+  tac.t('ripetendo una seduta vecchia torna la rifinitura alta',
+    rip.titoli.some(t => /Rifinitura alta/.test(t)), JSON.stringify(rip));
 
   /* ── il QR del telefono mostra gli stessi passi del tablet ── */
   const qr = await p.evaluate(()=>{
