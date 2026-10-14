@@ -97,8 +97,9 @@ module.exports = async function(browser){
   /* ── il flusso vero, come sul telefono: si apre il link del QR ── */
   await p.goto(GESTIONALE + '#s=' + prot.hash); await p.waitForTimeout(700);
   const prima = await p.evaluate(() => ({go: !!document.querySelector('.tmgo-b'), barra: !!document.querySelector('#tmr.bar'),
+    passo: (document.querySelector('.tmgo-b').closest('.gstep').querySelector('.gt') || {}).textContent, quanti: document.querySelectorAll('.tmgo-b').length,
     chip: Array.from(document.querySelectorAll('.tmchip')).map(c => c.textContent)}));
-  tac.t('sul telefono il passo del Timing ha il tasto «Avvia il timer»', prima.go && !prima.barra, JSON.stringify(prima));
+  tac.t('sul telefono il tasto «Avvia il timer» sta nel passo della Pausa, una volta sola', prima.go && !prima.barra && prima.quanti === 1 && /pausa e avvia il timer/.test(prima.passo) && !/Timing/.test(prima.passo), JSON.stringify(prima));
   tac.t('le due rifiniture portano i loro minuti scritti, ognuna seguita da «riaccendi gli airbag»',
     prima.chip.join('|') === 'dal minuto 12 alla fine|subito dopo · minuto 12|dal minuto 15 alla fine|subito dopo · minuto 15', JSON.stringify(prima.chip));
   /* dentro i passi: i tasti per riaccendere Leg Kneading e Foot Roller, e le zone degli airbag */

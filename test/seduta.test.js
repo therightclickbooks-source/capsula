@@ -49,7 +49,7 @@ module.exports = async function(browser){
     const prot = buildProtocol(DB.clients[0], Object.assign({prefSoloAria:false}, q));
     prot.quizZones = q.zones;
     return {q, prog: prot.prog, S: prot.S,
-      passi: buildSteps(prot).map(s => ({img: s.img, kind: s.kind || '', titolo: s.title,
+      passi: buildSteps(prot).map(s => ({img: s.img, kind: s.kind || '', titolo: s.title, timer: !!s.timerStart,
         testo: s.title + ' ' + (s.extra || '') + ' ' + s.markers.map(m => m.label).join(' '),
         marcatori: s.markers.map(m => ({pos: m.pos, label: m.label, type: m.type || ''}))}))};
   }), casi);
@@ -64,6 +64,10 @@ module.exports = async function(browser){
   no = ogni(s => /Pausa|pausa/.test(s.passi[1].testo) && s.passi[1].img === 'auto');
   tac.t('il secondo passo accende il tablet e mette in Pausa il programma di default', !no.length,
     no.length + ' sedute');
+
+  /* il timer parte insieme alla pausa, in tutti i protocolli: un tasto solo, nel secondo passo */
+  no = ogni(s => s.passi[1].timer && s.passi.filter(x => x.timer).length === 1);
+  tac.t('in ogni protocollo il tasto del timer sta nel passo della Pausa, e solo lì', !no.length, no.length + ' sedute');
 
   no = ogni(s => {
     const t = s.passi.findIndex(x => /Timing/.test(x.titolo));
