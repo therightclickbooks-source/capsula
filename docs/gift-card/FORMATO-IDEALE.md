@@ -44,15 +44,26 @@ Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA*
 
 ## Gift card piegata (la versione elegante)
 
+Versione ottimizzata per la stampa in A6 (15 ottobre 2026): nessun testo sotto i 6 pt, righe per scrivere alte 9 mm, cornice a 6 mm dal taglio e tutti i testi ad almeno 7 mm dal taglio.
+
 | | |
 |---|---|
-| **Aperta** | A5 orizzontale, 210 × 148 mm |
 | **Chiusa** | A6 verticale, 105 × 148 mm — sta nella busta C6 |
-| **File per la tipografia** | `gift-card-piegata_A5-aperta_A6-chiusa_tipografia_abbondante-3mm_definitiva.pdf`, 216 × 154 mm, 2 pagine |
-| **Pagina 1** | lato esterno: a sinistra il retro, a destra la copertina |
-| **Pagina 2** | lato interno: a sinistra la dedica, a destra i campi da compilare |
-| **Stampa** | fronte-retro, ribaltamento sul lato lungo; **cordonatura** al centro (105 mm dal bordo), poi piega |
-| **Carta** | cartoncino opaco 300–350 g, «nero ricco» per i fondi scuri |
+| **Aperta** | A5 orizzontale, 210 × 148 mm |
+| **File consigliato** | `gift-card-piegata_A6_4-pagine_tipografia_abbondante-3mm_segni-di-taglio_definitiva.pdf` — 4 pagine A6 singole, 3 mm di abbondante e segni di taglio (pagina 127 × 170 mm) |
+| **Stesso file, senza segni** | `gift-card-piegata_A6_4-pagine_tipografia_abbondante-3mm_definitiva.pdf` — 4 pagine da 111 × 154 mm, per le tipografie online che vogliono solo l’abbondante |
+| **Ordine delle pagine** | 1 copertina · 2 dedica (interno sinistra) · 3 da compilare (interno destra) · 4 retro |
+| **Foglio aperto** | `gift-card-piegata_A5-aperta_A6-chiusa_tipografia_abbondante-3mm_definitiva.pdf`, 216 × 154 mm, 2 pagine: esterno (retro + copertina) e interno (dedica + da compilare) |
+| **Carta** | cartoncino opaco 300–350 g, bianco naturale |
+
+Misure dei testi: titoli 18 pt · frasi 10–11 pt · «sedute di Zenith» 13,6 pt · «Per», «Da parte di» 7,4 pt · «Gift card», «Pompei», «Valido fino al» 6,8 pt · scritte in basso 6,2 pt.
+
+### Da copiare allo stampatore
+
+> Biglietto piegato, formato chiuso A6 verticale (105 × 148 mm), aperto A5 orizzontale (210 × 148 mm), 4 facciate a colori.
+> Vi mando il PDF a pagine singole in ordine di lettura: 1 copertina, 2 interno sinistra, 3 interno destra, 4 retro, con 3 mm di abbondante e segni di taglio. Se preferite il foglio aperto, c’è anche il PDF A5 a 2 pagine.
+> Carta: cartoncino opaco 300–350 g, bianco naturale. Stampa fronte-retro, cordonatura al centro e piega.
+> I fondi scuri in nero ricco. I caratteri sono incorporati nel PDF; i colori sono in RGB, quindi vi chiedo una prova di stampa prima della tiratura per controllare il viola e l’oro.
 
 Da compilare a mano: numero di sedute, per, da parte di, valido fino al.
 Caratteri: Michroma per i titoli (il più vicino al logo Zenith) e Montserrat per i testi, entrambi a licenza libera SIL OFL e incorporati nel PDF.
