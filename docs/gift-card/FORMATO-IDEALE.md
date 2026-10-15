@@ -42,6 +42,19 @@ Il disegno è generato da codice (HTML con misure in millimetri → PDF). Per ca
 
 Campi da scrivere a mano: **numero di sedute** (riquadro grande), **PER**, **DA**, **VALIDA FINO AL**.
 
+## Gift card A6 fronte-retro (piatta) — il file da mandare in tipografia
+
+`gift-card_A6_fronte-retro_tipografia_abbondante-3mm_segni-di-taglio_definitiva.pdf` — un file solo, 2 pagine già accoppiate:
+**pagina 1 = fronte** (la copertina), **pagina 2 = retro** (la pagina da compilare). A6 verticale 105 × 148 mm, 3 mm di abbondante, segni di taglio. Anteprima: `gift-card_A6_fronte-retro_anteprima_definitiva.png`.
+
+### Da copiare allo stampatore
+
+> Gift card A6 verticale (105 × 148 mm), stampa fronte-retro a colori, non piegata.
+> Vi mando un PDF di 2 pagine: pagina 1 fronte, pagina 2 retro, con 3 mm di abbondante e segni di taglio. Fronte-retro con ribaltamento sul lato lungo (si gira come la pagina di un libro).
+> Carta: cartoncino opaco 300–350 g, bianco naturale. Fondo scuro del fronte in nero ricco.
+> I caratteri sono incorporati nel PDF; i colori sono in RGB, quindi vi chiedo una prova di stampa prima della tiratura per controllare il viola e l’oro.
+> Quantità: ___ copie. Mi fate sapere prezzo e tempi?
+
 ## Gift card piegata (la versione elegante)
 
 Versione ottimizzata per la stampa in A6 (15 ottobre 2026): nessun testo sotto i 6 pt, righe per scrivere alte 9 mm, cornice a 6 mm dal taglio e tutti i testi ad almeno 7 mm dal taglio.
