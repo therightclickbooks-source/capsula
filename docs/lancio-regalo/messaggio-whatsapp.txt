@@ -1,21 +1,18 @@
 MESSAGGIO «UN REGALO PER TE» · per chi ha l'iscrizione attiva ma nessun pacchetto
-Da mandare sabato 17 e domenica 18 ottobre. Uno alla volta, cambiando il nome.
-Allegare la foto (foto-messaggio.jpg) e incollare questo testo come didascalia.
-Chi lo legge non viene al centro da mesi: la prima parola che vede deve essere «regalo».
+Da mandare sabato 17 e domenica 18 ottobre, uno alla volta: cambia il nome e la data di scadenza.
+Allegare la foto (foto-messaggio.jpg) e incollare il testo come didascalia.
+Nel messaggio NON c'è il prezzo e NON c'è il nome della macchina: la promo (4 sedute 70 € invece di 100)
+si mostra solo a fine prova, con il foglio «foglio-fine-prova_100-70.png».
 
 ----------------------------------------
 Patrizia, abbiamo un *REGALO* per te 🎁
 
-Vieni a provare *gratis* Zenith, la nuova capsula del nostro centro.
-E solo se prenoti questa settimana: *4 sedute a 70 €* invece di 100.
+La tua iscrizione è ancora attiva fino al *[DATA]*: per questo ti regaliamo la prova della *nuova macchina* del centro. Siamo sicuri che ti piacerà 😊
+
+Solo dal 19 al 24 ottobre: i posti sono pochi.
 
 👇👇👇
 *TOCCA QUI E PRENOTA IL TUO REGALO*
-[LINK DA METTERE]
+[LINK]
 👆👆👆
 ----------------------------------------
-
-La pagina che si apre: app/regalo/ — niente sabato, subito l'agenda.
-Dal 19 al 24 ottobre, 62 posti (i 69 della prima settimana meno i 7 già
-occupati dai clienti attivi: mar 20 alle 10:30, 15:00, 18:45 · mer 21 alle
-18:45 · ven 23 alle 11:15 e 17:15 · sab 24 alle 12:00).
