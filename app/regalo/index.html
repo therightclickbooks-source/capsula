@@ -25,9 +25,9 @@
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <script>
-/* lo script del foglio «Zenith Regalo Iscritti» (account del centro, da pubblicare: vedi docs/prenotazioni/Codice-regalo.gs).
-   Finche' e' vuoto la pagina gira coi dati finti, solo sul telefono che la apre */
-var ENDPOINT = '';
+/* lo stesso script della prima settimana (account del centro), aggiornato con docs/prenotazioni/Codice-regalo.gs
+   e ripubblicato come nuova versione: l'indirizzo non cambia. Con ?demo=1 la pagina gira coi dati finti */
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxlUqPClrMXdWWIUJSOVTvSfRBU4ds7H-lgafs_19W1-8fVHGFMIa436Y_EVBL8a2ye/exec';
 /* La richiesta dei posti parte qui, PRIMA del resto della pagina: quando il
    calendario e' pronto per essere disegnato la risposta e' gia' in viaggio,
    e spesso e' gia' arrivata. La pagina la ritrova in window.__STATO. */

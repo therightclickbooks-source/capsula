@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    ZENITH · LE PRENOTAZIONI DEL REGALO PER GLI ISCRITTI (19–24 ottobre)
    Da incollare in Estensioni › Apps Script del Foglio Google
-   «Zenith Regalo Iscritti» (un foglio NUOVO, non quello della prima settimana), sull'account zenithfitnesslab@gmail.com.
+   della prima settimana (lo stesso file: «Prepara» mette da parte le schede vecchie), sull'account zenithfitnesslab@gmail.com.
 
    Il foglio ha tre schede, che lo script crea da solo:
    · Posti    — un orario per riga. Quando qualcuno prenota, accanto
@@ -40,6 +40,14 @@ function onOpen(){
 }
 function prepara(){
   const ss = SpreadsheetApp.getActive();
+  /* lo stesso foglio della prima settimana: le schede vecchie si mettono da parte
+     (rinominate, non cancellate) e si ricomincia con quelle nuove. Cosi' chi aveva
+     prenotato la prima volta non ritrova il vecchio biglietto, e l'elenco Iscritti
+     di allora non blocca gli iscritti di adesso */
+  const vecchi = ss.getSheetByName('Posti');
+  if(vecchi && vecchi.getLastRow() > 1 && !ORARI[String(vecchi.getRange(2, 1).getDisplayValue()).slice(0, 10)]){
+    ['Posti', 'Attesa', 'Iscritti'].forEach(n => { const sh = ss.getSheetByName(n); if(sh) sh.setName(n + ' 5-10 ottobre'); });
+  }
   const scheda = (nome, intest) => {
     let sh = ss.getSheetByName(nome);
     if(!sh){ sh = ss.insertSheet(nome); sh.appendRow(intest); sh.setFrozenRows(1);
@@ -93,7 +101,7 @@ function rispondi(p){
   const iscritti = ss.getSheetByName('Iscritti').getDataRange().getValues().slice(1)
     .map(r => chiave(String(r[0]) + ' ' + String(r[1]))).filter(k => k.includes(' '));
   if(iscritti.length && p.azione !== 'annulla' && !iscritti.includes(io))
-    return {ok:false, messaggio:'Non ti troviamo tra gli iscritti con pacchetto attivo: controlla come hai scritto nome e cognome, o chiedici in reception.'};
+    return {ok:false, messaggio:'Non ti troviamo tra gli iscritti: controlla come hai scritto nome e cognome, o chiedici in reception.'};
 
   const posti = ss.getSheetByName('Posti');
   /* Le mail partono DOPO il blocco: spedirne una richiede un secondo o due, e
