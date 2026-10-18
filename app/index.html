@@ -6272,9 +6272,78 @@ function habitualPressure(clientId){
   }
   return null;
 }
+/* ── LE TRE SEQUENZE ──
+   Lo stesso cliente non deve sentirsi fare sempre le stesse domande.
+   Ci sono tre sequenze equivalenti: cambiano le parole e l'ordine, ma
+   le risposte sono le stesse (stessi valori), quindi il motore calcola
+   lo stesso protocollo. Si va a giro: la seduta dopo usa la sequenza
+   successiva, mai la stessa due volte di fila. La giornata ha le stesse
+   risposte del totem: cambia solo la domanda. L'attivita' resta sempre
+   la prima (decide se chiedere la giornata) e le zone mai l'ultima. */
+const QUIZ_SEQ = [
+  null,   /* la 1 e' QUIZ_STEPS cosi' com'e' */
+  {ordine:['activity','giornata','mood','zones','goal','pressione'],
+   activity:['Che allenamento ha fatto prima di venire qui?', {
+     ems:['⚡','EMS','elettrostimolazione su tutto il corpo'], matrix:['🏋️','Matrix','pesi digitali'],
+     vacufit:['💨','Vacutherm','camminata in vuototerapia'], ems2:['🌀','EMS2','impulsi e tapis roulant'],
+     riposo:['😌','Oggi niente allenamento','è un giorno di riposo']}],
+   giornata:['Come ha passato la giornata?'],
+   zones:['Dove sente più tensione?'],
+   goal:['Cosa vorrebbe portarsi a casa da questa seduta?', {
+     recupero:['🔋','Muscoli rigenerati','scaricare la fatica dell\'allenamento'],
+     sollievo:['📍','Meno fastidio in un punto','una zona che tira o fa male'],
+     drenaggio:['🦵','Gambe leggere','meno gonfiore e pesantezza'],
+     relax:['🌊','Staccare la testa','calma per il corpo e per la mente'],
+     sonno:['😴','Dormire meglio','arrivare rilassati alla notte'],
+     energia:['🚀','Ricaricarsi','uscire pieni di energia']}],
+   mood:['Che energia sente adesso?', {
+     sereno:['😊','Tranquillo','sta bene così'], stanco:['😴','Scarico','poche energie oggi'],
+     stressato:['🤯','Teso','testa piena di pensieri'], dolorante:['🤕','Dolorante','sente i muscoli'],
+     carico:['🔥','Su di giri','energia da vendere']}],
+   pressione:['Quanto intenso vuole il massaggio oggi?', {
+     dolce:['🌸','Leggero','oggi meglio delicato'], solito:['⚖️','Normale','come le altre volte'],
+     decisa:['💪','Intenso','vuole sentirlo in profondità']}]},
+  {ordine:['activity','giornata','goal','zones','mood','pressione'],
+   activity:['Da quale macchinario arriva?', {
+     ems:['⚡','EMS','venti minuti total body'], matrix:['🏋️','Matrix','forza con carico preciso'],
+     vacufit:['💨','Vacutherm','vuoto, linfodrenaggio e infrarossi'], ems2:['🌀','EMS2','camminata veloce con impulsi'],
+     riposo:['🛋️','Nessuno, oggi riposo','niente allenamento oggi']}],
+   giornata:['Cosa ha fatto per gran parte del giorno?'],
+   zones:['Quale parte del corpo ha più bisogno di attenzione?'],
+   goal:['Su cosa puntiamo oggi?', {
+     recupero:['🧩','Recuperare','rimettere in sesto i muscoli'],
+     sollievo:['🩹','Togliere un fastidio','lavoriamo su un punto preciso'],
+     drenaggio:['🍃','Sgonfiare','circolazione e leggerezza'],
+     relax:['🛁','Rilassarsi','una pausa tutta per sé'],
+     sonno:['🛌','Riposare bene','una notte più profonda'],
+     energia:['🔆','Svegliarsi','più carica e più lucidità']}],
+   mood:['Con una parola: come sta oggi?', {
+     sereno:['🌤️','In forma','giornata nella norma'], stanco:['🪫','Affaticato','giornata lunga'],
+     stressato:['🌪️','Sotto pressione','tanti pensieri'], dolorante:['🦴','Con dolori muscolari','i muscoli si fanno sentire'],
+     carico:['⚡','Pieno di energia','voglia di fare']}],
+   pressione:['Come preferisce la pressione oggi?', {
+     dolce:['☁️','Morbida','una seduta da coccole'], solito:['⚖️','Quella abituale','le sue regolazioni di sempre'],
+     decisa:['🔩','Profonda','un lavoro più deciso']}]}
+];
+/* la sequenza di questa seduta: quella dopo l'ultima usata dal cliente */
+function quizSeq(){
+  if(quizState.seq == null){
+    const prec = DB.sessions.filter(s=>s.clientId===quizState.clientId).sort((a,b)=>b.date.localeCompare(a.date));
+    const ultima = prec.find(s=> s.quiz && s.quiz.seq != null);
+    quizState.seq = ultima ? (ultima.quiz.seq + 1) % QUIZ_SEQ.length : prec.length % QUIZ_SEQ.length;
+  }
+  const V = QUIZ_SEQ[quizState.seq];
+  if(!V) return QUIZ_STEPS;
+  return V.ordine.map(k=>{
+    const base = QUIZ_STEPS.find(s=>s.k===k), v = V[k];
+    const st = Object.assign({}, base, {t:v[0]});
+    if(v[1]) st.opts = base.opts.map(o=> [o[0]].concat(v[1][o[0]]));
+    return st;
+  });
+}
 function activeQuizSteps(){
   const first = DB.sessions.filter(s=>s.clientId===quizState.clientId).length === 0;
-  const cinque = QUIZ_STEPS.filter(s=> !(first && s.k==='pressione') && !(s.soloRiposo && quizState.activity!=='riposo'));
+  const cinque = quizSeq().filter(s=> !(first && s.k==='pressione') && !(s.soloRiposo && quizState.activity!=='riposo'));
   /* la domanda 0 c'e' solo se ci sono operatori registrati: senza, il
      gestionale si comporta come prima e le note restano senza firma */
   return (DB.operators||[]).length

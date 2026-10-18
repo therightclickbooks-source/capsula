@@ -158,7 +158,7 @@ module.exports = async function(browser){
     return {conRiposo, conEms: activeQuizSteps().map(s => s.k).join(',')};
   });
   tac.t('nel gestionale la domanda sulla giornata c\'è solo dopo «nessun allenamento»',
-    /activity,giornata,zones/.test(gq.conRiposo) && !/giornata/.test(gq.conEms), JSON.stringify(gq));
+    /activity,giornata,/.test(gq.conRiposo) && !/giornata/.test(gq.conEms), JSON.stringify(gq));
 
   /* il gestionale legge davvero le ultime sedute salvate nell'archivio */
   const ga = await p.evaluate(() => {

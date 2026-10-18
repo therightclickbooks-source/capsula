@@ -17,6 +17,7 @@ const PROVE = [
   ['casa',        require('./casa.test.js')],
   ['protocollo',  require('./protocollo.test.js')],
   ['motore',      require('./motore.test.js')],
+  ['sequenze',    require('./sequenze.test.js')],
   ['seduta',      require('./seduta.test.js')],
   ['timer',       require('./timer.test.js')],
   ['chiusura',    require('./chiusura.test.js')],
