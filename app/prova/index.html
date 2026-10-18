@@ -391,7 +391,17 @@ async function avvia(){
 }
 $('riprova').onclick = ()=>{ $('riprova').style.display = 'none'; scheletro(); avvia(); };
 
+/* gli orari che Raffaele ha gia' dato a voce: restano nel calendario ma risultano presi
+   (Fit and Go RISERVATO), anche se nel foglio la riga e' ancora vuota */
+const RISERVATI = new Set([
+  '2026-10-19_08:15','2026-10-19_09:45','2026-10-19_10:30','2026-10-19_18:00',
+  '2026-10-20_12:00','2026-10-20_12:45','2026-10-20_13:30','2026-10-20_15:45','2026-10-20_19:30',
+  '2026-10-21_08:15','2026-10-21_17:15',
+  '2026-10-22_09:45','2026-10-22_11:15','2026-10-22_16:30','2026-10-22_18:00','2026-10-22_18:45','2026-10-22_19:30',
+  '2026-10-23_09:00','2026-10-23_18:00',
+  '2026-10-24_08:15','2026-10-24_10:30','2026-10-24_11:15']);
 function mostra(senzaSalto){
+  STATO.posti.forEach(p=>{ if(RISERVATI.has(p.id) && !(STATO.mia && STATO.mia.id === p.id)) p.libero = false; });
   if(STATO.mia && !CAMBIO){ biglietto(); return; }
   const liberi = STATO.posti.filter(p=> p.libero).length, tot = STATO.posti.length;
   if(!liberi && !CAMBIO){ scena('pieno'); if(STATO.inAttesa) attesaFatta(); return; }
