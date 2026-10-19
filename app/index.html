@@ -1425,6 +1425,12 @@
     font-size:9px; font-weight:800; letter-spacing:.15em; text-transform:uppercase;
     color:var(--faint); margin-bottom:7px;
   }
+  .srnote{position:relative}
+  /* la matita: la nota si scrive o si corregge anche a seduta finita */
+  .srnote .ntedit{position:absolute; top:7px; right:7px; width:34px; height:34px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    background:var(--surface); border:1px solid var(--line); color:var(--accent-hi)}
+  .srnote .ntedit:active{transform:scale(.94)}
   .srnote .sb-tx{font-size:12.5px; color:var(--muted); line-height:1.45; min-height:1.45em}
   .srnote .sb-tx.vuoto{color:var(--faint); opacity:.55; font-style:italic}
   /* a · citazione con filetto */
@@ -4828,6 +4834,7 @@ const ICONS = {
   /* i due giudizi sull'intensita: barre che salgono e barre che scendono */
   troppo:  '<path d="M5 19V13"/><path d="M12 19V8"/><path d="M19 19V3"/>',
   poco:    '<path d="M5 19V5"/><path d="M12 19V11"/><path d="M19 19V16"/>',
+  pencil:  '<path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17Z"/><path d="m14.5 7.5 3 3"/>',
   repeat:  '<path d="M4.5 12a7.5 7.5 0 0 1 13-5.2"/><path d="M17.5 3v4h-4"/><path d="M19.5 12a7.5 7.5 0 0 1-13 5.2"/><path d="M6.5 21v-4h4"/>'
 };
 function icon(name, size){
@@ -5459,6 +5466,7 @@ function srNoteBox(s, first){
     : `<div class="sb-tx vuoto">Nessuna nota</div>`;
   return `<div class="srbox srnote">
     <div class="sb-lab">Note e giudizi</div>
+    <button class="ntedit" ${ztAttr({t:'Scrivi o correggi la nota', b:'La nota della seduta si può aggiungere o cambiare <b>anche dopo</b>, quando la seduta è finita.'}, 'var(--accent-hi)')} onclick="editNota('${s.id}', event)">${icon('pencil',16)}</button>
     ${g.length?`<div class="jdrow">${g.map(([c,i,t],j)=>`<span class="jd ${c}" ${ztJd(c)}><i>${i}</i>${t}</span>`).join('')}</div>`:''}
     ${nota}${srFirmaNota(s)}
   </div>`;
@@ -8022,6 +8030,34 @@ function setFeedback(sid, k, fb){
   /* risposto a tutto: la seduta e' chiusa, esce dalle sedute aperte */
   if(chiusuraComponenti(c, s).every(x => s.fb[x.k])) apertaTogli(c.id, 'chiudi', s.id);
   toast(fb==='ok' ? '✓ Confermato' : '🎚️ Preso nota: la prossima seduta cambia');
+}
+/* la nota della seduta, scritta o corretta dopo: dallo storico, con la matita */
+function editNota(sid, ev){
+  if(ev) ev.stopPropagation();
+  const s = DB.sessions.find(x=>x.id===sid); if(!s) return;
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard">
+    <div class="mt">${s.notes ? 'Modifica la nota' : 'Aggiungi una nota'}</div>
+    <div class="mm">Seduta del ${fmtLungo(s.date)}</div>
+    <textarea id="ntxt" rows="4" placeholder="Es. «a fine seduta ha detto che la lombare va molto meglio»">${esc(s.notes || '')}</textarea>
+    <div class="mrow">
+      <button class="btn sec" onclick="closeModal()">Annulla</button>
+      <button class="btn" onclick="saveNota('${s.id}')">Salva</button>
+    </div></div>`;
+  m.classList.add('open');
+  setTimeout(()=>{ const t = document.getElementById('ntxt'); if(t){ t.focus(); t.setSelectionRange(t.value.length, t.value.length); } }, 50);
+}
+function saveNota(sid){
+  const s = DB.sessions.find(x=>x.id===sid); if(!s) return;
+  const prima = s.notes || '';
+  s.notes = (document.getElementById('ntxt').value || '').trim();
+  /* la firma cambia solo se la nota e' cambiata davvero */
+  if(s.notes !== prima){
+    if(s.notes){ const f = firmaOra(); if(f) s.notesFirma = f; }
+    else delete s.notesFirma;
+  }
+  persist(); closeModal(); render();
+  toast(s.notes ? '✓ Nota salvata' : 'Nota tolta');
 }
 function saveFavNote(sid, v){
   const s = DB.sessions.find(x=>x.id===sid); if(!s) return;
