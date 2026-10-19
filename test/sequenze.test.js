@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   LE TRE SEQUENZE DI DOMANDE
-   Lo stesso cliente non risponde sempre alle stesse domande: tre
+   LE CINQUE SEQUENZE DI DOMANDE
+   Lo stesso cliente non risponde sempre alle stesse domande: cinque
    sequenze equivalenti, a giro, mai la stessa due volte di fila. Le
    parole e l'ordine cambiano, le risposte (i valori) no: il motore
    deve proporre lo stesso protocollo qualunque sequenza si usi.
@@ -17,7 +17,7 @@ function archivio(){
 }
 
 module.exports = async function(browser){
-  const tac = new Taccuino('le tre sequenze di domande');
+  const tac = new Taccuino('le cinque sequenze di domande');
   const p = await browser.newPage({viewport:{width:430, height:900}});
   p.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
   await p.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
@@ -27,7 +27,7 @@ module.exports = async function(browser){
     const c = DB.clients[0];
     const risposte = {activity:'ems', zones:['lombare'], zone:'lombare', goal:'recupero', mood:'stanco', pressione:'decisa', prefSoloAria:false};
     const giri = [];
-    for(let i = 0; i < 4; i++){
+    for(let i = 0; i < 6; i++){
       quizState = Object.assign({clientId:'c1', step:0}, JSON.parse(JSON.stringify(risposte)));
       const steps = activeQuizSteps();
       giri.push({seq: quizState.seq, domande: steps.map(s=> s.t).join('|'), ordine: steps.map(s=> s.k).join(','),
@@ -36,7 +36,7 @@ module.exports = async function(browser){
       DB.sessions.push({id:'q' + i, clientId:'c1', date:'2026-02-0' + (i + 1) + 'T10:00:00.000Z', prog:'P04', settings:{}, quiz:{...quizState}});
     }
     /* lo stesso protocollo con le stesse risposte, qualunque sequenza */
-    const firme = [0,1,2].map(seq => buildProtocol(c, Object.assign({seq}, risposte), {senzaVarieta:true}).firma);
+    const firme = [0,1,2,3,4].map(seq => buildProtocol(c, Object.assign({seq}, risposte), {senzaVarieta:true}).firma);
     /* nella sequenza 2 si vedono le parole nuove */
     quizState = Object.assign({clientId:'c1', step:1, seq:1}, JSON.parse(JSON.stringify(risposte)));
     VIEW = {name:'quiz'}; render();
@@ -44,13 +44,13 @@ module.exports = async function(browser){
     return {giri, firme, schermo};
   });
   const seqs = r.giri.map(g => g.seq);
-  tac.t('le sequenze vanno a giro e mai la stessa due volte di fila', seqs.join(',') === '1,2,0,1', seqs.join(','));
-  tac.t('le tre sequenze hanno domande diverse', new Set(r.giri.slice(0,3).map(g => g.domande)).size === 3, r.giri.map(g => g.domande).join('\n'));
+  tac.t('le sequenze vanno a giro e mai la stessa due volte di fila', seqs.join(',') === '1,2,3,4,0,1', seqs.join(','));
+  tac.t('le cinque sequenze hanno domande diverse', new Set(r.giri.slice(0,5).map(g => g.domande)).size === 5, r.giri.map(g => g.domande).join('\n'));
   tac.t('le risposte possibili sono le stesse in tutte le sequenze', new Set(r.giri.map(g => g.valori)).size === 1, r.giri.map(g => g.valori).join('\n'));
   tac.t('ogni risposta ha icona, nome e spiegazione', r.giri.every(g => g.completo), JSON.stringify(r.giri));
   tac.t('l\'attività è sempre la prima domanda e le zone mai l\'ultima',
     r.giri.every(g => g.ordine.startsWith('activity') && g.ultima !== 'zones'), r.giri.map(g => g.ordine).join(' / '));
-  tac.t('con le stesse risposte il protocollo è lo stesso in tutte e tre', new Set(r.firme).size === 1, JSON.stringify(r.firme));
+  tac.t('con le stesse risposte il protocollo è lo stesso in tutte e cinque', new Set(r.firme).size === 1, JSON.stringify(r.firme));
   tac.t('sullo schermo compare la domanda della sequenza scelta', /allenamento ha fatto prima di venire|energia sente/.test(r.schermo), r.schermo);
 
   await p.close();

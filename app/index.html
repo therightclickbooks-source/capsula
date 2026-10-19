@@ -6272,9 +6272,9 @@ function habitualPressure(clientId){
   }
   return null;
 }
-/* ── LE TRE SEQUENZE ──
+/* ── LE CINQUE SEQUENZE ──
    Lo stesso cliente non deve sentirsi fare sempre le stesse domande.
-   Ci sono tre sequenze equivalenti: cambiano le parole e l'ordine, ma
+   Ci sono cinque sequenze equivalenti: cambiano le parole e l'ordine, ma
    le risposte sono le stesse (stessi valori), quindi il motore calcola
    lo stesso protocollo. Si va a giro: la seduta dopo usa la sequenza
    successiva, mai la stessa due volte di fila. La giornata ha le stesse
@@ -6323,7 +6323,50 @@ const QUIZ_SEQ = [
      carico:['⚡','Pieno di energia','voglia di fare']}],
    pressione:['Come preferisce la pressione oggi?', {
      dolce:['☁️','Morbida','una seduta da coccole'], solito:['⚖️','Quella abituale','le sue regolazioni di sempre'],
-     decisa:['🔩','Profonda','un lavoro più deciso']}]}
+     decisa:['🔩','Profonda','un lavoro più deciso']}]},
+  {ordine:['activity','giornata','zones','mood','goal','pressione'],
+   activity:['Prima di Zenith, dove si è allenato?', {
+     ems:['⚡','EMS','impulsi su tutti i muscoli'], matrix:['🏋️','Matrix','macchine con carico digitale'],
+     vacufit:['💨','Vacutherm','cabina con il vuoto e gli infrarossi'], ems2:['🌀','EMS2','tapis roulant con elettrostimolazione'],
+     riposo:['🌿','Da nessuna parte','oggi il corpo riposa']}],
+   giornata:['Come ha impegnato il corpo oggi?'],
+   zones:['Quali zone vuole sciogliere oggi?'],
+   goal:['Come vorrebbe uscire dalla capsula?', {
+     recupero:['🛠️','Con i muscoli rimessi a nuovo','via la fatica dell\'allenamento'],
+     sollievo:['🎯','Senza quel fastidio','in una zona precisa'],
+     drenaggio:['🪶','Più leggero','gambe sgonfie, circolazione attiva'],
+     relax:['😌','Rilassato','corpo sciolto e mente libera'],
+     sonno:['🌙','Pronto per la notte','un sonno più profondo'],
+     energia:['⚡','Carico','pieno di energia per ripartire']}],
+   mood:['Com\'è il suo umore adesso?', {
+     sereno:['🙂','Buono','nessun problema'], stanco:['😪','Giù di energie','si sente stanco'],
+     stressato:['😤','Nervoso','tanto stress addosso'], dolorante:['😬','Acciaccato','qualche muscolo dolorante'],
+     carico:['🤩','Alle stelle','energia a mille']}],
+   pressione:['Che tocco preferisce oggi?', {
+     dolce:['🫧','Delicato','pressione più leggera'], solito:['⚖️','Il solito','come sempre'],
+     decisa:['🔨','Energico','pressione più forte']}]},
+  /* qui la pressione viene prima delle zone: alla prima seduta non si chiede, e l'ultima resta l'obiettivo */
+  {ordine:['activity','giornata','mood','pressione','zones','goal'],
+   activity:['Ci racconti: cosa ha fatto in palestra oggi?', {
+     ems:['⚡','EMS','venti minuti di contrazioni'], matrix:['🏋️','Matrix','esercizi con i pesi digitali'],
+     vacufit:['💨','Vacutherm','camminata nella cabina'], ems2:['🌀','EMS2','camminata con gli impulsi'],
+     riposo:['☕','Niente palestra oggi','solo Zenith']}],
+   giornata:['Che tipo di giornata ha avuto?'],
+   zones:['Dove si sente più rigido?'],
+   goal:['Cosa desidera da questa mezz\'ora?', {
+     recupero:['🏁','Smaltire l\'allenamento','muscoli meno pieni e rigidi'],
+     sollievo:['✋','Sciogliere un punto','un nodo o un fastidio preciso'],
+     drenaggio:['🫗','Drenare','liberarsi di liquidi e gonfiore'],
+     relax:['🕯️','Calma totale','lasciar andare tutto'],
+     sonno:['💤','Prepararsi a dormire','rilassarsi per la notte'],
+     energia:['🌅','Ripartire','una carica per il resto del giorno']}],
+   mood:['Che giornata è, dentro di lei?', {
+     sereno:['🌈','Serena','va tutto bene'], stanco:['🐢','Lenta','manca la benzina'],
+     stressato:['⏰','Frenetica','sempre di corsa'], dolorante:['🩹','Pesante per il corpo','muscoli che fanno male'],
+     carico:['🎉','Esplosiva','tanta voglia di fare']}],
+   pressione:['Il massaggio di oggi: più leggero o più forte?', {
+     dolce:['🍃','Più leggero','andiamoci piano'], solito:['⚖️','Uguale','come di solito'],
+     decisa:['🏔️','Più forte','lavoro in profondità']}]}
 ];
 /* la sequenza di questa seduta: quella dopo l'ultima usata dal cliente */
 function quizSeq(){
