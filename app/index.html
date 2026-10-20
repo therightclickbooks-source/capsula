@@ -10084,7 +10084,7 @@ function vSettings(){
     </div>
     <h2>Backup automatico su Drive</h2>
     <div class="card">
-      <div class="paramrow"><div class="pl">Backup automatico<small>parte da solo all'apertura dell'app, una volta al giorno</small></div>
+      <div class="paramrow"><div class="pl">Backup automatico<small>parte da solo alla prima apertura dell'app di ogni giorno, da mezzanotte in poi</small></div>
       <div class="sw ${DB.driveOn===true?'on':''}" onclick="DB.driveOn=!(DB.driveOn===true); persist(); render()"></div></div>
       <label class="f mlab">Nome di questo dispositivo <small style="font-weight:400">(per riconoscere le copie)</small></label>
       <input type="text" id="dr_nome" spellcheck="false" autocomplete="off" maxlength="40"
@@ -10591,16 +10591,21 @@ function render(){
 guardaHash();
 render();
 
-/* Il backup automatico parte all'apertura, se dall'ultimo è passato più
-   di un giorno. Una pagina chiusa non esegue niente — nessun browser lo
-   permette — ma sul totem, che resta acceso tutto il giorno, questo vuol
-   dire una copia al giorno senza che nessuno ci pensi.
+/* Il backup automatico parte alla prima apertura di ogni giorno: basta
+   che l'ultimo sia di ieri o prima (dopo mezzanotte e' gia' un giorno
+   nuovo). Una pagina chiusa non esegue niente — nessun browser lo
+   permette — quindi si controlla quando l'app si apre, quando torna in
+   primo piano e, se resta aperta (il totem), ogni dieci minuti: passata
+   la mezzanotte, la copia del giorno nuovo parte da sola.
    Si aspettano quattro secondi: prima deve finire di aprirsi l'app. */
-setTimeout(function(){
-  if(DB.driveOn !== true) return;
+function giornoLocale(d){ const x = new Date(d); return x.getFullYear() + '-' + (x.getMonth() + 1) + '-' + x.getDate(); }
+function backupDelGiorno(){
+  if(DB.driveOn !== true || document.hidden) return;
   if(!(DB.clients||[]).length && !(DB.sessions||[]).length) return;
-  const ore = DB.lastAuto ? (Date.now() - Date.parse(DB.lastAuto)) / 3600000 : 9999;
-  if(ore < 20) return;
+  if(DB.lastAuto && giornoLocale(DB.lastAuto) === giornoLocale(Date.now())) return;
   inviaDrive(false);
-}, 4000);
+}
+setTimeout(backupDelGiorno, 4000);
+setInterval(backupDelGiorno, 10 * 60 * 1000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) setTimeout(backupDelGiorno, 4000); });
 </script>
