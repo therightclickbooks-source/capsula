@@ -8,10 +8,18 @@
    La PAROLA D'ORDINE non sta qui dentro: si scrive in
    Impostazioni progetto → Proprietà dello script, nome SEGRETO.
    Cosi' il codice si puo' guardare e copiare senza rischi.
+
+   ANCHE PER MAIL: se nell'app di un dispositivo e' acceso «✉️ Anche per
+   mail», la stessa copia arriva anche come allegato a MAIL (sotto).
+   Dopo aver incollato questa versione: ▶ Esegui «provaMail» una volta
+   (chiede il permesso di mandare mail), poi Gestisci deployment →
+   matita → Nuova versione → Esegui il deployment. L'indirizzo /exec
+   resta lo stesso: nell'app non si cambia niente.
    ═══════════════════════════════════════════════════════════════ */
 const CARTELLA = 'Backup Zenith Copilot';
 const TIENI = 60;                 /* quante copie tenere (con piu' dispositivi servono piu' righe) */
 const FUSO = 'Europe/Rome';
+const MAIL = 'zenithfitnesslab@gmail.com';   /* dove arriva la copia per mail */
 
 function doPost(e){
   try{
@@ -31,9 +39,23 @@ function doPost(e){
     /* il nome del file: data, dispositivo, e quanti clienti e quante sedute ci sono dentro */
     const nome = 'zenith-backup-' + quando + (disp ? '_' + disp : '') + '_' + nCl + 'clienti-' + nSe + 'sedute.json';
     const cartella = trovaCartella();
-    cartella.createFile(nome, JSON.stringify(corpo.dati), 'application/json');
+    const file = cartella.createFile(nome, JSON.stringify(corpo.dati), 'application/json');
     puliscivecchi(cartella);
-    return risposta({esito:'ok', salvato:nome});
+    /* la copia per mail: solo se il dispositivo l'ha chiesta. Se la mail non parte,
+       la copia su Drive resta comunque salvata */
+    let mail;
+    if(corpo.perMail === true){
+      try{
+        MailApp.sendEmail({to: MAIL,
+          subject: 'Zenith · backup ' + Utilities.formatDate(new Date(), FUSO, 'dd/MM/yyyy HH:mm') + (disp ? ' · ' + disp : ''),
+          body: 'Copia di sicurezza di Zenith Copilot.\n\n' + nCl + ' clienti · ' + nSe + ' sedute' + (disp ? '\nDispositivo: ' + disp : '')
+            + '\n\nLa stessa copia è anche su Drive, nella cartella «' + CARTELLA + '».'
+            + '\nPer ripristinarla: Impostazioni › Importa backup, e scegli il file allegato.',
+          attachments: [file.getBlob().setName(nome)]});
+        mail = true;
+      }catch(x){ mail = false; }
+    }
+    return risposta({esito:'ok', salvato:nome, mail:mail});
   }catch(err){
     return risposta({esito:'no', motivo:String(err)});
   }
@@ -57,3 +79,5 @@ function puliscivecchi(cartella){
 
 /* Da lanciare UNA volta a mano (▶ Esegui), per far chiedere il permesso sul Drive */
 function provaAutorizzazione(){ trovaCartella(); Logger.log('Cartella pronta: ' + CARTELLA); }
+/* Da lanciare UNA volta a mano dopo aver incollato questa versione: chiede il permesso per le mail */
+function provaMail(){ MailApp.sendEmail(MAIL, 'Zenith · prova della mail del backup', 'Se leggi questa mail, i backup per mail arriveranno qui.'); Logger.log('Mail di prova mandata a ' + MAIL); }

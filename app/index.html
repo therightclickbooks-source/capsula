@@ -3838,6 +3838,15 @@ function salvaDrive(){
   toast(u && k ? 'Salvato ✓ — ora tocca «Prova adesso»' : 'Salvato');
   render();
 }
+/* La copia anche per mail: si accende su UN dispositivo (il telefono di
+   Raffaele, finche' non c'e' il totem). Come il nome, sta in una chiave a
+   parte e non viaggia nei backup: importata altrove non accende la mail. */
+function mailSuDispositivo(){ try{ return localStorage.getItem('zfl_backup_mail') === '1'; }catch(e){ return false; } }
+function toggleMailBackup(){
+  try{ if(mailSuDispositivo()) localStorage.removeItem('zfl_backup_mail'); else localStorage.setItem('zfl_backup_mail', '1'); }catch(e){}
+  toast(mailSuDispositivo() ? '✉️ Da questo dispositivo il backup arriva anche per mail' : 'Mail del backup spenta su questo dispositivo');
+  render();
+}
 /* la copia che parte non porta con sé le chiavi di casa */
 function senzaChiavi(){
   const c = Object.assign({}, DB);
@@ -3858,7 +3867,7 @@ async function inviaDrive(manuale){
     const r = await fetch(DB.driveUrl, {
       method:'POST', redirect:'follow',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ segreto: DB.driveKey, dispositivo: nomeDispositivo(), dati: senzaChiavi() })
+      body: JSON.stringify({ segreto: DB.driveKey, dispositivo: nomeDispositivo(), perMail: mailSuDispositivo(), dati: senzaChiavi() })
     });
     let esito = null;
     try{ esito = JSON.parse(await r.text()); }catch(e){}
@@ -3869,7 +3878,10 @@ async function inviaDrive(manuale){
     }
     DB.lastAuto = new Date().toISOString(); DB.driveErr = '';
     persist();
-    if(manuale) toast('☁️ Copia salvata su Drive' + (esito && esito.salvato ? ' — ' + esito.salvato : ''));
+    /* lo script vecchio non sa mandare mail: non risponde «mail» e lo si dice */
+    const senzaMail = mailSuDispositivo() && !(esito && esito.mail === true);
+    if(manuale) toast(senzaMail ? '☁️ Salvata su Drive, ma la mail non è partita: va aggiornato lo script del backup'
+      : '☁️ Copia salvata su Drive' + (esito && esito.mail ? ' e mandata per mail ✉️' : '') + (esito && esito.salvato ? ' — ' + esito.salvato : ''));
     render(); return true;
   }catch(err){
     DB.driveErr = 'non raggiungibile — controlla l\'indirizzo e la connessione';
@@ -10078,6 +10090,8 @@ function vSettings(){
       <input type="text" id="dr_nome" spellcheck="false" autocomplete="off" maxlength="40"
         placeholder="es. Totem, Tablet Chiara" value="${esc(nomeDispositivo())}">
       <p class="hint" style="margin:6px 0 10px">Compare nel nome dei file di backup su Drive e nel backup scaricato a mano. Resta su questo dispositivo.</p>
+      <div class="paramrow"><div class="pl">✉️ Anche per mail<small>la stessa copia arriva anche nella casella del centro, come allegato — accendila su <b>un solo dispositivo</b></small></div>
+      <div class="sw ${mailSuDispositivo()?'on':''}" onclick="toggleMailBackup()"></div></div>
       <label class="f mlab">Indirizzo dello script <small style="font-weight:400">(finisce con /exec)</small></label>
       <input type="text" id="dr_url" spellcheck="false" autocomplete="off"
         placeholder="https://script.google.com/macros/s/…/exec" value="${esc(DB.driveUrl||'')}">
