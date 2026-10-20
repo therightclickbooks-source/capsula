@@ -2,7 +2,7 @@
    BACKUP AUTOMATICO DI ZENITH COPILOT SU GOOGLE DRIVE
    Si incolla in un progetto Apps Script dell'account Google del centro.
    Riceve la copia che l'app manda da sola (una volta al giorno, quando si
-   apre) e la salva come file .json nella cartella «Backup Zenith Copilot»
+   apre) e la salva come file .json nella cartella «Zenith Copilot Backup»
    del Drive. Tiene le ultime TIENI copie e butta nel cestino le piu' vecchie.
 
    La PAROLA D'ORDINE non sta qui dentro: si scrive in
@@ -15,8 +15,14 @@
    (chiede il permesso di mandare mail), poi Gestisci deployment →
    matita → Nuova versione → Esegui il deployment. L'indirizzo /exec
    resta lo stesso: nell'app non si cambia niente.
+
+   IL SIMBOLO: le mail di questo backup cominciano con 🛡️ (lo scudo),
+   per non confonderle con quelle di Fresha, che hanno 💾 (il dischetto).
+   Per lo stesso motivo la cartella si chiama «Zenith Copilot Backup» e
+   non «Zenith Backup», che e' quella di Fresha.
    ═══════════════════════════════════════════════════════════════ */
-const CARTELLA = 'Backup Zenith Copilot';
+const CARTELLA = 'Zenith Copilot Backup';
+const CARTELLA_VECCHIA = 'Backup Zenith Copilot';   /* il nome di prima: la cartella si rinomina da sola */
 const TIENI = 60;                 /* quante copie tenere (con piu' dispositivi servono piu' righe) */
 const FUSO = 'Europe/Rome';
 const MAIL = 'zenithfitnesslab@gmail.com';   /* dove arriva la copia per mail */
@@ -47,10 +53,11 @@ function doPost(e){
     if(corpo.perMail === true){
       try{
         MailApp.sendEmail({to: MAIL,
-          subject: 'Zenith · backup ' + Utilities.formatDate(new Date(), FUSO, 'dd/MM/yyyy HH:mm') + (disp ? ' · ' + disp : ''),
-          body: 'Copia di sicurezza di Zenith Copilot.\n\n' + nCl + ' clienti · ' + nSe + ' sedute' + (disp ? '\nDispositivo: ' + disp : '')
-            + '\n\nLa stessa copia è anche su Drive, nella cartella «' + CARTELLA + '».'
-            + '\nPer ripristinarla: Impostazioni › Importa backup, e scegli il file allegato.',
+          subject: '🛡️ Zenith Copilot — backup del ' + Utilities.formatDate(new Date(), FUSO, 'yyyy-MM-dd') + (disp ? ' · ' + disp : ''),
+          body: 'Copia di sicurezza del gestionale della capsula, in allegato.\n\n'
+            + 'clienti: ' + nCl + ' · sedute: ' + nSe + (disp ? '\ndispositivo: ' + disp : '')
+            + '\n\nLo stesso file è anche su Google Drive, nella cartella «' + CARTELLA + '».'
+            + '\nPer ripristinarlo: nell\'app, Impostazioni › Importa backup, e scegli il file allegato.',
           attachments: [file.getBlob().setName(nome)]});
         mail = true;
       }catch(x){ mail = false; }
@@ -68,7 +75,11 @@ function risposta(o){
 }
 function trovaCartella(){
   const it = DriveApp.getFoldersByName(CARTELLA);
-  return it.hasNext() ? it.next() : DriveApp.createFolder(CARTELLA);
+  if(it.hasNext()) return it.next();
+  /* c'e' ancora la cartella col nome di prima: si rinomina, cosi' le copie vecchie restano insieme alle nuove */
+  const vecchia = DriveApp.getFoldersByName(CARTELLA_VECCHIA);
+  if(vecchia.hasNext()){ const c = vecchia.next(); c.setName(CARTELLA); return c; }
+  return DriveApp.createFolder(CARTELLA);
 }
 function puliscivecchi(cartella){
   const tutti = [], it = cartella.getFiles();
@@ -80,4 +91,8 @@ function puliscivecchi(cartella){
 /* Da lanciare UNA volta a mano (▶ Esegui), per far chiedere il permesso sul Drive */
 function provaAutorizzazione(){ trovaCartella(); Logger.log('Cartella pronta: ' + CARTELLA); }
 /* Da lanciare UNA volta a mano dopo aver incollato questa versione: chiede il permesso per le mail */
-function provaMail(){ MailApp.sendEmail(MAIL, 'Zenith · prova della mail del backup', 'Se leggi questa mail, i backup per mail arriveranno qui.'); Logger.log('Mail di prova mandata a ' + MAIL); }
+function provaMail(){
+  trovaCartella();   /* intanto rinomina la cartella, se ha ancora il nome di prima */
+  MailApp.sendEmail(MAIL, '🛡️ Zenith Copilot — prova della mail del backup', 'Se leggi questa mail, i backup di Zenith Copilot arriveranno qui.');
+  Logger.log('Mail di prova mandata a ' + MAIL + ' · cartella su Drive: ' + CARTELLA);
+}
