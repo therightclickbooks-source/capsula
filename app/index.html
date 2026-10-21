@@ -3172,6 +3172,15 @@
   .tm-rb .tm-ok{flex:1 1 140px}
   .tm-ria{flex:1 1 180px; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; background:var(--surface2)!important; border:1.5px solid #d4af37!important; color:#f9e9a8!important}
   .tm-ria.pic{flex:0 1 auto; min-height:38px; padding:6px 12px; font-size:13.5px}
+  /* «Vai alla rifinitura»: porta al passo nel protocollo, che batte una volta */
+  .tm-vai{flex:1 1 160px; display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:46px; background:var(--surface2)!important; border:1.5px solid #8fb2c9!important; color:#d6e6f2!important}
+  .tm-vai.pic{flex:0 1 auto; min-height:38px; padding:6px 12px; font-size:13.5px}
+  .gstep.battito{animation:battito 1.1s ease-out 1}
+  @keyframes battito{
+    0%{box-shadow:0 0 0 0 rgba(143,178,201,.0); transform:scale(1)}
+    25%{box-shadow:0 0 0 6px rgba(143,178,201,.75), 0 0 34px rgba(143,178,201,.55); transform:scale(1.02)}
+    100%{box-shadow:0 0 0 18px rgba(143,178,201,0); transform:scale(1)}
+  }
   .tm-ria.on{background:rgba(212,175,55,.18)!important}
   .tm-n{font-size:12px; font-weight:800; border-radius:99px; padding:2px 8px; background:#d4af37; color:#1a1406}
   .tm-n.zero{background:var(--surface); color:var(--muted); border:1px solid var(--line)}
@@ -4443,7 +4452,7 @@ function passoRifinitura(R, W, piano, basso, dueRif, ri){
   if (R.wkey && TILE.manual[R.wkey]) mk.push({pos: TILE.manual[R.wkey], label: `Larghezza rulli: ${R.larghezza || LARGHEZZA_DI[R.wkey]}`});
   if (ikey && TILE.manual[ikey]) mk.push({pos: TILE.manual[ikey], label: `In “Massage interval adjustment” scegli ${INTERVALLO_DI[ikey]}`});
   mk.push({pos: TILE.manual.MOVE, type:'set', label: `Con le frecce ▲▼ a sinistra porta i rulli su: <b>${R.zona}</b> (chiedi al cliente «è qui?»)`});
-  if (R.velocita) mk.push({pos: TILE.manual.SPEED, type:'set', label: `Massage speed → porta la velocità a <b>${R.velocita}</b> con + / − (a 0 i rulli non lavorano)`});
+  /* la velocita' (Massage speed) non si tocca: resta quella del programma */
   if (R.plantare && TILE.manual['PLANT'+R.plantare]) mk.push({pos: TILE.manual['PLANT'+R.plantare], label: `Plantar Roller Adjustment → tocca il livello <b>${R.plantare}</b>`});
   /* subito dopo: i rulli di gambe e piedi, che la rifinitura ha staccato.
      I tasti sono nella barra in basso, anche su questa schermata */
@@ -4451,7 +4460,8 @@ function passoRifinitura(R, W, piano, basso, dueRif, ri){
   if (vv.some(v => v.k === 'leg')) mk.push({pos: TILE.auto.CALF_KN, label: 'Riaccendi “Leg Kneading” (in basso): la rifinitura l\'ha staccato — si accende e basta, non ha livelli'});
   if (vv.some(v => v.k === 'foot')) mk.push({pos: TILE.auto.FOOT, label: 'Riaccendi “Foot Roller” (in basso): la rifinitura l\'ha staccato — si accende e basta, non ha livelli'});
   const insieme = basso && dueRif;
-  return {img: basso ? 'manualDown' : 'manual', kind:'extra', finestra:W, chip:`dal minuto ${W.a} alla fine`,
+  const aria = vv.find(v => v.k === 'aria');
+  return {img: basso ? 'manualDown' : 'manual', kind:'extra', finestra:W, chip:`dal minuto ${W.a} alla fine`, anchor: basso ? 'rif-bas' : 'rif-ref',
     title: `Rifinitura ${basso ? 'bassa' : 'alta'} — ${R.zona}`, markers: mk,
     extra: `<div class="gnote"><b>Quando:</b> al minuto ${W.a}, a ${daFine} minuti dalla fine. `
       + (insieme ? 'La rifinitura alta <b>continua</b>: dalla sua schermata tocca «Down movement» e lavorano <b>insieme</b> fino alla fine. '
@@ -4459,20 +4469,12 @@ function passoRifinitura(R, W, piano, basso, dueRif, ri){
       + 'Il timer ti avvisa con una campanella 10 secondi prima e, al minuto esatto, con la musica delle rifiniture: si apre a tutto schermo e ti dice cosa fare.</div>'
       + '<div class="gnote rianote">🔁 <b>' + (insieme ? 'Accendendo la bassa, airbag e rulli di gambe e piedi si staccano di nuovo.' : 'Accendendola, la capsula stacca gli airbag e i rulli di gambe e piedi.') + '</b> '
       + (!ri || ri.niente ? 'Questa volta <b>non riaccendere niente</b>: ' + (ri ? ri.perche : '') + '.'
-         : 'Riaccendi ' + vv.filter(v => v.k !== 'zerog').map(v => v.k === 'aria' ? '<b>gli airbag</b> (passo qui sotto)' : '<b>' + v.nome + '</b>').join(', ') + '.')
+         : 'Riaccendi ' + vv.filter(v => v.k !== 'zerog').map(v => v.k === 'aria' ? '<b>gli airbag</b>' : '<b>' + v.nome + '</b>').join(', ') + '.')
       + '</div>'
+      + (aria ? '<div class="gnote rianote">💨 <b>Gli airbag:</b> tocca «Airbag» nella barra in alto (la rifinitura continua da sola) e riaccendi '
+          + aria.zone.map(k => '<b>' + ARIA_NOME[k] + '</b>').join(', ') + '. Sono le stesse zone del programma; la forza resta <b>' + aria.forza + '</b>. Poi torna qui.'
+          + (vv.some(v => v.k === 'zerog') ? ' Se la poltrona si è rialzata, sulla schermata Auto tocca di nuovo <b>Zero Gravity</b>.' : '') + '</div>' : '')
       + '<div class="gnote">È la parte “artigianale” della seduta: se il cliente preferisce il solo automatico si salta.</div>'};
-}
-/* gli airbag da riaccendere dopo una rifinitura: le stesse zone del programma */
-function passoRiaccendiAria(ri, W, basso, zerog){
-  const v = ri && !ri.niente && ri.voci.find(x => x.k === 'aria'); if (!v) return null;
-  const ICONA = {spalle:TILE.airbag.SPALLE, braccia:TILE.airbag.BRACCIA, vita:TILE.airbag.VITA, gambe:TILE.airbag.GAMBE, tutto:TILE.airbag.TUTTO};
-  return {img:'airbag', kind:'extra', finestra:W, chip:`subito dopo · minuto ${W.a}`,
-    title: `Subito dopo la rifinitura ${basso ? 'bassa' : 'alta'}: riaccendi gli airbag`,
-    markers: [{pos:TILE.airbag.NAV, label:'Tocca “Airbag” nella barra in alto: la rifinitura continua da sola'}]
-      .concat(v.zone.map(k => ({pos:ICONA[k], label:`Riaccendi “${ARIA_NOME[k]}” — si illumina`}))),
-    extra: `<div class="gnote">Sono le <b>stesse zone del programma</b>: la rifinitura le aveva staccate. La forza resta quella impostata (<b>${v.forza}</b>): se la vedi cambiata, riportala a ${v.forza}.</div>`
-      + (zerog ? '<div class="gnote">🛸 <b>Zero Gravity:</b> se aprendo gli airbag la poltrona si è rialzata, torna sulla schermata Auto e tocca di nuovo Zero Gravity.</div>' : '')};
 }
 function buildSteps(prot){
   const {prog, S} = prot;
@@ -4567,9 +4569,9 @@ function buildSteps(prot){
   [[prot.manualRef, 'ref', false], [prot.manualBasso, 'bas', true]].forEach(([R, id, basso]) => {
     if (!R) return;
     const W = piano.eventi.find(e => e.id === id);
+    /* una sezione sola per rifinitura, al massimo due: gli airbag da
+       riaccendere sono scritti dentro, e il timer li spunta con «Cosa riaccendo?» */
     steps.push(passoRifinitura(R, W, piano, basso, !!(prot.manualRef && prot.manualBasso), ri));
-    const aria = passoRiaccendiAria(ri, W, basso, S.zerog);
-    if (aria) steps.push(aria);
   });
 
   /* la fine: niente misura d'uscita, ma la domanda che tara la prossima */
@@ -6667,7 +6669,9 @@ function vProposal(){
   } else {
     currentProt = buildProtocol(c, quizState);
   }
-  apertaDaProposta(true);
+  /* la seduta si apre gia' qui, appena c'e' il protocollo: se si esce, si
+     chiude la pagina o si spegne il telefono, resta a un tocco dalla Home */
+  apertaDaProposta();
   const {prog, fam, S, why, zCode} = currentProt;
   const P = PROGRAMS[prog]; const F = ZFAM[fam];
   const steps = buildSteps(currentProt);
@@ -6755,7 +6759,7 @@ function renderStep(st){
   RS_N = (typeof RS_N==='number') ? RS_N : 0;
   const badge = st.kind==='start' ? '<span class="gnum hcs">S</span>' : st.kind==='end' ? '<span class="gnum hce">E</span>' : st.kind==='extra' ? '<span class="gnum ext">＋</span>' : `<span class="gnum">${++RS_N}</span>`;
   return `
-    <div class="gstep ${st.kind==='extra'?'extra':''}">
+    <div class="gstep ${st.kind==='extra'?'extra':''}"${st.anchor?` id="${st.anchor}"`:''}>
       <div class="gh">${badge}<span class="gt">${st.title}</span>${st.kind==='extra'?'<span class="exbadge">EXTRA · A DISCREZIONE</span>':''}${st.finestra?`<span class="tmchip">${st.chip || 'minuto ' + st.finestra.a + ' → ' + st.finestra.b}</span>`:''}</div>
       ${st.img ? `<div class="shot"><img src="${IMG[st.img]}" alt="Schermata della capsula">
         ${st.markers.map((m,j)=>`<div class="marker ${m.type==='set'?'sq':''} ${m.pos[4]==='r'?'rt':m.pos[4]==='c'?'tondo':''}" style="left:${m.pos[0]}%; top:${m.pos[1]}%${m.pos[2]?`; width:${m.pos[2]}%; height:${m.pos[3]}%`:''}">${st.markers.length>1?`<span class="mn">${j+1}</span>`:''}</div>`).join('')}
@@ -6797,7 +6801,7 @@ function pianoSeduta(prot){
   /* quello che serve all'avviso del timer: dove, come, e cosa riaccendere */
   const info = (r, basso, insieme) => ({reg: basso ? 'bassa' : 'alta', zona: r.zona, insieme,
     come: [basso ? 'Down movement' : 'Up movement', r.tecnica ? String(r.tecnica).split(' (')[0] : '', r.larghezza ? 'larghezza ' + String(r.larghezza).split(' (')[0] : '',
-      r.ikey ? MOTORE.INTERVALLO_NOME[r.ikey] : '', r.velocita ? 'velocità ' + r.velocita : ''].filter(Boolean).join(' · '),
+      r.ikey ? MOTORE.INTERVALLO_NOME[r.ikey] : ''].filter(Boolean).join(' · '),
     riattiva: ri});
   if (up) ev.push(Object.assign({id:'ref', label:lab(up, 'alta'), a:Math.max(0, T - RIF_ALTA), b:T, col:'az'}, info(up, false, false)));
   if (dn) ev.push(Object.assign({id:'bas', label:lab(dn, 'bassa'), a:Math.max(0, T - (up ? RIF_BASSA : RIF_ALTA)), b:T, col:'gold'}, info(dn, true, !!up)));
@@ -6920,6 +6924,23 @@ function timerPausa(){
 function timerChiudi(){
   clearInterval(TM_H); TM_H = null; TM = null; tmLock(false); tmSalva(); tmDisegna(true);
 }
+/* «Vai alla rifinitura»: dal timer al passo della rifinitura nel protocollo,
+   che batte una volta per farsi trovare. Se si e' altrove, prima si riapre
+   la seduta; se il timer era a tutto schermo, si rimpicciolisce. */
+function timerVaiRif(id){
+  if(TM && TM.full){ TM.full = false; tmSalva(); tmDisegna(true); }
+  if(typeof VIEW !== 'undefined' && VIEW.name !== 'proposal' && VIEW.name !== 'setupqr'){
+    const p = aperte().find(x => x.stato === 'registra'); if(p) riapriSeduta(p.clientId, 'registra');
+  }
+  setTimeout(()=>{
+    const el = document.getElementById(id === 'bas' ? 'rif-bas' : 'rif-ref') || document.getElementById('rif-ref') || document.getElementById('rif-bas');
+    if(!el){ toast('Il protocollo di questa seduta non è aperto'); return; }
+    const alto = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tmh')) || 0;
+    window.scrollTo({top: el.getBoundingClientRect().top + scrollY - alto - 12, behavior:'smooth'});
+    el.classList.remove('battito'); void el.offsetWidth; el.classList.add('battito');
+  }, 60);
+}
+function vaiRifTasto(e, piccolo){ return `<button class="btn tm-vai${piccolo ? ' pic' : ''}" data-act="vai" data-ev="${e.id}">📍 Vai alla rifinitura</button>`; }
 function timerSchermo(){ if(TM){ TM.full = !TM.full; tmSalva(); tmDisegna(true); tmTick(); } }
 function timerFatto(){
   if(!TM) return; const st = tmStato(tmEl());
@@ -7047,17 +7068,17 @@ function tmAvvisoRif(st){
     <div class="tm-rt">${e.insieme ? 'ACCENDI ANCHE LA RIFINITURA BASSA' : 'ACCENDI LA RIFINITURA ' + e.reg.toUpperCase()}</div>
     <div class="tm-rz">${esc(e.zona)}</div><div class="tm-rc">${esc(e.come)}</div>
     <div class="tm-rs">${e.insieme ? 'L’alta continua: lavorano insieme fino alla fine (' + quanti + ' minuti).' : 'Non si spegne più: lavora fino alla fine della seduta (' + quanti + ' minuti).'}</div>
-    <div class="tm-rb">${tmRiaccendi(e)}<button class="btn tm-ok" data-act="fatto">✓ Fatto</button></div></div>`;
+    <div class="tm-rb">${tmRiaccendi(e)}${vaiRifTasto(e)}<button class="btn tm-ok" data-act="fatto">✓ Fatto</button></div></div>`;
   /* in corso: chi sta lavorando, e se ne arriva un'altra */
   const chi = (st.attivi || [e]).map(x => x.reg).reverse().join(' + ');
   const poi = st.prossima && st.prossima.reg ? ` · al minuto ${st.prossima.a} parte anche la ${st.prossima.reg}` : '';
   return `<div class="tm-m az"><div class="tm-mk">IN CORSO · ANCORA <b id="tm-cd">--</b></div><div class="tm-mt">Rifinitura ${chi}</div>
-    <div class="tm-ms">fino alla fine della seduta${poi}</div><div class="tm-rb">${tmRiaccendi(e, true)}</div></div>`;
+    <div class="tm-ms">fino alla fine della seduta${poi}</div><div class="tm-rb">${tmRiaccendi(e, true)}${vaiRifTasto(e, true)}</div></div>`;
 }
 function tmMessaggio(st){
   const e = st.e, F = '<button class="btn tm-ok" data-act="fatto">✓ Fatto</button>';
   if(e && e.reg && (st.fase === 'pre' || st.fase === 'attiva' || st.fase === 'corso')) return tmAvvisoRif(st);
-  if(e && e.reg && st.fase === 'attesa') return `<div class="tm-m"><div class="tm-mk">PROSSIMA RIFINITURA · TRA <b id="tm-cd">--</b></div><div class="tm-mt">${esc(e.label)}</div><div class="tm-ms">al minuto ${e.a}, poi lavora fino alla fine · ${TM.dur - e.a} minuti</div></div>`;
+  if(e && e.reg && st.fase === 'attesa') return `<div class="tm-m"><div class="tm-mk">PROSSIMA RIFINITURA · TRA <b id="tm-cd">--</b></div><div class="tm-mt">${esc(e.label)}</div><div class="tm-ms">al minuto ${e.a}, poi lavora fino alla fine · ${TM.dur - e.a} minuti</div><div class="tm-rb">${vaiRifTasto(e, true)}</div></div>`;
   switch(st.fase){
     case 'attesa': return `<div class="tm-m"><div class="tm-mk">PROSSIMO PASSAGGIO · TRA <b id="tm-cd">--</b></div><div class="tm-mt">${esc(e.label)}</div><div class="tm-ms">dal minuto ${e.a} al ${e.b} · ${e.b-e.a} minuti</div></div>`;
     case 'pre': return `<div class="tm-m az dash"><div class="tm-mk">🔔 BIP LEGGERO · STA PER INIZIARE · TRA <b id="tm-cd">--</b>″</div><div class="tm-mt">${esc(e.label)}</div><div class="tm-ms">Al minuto ${e.a} esatto suona il bip: attiva.</div></div>`;
@@ -7128,6 +7149,7 @@ document.addEventListener('click', e => {
   const a = b.getAttribute('data-act');
   if(a === 'pausa') timerPausa(); else if(a === 'full') timerSchermo(); else if(a === 'chiudi') timerChiudi(); else if(a === 'fatto') timerFatto();
   else if(a === 'riatt') timerRiattiva(b.getAttribute('data-ev')); else if(a === 'spunta') timerSpunta(b.getAttribute('data-k'));
+  else if(a === 'vai') timerVaiRif(b.getAttribute('data-ev'));
   else if(a === 'sap') riapriSeduta(b.getAttribute('data-c'), b.getAttribute('data-s'));
 });
 setTimeout(timerRipristina, 0);

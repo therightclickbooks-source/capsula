@@ -168,13 +168,13 @@ module.exports = async function(browser){
   });
   tac.t('relax con le gambe: Leg Kneading acceso e ioni, nessuna rifinitura bassa (le gambe hanno i loro rulli)',
     !basso.gambe.passo && basso.gambe.ioni && basso.gambe.polpacci === 1, JSON.stringify(basso.gambe));
-  tac.t('relax con la lombare: Down movement con Massage, rulli larghi, tutta la zona, velocità 2',
+  tac.t('relax con la lombare: Down movement con Massage, rulli larghi, tutta la zona; la velocità resta quella del programma',
     !!basso.relax.passo && /Down movement/.test(basso.relax.passo[0]) && /Massage/.test(basso.relax.passo.join())
       && /larga/.test(basso.relax.passo.join()) && /tutta la zona/.test(basso.relax.passo.join())
-      && /velocità a <b>2<\/b>/.test(basso.relax.passo.join()), JSON.stringify(basso.relax));
-  tac.t('sonno su lombare e glutei: Massage, velocità 1',
+      && !/velocità|Massage speed/.test(basso.relax.passo.join()), JSON.stringify(basso.relax));
+  tac.t('sonno su lombare e glutei: Massage, senza toccare la velocità',
     !!basso.sonno.passo && basso.sonno.ioni && /Massage/.test(basso.sonno.passo.join())
-      && /velocità a <b>1<\/b>/.test(basso.sonno.passo.join()), JSON.stringify(basso.sonno));
+      && !/velocità|Massage speed/.test(basso.sonno.passo.join()), JSON.stringify(basso.sonno));
   tac.t('il drenaggio con le gambe resta la leggerezza, senza Down movement',
     basso.drenaggio.prog === 'P08' && !basso.drenaggio.passo, JSON.stringify(basso.drenaggio));
 

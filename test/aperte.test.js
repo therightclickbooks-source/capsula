@@ -45,8 +45,8 @@ module.exports = async function(browser){
     return {prima, prog: currentProt.prog};
   });
   let ap = await aperteSalvate();
-  tac.t('guardare la proposta non apre niente; avviando il timer la seduta si apre e si salva col suo protocollo',
-    via.prima === null && ap.length === 1 && ap[0].stato === 'registra' && ap[0].clientId === 'c1' && ap[0].prot.prog === via.prog, JSON.stringify({via, ap}));
+  tac.t('appena c\'è il protocollo la seduta è aperta e salvata col suo protocollo; avviando il timer resta una sola',
+    !!via.prima && JSON.parse(via.prima).length === 1 && ap.length === 1 && ap[0].stato === 'registra' && ap[0].clientId === 'c1' && ap[0].prot.prog === via.prog, JSON.stringify({via, ap}));
 
   /* 2 · il timer finisce e si sgretola: la seduta non sparisce, resta la striscia */
   const fine = await p.evaluate(async () => {
