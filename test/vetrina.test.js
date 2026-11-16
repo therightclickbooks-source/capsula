@@ -46,179 +46,50 @@ module.exports = async function(browser){
     if(s.h > s.w) tac.t(q + 'la vetrina non scorre di lato', ferma.x !== 'auto' && ferma.x !== 'scroll'
       && ferma.x !== 'visible' && ferma.dopo === 0, JSON.stringify(ferma));
 
-    /* ── l'ordine della colonna ── */
+    /* ── l'ordine della colonna (v170) ──
+       la frase con la capsula, i sei bisogni, il nastro di oggi,
+       l'invito, e le due strade in piu' (domande e respiro) */
     const colonna = await p.evaluate(()=>
-      [...document.querySelector('.vetr').children].map(e=>{
-        const h = e.querySelector('.sezh');
-        return h ? h.textContent.trim() : e.className.split(' ')[0];
-      }));
-    /* quattro fasce, un compito ciascuna: «cosa succede adesso» non e'
-       piu' un riquadro a parte, i tre passaggi stanno dentro il tasto */
-    tac.t(q + 'la colonna e\' frase · numeri · allenamento · invito',
-      colonna.length === 4
-      && colonna[0] === 'hero' && colonna[1] === 'sezione'
-      && colonna[2].startsWith('Cosa hai fatto oggi')
-      && colonna[3] === 'cta',
-      colonna.join(' | '));
-    tac.t(q + 'il riquadro «cosa succede adesso» non c\'e\' piu\'',
-      !(await p.textContent('.vetr')).includes('Cosa succede adesso'));
-    tac.t(q + 'lo spazio che avanza si divide fra le fasce, non fa un buco sopra il tasto',
-      await p.evaluate(()=>{
-        const f = [...document.querySelector('.vetr').children];
-        const g = f.slice(1).map((e,i)=> e.offsetTop - (f[i].offsetTop + f[i].offsetHeight));
-        return Math.max(...g) - Math.min(...g) <= 30;
-      }));
+      [...document.querySelector('.vetr').children].map(e=> e.className.split(' ')[0]));
+    tac.t(q + 'la colonna e\' frase · bisogni · nastro · invito · due strade',
+      colonna.join(',') === 'zhero,zbisogni,zdir,zinvito,zdue', colonna.join(' | '));
 
-    /* ── la forma delle sezioni ── */
-    tac.t(q + 'ogni sezione sta dentro un rettangolo suo', await p.evaluate(()=>
-      [...document.querySelectorAll('.sezione')].every(e=>{
-        const c = getComputedStyle(e);
-        return parseFloat(c.borderTopWidth) > 0 && parseFloat(c.borderTopLeftRadius) >= 24
-          && c.backgroundColor !== 'rgba(0, 0, 0, 0)';
-      })));
-    /* il titolo di sezione e' fatto come una risposta aperta: targhetta a
-       pastiglia sopra, e sotto la domanda con la barra a sinistra. Le due
-       cose devono stare in colonna e allineate fra loro — sulla stessa
-       riga, quindici punti accanto a ventotto non si allineano a niente */
-    tac.t(q + 'i due titoli hanno la targhetta sopra e la domanda sotto',
-      await p.evaluate(()=>
-        [...document.querySelectorAll('.sezt')].every(e=>{
-          const oc = e.querySelector('.seze'), ti = e.querySelector('.sezh');
-          if(!oc || !ti) return false;
-          const c = getComputedStyle(ti), co = getComputedStyle(oc);
-          return oc.offsetTop + oc.offsetHeight <= ti.offsetTop      /* in colonna */
-            && parseFloat(c.fontSize) >= 26
-            && parseFloat(c.borderLeftWidth) >= 3                    /* la barra */
-            && parseFloat(co.borderTopWidth) > 0                     /* la pastiglia */
-            && parseFloat(co.borderTopLeftRadius) > 20;
-        })));
-    /* il gradino: la testata sta su un ripiano che arriva ai bordi della
-       sezione, e la riga che lo chiude corre da bordo a bordo. Se
-       qualcuno toglie i margini negativi il ripiano si stringe e la
-       riga diventa un trattino in mezzo, che non divide piu' niente */
-    tac.t(q + 'la testata e\' un ripiano che arriva ai bordi della sezione',
-      await p.evaluate(()=>
-        [...document.querySelectorAll('.sezione .sezt')].every(e=>{
-          const c = getComputedStyle(e);
-          return parseFloat(c.borderBottomWidth) > 0
-            && e.offsetWidth >= e.parentElement.clientWidth - 1
-            && c.backgroundImage !== 'none';
-        })));
-
-    /* la faccina e' una scorciatoia, non un passo: se le mettessimo la
-       cornice diventerebbe una sezione e l'ordine si perderebbe. Sta
-       sotto il tasto, come seconda strada */
-    tac.t(q + 'la faccina non ha la cornice di sezione',
-      await p.evaluate(()=> !document.getElementById('avatar').classList.contains('sezione')));
-    tac.t(q + 'la faccina sta sotto il tasto del check-in',
-      await p.evaluate(()=>{
-        const a = document.getElementById('avatar'), b = document.getElementById('gocheck');
-        return a.closest('.cta') && a.offsetTop > b.offsetTop + b.offsetHeight;
-      }));
-    tac.t(q + 'la faccina non esce dalla colonna e non tocca la riga di servizio',
-      await p.evaluate(()=>{
-        const a = document.getElementById('avatar').getBoundingClientRect();
-        const d = document.getElementById('dbg').getBoundingClientRect();
-        return a.bottom <= d.top;
-      }));
-
-    /* ── il disegno in alto a destra: il guscio di luce ──
-       niente piu' fila di sagome, e la pastiglia non copre la testiera */
-    tac.t(q + 'in alto a destra c\'e\' il guscio, senza la fila di sagome',
-      await p.evaluate(()=>{
-        const svg = document.querySelector('.pod svg');
-        return !!svg.querySelector('#gb1') && !svg.querySelector('#zcf')
-          && !document.querySelector('.pb2');
-      }));
-
-    /* ── lo spazio: niente deve sbordare ── */
+    /* ── lo spazio: niente sborda, niente si accavalla ── */
     const spazio = await p.evaluate(()=>{
-      const v = document.querySelector('.vetr'), po = document.querySelector('.porte');
-      const serve = [...po.children].reduce((a,e)=>
-        a + e.offsetHeight + parseFloat(getComputedStyle(e).marginTop || 0), 0);
-      return {fuori: v.scrollHeight - v.clientHeight,
-              serve, dentro: po.clientHeight
-                - parseFloat(getComputedStyle(po).paddingTop)
-                - parseFloat(getComputedStyle(po).paddingBottom)};
+      const v = document.querySelector('.vetr'), f = [...v.children];
+      const sovrap = f.slice(1).some((e,i)=> e.offsetTop < f[i].offsetTop + f[i].offsetHeight - 1);
+      const d = document.getElementById('dbg');
+      return {fuori: v.scrollHeight - v.clientHeight, sovrap,
+        dbg: v.offsetTop + v.offsetHeight <= d.offsetTop + 2};
     });
     tac.t(q + 'la colonna non sborda', spazio.fuori <= 0, 'fuori di ' + spazio.fuori);
-    tac.t(q + 'le cinque porte e il pensiero stanno nel loro rettangolo',
-      spazio.serve <= spazio.dentro + 1, spazio.serve + ' su ' + spazio.dentro);
+    tac.t(q + 'le fasce non si accavallano', !spazio.sovrap);
+    tac.t(q + 'le due strade non toccano la riga di servizio', spazio.dbg);
 
-    /* ── il pensiero: tutti e cinque, interi ──
-       il riquadro ha overflow:hidden, quindi una frase troppo lunga
-       non da' errore: sparisce a meta' e nessuno se ne accorge */
-    for(const k of ['ems','matrix','vacufit','ems2','riposo']){
-      const ok = await p.evaluate(async kk=>{
-        disegnaPensiero(kk);
-        await new Promise(z=> setTimeout(z, 340));
-        const b = document.getElementById('pens'), t = b.querySelector('.px');
-        const c = getComputedStyle(b);
-        return t.offsetHeight <= b.clientHeight
-          - parseFloat(c.paddingTop) - parseFloat(c.paddingBottom);
-      }, k);
-      tac.t(q + 'il pensiero di ' + k + ' ci sta tutto', ok);
-    }
-
-    /* ── dentro il tasto: quanto dura e cosa succede dopo ── */
-    const riga = await p.evaluate(()=>{ const e = document.querySelector('#gocheck .t2');
-      return {testo: e ? e.textContent : '', alto: e ? e.offsetHeight : 0, corpo: e ? parseFloat(getComputedStyle(e).fontSize) : 0}; });
-    tac.t(q + 'nel tasto c\'e\' quanto dura e chi ti chiama', /Due minuti/.test(riga.testo) && /operatore/.test(riga.testo), riga.testo);
-    tac.t(q + 'la riga del tasto sta su una riga sola', riga.alto <= riga.corpo * 1.7, riga.alto + 'px per ' + riga.corpo + 'px');
-
-    /* ── il pensiero, che e' una risposta ──
-       stessa lingua del foglio dei macchinari: barra a sinistra del
-       testo, e in oro la parte che parla di Zenith */
-    const pensiero = await p.evaluate(()=>{
-      disegnaPensiero('vacufit');
-      const b = document.getElementById('pens');
-      const px = b.querySelector('.px'), pf = b.querySelector('.pf');
-      const c = getComputedStyle(px);
-      const g = document.createElement('b'); pf.appendChild(g);
-      const oro = getComputedStyle(g).color;
-      g.remove();
-      return {barra: parseFloat(c.borderLeftWidth), passo: parseFloat(c.paddingLeft), oro};
+    /* ── i sei bisogni: sei carte, sei colori, e girano con le frasi ── */
+    const bis = await p.evaluate(()=>{
+      const c = [...document.querySelectorAll('#zgri .zbis')];
+      return {n:c.length, col:new Set(c.map(e=> e.style.getPropertyValue('--c').trim())).size,
+        frasi:document.querySelectorAll('#zslides .zslide').length,
+        insieme:c.every((e,i)=> e.style.animationDelay === document.querySelectorAll('#zslides .zslide')[i].style.animationDelay),
+        dentro:c.every(e=> e.querySelector('.n').scrollWidth <= e.clientWidth)};
     });
-    tac.t(q + 'il pensiero ha la barra a sinistra, come la risposta del foglio',
-      pensiero.barra >= 3 && pensiero.passo >= 14, JSON.stringify(pensiero));
-    tac.t(q + 'la parte di Zenith nel pensiero e\' in oro, non in bianco',
-      pensiero.oro !== 'rgb(255, 255, 255)' && /^rgb/.test(pensiero.oro), pensiero.oro);
+    tac.t(q + 'sei bisogni, ognuno col suo colore', bis.n === 6 && bis.col === 6, JSON.stringify(bis));
+    tac.t(q + 'ogni bisogno ha la sua frase, e si accendono insieme', bis.frasi === 6 && bis.insieme, JSON.stringify(bis));
+    tac.t(q + 'il nome di ogni bisogno sta dentro la sua carta', bis.dentro);
+    tac.t(q + 'le frasi grandi stanno nella loro casella', await p.evaluate(()=>
+      [...document.querySelectorAll('.zslide')].every(e=> e.offsetHeight <= e.parentElement.offsetHeight)));
 
-    /* l'invito e la riga di servizio in fondo non si toccano */
-    tac.t(q + 'l\'invito non tocca la riga di servizio',
-      await p.evaluate(()=>{
-        const h = document.querySelector('.cta'), d = document.getElementById('dbg');
-        return h.getBoundingClientRect().bottom <= d.getBoundingClientRect().top;
-      }));
-
-    /* ── l'invito grande ──
-       Non urla piu': se qualcuno rimette il titolo tutto maiuscolo o lo
-       riporta a cinquantadue punti, questa diventa rossa. */
+    /* ── l'invito ── */
     const invito = await p.evaluate(()=>{
-      const b = document.querySelector('.cta .btn');
-      const t = b.querySelector('.t1'), i = b.querySelector('.ic'), g = b.querySelector('.go');
-      const ci = getComputedStyle(i), cg = getComputedStyle(g);
-      return {testo:t.textContent, corpo:parseFloat(getComputedStyle(t).fontSize),
-        icona:{l:i.offsetWidth, r:parseFloat(ci.borderTopLeftRadius)},
-        freccia:cg.backgroundImage, pieno: cg.backgroundColor !== 'rgba(0, 0, 0, 0)' || /gradient/.test(cg.backgroundImage)};
+      const t = document.querySelector('#gocheck .t1'), r = document.querySelector('#gocheck .t2');
+      return {t:t.textContent, r:r.textContent, una: r.offsetHeight <= parseFloat(getComputedStyle(r).fontSize) * 1.7,
+        dentro: t.scrollWidth <= t.parentElement.clientWidth + 1};
     });
-    tac.t(q + 'l\'invito non e\' tutto maiuscolo',
-      invito.testo !== invito.testo.toUpperCase(), invito.testo);
-    tac.t(q + 'l\'invito e\' grande ma non urla: al massimo 50 punti',
-      invito.corpo <= 50, invito.corpo + 'px');
-    tac.t(q + 'l\'icona dell\'invito sta in un tondo', invito.icona.l >= 60 && invito.icona.r >= 30, JSON.stringify(invito.icona));
-    tac.t(q + 'la freccia del cliente e\' dentro una pastiglia piena', invito.pieno, JSON.stringify(invito));
-
-    /* ── le cinque porte ── */
-    tac.t(q + 'le cinque porte ci sono tutte, e ognuna col suo colore',
-      await p.evaluate(()=>{
-        const c = [...document.querySelectorAll('#centro .ccard')];
-        const col = c.map(e=> e.style.getPropertyValue('--mc').trim());
-        return c.length === 5 && new Set(col).size === 5 && col.every(x=> x);
-      }));
-    tac.t(q + 'EMS si presenta come elettromiostimolazione',
-      (await p.textContent('#centro')).includes('elettromiostimolazione'));
-
+    tac.t(q + 'l\'invito dice quanti passi e chi ti chiama', /4 passi/.test(invito.r) && /operatore/.test(invito.r), invito.r);
+    tac.t(q + 'la riga dell\'invito sta su una riga sola', invito.una);
+    tac.t(q + 'l\'invito non e\' tutto maiuscolo', invito.t !== invito.t.toUpperCase());
+    tac.t(q + 'il titolo dell\'invito non esce dal tasto', invito.dentro);
     await p.close();
   }
 
@@ -244,33 +115,58 @@ module.exports = async function(browser){
   tac.t('il modello della versione trova la riga giusta, non se stesso',
     nVetrina === nGest && /^v\d+\.\d+\.\d+\(\d+\)$/.test(nVetrina || ''), String(nVetrina));
 
-  /* ── le frasi che girano in alto ──
-     La casella e' alta 508 punti e non cresce: una frase piu' alta
-     spingerebbe giu' tutta la vetrina a ogni giro. Si misurano tutte. */
+  /* ── i bisogni aprono la loro pagina, e il check-in parte con l'obiettivo gia' scelto ── */
   const pf = await tac.pagina(browser, VETRINA, SCHERMI[0]);
-  const frasi = await pf.evaluate(()=>{
-    roamStop();
-    const L = frasiVetrina(), box = document.getElementById('roams');
-    const alte = [];
-    L.forEach(m=>{
-      box.innerHTML = '<div class="roam on ' + m.k + '"><span class="rtag"><i>' + m.ic + '</i>' + RTAG[m.k]
-        + '</span><div class="tx">' + m.tx + '</div>' + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '') + '</div>';
-      if(box.firstChild.offsetHeight > 508) alte.push(m.tx);
+  const sc = await pf.evaluate(()=>{
+    const out = BISOGNI.map(b=>{
+      apriBisogno(b.k);
+      const box = document.getElementById('zscopri'), nm = box.querySelector('.znasce .nm');
+      const cta = box.querySelector('.zcta2');
+      return {k:b.k, on: SCENE === 'scopri', nome: nm ? nm.textContent : '',
+        sborda: box.scrollHeight > box.clientHeight + 1,
+        nomeDentro: nm ? nm.scrollWidth <= nm.clientWidth + 1 : false,
+        ctaSotto: cta.offsetTop + cta.offsetHeight <= box.clientHeight + 1};
     });
-    const k = t => L.filter(x=> x.k === t);
-    return {n:L.length, alte, problemi:k('beneficio').length,
-      conZenith: k('beneficio').every(x=> /Zenith/.test(x.sub || '')),
-      domande: k('domanda').every(x=> QA[x.qa] && QA[x.qa].q === x.tx), nDom: k('domanda').length,
-      giro: L.every((x,i)=> i === 0 || x.a !== L[i-1].a),
-      vecchie: L.filter(x=> /battito|indice di fatica|Cinque domande|Cinque risposte/i.test(x.tx + ' ' + (x.sub||''))).length};
+    apriBisogno('gambe'); document.querySelector('#zscopri .zcta2').click();
+    const goal = D.goal, scena = SCENE;
+    go('idle');
+    return {out, goal, scena};
   });
-  tac.t('le frasi in alto sono almeno cinquanta', frasi.n >= 50, frasi.n + '');
-  tac.t('ogni frase entra nella casella da 508 punti', !frasi.alte.length, frasi.alte.join(' | '));
-  tac.t('sotto ogni «ti succede?» c\'e\' cosa ci fa Zenith', frasi.conZenith);
-  tac.t('le domande in alto sono domande vere, che si aprono', frasi.domande && frasi.nDom >= 10, frasi.nDom + '');
-  tac.t('due frasi di fila non entrano mai dallo stesso lato', frasi.giro);
-  tac.t('nessuna frase promette piu\' battito, fatica o «cinque domande»', frasi.vecchie === 0, frasi.vecchie + '');
+  tac.t('ogni bisogno apre la sua pagina', sc.out.every(x=> x.on), JSON.stringify(sc.out.filter(x=> !x.on)));
+  tac.t('ogni pagina mostra un nome di protocollo vero', sc.out.every(x=> x.nome.length > 5), JSON.stringify(sc.out.map(x=> x.nome)));
+  tac.t('ogni pagina sta nello schermo, col tasto in fondo', sc.out.every(x=> !x.sborda && x.ctaSotto), JSON.stringify(sc.out.filter(x=> x.sborda || !x.ctaSotto)));
+  tac.t('il nome di esempio non esce dal suo riquadro', sc.out.every(x=> x.nomeDentro), JSON.stringify(sc.out.filter(x=> !x.nomeDentro).map(x=> x.nome)));
+  tac.t('«La voglio provare» apre il check-in con l\'obiettivo gia\' scelto', sc.scena === 'form' && sc.goal === 'drenaggio', JSON.stringify(sc));
+
+  /* ── il respiro: 4 dentro, 2 fermi, 6 fuori ── */
+  const rs = await pf.evaluate(async ()=>{
+    apriRespira();
+    const fase = ()=> document.getElementById('zfase').textContent;
+    RESP_0 = performance.now() - 1000; passoRespiro(); const a = fase();
+    RESP_0 = performance.now() - 5000; passoRespiro(); const b = fase();
+    RESP_0 = performance.now() - 9000; passoRespiro(); const c = fase();
+    const attivo = !!RESP_T; go('idle'); const fermo = !RESP_T;
+    return {a, b, c, attivo, fermo};
+  });
+  tac.t('il respiro va: inspira, trattieni, espira', rs.a === 'Inspira' && rs.b === 'Trattieni' && rs.c === 'Espira', JSON.stringify(rs));
+  tac.t('uscendo dal respiro il conto si ferma', rs.attivo && rs.fermo);
   await pf.close();
+
+  /* ── il nastro di oggi: i nomi delle sedute di oggi, mai quelli dei clienti ── */
+  const pn = await browser.newPage({viewport:{width:1080, height:1920}});
+  pn.on('pageerror', e => tac.rossi.push('errore di pagina (nastro): ' + e.message));
+  const ora = new Date().toISOString(), ieri = new Date(Date.now() - 864e5).toISOString();
+  await pn.addInitScript(d => localStorage.setItem('zfl_app_v1', JSON.stringify(d)), {
+    clients:[{id:'c1', nome:'Gianna', cognome:'Riservata'}], operators:[],
+    sessions:[{id:'a', clientId:'c1', date:ora, nome:'Pure Reef Contour'}, {id:'b', clientId:'c1', date:ora, nome:'Onyx Dusk Nocturne'},
+              {id:'c', clientId:'c1', date:ieri, nome:'Sage Candle Cooldown'}]});
+  await pn.goto(VETRINA); await pn.waitForTimeout(600);
+  const na = await pn.evaluate(()=> ({t: document.getElementById('zdirn').textContent, c: document.getElementById('zdirc').textContent,
+    k: document.getElementById('zdirk').textContent}));
+  tac.t('il nastro mostra i protocolli di oggi e quante sedute', /Pure Reef Contour/.test(na.t) && /Onyx Dusk Nocturne/.test(na.t)
+    && !/Sage Candle/.test(na.t) && na.c === '2 sedute oggi' && na.k === 'OGGI IN CAPSULA', JSON.stringify(na));
+  tac.t('nel nastro non c\'e\' mai il nome di un cliente', !/Gianna|Riservata/.test(na.t));
+  await pn.close();
 
   /* anche il gestionale va a vedere se ne esiste una nuova: senza, il
      telefono dell'operatore resta indietro di giorni senza dirlo */

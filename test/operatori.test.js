@@ -77,30 +77,27 @@ module.exports = async function(browser){
     }
   }
 
-  /* ── la vetrina ── */
+  /* ── la vetrina: l'operatore non e' piu' un passo, si sceglie dal ✎ ── */
   for(const quanti of [2, 3, 6]){
     const p = await apri(VETRINA, quanti, {w:1080, h:1920}, ()=>{
-      go('form'); D.nome = 'Prova'; PASSO = 1; disegnaPasso();
+      startCheck(); scegliCliente('c1'); passoAvanti(); apriOperatori();
     });
     const m = await misura(p);
     const q = 'vetrina con ' + quanti + ': ';
-    if(!m){ tac.t(q + 'il passo dell\'operatore compare', false, 'nessuna scheda'); await p.close(); continue; }
+    if(!m){ tac.t(q + 'la scelta dell\'operatore compare', false, 'nessuna scheda'); await p.close(); continue; }
     tac.t(q + 'ci sono tutti', m.n === quanti, String(m.n));
-    tac.t(q + 'i nomi stanno uno sotto l\'altro', inColonna(m),
-      m.colonne + ' colonne, ' + m.righe + ' righe');
+    tac.t(q + 'i nomi stanno uno sotto l\'altro', inColonna(m), m.colonne + ' colonne, ' + m.righe + ' righe');
     tac.t(q + 'la faccia sta accanto al nome, non sopra', m.avAccanto);
     tac.t(q + 'nessun nome esce dalla sua riga', !m.sborda);
-    /* la riga dell'operatore deve essere alta come quelle delle altre
-       domande: se no il primo passo si vede diverso dai cinque dopo */
-    const altreDomande = await p.evaluate(async ()=>{
-      PASSO = 2; disegnaPasso();
-      await new Promise(z=> setTimeout(z, 250));
-      const o = document.querySelector('.opt');
-      return o ? o.offsetHeight : null;
+    const r = await p.evaluate(()=>{
+      const prima = D.op;
+      const altro = operatori().find(o=> o.id !== D.op);
+      scegliOp(altro.id);
+      return {prima, dopo: D.op, atteso: altro.id, chiuso: !document.getElementById('opvelo').classList.contains('on'),
+        chip: document.getElementById('fciao').textContent, nome: altro.nome};
     });
-    tac.t(q + 'le righe sono alte come quelle delle altre domande',
-      altreDomande !== null && Math.abs(m.alt - altreDomande) <= 2,
-      m.alt + ' contro ' + altreDomande);
+    tac.t(q + 'chi apre il turno e\' gia\' proposto', r.prima === 'o0', JSON.stringify(r));
+    tac.t(q + 'toccandone un altro si cambia, e il foglio si chiude', r.dopo === r.atteso && r.chiuso && r.chip.includes(r.nome), JSON.stringify(r));
     await p.close();
   }
 

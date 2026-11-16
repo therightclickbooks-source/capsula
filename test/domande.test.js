@@ -118,7 +118,7 @@ module.exports = async function(browser){
      gestionale dentro il biglietto del check-in */
   const aria = await p.evaluate(()=>{
     const conDomanda = q => { Object.assign(D, {activity:'', zones:[], goal:'', aria:''}, q);
-      return passi().some(x => x.k === 'aria'); };
+      return domandeFine().indexOf('aria') >= 0; };
     const r = {
       ems2: conDomanda({activity:'ems2', goal:'recupero'}),
       vacufit: conDomanda({activity:'vacufit', goal:'relax'}),
@@ -150,7 +150,7 @@ module.exports = async function(browser){
     const sot = document.getElementById('asksot').textContent;
     const nums = [...document.querySelectorAll('#filtri .fnum')].map(e=> +e.textContent);
     go('idle');
-    return {n: QA.length, sot, somma: nums.reduce((a,b)=> a+b, 0), bolle: BUBBLES.some(b=> b.includes('{N}')) && !BUBBLES.some(b=> /\b3[0-9]\b/.test(b))};
+    return {n: QA.length, sot, somma: nums.reduce((a,b)=> a+b, 0), bolle: document.getElementById('zndom').textContent === QA.length + ' risposte pronte'};
   });
   tac.t('la pagina delle domande dice quante risposte ci sono',
     conta.sot.includes(conta.n + ' risposte'), conta.sot);
@@ -165,14 +165,17 @@ module.exports = async function(browser){
     FIELD = 'nome'; ['N','I','C','O','L','O'].forEach(c=> kbType(c)); kbAccento();
     const nome = D.nome;
     const trova = norm("D'Angelo").indexOf(norm('dangelo')) === 0;
-    const passo = (PASSO = 2, etichettaPasso(passi(), 2));
+    const passo = (()=>{ const tot = [];
+      for(const a of ['ems','riposo']){ D.activity = a; const L = passi();
+        L.forEach((_, i)=> tot.push(etichettaPasso(L, i).replace(/.*DI /, ''))); }
+      return [...new Set(tot)].join(','); })();
     go('idle');
     return {cogn, nome, trova, passo};
   });
   tac.t('si scrive D\'Angelo, con la maiuscola dopo l\'apostrofo', tast.cogn === "D'Angelo", tast.cogn);
   tac.t('si scrive Nicolò con il tasto degli accenti', tast.nome === 'Nicolò', tast.nome);
   tac.t('«dangelo» senza apostrofo trova lo stesso D\'Angelo', tast.trova);
-  tac.t('il passo non dice «di N»: il totale cambierebbe a meta\' strada', !/ DI /.test(tast.passo), tast.passo);
+  tac.t('il totale dei passi e\' sempre 4, qualunque cosa uno risponda', tast.passo === '4', tast.passo);
 
   /* ── la tastiera del telefono ── */
   const tel = await p.evaluate(()=>{

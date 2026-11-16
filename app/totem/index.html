@@ -122,393 +122,13 @@ html,body{overscroll-behavior:none}
    il tasto. */
 .vetr > *{margin-top:0}
 
-/* ── il manifesto: la frase che gira, e la capsula accanto ── */
-/* L'altezza è fissa apposta. Le frasi girano ogni nove secondi e mezzo
-   e non sono lunghe uguali: se il manifesto si adattasse alla frase, a
-   ogni cambio tutta la vetrina — numeri, passi, faccina, tasto — si
-   alzerebbe e si abbasserebbe. Qui invece si muove solo la frase, e
-   dentro una casella che non cambia mai: 508 è la più alta delle
-   sessanta, misurata (e la prova della vetrina le rimisura tutte). */
-.hero{display:flex; align-items:stretch; gap:20px; flex:none; min-height:508px}
-#roams{align-self:flex-start}
-#roams{flex:1; min-width:0; pointer-events:none}
-.roam{opacity:0; transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1)}
-.roam.on{opacity:1; transform:none}
-.roam .rtag{display:inline-flex; align-items:center; gap:11px; font-size:19px;
-  letter-spacing:.2em; font-weight:800; padding:10px 22px; border-radius:999px}
-.roam.beneficio .rtag{background:rgba(122,73,108,.32); color:#e2bdd4;
-  border:1px solid rgba(169,119,154,.6)}
-.roam.curiosita .rtag{background:rgba(212,175,55,.17); color:#eed37a;
-  border:1px solid rgba(212,175,55,.55)}
-.roam.domanda .rtag{background:rgba(79,184,221,.16); color:#8fd3ec;
-  border:1px solid rgba(79,184,221,.5)}
-/* la domanda si tocca: il riquadro accetta il dito, e la riga sotto lo dice */
-.roam.domanda{pointer-events:auto; cursor:pointer}
-.roam.domanda .tx{font-size:58px}
-.roam.domanda .sub{color:#8fd3ec; font-weight:700}
-/* sotto il fastidio, la risposta: «Zenith» in oro, perche' e' li' che si guarda */
-.roam .sub b{color:#eed37a; font-weight:800}
-.roam .rtag i{font-style:normal; font-size:25px; line-height:1}
-.roam .tx{margin-top:24px; font-size:66px; font-weight:800; line-height:1.04;
-  letter-spacing:-.032em; text-shadow:0 4px 34px rgba(0,0,0,.7)}
-.roam .tx em{font-style:normal;
-  background:linear-gradient(100deg,#e8c2dc,#e6c65c); -webkit-background-clip:text;
-  background-clip:text; -webkit-text-fill-color:transparent}
-.roam .sub{margin-top:20px; font-size:25px; line-height:1.42;
-  color:rgba(255,255,255,.62); text-shadow:0 2px 18px rgba(0,0,0,.7)}
-/* la frase ha sempre lo stesso posto: cambia solo da che parte entra,
-   così l'occhio non deve cercarla ogni volta da capo */
-.q0,.q3{transform:translateX(-54px)}
-.q1,.q4{transform:translateY(44px)}
-.q2,.q5{transform:scale(.94)}
-
-/* ══ la capsula: è lei che ferma chi passa a dieci metri ══
-   Prima era un baccello verticale, e non era la nostra. Adesso è il
-   profilo: di fianco la capsula è una curva sola — piede, seduta,
-   schienale, cupola — e una curva sola si ricorda. Due colori soli, oro
-   sul buio, con la luce che le corre lungo il bordo. Accanto, in piedi,
-   tre pittogrammi: una persona vicino a una macchina è un utente, tre
-   sono tutti. È il modo in cui si dice «toccasana per la vita di tutti»
-   senza scriverlo. Il disegno è orizzontale, quindi la sua casella è
-   larga e bassa, e sta in mezzo all'altezza della frase. */
-.hp{width:432px; flex:none; position:relative; display:flex; align-items:center;
-  justify-content:space-between; padding:0}
-@keyframes respira{0%,100%{transform:scale(1); opacity:.9} 50%{transform:scale(1.05); opacity:.5}}
-.pod{position:relative; width:432px; height:206px}
-/* il disegno e' lo stesso di prima, ma pesa meno: fili piu' sottili, il
-   pieno meno cupo, l'ombra sotto appena accennata e l'alone dietro
-   abbassato. Prima l'insieme faceva un blocco scuro che tirava a se'
-   tutto l'angolo in alto a destra e schiacciava la frase accanto. */
-.pod svg{display:block; width:432px; height:206px;
-  filter:drop-shadow(0 16px 40px rgba(122,73,108,.42))}
-.pod .glow{position:absolute; inset:-64px -26px; border-radius:50%; z-index:-1;
-  background:radial-gradient(ellipse at 38% 58%, rgba(212,175,55,.17), transparent 64%);
-  animation:respira 5.5s ease-in-out infinite}
-.pill{position:absolute; display:flex; align-items:center; gap:11px; padding:11px 19px;
-  border-radius:999px; background:rgba(14,10,18,.86); border:1px solid rgba(255,255,255,.16);
-  font-size:21px; font-weight:800; white-space:nowrap; z-index:3}
-.pill span{font-size:25px}
-/* la pastiglia sta sotto il guscio, a destra: sopra copriva la testiera */
-.pb1{right:2px; bottom:-22px; border-color:rgba(79,184,221,.45); color:#8fd3ec}
-
-/* ── i tre numeri: che cos'è Zenith, senza dover leggere ── */
-.numeri{display:flex}
-.hp{flex-direction:column}
-.hp .nastro{margin-top:0}
-.nastro{--nc:#e6c65c; position:relative; overflow:hidden; width:432px; height:222px; box-sizing:border-box;
-  padding:16px 20px 18px; display:flex; flex-direction:column; align-items:center; justify-content:space-between;
-  text-align:center; border-radius:26px; cursor:pointer;
-  border:2px solid color-mix(in srgb, var(--nc) 80%, transparent);
-  background:linear-gradient(160deg, color-mix(in srgb, var(--nc) 22%, transparent), rgba(230,198,92,.08) 75%);
-  box-shadow:0 0 38px color-mix(in srgb, var(--nc) 26%, transparent);
-  transition:border-color .9s ease, box-shadow .9s ease, background .9s ease}
-/* un riflesso che passa ogni tanto: si nota senza disturbare */
-.nastro::after{content:""; position:absolute; top:0; bottom:0; width:140px; left:-180px;
-  background:linear-gradient(100deg, transparent, rgba(255,255,255,.22), transparent);
-  animation:riflesso 5.5s ease-in-out infinite}
-@keyframes riflesso{0%, 62%{left:-180px} 100%{left:110%}}
-.nastro .nsi{font-size:44px; line-height:1; animation:dondola 2.8s ease-in-out infinite}
-@keyframes dondola{0%,100%{transform:rotate(-7deg)} 50%{transform:rotate(7deg) scale(1.08)}}
-@media (prefers-reduced-motion:reduce){ .nastro::after, .nastro .nsi{animation:none} }
-.nastro .nst{display:flex; flex-direction:column; gap:5px; transition:opacity .38s ease, transform .38s ease}
-.nastro .nst.cambia{opacity:0; transform:translateY(8px)}
-.nastro .nst b{font-size:26px; white-space:nowrap; font-weight:800; letter-spacing:-.01em; color:#fff}
-.nastro .nst small{font-size:18px; line-height:1.35; color:rgba(255,255,255,.72)}
-.cta{position:relative}
-.cartellino{position:absolute; right:26px; top:-30px; display:flex; align-items:center; gap:10px;
-  padding:10px 20px 10px 14px; border-radius:999px; cursor:pointer; z-index:5;
-  background:linear-gradient(100deg,#f3dc8a,#d4af37); color:#1a1320; font-weight:800; font-size:22px;
-  box-shadow:0 8px 26px rgba(212,175,55,.45)}
-.cartellino span{font-size:28px; animation:dondola 2.8s ease-in-out infinite}
-.nastro .nsg{margin-top:4px; font-size:19px; font-weight:800; color:#1a1320; background:#e6c65c; padding:10px 20px; border-radius:999px}
-.nb{flex:1; padding:0 14px; display:flex; flex-direction:column; justify-content:center}
-.nb + .nb{border-left:1px solid rgba(255,255,255,.12)}
-.nb .nv{font-size:46px; font-weight:800; line-height:1; letter-spacing:-.03em;
-  white-space:nowrap}
-.nb .nv small{font-size:21px; font-weight:800; letter-spacing:0}
-.nb .nl{margin-top:7px; font-size:16.5px; line-height:1.3; color:rgba(255,255,255,.55)}
-.nb.o .nv{color:#e6c65c} .nb.p .nv{color:#e2bdd4} .nb.b .nv{color:#8fd3ec} .nb.g .nv{color:#9fe0b8}
-
-
-/* le sei cose che la capsula puo' accendere, e la frase che dice che si combinano: e' il «perche'» dei 20,3 milioni */
-.sezione.cifre .combina{margin:14px 18px 2px; padding-top:12px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; gap:9px; align-items:center}
-.combina .cbk{font-size:19px; font-weight:800; color:rgba(255,255,255,.92); text-align:center}
-.combina .cbr{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
-.combina .cbr span{display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; font-size:17px; font-weight:800; white-space:nowrap;
-  color:#fff; background:color-mix(in srgb, var(--cc) 16%, transparent); border:1.4px solid color-mix(in srgb, var(--cc) 62%, transparent)}
-.combina .cbr i{width:10px; height:10px; border-radius:50%; background:var(--cc); display:block}
-
-
-/* ── i nove ingredienti si presentano, uno alla volta e a caso ──
-   Ogni tanto uno dei nove (i tre numeri e le sei pastiglie) diventa piu' grande degli altri,
-   che si abbassano di tono, e dice in una riga che cosa e'. Mai in fila, mai tutti: a caso, a
-   intervalli diversi, cosi' non diventa un'insegna che lampeggia. */
-.sezione.cifre .combina .cbk{min-height:2.6em; display:flex; align-items:center; justify-content:center; transition:opacity .35s ease}
-.sezione.cifre .combina .cbk.cambia{opacity:0}
-.sezione.cifre [data-sp]{transition:transform .55s cubic-bezier(.22,1,.36,1), opacity .55s ease, filter .55s ease, box-shadow .55s ease}
-.sezione.cifre.spot [data-sp]{opacity:.38; filter:saturate(.7)}
-.sezione.cifre.spot [data-sp].acceso{opacity:1; filter:none}
-.nb[data-sp] .nv{transform-origin:left bottom; transition:transform .55s cubic-bezier(.22,1,.36,1)}
-.nb[data-sp].acceso .nv{transform:scale(1.25)}
-.nb[data-sp].acceso .nl{color:rgba(255,255,255,.85)}
-.combina .cbr span[data-sp].acceso{transform:scale(1.32); box-shadow:0 0 30px -4px var(--cc); background:color-mix(in srgb, var(--cc) 30%, transparent); position:relative; z-index:2}
-@media (prefers-reduced-motion:reduce){ .nb[data-sp].acceso .nv, .combina .cbr span[data-sp].acceso{transform:none} }
-
-/* ══ LE SEZIONI DELLA VETRINA ══
-   La colonna adesso e' divisa a occhio, non solo a spazi: sopra ogni
-   parte che ha bisogno di essere presentata c'e' un filo che attraversa
-   tutta la larghezza e, appoggiata sopra, la sua targhetta. Il filo dice
-   «qui comincia un'altra cosa» prima ancora che uno legga la targhetta.
-   Le parti che si presentano da sole — il manifesto, la faccina, il
-   tasto — il filo non ce l'hanno: sarebbe rumore. */
-/* I riquadri hanno un rilievo: un filo di luce sul bordo alto e
-   un'ombra sotto. Non e' decorazione — una carta che sembra appoggiata
-   sul fondo si distingue dal fondo anche di sfuggita, mentre una
-   disegnata sopra si legge solo se ci si ferma. */
-.sezione{margin-top:14px; flex:none; padding:12px 18px 14px; border-radius:32px;
-  background:rgba(255,255,255,.024); border:1px solid rgba(255,255,255,.085);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.055), 0 20px 44px -30px #000}
-/* la parte «cosa hai fatto oggi» ha l'altezza che le serve e basta: se
-   crescesse con lo schermo, su un monitor alto il pensiero diventerebbe
-   un riquadro mezzo vuoto. L'altezza che avanza va tutta nello spazio
-   sopra il tasto, dove non si vede — un tasto piu' staccato dal resto
-   non e' un difetto, un riquadro con dentro il vuoto si' */
-.sezione.porte{display:flex; flex-direction:column; flex:0 1 auto; min-height:0}
-.sezione.cifre{display:block; margin-top:14px; padding:14px 2px}   /* «cifre» e' anche la classe delle quattro cifre del cellulare: qui si annulla il suo flex */
-/* il titolo di sezione: prima era una riga sola di maiuscole piccole con
-   un trattino davanti — si leggeva come un'etichetta di servizio, non
-   come l'inizio di qualcosa. Adesso sono tre righe con tre pesi diversi:
-   l'occhiello dice DOVE sei, il titolo dice COSA, la riga sotto dice
-   cosa devi farci. Da dieci metri si legge il titolo; da due, tutto. */
-/* Il titolo di sezione parla la stessa lingua delle risposte: la
-   targhetta a pastiglia sopra, e sotto la domanda con la barra d'oro a
-   sinistra — identico a com'e' fatta una risposta quando la si apre.
-   Prima targhetta e domanda stavano sulla stessa riga, allineate alla
-   base: quindici punti accanto a trenta non si allineano a niente, e
-   la maiuscoletta in oro sembrava caduta li'. In colonna, con la barra
-   che le lega, si leggono come una cosa sola. */
-/* IL GRADINO. La testata non sta appoggiata dentro la sezione: sta su
-   un ripiano appena rialzato che occupa tutta la larghezza, e la riga
-   che lo chiude corre da bordo a bordo. E' quella riga a dire «qui
-   comincia un'altra cosa», prima ancora che uno legga l'etichetta —
-   ed e' il motivo per cui funziona sulla home del gestionale.
-   I margini negativi servono a farla arrivare ai bordi: la sezione ha
-   diciotto punti di respiro dentro, e il ripiano deve scavalcarli. */
-.sezt{margin:-12px -18px 10px; padding:12px 18px 11px;
-  border-radius:31px 31px 0 0;
-  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.008));
-  border-bottom:1px solid rgba(230,198,92,.26);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.09), 0 7px 16px -12px rgba(0,0,0,.9)}
-.seze{display:inline-flex; align-items:center; gap:9px; font-size:14px;
-  font-weight:800; letter-spacing:.2em; color:#eed37a;
-  padding:5px 14px 5px 11px; border-radius:999px;
-  background:rgba(230,198,92,.1); border:1.5px solid rgba(230,198,92,.42)}
-.seze i{width:9px; height:9px; border-radius:50%; background:#e6c65c;
-  flex:none; display:block}
-.sezh{display:block; margin-top:11px; font-size:28px; font-weight:800;
-  line-height:1.14; letter-spacing:-.015em; color:rgba(255,255,255,.92);
-  padding-left:15px; border-left:4px solid rgba(230,198,92,.7)}
-.sezd{display:block; margin-top:5px; padding-left:19px; font-size:17px;
-  line-height:1.3; color:rgba(255,255,255,.44)}
-
-/* ── la faccina, che adesso parla su una riga sola ──
-   La cornice non e' di un colore: e' un nastro di colori che gira
-   piano, sempre, anche quando la frase dentro non e' cambiata. Una
-   riga ferma su uno schermo pieno di cose ferme non si guarda; una che
-   cambia in continuazione, ma senza lampeggiare, si guarda per forza.
-   Il giro dura mezzo minuto apposta: piu' veloce diventerebbe un
-   allarme, e chi passa lo eviterebbe invece di toccarlo.
-   Gli angoli sono squadrati e non a pastiglia: la pastiglia diceva
-   «etichetta», il rettangolo dice «cosa su cui si preme». */
-.avatar{--tc:#e6c65c; --tb:rgba(230,198,92,.08); --tp:rgba(230,198,92,.2);
-  --margine-alto:18px;
-  --nastro:linear-gradient(rgba(13,10,18,.9), rgba(13,10,18,.9)) padding-box,
-    linear-gradient(100deg, #e6c65c, #e2bdd4, #a9779a, #8fd3ec, #88d9ae, #eed37a, #e6c65c)
-    border-box;
-  margin-top:18px; flex:none; display:flex; align-items:center; gap:22px;
-  padding:12px 26px 12px 16px; border-radius:20px;
-  border:2px solid transparent; background:var(--nastro);
-  background-size:auto, 320% 100%;
-  animation:nastro 30s linear infinite}
-/* il fondo va rimesso anche sotto il dito: se no .tocca:active lo
-   sostituisce con una tinta piatta e la cornice sparisce nel momento
-   esatto in cui uno la sta toccando */
-.avatar:active{background:var(--nastro); background-size:auto, 320% 100%}
-@keyframes nastro{
-  from{background-position:0 0, 0 50%}
-  to  {background-position:0 0, 320% 50%}}
-/* il colore che si legge — freccia e «TOCCA E LEGGI» — cambia insieme alla
-   frase, cosi' il cambio si vede anche a colpo d'occhio */
-.avatar .frecc, .bubble .mini{transition:color .6s ease, border-color .6s ease}
-.bubble .mini{color:var(--tc)}
-/* qui la pastiglia sta in mezzo, non nell'angolo: la riga è bassa e tonda */
-.avatar .frecc{position:static; flex:none}
-.orb{width:86px; height:86px; border-radius:50%; position:relative; flex:none; padding:10px; box-sizing:border-box;
-  background:radial-gradient(circle at 34% 30%, #3b2638, #140f19 72%);
-  box-shadow:0 0 0 2px rgba(230,198,92,.6), 0 10px 30px rgba(212,175,55,.28);
-  display:flex; align-items:center; justify-content:center;
-  animation:breathe 4.4s ease-in-out infinite}
+/* l'icona delle domande, in cima alla pagina delle domande */
 @keyframes breathe{0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-6px) scale(1.03)}}
-.orb::after{content:""; position:absolute; inset:-9px; border-radius:50%;
-  border:2px solid rgba(230,198,92,.45); animation:halo 3.2s ease-out infinite}
 .qico{width:100%; height:100%; display:block; overflow:visible}
-/* le due scintille si accendono a turno */
 .qico .sc1, .qico .sc2{transform-box:fill-box; transform-origin:50% 50%; animation:scintilla 3.6s ease-in-out infinite}
 .qico .sc2{animation-delay:1.8s}
 @keyframes scintilla{0%,100%{opacity:.35; transform:scale(.7)} 50%{opacity:1; transform:scale(1.15)}}
-@media (prefers-reduced-motion:reduce){ .qico .sc1, .qico .sc2{animation:none} }
 @keyframes halo{0%{transform:scale(.9); opacity:.8} 100%{transform:scale(1.28); opacity:0}}
-.alogo{display:none}
-.bubble{flex:1; min-width:0; font-size:27px; font-weight:800; line-height:1.22}
-.bubble .mini{display:block; font-size:19px; font-weight:800; letter-spacing:.14em;
-  margin-top:7px}
-
-/* ══ COSA FAI QUI · le cinque porte ══
-   Prima qui giravano tre domande a caso fra le trentuno, sempre
-   diverse: bello da vedere, ma nessuno capiva perche' proprio quelle
-   tre, e la cosa piu' naturale da chiedersi entrando — «io oggi ho
-   fatto la tal cosa, che c'entra Zenith?» — non ci stava.
-   Adesso la fascia e' fissa e dice una cosa sola: tocca quello che hai
-   fatto, e ti spiego perche' ti serve anche Zenith. Fluttua come
-   fluttuavano le bolle di prima — ferma non sembrerebbe piu' viva di
-   un cartello — e ogni tanto una carta si accende da sola: un invito
-   silenzioso, non un lampeggio che disturba. */
-.centro{flex:none}
-.cfila{display:flex; gap:14px}
-
-/* ══ IL PENSIERO, SOTTO LE CINQUE PORTE ══
-   Il riflettore da solo dice «guarda questa», ma non dice PERCHE'. Qui
-   sotto compare, nello stesso momento, quello che si leggerebbe
-   toccandola: chi passa e non tocca niente, in venti secondi si e'
-   letto tutti e cinque i motivi per cui gli conviene entrare.
-   Cresce con lo schermo: su un 49 pollici 16:9 sta nei suoi 188 punti,
-   su un monitor piu' alto si allarga da sola e la frase respira. */
-.pens{margin-top:8px; flex:1 1 auto; min-height:164px; display:flex;
-  align-items:center; gap:20px; padding:12px 20px; border-radius:26px;
-  cursor:pointer; position:relative; overflow:hidden;
-  background:color-mix(in srgb, var(--mc) 8%, rgba(255,255,255,.028));
-  border:1.5px solid color-mix(in srgb, var(--mc) 34%, transparent);
-  transition:background .55s ease, border-color .55s ease,
-    transform .13s cubic-bezier(.32,.72,0,1)}
-.pens{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),
-  0 18px 38px -22px color-mix(in srgb, var(--mc) 80%, transparent)}
-.pens:active{transform:scale(.992)}
-.pens .pi{box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
-  width:76px; height:76px; border-radius:23px; flex:none; display:flex;
-  align-items:center; justify-content:center; font-size:37px; line-height:1;
-  background:color-mix(in srgb, var(--mc) 22%, transparent);
-  border:1.5px solid color-mix(in srgb, var(--mc) 50%, transparent);
-  transition:background .55s ease, border-color .55s ease}
-/* La stessa barra laterale del foglio dei macchinari: quello che c'e'
-   scritto qui e' una risposta, e una risposta si riconosce dal segno
-   che ha accanto, non dal riquadro che la contiene. */
-.pens .px{flex:1; min-width:0; transition:opacity .3s ease;
-  padding-left:20px; border-left:4px solid color-mix(in srgb, var(--mc) 70%, transparent)}
-.pens.cambia .px{opacity:0}
-.pens .pt{display:block; font-size:27px; font-weight:800; line-height:1.16;
-  color:var(--mc)}
-.pens .pf{display:block; font-size:20.5px; line-height:1.4; margin-top:8px;
-  color:rgba(255,255,255,.72)}
-/* i grassetti sono la parte di Zenith, e in tutta l'app la parte di
-   Zenith e' d'oro: nel foglio dei macchinari, nel protocollo, qui */
-.pens .pf b{color:#eed37a}
-.pens .pfr{position:absolute; right:18px; bottom:16px; width:30px; height:30px;
-  border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:17px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
-  background:rgba(255,255,255,.08);
-  border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
-.ccard{border-radius:22px; padding:10px 10px 26px; display:flex; flex-direction:column;
-  align-items:center; gap:5px; text-align:center; flex:1; min-width:0; position:relative;
-  cursor:pointer;
-  border:2px solid var(--mc); background:color-mix(in srgb, var(--mc) 9%, transparent);
-  transition:transform .13s cubic-bezier(.32,.72,0,1), background .3s ease,
-    box-shadow .5s ease, border-color .5s ease}
-.ccard{box-shadow:inset 0 1px 0 rgba(255,255,255,.11),
-  0 13px 28px -15px color-mix(in srgb, var(--mc) 85%, transparent)}
-.ccard:active{transform:scale(.97); background:color-mix(in srgb, var(--mc) 20%, transparent)}
-.ccard .cci{box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
-.ccard:nth-child(1){animation:galleggiaC1 7s ease-in-out infinite}
-.ccard:nth-child(2){animation:galleggiaC2 8.2s ease-in-out infinite}
-.ccard:nth-child(3){animation:galleggiaC3 6.6s ease-in-out infinite}
-.ccard:nth-child(4){animation:galleggiaC4 9s ease-in-out infinite}
-.ccard:nth-child(5){animation:galleggiaC5 7.6s ease-in-out infinite}
-@keyframes galleggiaC1{0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)}}
-@keyframes galleggiaC2{0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}}
-@keyframes galleggiaC3{0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)}}
-@keyframes galleggiaC4{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
-@keyframes galleggiaC5{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
-.ccard .cci{width:38px; height:38px; border-radius:12px; flex:none; display:flex;
-  align-items:center; justify-content:center; font-size:20px; line-height:1;
-  background:color-mix(in srgb, var(--mc) 22%, transparent);
-  border:1px solid color-mix(in srgb, var(--mc) 48%, transparent)}
-.ccard .ccn{font-size:18.5px; font-weight:800; line-height:1.15; white-space:nowrap}
-.ccard .ccs{font-size:12.5px; color:rgba(255,255,255,.52); line-height:1.2;
-  white-space:nowrap; letter-spacing:-.01em}
-.ccard .cfr{position:absolute; right:10px; bottom:7px; width:24px; height:24px;
-  border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:14px; font-weight:800; line-height:1; padding-bottom:1px; color:var(--mc);
-  background:rgba(255,255,255,.08); border:1.4px solid color-mix(in srgb, var(--mc) 60%, transparent)}
-/* l'invito periodico: una carta alla volta si accende da sola, a
-   turno — non tutte insieme, o smetterebbe di dire «guarda proprio
-   questa» e tornerebbe rumore come tutto il resto */
-.ccard.spot{box-shadow:0 0 0 5px color-mix(in srgb, var(--mc) 24%, transparent),
-  inset 0 1px 0 rgba(255,255,255,.14),
-  0 18px 36px -14px color-mix(in srgb, var(--mc) 75%, transparent)}
-.ccard.spot .cci{background:color-mix(in srgb, var(--mc) 36%, transparent)}
-
-/* ── l'invito ── */
-/* ── l'invito ──
-   Prima era un blocco rosa pieno che pulsava e aveva pure il riflesso
-   che scorreva sopra: gridava piu' della capsula. Su un totem in una
-   sala d'attesa non serve gridare — serve essere l'unica cosa che ha
-   la forma di un tasto, ed esserlo con eleganza. Adesso il fondo e'
-   scuro e appena velato di viola, il filo intorno e' chiaro, la
-   freccia sta dentro una pastiglia piena: si vede da dieci metri
-   perche' e' largo e ha il bordo acceso, non perche' lampeggia.
-   E il margine sopra e' fisso: non si attacca mai a quello che lo
-   precede, nemmeno quando lo schermo e' cortissimo. */
-.cta{margin-top:20px; flex:none; display:flex; flex-direction:column}
-/* ══ I DUE INVITI GRANDI ══
-   Ce ne sono due in tutta l'app, e sono di due persone diverse: «Fai il
-   check-in» e' del cliente e sta in vetrina, «Apri il gestionale» e'
-   dell'operatore e sta in fondo alla schermata della seduta. Hanno la
-   stessa forma — quadrato dell'icona, titolo, riga sotto, freccia a
-   destra — perche' fanno la stessa cosa: portano da un'altra parte.
-   Ma non si devono confondere, e quindi cambiano temperatura: il
-   cliente ha il caldo (rosa e oro), l'operatore ha il freddo (viola e
-   blu); e cambia il peso della freccia — al cliente, che e' uno che
-   passa e non sa cosa fare, la freccia sta dentro una pastiglia piena;
-   all'operatore, che sa gia' dove va, basta un segno leggero.
-   E il titolo non urla piu': cinquantadue punti tutti maiuscoli erano
-   un cartello stradale. Quarantadue in tondo si leggono uguale da
-   dieci metri, e chiedono invece di ordinare. */
-.cta .btn{border-radius:28px; position:relative; overflow:hidden;
-  background:linear-gradient(120deg,#c595b7,#8a5579 55%,#6e3f60);
-  border:2px solid rgba(255,255,255,.28);
-  box-shadow:0 18px 50px -14px rgba(181,132,166,.75), inset 0 1px 0 rgba(255,255,255,.25);
-  animation:respiroCta 3.2s ease-in-out infinite;
-  display:flex; align-items:center; gap:20px; padding:20px 26px; cursor:pointer;
-  transition:transform .13s cubic-bezier(.32,.72,0,1), background .2s}
-.cta .btn:active{transform:scale(.99); background:linear-gradient(120deg,#b584a6,#7a496c)}
-@keyframes respiroCta{0%,100%{box-shadow:0 18px 50px -14px rgba(181,132,166,.6), 0 0 0 0 rgba(197,149,183,0), inset 0 1px 0 rgba(255,255,255,.25)}
-  50%{box-shadow:0 18px 50px -14px rgba(181,132,166,.9), 0 0 0 10px rgba(197,149,183,.16), inset 0 1px 0 rgba(255,255,255,.25)}}
-@media (prefers-reduced-motion:reduce){ .cta .btn{animation:none} }
-.cta .ic{width:74px; height:74px; border-radius:50%; flex:none; position:relative;
-  display:flex; align-items:center; justify-content:center; color:#fff;
-  background:rgba(255,255,255,.18)}
-.cta .tx{position:relative; flex:1; min-width:0; display:flex; flex-direction:column}
-.cta .t1{display:block; font-size:48px; font-weight:800; letter-spacing:-.012em;
-  line-height:1.06; white-space:nowrap}
-.cta .t2{display:block; font-size:20px; color:rgba(255,255,255,.85); margin-top:7px;
-  font-weight:600}
-.cta .go{width:54px; height:54px; border-radius:50%; flex:none; position:relative;
-  display:flex; align-items:center; justify-content:center; padding-bottom:4px;
-  font-size:32px; font-weight:800; color:#7a496c; background:#fff; width:62px; height:62px}
-.cta .hint{text-align:center; font-size:18px; color:rgba(255,255,255,.38); margin-top:10px}
-/* la faccina sotto il tasto: piu' stretta, e' la seconda strada */
-.cta .avatar{align-self:center; width:88%; margin-top:22px}
-
-
 /* ══════════════════════════════════════════════════════════════
    2 · LE DOMANDE — a tutta larghezza, non più una colonnina
    ══════════════════════════════════════════════════════════════ */
@@ -1436,6 +1056,282 @@ html,body{overscroll-behavior:none}
 .dbg .b2.mai{color:rgba(255,255,255,.22); font-weight:400}
 .dbg i{font-style:normal; opacity:.8}
 
+
+/* ══════════════════════════════════════════════════════════════
+   LA VETRINA NUOVA (v170) — il totem da 50 pollici
+   Una colonna sola, cinque fasce: la frase grande con la capsula, i sei
+   bisogni da toccare, il nastro di oggi, l'invito, e le due strade in
+   piu' (domande e respiro). Le misure sono quelle del render approvato.
+   ══════════════════════════════════════════════════════════════ */
+.gold{background:linear-gradient(95deg,#f7e3a0,#e6c65c 45%,#d4a43a); -webkit-background-clip:text; background-clip:text; color:transparent}
+.vetr{left:64px; right:64px; top:10.2%; bottom:4.6%; justify-content:space-between}
+.zpast{width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; line-height:1;
+  background:rgba(255,255,255,.12); border:2px solid rgba(255,255,255,.28); color:#fff; flex:none; padding-bottom:3px}
+
+/* ── la frase grande, con la capsula a destra ── */
+.zhero{position:relative; height:548px; flex:none}
+.zgancio{display:inline-flex; align-items:center; gap:18px; padding:12px 24px 12px 22px; border-radius:999px; font-size:21px; font-weight:800; letter-spacing:.2em;
+  background:rgba(226,189,212,.10); border:1.5px solid rgba(226,189,212,.35); color:#f1d9e7}
+.zgancio i{width:12px; height:12px; border-radius:50%; background:#e6c65c; animation:zpolso 1.6s ease-out infinite}
+@keyframes zpolso{0%{box-shadow:0 0 0 0 rgba(230,198,92,.7)} 100%{box-shadow:0 0 0 16px rgba(230,198,92,0)}}
+.zslides{position:relative; height:384px; margin-top:28px; z-index:3; cursor:pointer}
+.zslide{position:absolute; left:0; top:0; width:566px; opacity:0; animation:zgira 24s infinite both}
+.zslide .h1{font-size:112px; line-height:.98; font-weight:800; letter-spacing:-.045em; white-space:nowrap}
+.zslide .sub{margin-top:24px; font-size:34px; line-height:1.32; color:rgba(255,255,255,.78); font-weight:500}
+.zslide .sub b{color:#fff}
+@keyframes zgira{0%{opacity:0; transform:translateY(26px)} 2%{opacity:1; transform:none} 15.5%{opacity:1; transform:none} 16.66%{opacity:0; transform:translateY(-20px)} 100%{opacity:0}}
+.zriga{display:flex; align-items:center; gap:26px; margin-top:22px; position:relative; z-index:3}
+.zdots{display:flex; gap:10px; flex:none}
+.zdots i{width:16px; height:16px; border-radius:999px; background:rgba(255,255,255,.18); animation:zpunto 24s infinite both}
+@keyframes zpunto{0%{width:16px; background:rgba(255,255,255,.18)} 2%{width:54px; background:#e6c65c} 15.5%{width:54px; background:#e6c65c} 16.66%{width:16px; background:rgba(255,255,255,.18)} 100%{width:16px; background:rgba(255,255,255,.18)}}
+.ztre{display:flex; gap:10px; margin-left:auto}
+.ztre span{font-size:21px; font-weight:700; padding:10px 17px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.88); white-space:nowrap}
+.ztre span b{color:#e6c65c}
+.zcaps{position:absolute; right:-46px; top:46px; width:430px; height:430px; pointer-events:none; animation:zgalla 6s ease-in-out infinite alternate}
+@keyframes zgalla{from{transform:translateY(-8px)} to{transform:translateY(10px)}}
+.zcaps .alone{position:absolute; inset:30px; border-radius:50%; background:radial-gradient(circle, rgba(226,189,212,.34), rgba(122,73,108,.14) 55%, transparent 70%)}
+.zcaps .cer{position:absolute; border-radius:50%; border:2px solid rgba(230,198,92,.38)}
+.zcaps .c1{inset:22px} .zcaps .c2{inset:68px; border-color:rgba(226,189,212,.3)} .zcaps .c3{inset:-10px; border-color:rgba(230,198,92,.16); border-style:dashed; animation:zruota 60s linear infinite}
+@keyframes zruota{to{transform:rotate(360deg)}}
+.zcaps svg{position:absolute; left:28px; top:108px; width:376px}
+.zcaps .didas{position:absolute; left:0; right:0; bottom:-6px; text-align:center; font-size:15px; font-weight:800; letter-spacing:.34em; color:rgba(243,220,138,.75)}
+.zorb{position:absolute; font-size:20px; font-weight:800; padding:9px 16px; border-radius:999px; background:rgba(16,12,20,.9);
+  border:1.5px solid var(--c); color:#fff; box-shadow:0 0 26px -6px var(--c); white-space:nowrap; animation:zbob 4s ease-in-out infinite alternate}
+.zorb i{display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:9px; vertical-align:1px; box-shadow:0 0 12px var(--c)}
+@keyframes zbob{from{transform:translateY(-5px)} to{transform:translateY(6px)}}
+
+/* ── i sei bisogni ── */
+.zbisogni{flex:none}
+.zbis-t .t{font-size:64px; font-weight:800; letter-spacing:-.03em; line-height:1.08}
+.zbis-t .d{font-size:28px; color:rgba(255,255,255,.66); margin-top:6px; font-weight:500}
+.zbis-t .d b{color:#fff}
+.zgri{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:24px}
+.zbis{--c:#dcab63; position:relative; height:228px; border-radius:32px; padding:22px 22px 20px; cursor:pointer;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--c) 24%, #17121c), #141018 72%);
+  border:2px solid color-mix(in srgb, var(--c) 60%, transparent); box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08);
+  animation:zaccendi 24s infinite both; transition:filter .15s}
+.zbis:active{filter:brightness(1.25)}
+@keyframes zaccendi{0%{transform:none; box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08); border-color:color-mix(in srgb, var(--c) 60%, transparent)}
+  2%{transform:scale(1.045); box-shadow:0 0 0 7px color-mix(in srgb, var(--c) 22%, transparent), 0 26px 54px -20px var(--c); border-color:var(--c)}
+  15.5%{transform:scale(1.045); box-shadow:0 0 0 7px color-mix(in srgb, var(--c) 22%, transparent), 0 26px 54px -20px var(--c); border-color:var(--c)}
+  16.66%{transform:none; box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08); border-color:color-mix(in srgb, var(--c) 60%, transparent)}
+  100%{transform:none}}
+.zbis .ic{width:88px; height:88px; border-radius:27px; display:flex; align-items:center; justify-content:center; color:color-mix(in srgb, var(--c) 70%, #fff);
+  background:color-mix(in srgb, var(--c) 34%, #1a141f); border:1.5px solid color-mix(in srgb, var(--c) 55%, transparent); box-shadow:0 0 34px -6px var(--c)}
+.zic svg, .zbis .ic svg{width:56px; height:56px; fill:none; stroke:currentColor; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round}
+.zbis .n{font-size:31px; font-weight:800; margin-top:16px; letter-spacing:-.015em; line-height:1.08; white-space:nowrap}
+.zbis .s{font-size:21px; color:rgba(255,255,255,.66); margin-top:5px; font-weight:500}
+.zbis .zpast{position:absolute; right:18px; bottom:18px; background:color-mix(in srgb, var(--c) 30%, transparent); border-color:color-mix(in srgb, var(--c) 75%, transparent)}
+
+/* ── il nastro di oggi ── */
+.zdir{flex:none; height:80px; border-radius:24px; display:flex; align-items:center; gap:18px; padding:0 22px;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.1); overflow:hidden}
+.zdir .live{flex:none; display:flex; align-items:center; gap:10px; font-size:17px; font-weight:800; letter-spacing:.18em; color:#ff9fb0}
+.zdir .live i{width:12px; height:12px; border-radius:50%; background:#ff5f7a; animation:zpolso2 1.4s ease-out infinite}
+@keyframes zpolso2{0%{box-shadow:0 0 0 0 rgba(255,95,122,.7)} 100%{box-shadow:0 0 0 12px rgba(255,95,122,0)}}
+.zdir.prima .live{color:#f3dc8a} .zdir.prima .live i{background:#e6c65c; animation-name:zpolso}
+.znastro{flex:1; min-width:0; overflow:hidden; -webkit-mask-image:linear-gradient(90deg, transparent, #000 7%, #000 90%, transparent); mask-image:linear-gradient(90deg, transparent, #000 7%, #000 90%, transparent)}
+.znastro div{display:inline-block; white-space:nowrap; font-size:25px; font-weight:700; color:#f3dc8a; animation:zscorri 30s linear infinite}
+.znastro em{font-style:normal; color:rgba(255,255,255,.3); margin:0 16px}
+@keyframes zscorri{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+.zdir .conto{flex:none; font-size:19px; font-weight:800; padding:8px 15px; border-radius:999px; background:rgba(230,198,92,.14); color:#f3dc8a; border:1px solid rgba(230,198,92,.4)}
+.zdir .conto:empty{display:none}
+
+/* ── l'invito ── */
+.zinvito{position:relative; flex:none; padding-top:26px}
+.zcart{position:absolute; top:0; right:36px; z-index:4; font-size:21px; font-weight:800; padding:9px 20px; border-radius:999px; color:#2a1a10; cursor:pointer;
+  background:linear-gradient(95deg,#f7e3a0,#e6c65c); box-shadow:0 10px 26px -10px #e6c65c}
+.zcta{position:relative; height:166px; border-radius:44px; display:flex; align-items:center; gap:26px; padding:0 30px 0 26px; overflow:hidden; cursor:pointer;
+  background:linear-gradient(120deg,#b685a8,#8a5579 55%,#6d3f60); box-shadow:0 30px 60px -24px rgba(169,119,154,.9), inset 0 1px 0 rgba(255,255,255,.3);
+  transition:transform .13s cubic-bezier(.32,.72,0,1)}
+.zcta:active{transform:scale(.99)}
+.zcta::after{content:''; position:absolute; top:-40%; bottom:-40%; width:160px; left:-220px; transform:skewX(-20deg);
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.34), transparent); animation:zlampo 4s ease-in-out infinite; pointer-events:none}
+@keyframes zlampo{0%{left:-220px} 45%{left:110%} 100%{left:110%}}
+.zcta .mano{width:110px; height:110px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; flex:none}
+.zcta .mano svg{width:60px; height:60px; fill:none; stroke:#fff; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; animation:ztocca 1.6s ease-in-out infinite}
+@keyframes ztocca{0%,100%{transform:none} 45%{transform:translateY(7px) scale(.94)}}
+.zcta .tx{display:flex; flex-direction:column; min-width:0}
+.zcta .t1{font-size:66px; font-weight:800; letter-spacing:-.03em; line-height:1; white-space:nowrap}
+.zcta .t2{font-size:25px; color:rgba(255,255,255,.9); margin-top:10px; font-weight:600}
+.zcta .vai{margin-left:auto; width:92px; height:92px; border-radius:50%; background:#fff; color:#6d3f60; font-size:52px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; line-height:1; padding-bottom:6px;
+  animation:zbatti 1.6s ease-out infinite}
+@keyframes zbatti{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)} 100%{box-shadow:0 0 0 26px rgba(255,255,255,0)}}
+.zdue{flex:none; display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.zsec{height:96px; border-radius:26px; display:flex; align-items:center; gap:16px; padding:0 20px; cursor:pointer;
+  background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.16)}
+.zsec:active{background:rgba(255,255,255,.12)}
+.zsec .e{width:58px; height:58px; border-radius:18px; background:rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; font-size:30px; flex:none}
+.zsec b{display:block; font-size:25px; font-weight:800; line-height:1.15}
+.zsec small{display:block; font-size:19px; color:rgba(255,255,255,.6); font-weight:600; margin-top:2px}
+.zsec .zpast{margin-left:auto; width:40px; height:40px; font-size:22px}
+@media (prefers-reduced-motion:reduce){ .zslide, .zdots i, .zbis, .zcta::after, .znastro div{animation-duration:0s} }
+
+/* ── la barra in cima alle pagine interne ── */
+.ztop{position:absolute; top:52px; left:56px; right:56px; display:flex; align-items:center; justify-content:space-between; z-index:20}
+.zind{font-size:26px; font-weight:800; padding:16px 28px; border-radius:999px; background:rgba(255,255,255,.07); border:2px solid rgba(255,255,255,.18); cursor:pointer}
+.zind:active{background:rgba(255,255,255,.16)}
+.ztop .zlogo{height:46px}
+
+/* ══ SCOPRI COSA FA PER TE ══ */
+.zscopri{position:absolute; top:184px; left:64px; right:64px; bottom:66px; display:flex; flex-direction:column}
+.zscopri .sub{font-size:34px; line-height:1.32; color:rgba(255,255,255,.78); font-weight:500; margin-top:20px}
+.zscopri .sub b{color:#fff}
+.zbigic{width:112px; height:112px; border-radius:34px; display:flex; align-items:center; justify-content:center; color:color-mix(in srgb, var(--c) 82%, #fff);
+  background:color-mix(in srgb, var(--c) 22%, transparent); border:2px solid color-mix(in srgb, var(--c) 55%, transparent); box-shadow:0 0 60px -10px var(--c)}
+.zbigic svg{width:66px; height:66px; fill:none; stroke:currentColor; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round}
+.zscopri .lab{display:inline-block; font-size:21px; font-weight:800; letter-spacing:.2em; color:var(--c); margin-top:26px}
+.zscopri .h2{font-size:100px; line-height:1; font-weight:800; letter-spacing:-.04em; margin-top:12px}
+.zscopri > *{flex-shrink:0}
+.zscopri .sez{font-size:20px; font-weight:800; letter-spacing:.22em; color:rgba(255,255,255,.55); margin:32px 0 14px}
+.zmom3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+.zmom{border-radius:28px; padding:22px 22px 24px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)}
+.zmom .q{font-size:19px; font-weight:800; letter-spacing:.16em; color:var(--c)}
+.zmom .w{font-size:42px; font-weight:800; margin-top:6px; letter-spacing:-.02em}
+.zmom .x{font-size:23px; line-height:1.35; color:rgba(255,255,255,.8); margin-top:10px; font-weight:500}
+.zfun4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.zfz{--fc:#f5851f; border-radius:24px; padding:18px 14px; text-align:center; background:color-mix(in srgb, var(--fc) 14%, #141018);
+  border:2px solid color-mix(in srgb, var(--fc) 65%, transparent); box-shadow:0 0 30px -14px var(--fc)}
+.zfz .e{font-size:42px; line-height:1.1}
+.zfz .n{font-size:23px; font-weight:800; margin-top:8px}
+.zfz .s{font-size:18px; color:rgba(255,255,255,.65); margin-top:4px; line-height:1.3}
+.znasce{margin-top:30px; border-radius:32px; padding:26px 30px; background:linear-gradient(135deg, rgba(230,198,92,.16), rgba(122,73,108,.18)); border:1.5px solid rgba(230,198,92,.45)}
+.znasce .k{font-size:20px; font-weight:800; letter-spacing:.2em; color:#f3dc8a}
+.znasce .p{font-size:26px; color:rgba(255,255,255,.82); margin-top:10px; line-height:1.35}
+.znasce .nm{font-size:60px; font-weight:800; letter-spacing:-.025em; margin-top:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.znasce .ct{font-size:21px; color:rgba(255,255,255,.55); margin-top:4px}
+.zcome{display:flex; gap:10px; margin-top:24px; flex-wrap:wrap}
+.zcome span{font-size:21px; font-weight:700; padding:10px 16px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.88); white-space:nowrap}
+.zanche{margin-top:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding-top:18px}
+.zanche em{flex-basis:100%; margin-bottom:2px}
+.zanche em{font-style:normal; font-size:17px; font-weight:800; letter-spacing:.16em; color:rgba(255,255,255,.5); margin-right:4px}
+.zanche span{font-size:19px; font-weight:800; padding:9px 14px; border-radius:999px; background:rgba(255,255,255,.06); border:1.5px solid color-mix(in srgb, var(--k) 60%, transparent); white-space:nowrap; cursor:pointer}
+.zcta2{margin-top:22px; height:152px; border-radius:42px; display:flex; align-items:center; gap:24px; padding:0 30px; cursor:pointer; flex:none;
+  background:linear-gradient(120deg,#b685a8,#8a5579 55%,#6d3f60); box-shadow:0 30px 60px -24px rgba(169,119,154,.9)}
+.zcta2:active{transform:scale(.99)}
+.zcta2 .t1{font-size:54px; font-weight:800; letter-spacing:-.025em; line-height:1.05}
+.zcta2 .t2{font-size:23px; color:rgba(255,255,255,.88); margin-top:6px; font-weight:600}
+.zcta2 .vai{margin-left:auto; width:84px; height:84px; border-radius:50%; background:#fff; color:#6d3f60; font-size:48px; font-weight:800; display:flex; align-items:center; justify-content:center; line-height:1; flex:none; padding-bottom:5px}
+
+/* ══ RESPIRA CON ZENITH ══
+   Quattro secondi dentro, due fermi, sei fuori: il ritmo che abbassa
+   i giri. La palla si gonfia e si sgonfia, l'anello d'oro conta il giro. */
+.zresp{position:absolute; inset:0}
+.zr-t{position:absolute; top:200px; left:40px; right:40px; text-align:center}
+.zr-t .k{font-size:22px; font-weight:800; letter-spacing:.3em; color:#f1d9e7}
+.zr-t .t{font-size:84px; font-weight:800; letter-spacing:-.035em; margin-top:16px}
+.zr-t .d{font-size:30px; color:rgba(255,255,255,.7); margin:16px auto 0; max-width:780px; line-height:1.35}
+.zsfera{position:absolute; left:50%; margin-left:-350px; top:29%; width:700px; height:700px}
+.zsfera .o1{position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle, rgba(230,198,92,.20), rgba(226,189,212,.12) 45%, transparent 70%)}
+.zsfera .o2{position:absolute; inset:110px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #f6dcea, #c991b6 45%, #7a496c 85%);
+  box-shadow:0 0 120px rgba(226,189,212,.5), inset 0 -30px 60px rgba(60,20,50,.5); transform:scale(.62)}
+.zsfera .o3{position:absolute; inset:70px; border-radius:50%; border:3px solid rgba(255,255,255,.12)}
+.zsfera svg{position:absolute; inset:40px; width:620px; height:620px; transform:rotate(-90deg)}
+.zsfera .tx{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#2a1224}
+.zsfera .tx b{font-size:84px; font-weight:800; letter-spacing:-.03em}
+.zsfera .tx span{font-size:30px; font-weight:800; letter-spacing:.2em; margin-top:2px}
+.zfasi{position:absolute; top:68.5%; left:0; right:0; display:flex; justify-content:center; gap:16px}
+.zfasi span{font-size:24px; font-weight:800; padding:12px 24px; border-radius:999px; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.14); color:rgba(255,255,255,.6); transition:all .3s}
+.zfasi span.on{background:rgba(226,189,212,.18); border-color:#e2bdd4; color:#fff}
+.zdopo{position:absolute; left:64px; right:64px; bottom:4.4%; border-radius:36px; padding:34px 36px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)}
+.zdopo .p{font-size:31px; line-height:1.38; color:rgba(255,255,255,.86)}
+.zdopo .p b{color:#f3dc8a}
+.zdopo .row{display:flex; gap:18px; margin-top:26px}
+.btnp{flex:1; height:110px; border-radius:32px; display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:800; cursor:pointer;
+  background:linear-gradient(120deg,#b685a8,#8a5579 55%,#6d3f60); box-shadow:0 20px 40px -20px rgba(169,119,154,.9)}
+.btns{width:300px; height:110px; border-radius:32px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:27px; font-weight:800; cursor:pointer; background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.18)}
+.btnp:active, .btns:active{transform:scale(.985)}
+
+/* ══ IL CHECK-IN IN QUATTRO PASSI ══ */
+.zprog{position:absolute; top:3.4%; left:64px; right:64px; z-index:16}
+.zprog .barre{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.zprog .barre i{height:12px; border-radius:999px; background:rgba(255,255,255,.12); transition:background .4s}
+.zprog .barre i.fatto{background:#e6c65c} .zprog .barre i.now{background:linear-gradient(90deg,#e6c65c,#e2bdd4)}
+.zprog .zrg{display:flex; justify-content:space-between; align-items:center; margin-top:22px; min-height:62px}
+.zprog .ps{font-size:22px; font-weight:800; letter-spacing:.2em; color:rgba(255,255,255,.6)}
+.zciao{display:inline-flex; align-items:center; gap:12px; font-size:24px; font-weight:800; padding:8px 20px 8px 8px; border-radius:999px; cursor:pointer;
+  background:rgba(95,208,138,.12); border:1.5px solid rgba(95,208,138,.5)}
+.zciao i{width:46px; height:46px; border-radius:50%; background:#5fd08a; color:#0c2a18; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:22px}
+.zciao u{text-decoration:none; color:rgba(255,255,255,.66); font-weight:700}
+.zciao.nuovo{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.2)} .zciao.nuovo i{background:#e6c65c; color:#2a1a10}
+.zesci{font-size:24px; font-weight:800; padding:12px 24px; border-radius:999px; background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16); cursor:pointer}
+.form .fhead{top:10.2%; left:64px; right:64px; height:auto; text-align:left}
+.form .q{font-size:84px; letter-spacing:-.04em; line-height:1.02; margin-top:0}
+.form .qs{font-size:30px; color:rgba(255,255,255,.66); margin-top:16px; font-weight:500}
+.form .corpo{top:25%; height:55.4%; left:64px; right:64px}
+.corpo.connome{top:20.4%; bottom:13.6%}
+.form .qrecap{top:81.2%; height:5.4%; left:64px; right:64px; justify-content:flex-start}
+.form .navrow{left:64px; right:64px}
+.form .qrecap .rc{font-size:22px; padding:10px 18px; border-radius:999px}
+.form .qrecap .rc em{font-size:15px}
+.form.ultimo #fnext{background:linear-gradient(120deg,#e9cf73,#d4a43a); color:#2a1a10; box-shadow:0 22px 46px -22px #e6c65c; font-size:40px}
+/* il passo 2: quattro macchinari a due a due, e «niente allenamento» largo */
+.opts.att4{grid-template-columns:1fr 1fr; grid-auto-rows:300px; gap:24px}
+.opts.att4 .opt{flex-direction:column; align-items:flex-start; justify-content:flex-start; padding:32px; border-radius:38px; gap:0;
+  border:2.5px solid color-mix(in srgb, var(--c) 70%, transparent);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--c) 22%, #17121c), #141018 75%); box-shadow:0 22px 46px -30px var(--c)}
+.opts.att4 .opt .oi{width:104px; height:104px; border-radius:30px; font-size:58px; background:color-mix(in srgb, var(--c) 24%, transparent); border:0}
+.opts.att4 .opt .ox{margin-top:26px}
+.opts.att4 .opt .ot{font-size:56px; letter-spacing:-.02em; line-height:1.05}
+.opts.att4 .opt .od{font-size:26px; color:rgba(255,255,255,.68); margin-top:6px}
+.opts.att4 .opt .ck{position:absolute; right:26px; bottom:26px}
+.opts.att4 .opt.largo{grid-column:1 / -1; flex-direction:row; align-items:center; gap:30px}
+.opts.att4 .opt.largo .ox{margin-top:0}
+.opts.att4 .opt.largo .ot{font-size:50px}
+.opts.att4 .opt.sel{border-color:var(--c); box-shadow:0 0 0 6px color-mix(in srgb, var(--c) 24%, transparent)}
+.form .qinfo{margin-top:18px}
+/* il passo 4: come vuoi uscire, e come stai */
+.zfine{display:flex; flex-direction:column; gap:22px}
+.zobi{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.zob{--c:#b3799a; height:190px; border-radius:30px; padding:22px 22px; position:relative; cursor:pointer;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--c) 22%, #17121c), #141018 75%); border:2px solid color-mix(in srgb, var(--c) 55%, transparent)}
+.zob .e{font-size:50px; line-height:1.1}
+.zob .n{font-size:30px; font-weight:800; margin-top:10px; line-height:1.08; white-space:nowrap}
+.zob .s{font-size:20px; color:rgba(255,255,255,.64); margin-top:6px; line-height:1.3}
+.zob.sel{border-color:var(--c); box-shadow:0 0 0 6px color-mix(in srgb, var(--c) 24%, transparent), 0 20px 40px -18px var(--c)}
+.zob.sel::after{content:'✓'; position:absolute; top:16px; right:16px; width:46px; height:46px; border-radius:50%; background:var(--c); color:#130d16; font-size:26px; font-weight:800; display:flex; align-items:center; justify-content:center}
+.zq2{font-size:52px; font-weight:800; letter-spacing:-.03em; margin-top:8px}
+.zum5{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+.zum{height:170px; border-radius:30px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; cursor:pointer; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.14)}
+.zum .e{font-size:60px; line-height:1.1} .zum .n{font-size:23px; font-weight:800}
+.zum.sel{background:rgba(230,198,92,.14); border-color:#e6c65c; box-shadow:0 0 0 6px rgba(230,198,92,.16)}
+.zpress{border-radius:30px; padding:20px 24px 22px; background:rgba(255,255,255,.04); border:1.5px dashed rgba(255,255,255,.22)}
+.zpress .k{font-size:25px; font-weight:800}
+.zpress .k small{font-size:20px; color:rgba(255,255,255,.55); font-weight:600; margin-left:10px}
+.zpress .sg{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px}
+.zpress.due .sg{grid-template-columns:repeat(2,1fr)}
+.zpress .sg span{font-size:25px; font-weight:800; padding:16px 0; text-align:center; border-radius:20px; cursor:pointer; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.16)}
+.zpress .sg span.on{background:rgba(226,189,212,.2); border-color:#e2bdd4}
+.zpress.chiedi{border-style:solid; border-color:rgba(230,198,92,.55)}
+
+/* ══ FATTO ══ */
+.zfatto{padding:120px 64px 40px; display:flex; flex-direction:column; gap:26px}
+.zfatto .okk{text-align:center}
+.zfatto .spunta{width:160px; height:160px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:86px; font-weight:800; color:#2a1a10;
+  background:linear-gradient(140deg,#f7e3a0,#d4a43a); box-shadow:0 0 0 18px rgba(230,198,92,.14), 0 0 80px rgba(230,198,92,.5); animation:pop .7s cubic-bezier(.22,1.4,.36,1) both}
+.zfatto .okk .t{font-size:96px; font-weight:800; letter-spacing:-.04em; margin-top:36px; line-height:1.05}
+.zfatto .tuo{border-radius:40px; padding:34px 36px 38px; text-align:center; margin-top:14px;
+  background:linear-gradient(160deg, rgba(122,73,108,.36), rgba(20,16,24,.9)); border:2px solid rgba(230,198,92,.5); box-shadow:0 30px 70px -30px rgba(230,198,92,.5)}
+.zfatto .tuo .k{font-size:21px; font-weight:800; letter-spacing:.24em; color:#f3dc8a}
+.zfatto .tuo .nm{font-size:80px; font-weight:800; letter-spacing:-.035em; margin-top:14px; line-height:1.05}
+.zfatto .tuo .ct{font-size:25px; color:rgba(255,255,255,.64); margin-top:12px}
+.zacc{display:flex; justify-content:center; gap:12px; margin-top:24px; flex-wrap:wrap}
+.zacc span{font-size:23px; font-weight:800; padding:10px 18px; border-radius:999px; border:1.5px solid var(--c); background:color-mix(in srgb, var(--c) 16%, transparent)}
+.zfatto .chiama{display:flex; align-items:center; gap:24px; border-radius:32px; padding:26px 30px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)}
+.zfatto .chiama .avv{width:100px; height:100px; border-radius:50%; background:var(--oc,#7cc6b8); color:#0e2420; display:flex; align-items:center; justify-content:center; font-size:40px; font-weight:800; flex:none;
+  box-shadow:0 0 0 8px color-mix(in srgb, var(--oc,#7cc6b8) 22%, transparent)}
+.zfatto .chiama .t{font-size:40px; font-weight:800; line-height:1.15}
+.zfatto .chiama .s{font-size:25px; color:rgba(255,255,255,.66); margin-top:4px}
+.zfilo{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.zfilo div{border-radius:26px; padding:22px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1)}
+.zfilo b{display:block; font-size:19px; letter-spacing:.18em; color:var(--c)}
+.zfilo span{display:block; font-size:24px; margin-top:8px; line-height:1.3; color:rgba(255,255,255,.85)}
+.zfatto .zpremio{margin:0; max-width:none}
+.zattesa{height:112px; border-radius:30px; display:flex; align-items:center; gap:18px; padding:0 26px; cursor:pointer; background:rgba(226,189,212,.10); border:2px solid rgba(226,189,212,.4)}
+.zattesa .e{font-size:44px} .zattesa b{font-size:29px; font-weight:800; display:block} .zattesa small{font-size:21px; color:rgba(255,255,255,.65); display:block}
+.zattesa .zpast{margin-left:auto}
+.zfatto .chiude{text-align:center; font-size:22px; color:rgba(255,255,255,.4); font-weight:600; margin-top:6px}
+.zfatto .chiude .giu{display:inline-block; margin:0; font-size:22px; letter-spacing:0}
 </style>
 </head>
 <body>
@@ -1450,100 +1346,94 @@ html,body{overscroll-behavior:none}
     <div class="ente">CENTRO DI RECUPERO BIOMUSCOLARE · POMPEI</div>
   </div>
 
-  <!-- ═══ 1 · VETRINA ═══ -->
+  <!-- ═══ 1 · VETRINA ═══
+       Una colonna sola, letta dall'alto in basso come la legge chi passa:
+       prima si riconosce («la schiena ti tira?»), poi tocca il suo bisogno
+       e scopre cosa ci fa Zenith, poi vede che oggi la capsula ha gia'
+       lavorato, e solo alla fine trova l'invito. Le sei frasi in alto e le
+       sei carte dei bisogni girano insieme: la carta che si accende e' quella
+       della frase che si sta leggendo. -->
   <section class="scene on" id="s-idle">
     <div class="vetr">
 
-      <!-- il manifesto: la frase che gira, e la capsula che ferma l'occhio -->
-      <div class="hero">
-        <div id="roams"></div>
-        <div class="hp">
-          <div class="pod"><div class="glow"></div>
-          <svg width="432" height="206" viewBox="66 50 480 300" preserveAspectRatio="xMidYMid meet" fill="none" aria-hidden="true">
-<defs>
- <linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2536"/><stop offset=".6" stop-color="#1a1320"/><stop offset="1" stop-color="#0f0b13"/></linearGradient>
- <linearGradient id="gb2" x1="0" x2="1"><stop offset="0" stop-color="#f3dc8a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#d4af37" stop-opacity=".1"/></linearGradient>
- <radialGradient id="gb3" cx=".45" cy=".55" r=".5"><stop offset="0" stop-color="#e2bdd4" stop-opacity=".55"/><stop offset="1" stop-color="#e2bdd4" stop-opacity="0"/></radialGradient>
- <linearGradient id="gb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#e2bdd4" stop-opacity=".8"/></linearGradient>
- <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37" stop-opacity=".28"/><stop offset="1" stop-color="#d4af37" stop-opacity="0"/></linearGradient>
-</defs>
-<!-- il guscio pieno, col bordo che si accende d'oro -->
-<path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="url(#gb1)"/>
-<path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
-<path d="M112 84 C140 58 182 56 206 80 C220 96 214 120 196 124" fill="url(#gb1)" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
-<ellipse cx="290" cy="200" rx="190" ry="80" fill="url(#gb3)"/>
-<!-- la persona in gravita' zero, illuminata da dentro -->
-<circle cx="180" cy="130" r="18" fill="url(#gb4)"/>
-<path d="M170 150 C176 146 196 144 204 152 C222 176 244 200 272 214 L336 176 C344 172 352 174 356 180 L424 194 C432 196 432 208 424 210 L352 202 L282 238 C270 244 256 242 246 236 C214 218 186 190 168 166 C164 160 164 154 170 150 Z" fill="url(#gb4)"/>
-<!-- il riflesso sul pavimento -->
-<path d="M150 300 C250 330 380 322 470 290 L470 312 C380 342 250 348 150 322 Z" fill="url(#gbr)"/>
-<path d="M120 326 H500" stroke="#d4af37" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"/>
-</svg>
-          <div class="pill pb1"><span>🪶</span>Zero gravità</div>
+      <div class="zhero">
+        <span class="zgancio"><i></i>TI SUCCEDE?</span>
+        <div class="zslides" id="zslides" onclick="apriBisognoCorrente()"></div>
+        <div class="zriga">
+          <div class="zdots" id="zdots"></div>
+          <div class="ztre"><span>🛋️ Sdraiato e vestito</span><span>⏱ <b>20–30</b> min</span><span>✦ Su misura per te</span></div>
         </div>
-        <!-- i premi: tutti i clienti concorrono, e deve saltare all'occhio.
-             Sta sotto la capsula, nella colonna che la frase lascia libera:
-             cosi' non ruba altezza a nessuna fascia -->
-        <div class="nastro tocca" id="nastro" onclick="apriRegolamento()">
-          <span class="nsi">🎁</span>
-          <span class="nst" id="nastrot"><b>La costanza ha il suo premio</b>
-            <small>Ogni seduta ti avvicina a una seduta in regalo.</small></span>
-          <span class="nsg">Scopri come ›</span>
-        </div>
+        <div class="zcaps" aria-hidden="true">
+          <div class="alone"></div><div class="cer c3"></div><div class="cer c1"></div><div class="cer c2"></div>
+          <svg viewBox="66 50 480 300" fill="none">
+            <defs>
+             <linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2536"/><stop offset=".6" stop-color="#1a1320"/><stop offset="1" stop-color="#0f0b13"/></linearGradient>
+             <linearGradient id="gb2" x1="0" x2="1"><stop offset="0" stop-color="#f3dc8a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#d4af37" stop-opacity=".1"/></linearGradient>
+             <radialGradient id="gb3" cx=".45" cy=".55" r=".5"><stop offset="0" stop-color="#e2bdd4" stop-opacity=".55"/><stop offset="1" stop-color="#e2bdd4" stop-opacity="0"/></radialGradient>
+             <linearGradient id="gb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#e2bdd4" stop-opacity=".8"/></linearGradient>
+             <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37" stop-opacity=".28"/><stop offset="1" stop-color="#d4af37" stop-opacity="0"/></linearGradient>
+            </defs>
+            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="url(#gb1)"/>
+            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
+            <path d="M112 84 C140 58 182 56 206 80 C220 96 214 120 196 124" fill="url(#gb1)" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
+            <ellipse cx="290" cy="200" rx="190" ry="80" fill="url(#gb3)"/>
+            <circle cx="180" cy="130" r="18" fill="url(#gb4)"/>
+            <path d="M170 150 C176 146 196 144 204 152 C222 176 244 200 272 214 L336 176 C344 172 352 174 356 180 L424 194 C432 196 432 208 424 210 L352 202 L282 238 C270 244 256 242 246 236 C214 218 186 190 168 166 C164 160 164 154 170 150 Z" fill="url(#gb4)"/>
+            <path d="M150 300 C250 330 380 322 470 290 L470 312 C380 342 250 348 150 322 Z" fill="url(#gbr)"/>
+          </svg>
+          <span class="didas">LA CAPSULA ZENITH</span>
+          <span class="zorb" style="--c:#5fd08a; left:214px; top:34px"><i></i>Gravità zero</span>
+          <span class="zorb" style="--c:#f5851f; left:14px; top:72px; animation-delay:-1.3s"><i></i>Calore</span>
+          <span class="zorb" style="--c:#e2bdd4; left:224px; top:346px; animation-delay:-2.1s"><i></i>Airbag a onde</span>
+          <span class="zorb" style="--c:#8fd3ec; left:36px; top:356px; animation-delay:-.6s"><i></i>Rulli 4D</span>
         </div>
       </div>
 
-      <!-- che cos'è Zenith, in tre numeri -->
-      <div class="sezione cifre">
-        <div class="numeri">
-          <div class="nb o" data-sp="mln"><div class="nv">20,3<small> mln</small></div>
-            <div class="nl">programmi possibili: il tuo nasce oggi, non è fisso</div></div>
-          <div class="nb p" data-sp="fam"><div class="nv">9<small> famiglie</small></div>
-            <div class="nl">il perché della seduta: recupero, schiena, sonno…</div></div>
-          <div class="nb b" data-sp="prot"><div class="nv">24<small> protocolli</small></div>
-            <div class="nl">il modo di lavorare, dentro ogni famiglia</div></div>
-          <div class="nb g" data-sp="min"><div class="nv">20–30<small> min</small></div>
-            <div class="nl">quanto dura. Il tempo giusto, misurato</div></div>
-        </div>
-        <div class="combina"><span class="cbk" id="cbk">Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi</span>
-          <span class="cbr"><span data-sp="bracci" style="--cc:#e6c65c"><i></i>Bracci 3D e 4D</span><span data-sp="airbag" style="--cc:#e2bdd4"><i></i>Airbag</span><span data-sp="rulli" style="--cc:#8fd3ec"><i></i>Rulli</span><span data-sp="calore" style="--cc:#f5851f"><i></i>Calore</span><span data-sp="ioni" style="--cc:#b98adf"><i></i>Ioni</span><span data-sp="gz" style="--cc:#5fd08a"><i></i>Gravità zero</span></span></div>
+      <div class="zbisogni">
+        <div class="zbis-t"><div class="t">Cosa ti serve oggi?</div><div class="d">Tocca e scopri cosa fa Zenith <b>per te</b></div></div>
+        <div class="zgri" id="zgri"></div>
       </div>
 
-      <!-- prima si parla di LUI: cosa ha fatto oggi, e cosa ci aggiunge
-           Zenith. Solo dopo, quando il motivo c'è, si spiega come si fa
-           il check-in: spiegare la procedura a chi non sa ancora perché
-           dovrebbe farla è l'ordine sbagliato -->
-      <div class="sezione porte">
-        <div class="sezt"><span class="seze"><i></i>IL TUO ALLENAMENTO</span><span
-          class="sezh">Cosa hai fatto oggi, qui da noi?</span>
-          <span class="sezd">Tocca quello che hai fatto: scopri cosa ci aggiunge Zenith</span></div>
-        <div class="centro" id="centro"></div>
-        <div class="pens" id="pens" onclick="apriCasoAcceso()"></div>
-      </div>
+      <div class="zdir" id="zdir"><span class="live"><i></i><span id="zdirk">OGGI IN CAPSULA</span></span>
+        <span class="znastro"><div id="zdirn"></div></span>
+        <span class="conto" id="zdirc"></span></div>
 
-      <!-- l'invito -->
-      <div class="cta">
-        <div class="btn" id="gocheck">
-          <span class="ic"><svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 22V9.5a3.5 3.5 0 0 1 7 0V21"/><path d="M26 19.5a3.5 3.5 0 0 1 7 0V23"/><path d="M33 21.5a3.5 3.5 0 0 1 7 0V31c0 7-5 12-12 12h-2c-5 0-8-2.5-10.5-6.5L10 28.5a3.4 3.4 0 0 1 5.6-3.8L19 29"/><path d="M13 7.5l-3-3M9 13H5M31 7.5l3-3"/></svg></span>
-          <span class="tx"><span class="t1">Fai il check-in</span>
-            <span class="t2">Due minuti, lo fai da solo · poi ti chiama il tuo operatore</span></span>
-          <span class="go">›</span>
-        </div>
-        <!-- il cartellino dei premi, agganciato al tasto: fuori dal tasto,
-             che taglia quello che sporge -->
-        <span class="cartellino" onclick="apriRegolamento()"><span>🎁</span>La costanza qui viene premiata ›</span>
-          <!-- la faccina: sta sotto il tasto, come seconda strada. È una
-               scorciatoia, non un passo del percorso: per questo non ha né
-               cornice né targhetta, e non si mette fra i numeri e
-               l'allenamento dove spezzava il filo del racconto -->
-        <div class="avatar tocca" id="avatar">
-          <div class="orb" id="orb"></div>
-          <img class="alogo" id="alogo" alt="Zenith">
-          <div class="bubble" id="bub"></div>
-          <span class="frecc">›</span>
+      <div class="zinvito">
+        <span class="zcart" onclick="apriRegolamento()">🎁 Ogni 13 sedute, una in regalo ›</span>
+        <div class="zcta" id="gocheck">
+          <span class="mano"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 22V9.5a3.5 3.5 0 0 1 7 0V21"/><path d="M26 19.5a3.5 3.5 0 0 1 7 0V23"/><path d="M33 21.5a3.5 3.5 0 0 1 7 0V31c0 7-5 12-12 12h-2c-5 0-8-2.5-10.5-6.5L10 28.5a3.4 3.4 0 0 1 5.6-3.8L19 29"/></svg></span>
+          <span class="tx"><span class="t1">Fai il check-in</span><span class="t2">4 passi, un minuto · poi ti chiama il tuo operatore</span></span>
+          <span class="vai">›</span>
         </div>
       </div>
 
+      <div class="zdue">
+        <div class="zsec" id="avatar"><span class="e">💬</span><span><b>Hai una domanda?</b><small id="zndom">risposte pronte</small></span><span class="zpast">›</span></div>
+        <div class="zsec" onclick="apriRespira()"><span class="e">🌬️</span><span><b>Respira con Zenith</b><small>un minuto, qui davanti</small></span><span class="zpast">›</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ 1b · SCOPRI COSA FA PER TE — una pagina per bisogno ═══ -->
+  <section class="scene" id="s-scopri">
+    <div class="ztop"><span class="zind" onclick="go('idle')">‹ Torna alla vetrina</span><img class="zlogo" alt="Zenith"></div>
+    <div class="zscopri" id="zscopri"></div>
+  </section>
+
+  <!-- ═══ 1c · RESPIRA CON ZENITH ═══ -->
+  <section class="scene" id="s-respira">
+    <div class="ztop"><span class="zind" onclick="go('idle')">‹ Torna alla vetrina</span><img class="zlogo" alt="Zenith"></div>
+    <div class="zresp">
+      <div class="zr-t"><div class="k">RESPIRA CON ZENITH</div><div class="t">Un minuto <span class="gold">per te.</span></div>
+        <div class="d">Segui il cerchio: si apre quando inspiri, si chiude quando butti fuori l'aria.</div></div>
+      <div class="zsfera" id="zsfera"><div class="o1"></div><div class="o3"></div>
+        <svg viewBox="0 0 620 620"><circle cx="310" cy="310" r="300" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"/><circle id="zanello" cx="310" cy="310" r="300" fill="none" stroke="#e6c65c" stroke-width="10" stroke-linecap="round" stroke-dasharray="1885" stroke-dashoffset="1885"/></svg>
+        <div class="o2" id="zpalla"></div>
+        <div class="tx"><b id="zfase">Inspira</b><span id="zconta">1 · 4</span></div></div>
+      <div class="zfasi" id="zfasi"><span class="on">Inspira 4″</span><span>Trattieni 2″</span><span>Espira 6″</span></div>
+      <div class="zdopo"><div class="p">Bastano sessanta secondi per abbassare i giri. Immagina <b>venti minuti così</b>, sdraiato, col calore sulla schiena e le gambe in alto: è una seduta Zenith.</div>
+        <div class="row"><span class="btnp" onclick="startCheck()">Fai il check-in ›</span><span class="btns" onclick="apriRespira()">Ancora<br>un minuto</span></div></div>
     </div>
   </section>
 
@@ -1600,18 +1490,21 @@ html,body{overscroll-behavior:none}
     </div>
   </section>
 
-  <!-- ═══ 3 · CHECK-IN ═══ -->
+  <!-- ═══ 3 · CHECK-IN — quattro passi: chi sei, cosa hai fatto, dove,
+       come vuoi uscire. L'operatore non e' piu' una domanda: si propone da
+       solo (quello dell'ultima volta) e si cambia con un tocco sul ✎ ═══ -->
   <section class="scene" id="s-form">
-    <div class="prog"><i id="progbar"></i></div>
+    <div class="zprog">
+      <div class="barre" id="fdots"></div>
+      <div class="zrg"><span class="ps" id="fstep"></span><span id="fciao"></span></div>
+    </div>
     <div class="form">
       <div class="fhead">
-        <div class="qsteps" id="fdots"></div>
-        <div class="step" id="fstep"></div>
         <div class="q" id="fq"></div>
         <div class="qs" id="fqs"></div>
       </div>
-      <div class="qrecap" id="frecap"></div>
       <div class="corpo" id="fcorpo"></div>
+      <div class="qrecap" id="frecap"></div>
       <div class="navrow">
         <div class="nav back" onclick="passoIndietro()">‹ Indietro</div>
         <div class="nav next off" id="fnext" onclick="passoAvanti()">AVANTI ›</div>
@@ -1619,72 +1512,24 @@ html,body{overscroll-behavior:none}
     </div>
   </section>
 
-  <!-- ═══ 4 · LA TUA SEDUTA, DAL PRIMO ALL'ULTIMO MINUTO ═══ -->
+  <!-- ═══ 4 · FATTO: il protocollo e' pronto, e chi ti chiama ═══ -->
   <section class="scene" id="s-done">
    <div class="donewrap" id="donewrap">
-    <div class="done">
-      <div class="ring">✓</div>
-      <div class="big">Ci siamo,<br><span id="dnome">Giulia</span></div>
-      <div class="sit">Il tuo programma è pronto.</div>
-      <div class="msg" id="dmsg">Ho passato tutto al tuo operatore: tra poco ti chiama. Ti fa accomodare
-        nella capsula, ti sistema la posizione e solo dopo imposta il tuo programma. Tu pensa a rilassarti.</div>
-      <div class="chips" id="dchips"></div>
-      <div class="premibox" id="dpremi"></div>
-      <div class="wait">Questa schermata si chiude da sola</div>
-      <div class="giu">ECCO COME VA ↓</div>
-    </div>
-
-    <div class="filo">
-      <div class="tappa" style="--sc:#7ecbe8">
-        <span class="bo">1</span>
-        <span class="qua">ADESSO</span>
-        <span class="tt">Quattro cose, trenta secondi</span>
-        <span class="td">Sono le uniche che devi fare tu.</span>
-        <span class="cose">
-          <span class="co"><span class="ci">⌚</span><span class="cx">
-            <span class="c1">Togli orologio, bracciali e collane</span>
-            <span class="c2">Gli airbag stringono braccia e spalle: un bracciale rigido dà fastidio e può segnare.</span></span></span>
-          <span class="co"><span class="ci">👖</span><span class="cx">
-            <span class="c1">Svuota le tasche</span>
-            <span class="c2">Chiavi, telefono, monete: lasciali fuori. Lì dentro non ti servono.</span></span></span>
-          <span class="co"><span class="ci">👕</span><span class="cx">
-            <span class="c1">Resta vestito, comodo</span>
-            <span class="c2">Non serve spogliarsi. Meglio senza cinture o zip rigide sulla schiena.</span></span></span>
-          <span class="co"><span class="ci">🧦</span><span class="cx">
-            <span class="c1">Togli le scarpe e metti i calzini antiscivolo</span>
-            <span class="c2">Quelli di Zenith, che ti diamo noi: sotto i piedi ci sono i rulli plantari.</span></span></span>
-        </span>
+    <div class="zfatto">
+      <div class="okk"><div class="spunta">✓</div><div class="t">Perfetto, <span class="gold" id="dnome">Giulia</span>!</div></div>
+      <div class="tuo"><div class="k">IL TUO PROTOCOLLO DI OGGI</div>
+        <div class="nm gold" id="dnomep"></div>
+        <div class="ct" id="dcat"></div>
+        <div class="zacc" id="dchips"></div></div>
+      <div class="chiama"><span class="avv" id="dav">Z</span><span><div class="t" id="dmsg"></div><div class="s">Siediti e respira: la capsula la prepara lui.</div></span></div>
+      <div class="zfilo">
+        <div style="--c:#7ecbe8"><b>ADESSO</b><span>Togli orologio e bracciali, svuota le tasche. Resta vestito.</span></div>
+        <div style="--c:#e2bdd4"><b>IN CAPSULA</b><span id="dmin">20 minuti, sdraiato. Lascia lavorare Zenith.</span></div>
+        <div style="--c:#88d9ae"><b>ALLA FINE</b><span>Ci dici com'era: la prossima è ancora più tua.</span></div>
       </div>
-
-      <div class="tappa" style="--sc:#e2bdd4">
-        <span class="bo">2</span>
-        <span class="qua">QUANDO ENTRI</span>
-        <span class="tt">Ti siedi, e basta</span>
-        <span class="td">Alla capsula ci pensa il tuo operatore: tu non devi toccare niente.</span>
-        <span class="cose">
-          <span class="co"><span class="ci"><svg class="cicaps" viewBox="66 50 480 300" aria-hidden="true">
-            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="rgba(230,198,92,.32)"/>
-            <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="#e6c65c" stroke-width="22" stroke-linecap="round"/>
-            <circle cx="180" cy="130" r="30" fill="#fff"/>
-            <path d="M170 150 C176 146 196 144 204 152 C222 176 244 200 272 214 L336 176 C344 172 352 174 356 180 L424 194 C432 196 432 208 424 210 L352 202 L282 238 C270 244 256 242 246 236 C214 218 186 190 168 166 C164 160 164 154 170 150 Z" fill="#f3e6ee"/></svg></span><span class="cx">
-            <span class="c1">Siediti e appoggia la schiena allo schienale</span>
-            <span class="c2">Mettiti comodo: il resto lo fa chi è con te.</span></span></span>
-          <span class="co"><span class="ci">🤝</span><span class="cx">
-            <span class="c1">L'operatore ti sistema la posizione</span>
-            <span class="c2">Regola la seduta su di te, poi la capsula misura le tue spalle da sola: pochi secondi, è normale.</span></span></span>
-          <span class="co"><span class="ci">😌</span><span class="cx">
-            <span class="c1">Poi non fai più niente</span>
-            <span class="c2">Chiudi gli occhi. Da lì in avanti lavora la capsula, e tu ti godi la seduta.</span></span></span>
-        </span>
-      </div>
-
-      <div class="tappa" style="--sc:#88d9ae">
-        <span class="bo">3</span>
-        <span class="qua">ALLA FINE</span>
-        <span class="tt">Ti rialzi, e senti la differenza</span>
-        <span class="td">Ci dici com'era l'intensità: la prossima seduta si regola
-          sulla tua risposta. Poi un caffè in sala relax, con calma.</span>
-      </div>
+      <div class="zpremio premibox" id="dpremi"></div>
+      <div class="zattesa" onclick="apriRespira(true)"><span class="e">🌬️</span><span><b>Mentre aspetti: respira con Zenith</b><small>un minuto, qui davanti allo schermo</small></span><span class="zpast">›</span></div>
+      <div class="chiude">Questa schermata si chiude da sola · <span class="giu">sotto, la scheda per il tuo operatore ↓</span></div>
     </div>
 
     <div class="perOp">
@@ -1696,6 +1541,15 @@ html,body{overscroll-behavior:none}
     <div class="blocco proto" id="proto"></div>
    </div>
   </section>
+
+  <!-- chi ti segue oggi: si apre dal ✎ accanto al nome -->
+  <div class="velo" id="opvelo" onclick="chiudiOperatori(event)">
+    <div class="foglio" onclick="event.stopPropagation()">
+      <div class="ft">Chi ti segue oggi?</div>
+      <div class="fs">Ti ho proposto chi ti ha seguito l'ultima volta: se oggi è un altro, toccalo.</div>
+      <div class="opgrid" id="opgrid"></div>
+    </div>
+  </div>
 
   <!-- la parte in piu' della prima domanda: cosa lascia nel corpo
        ogni macchinario del centro, e cosa ci fa Zenith -->
@@ -1728,7 +1582,7 @@ html,body{overscroll-behavior:none}
   <div class="dbg" id="dbg"></div>
 </div></div>
 
-<script src="../motore.js?v=169.26.11.16"></script>
+<script src="../motore.js?v=170.26.11.16"></script>
 <script>
 const LOGO = "data:image/png;base64,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";
 /* ══════════════════════════════════════════════════════════════
@@ -1776,7 +1630,7 @@ function fit(){
 addEventListener('resize', fit); fit();
 
 document.getElementById('logo').src = LOGO;
-document.getElementById('alogo').src = LOGO;
+document.querySelectorAll('.zlogo').forEach(i=> i.src = LOGO);
 
 /* ─────────── il volto della mascotte ─────────── */
 /* La faccina e' andata in pensione: sul totem era minuscola dentro la
@@ -1790,109 +1644,8 @@ const ICONA_DOMANDE = '<svg class="qico" viewBox="0 0 100 100" aria-hidden="true
   + '<circle cx="50" cy="62" r="3.4" fill="#f3dc8a"/>'
   + '<path class="sc1" d="M83 12 l1.8 4.6 4.6 1.8 -4.6 1.8 -1.8 4.6 -1.8 -4.6 -4.6 -1.8 4.6 -1.8z" fill="#f6e2a0"/>'
   + '<path class="sc2" d="M13 76 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3z" fill="#e2bdd4"/></svg>';
-document.getElementById('orb').innerHTML = ICONA_DOMANDE;
 document.getElementById('orbs').innerHTML = ICONA_DOMANDE;
 
-/* ══════════ LE FRASI DELLA VETRINA ══════════
-   Tre famiglie, alternate: una frase per tipo, poi si ricomincia.
-   · TI SUCCEDE? (viola) — un fastidio in cui chi passa si riconosce, e
-     sotto, subito, cosa ci fa Zenith. Prima c'era solo il fastidio: si
-     leggeva «ecco il mio problema» e non «ecco chi me lo risolve».
-   · CURIOSITÀ (oro) — i fatti veri del metodo.
-   · LO CHIEDONO TUTTI (azzurro) — una delle domande pronte: si tocca e si
-     apre la risposta. Sono quelle che agganciano; le pratiche (prenotare,
-     vestirsi, l'eta') restano a un tocco nella pagina delle domande.
-   Il punto dello schermo da cui entra una frase (q0…q5) si assegna in
-   giro, cosi' due frasi di fila non entrano mai dallo stesso lato. */
-const FRASI_PROBLEMA = [
-  {ic:'🌅', tx:'Ti alzi e la schiena<br>si fa sentire <em>prima di te</em>.',
-        sub:'Z la scioglie con calore e rulli lenti, là dove nasce la tensione.'},
-  {ic:'🦵', tx:'Le gambe pesanti,<br>ogni sera, <em>sempre</em>.',
-        sub:'Z le solleva sopra il cuore e le alleggerisce con la compressione a onde.'},
-  {ic:'💻', tx:'Il collo che si irrigidisce<br>davanti allo schermo.',
-        sub:'Z lavora trapezi e base del collo, e la testa torna a girare libera.'},
-  {ic:'😮‍💨', tx:'Dormi otto ore<br>e ne senti <em>quattro</em>.',
-        sub:'Z abbassa i giri: manovre lente, ioni e dondolio preparano il sonno vero.'},
-  {ic:'🏋️', tx:'Ti alleni bene.<br>Ma <em>recuperi male</em>.',
-        sub:'Z è il defaticamento che il tuo allenamento si merita, in venti minuti.'},
-  {ic:'🪑', tx:'Ti siedi tutto il giorno.<br>Il corpo <em>lo ricorda</em> la sera.',
-        sub:'Z scarica la colonna in gravità zero e rimette in moto le gambe.'},
-  {ic:'🪜', tx:'Il leg day di ieri<br>si sente <em>sulle scale</em>.',
-        sub:'Z lavora gambe e glutei con rulli e compressione: le scale tornano scale.'},
-  {ic:'🧍', tx:'Le spalle su,<br>anche quando <em>non te ne accorgi</em>.',
-        sub:'Z le riporta giù: airbag su spalle e braccia, rulli sui trapezi.'},
-  {ic:'⏰', tx:'Un massaggio sì,<br>ma <em>un\'ora</em> non ce l\'hai.',
-        sub:'Con Z bastano venti minuti, e ogni minuto è scelto per te.'},
-  {ic:'🔋', tx:'Torni a casa<br>e ti manca <em>l\'energia</em> per il resto.',
-        sub:'Z ha un protocollo che ti rimette in moto: venti minuti, ritmo vivo.'},
-  {ic:'🚗', tx:'Ore di guida,<br>e la cervicale <em>presenta il conto</em>.',
-        sub:'Z scioglie collo e schiena che il volante ha tenuto fermi per ore.'},
-  {ic:'👟', tx:'In piedi tutto il giorno,<br>i piedi <em>non ne possono più</em>.',
-        sub:'Z: rulli sotto la pianta e compressione su polpacci e piedi.'},
-  {ic:'🦶', tx:'Le caviglie gonfie<br>che a sera <em>non passano</em>.',
-        sub:'Z comprime dai piedi verso l\'alto, con le gambe sopra il cuore.'},
-  {ic:'😣', tx:'Lo stress non resta<br>nella testa.',
-        sub:'Si deposita nei muscoli: Z lo scioglie proprio lì, con manovre lente.'},
-  {ic:'🧠', tx:'Allenamento finito,<br>testa <em>ancora accesa</em>.',
-        sub:'Z abbassa i giri: il recupero comincia dalla mente.'},
-  {ic:'🌫️', tx:'Ti senti a pezzi<br>e non sai nemmeno <em>dove</em>.',
-        sub:'Z te lo chiede, e poi lavora proprio lì.'},
-  {ic:'🎯', tx:'Quel punto preciso<br>che <em>tira sempre</em>.',
-        sub:'Z ci arriva: il tuo operatore porta i rulli esattamente su quel punto.'},
-  {ic:'⏳', tx:'Dopo l\'allenamento<br>servono <em>giorni</em> per tornare.',
-        sub:'Z accorcia l\'attesa: sangue nuovo dove hai lavorato, subito dopo.'},
-  {ic:'🤲', tx:'Braccia e spalle<br>che portano <em>tutto il giorno</em>.',
-        sub:'Z ha gli airbag per braccia e spalle: stringono, sciolgono, lasciano andare.'},
-  {ic:'🌀', tx:'Ti muovi <em>meno</em><br>di quanto pensi.',
-        sub:'Z ridà circolo a quello che la giornata tiene fermo.'},
-  {ic:'🧗', tx:'Il weekend attivo,<br>e il lunedì <em>a pezzi</em>.',
-        sub:'Mezz\'ora di Z il lunedì sera, e la settimana riparte leggera.'},
-  {ic:'🥶', tx:'Mani e piedi<br>sempre <em>freddi</em>.',
-        sub:'Z riattiva il circolo con compressione e calore, dai piedi in su.'},
-  {ic:'🛏️', tx:'Vai a letto stanco<br>ma <em>non ti rilassi</em>.',
-        sub:'Z ha i protocolli del sonno: il corpo impara di nuovo a staccare.'},
-  {ic:'🧘', tx:'Vorresti staccare,<br>ma <em>non sai come</em>.',
-        sub:'Su Z non devi fare niente: ti siedi, e al resto pensa la capsula.'},
-  {ic:'🛋️', tx:'Una poltrona ha <em>un tasto</em>.<br>Tu non sei un tasto.',
-        sub:'Z scrive la tua seduta da capo, ogni volta, da come stai oggi.'},
-  {ic:'💬', tx:'Nessuno ti ha mai <em>chiesto</em><br>come stai, prima di un massaggio.',
-        sub:'Z comincia da lì: poche domande, e la seduta è tua.'},
-].map(f=> Object.assign({k:'beneficio'}, f, {sub: f.sub.replace(/\bZ\b/, '__Z__')}));
-const FRASI_CURIOSITA = [
-  {ic:'👂', tx:'Zenith non indovina.<br><em>Ti ascolta.</em>',
-        sub:'Poche domande su come stai oggi, e la tua parola a fine seduta tara la prossima.'},
-  {ic:'🧬', tx:'Nessuna seduta<br>è uguale a un\'altra.',
-        sub:'Il protocollo nasce da come stai oggi, non da come stavi il mese scorso.'},
-  {ic:'⏱️', tx:'Ogni seduta dura<br><em>15–30 minuti</em>.',
-        sub:'Il tempo giusto, misurato: non un minuto di più.'},
-  {ic:'🔁', tx:'La capsula<br><em>si ricorda di te</em>.',
-        sub:'Se dici che era troppo leggera, la volta dopo parte già corretta.'},
-  {ic:'🪶', tx:'Zero gravità,<br><em>letteralmente</em>.',
-        sub:'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'},
-  {ic:'🎓', tx:'Chi ti segue<br>ha <em>studiato per farlo</em>.',
-        sub:'Ogni operatore supera la Scuola Zenith prima di condurre una seduta da solo.'},
-  {ic:'🗂️', tx:'Nove famiglie, <em>ventiquattro</em> protocolli.<br>Il tuo programma è uno solo.'},
-  {ic:'🔥', tx:'Calore in fibra di carbone<br>lungo la <em>schiena</em>.',
-        sub:'Manovre lente e profonde là dove nasce la tensione, non dove si sente.'},
-  {ic:'🌊', tx:'Compressione a onde,<br>dai <em>piedi verso l\'alto</em>.',
-        sub:'Come una spremitura dolce che accompagna i liquidi dove devono andare.'},
-  {ic:'💎', tx:'Cinquantadue sedute in un anno.<br>Si chiama <em>Diamond</em>.',
-        sub:'Ogni seduta vale punti, e i punti non si azzerano mai.'},
-  {ic:'🫧', tx:'Airbag su spalle e braccia,<br>per chi <em>vive alla scrivania</em>.'},
-  {ic:'🌙', tx:'Manovre lentissime,<br>ioni e <em>dondolio</em>.',
-        sub:'Si abbassano i giri del sistema nervoso: è così che si prepara il sonno.'},
-  {ic:'🔢', tx:'Il codice della tua seduta<br>è <em>unico</em>.',
-        sub:'Una seduta riuscita si può ripetere identica, anche fra mesi.'},
-  {ic:'🕐', tx:'La prima volta<br>sono <em>quindici minuti</em>.',
-        sub:'Si parte piano, sempre: ogni sensazione te la spiegano prima che arrivi.'},
-  {ic:'🎚️', tx:'Poche domande.<br>Un protocollo <em>su misura</em>.',
-        sub:'Cosa hai fatto oggi, dove, per cosa, come stai, che pressione vuoi.'},
-  {ic:'🧭', tx:'<em>Nove famiglie</em> di protocollo.<br>Una è pensata per te.'},
-  {ic:'🔢', tx:'<em>20,3 milioni</em><br>di combinazioni.',
-        sub:'Le tue risposte, e i parametri si compongono in un modo che non si ripete.'},
-  {ic:'✋', tx:'Due bracci, <em>3D e 4D</em>.<br>Come quattro mani.',
-        sub:'Non è una parte che si muove: sono due sistemi che lavorano insieme sul corpo.'},
-].map(f=> Object.assign({k:'curiosita'}, f));
 /* le domande che agganciano: si cercano per testo dentro QA, cosi' se una
    cambia parole o sparisce la vetrina non mostra una domanda che non c'e' */
 const DOMANDE_VETRINA = ['Fa male? Che pressione si sente?', 'Cos\'è la gravità zero?',
@@ -1903,41 +1656,6 @@ const DOMANDE_VETRINA = ['Fa male? Che pressione si sente?', 'Cos\'è la gravit�
   'Posso parlare durante la seduta?', 'Ogni quanto posso venire?',
   'Cosa sono gli ioni negativi?', 'Posso scegliere io il programma?', 'Posso vincere delle sedute omaggio?',
   'Ho la cervicale da ufficio: serve?', 'E se non voglio i rulli?'];
-let ROAM = null;
-function frasiVetrina(){
-  if(ROAM) return ROAM;
-  const dom = DOMANDE_VETRINA.map(q=> QA.findIndex(x=> x.q === q)).filter(i=> i >= 0)
-    .map(i=> ({k:'domanda', ic:QA[i].ic, tx:QA[i].q, qa:i,
-               sub:'Tocca qui: la risposta è pronta ›'}));
-  const famiglie = [FRASI_PROBLEMA.map(f=> Object.assign({}, f, {sub: f.sub.replace('__Z__', '<b>Zenith</b>')})),
-                    FRASI_CURIOSITA, dom];
-  ROAM = [];
-  for(let i = 0; famiglie.some(f=> i < f.length); i++)
-    famiglie.forEach(f=>{ if(i < f.length) ROAM.push(f[i]); });
-  ROAM.forEach((f, i)=> f.a = i % 6);
-  return ROAM;
-}
-const RTAG = {beneficio:'TI SUCCEDE?', curiosita:'CURIOSITÀ', domanda:'LO CHIEDONO TUTTI'};
-
-/* prima diceva solo «ti spiego cos'e' Zenith»: chi aveva gia' capito
-   cos'e' Zenith e voleva solo curiosare pensava che non fosse per lui.
-   Adesso le frasi dicono le due cose insieme — una domanda precisa, o
-   il gusto di guardarsi in giro — cosi' nessuno si sente escluso. */
-/* i quattro colori dei temi: la freccia della faccina ne prende uno a
-   turno, cosi' chi la guarda una seconda volta vede che e' cambiata */
-const COLORI_BUB = ['#e6c65c', '#e2bdd4', '#8fd3ec', '#88d9ae'];
-/* {N} diventa il numero vero delle domande, contato al momento */
-const BUBBLES = [
-  'Hai una domanda? Qui trovi {N} risposte',
-  'Fa male? Quanto dura? Te lo diciamo qui',
-  'Prima volta? Scopri com\'è una seduta',
-  'Gravità zero, ioni, rulli: cosa sono?',
-  'Le {N} domande che ci fanno tutti',
-  'Posso venire anche senza allenarmi?',
-  'Come si vincono le sedute in regalo?',
-  'Curiosità su Zenith? Chiedi pure'
-];
-
 /* ══════════ LE DOMANDE ══════════
    Quante sono lo dice la vetrina stessa (QA.length): un numero preciso
    incuriosisce piu' di «hai una domanda?», e non va mai aggiornato a mano.
@@ -2069,203 +1787,198 @@ const TEMI = {
 };
 const ORDINE_TEMI = ['capire','problema','seduta','pratica'];
 
-/* ─────────── la vetrina che gira ───────────
-   Nove secondi e mezzo fra una frase e l'altra, otto e due di lettura:
-   il tempo di leggerla davvero anche camminando. */
-const DURATA = 9500, LETTURA = 8200;
-let roamI = 0, roamTimer = null;
-
-function roamStep(){
-  const box = document.getElementById('roams');
-  box.innerHTML = '';
-  const L = frasiVetrina(), m = L[roamI % L.length];
-  const d = document.createElement('div');
-  d.className = 'roam q' + m.a + ' ' + m.k;
-  /* le domande si toccano: si apre la risposta */
-  if(m.k === 'domanda') d.onclick = ()=> apriRisposta(m.qa);
-  /* l'emoji entra nella targhetta invece di stare per conto suo: nella
-     colonna nuova una riga in più di icona rubava spazio alla frase */
-  d.innerHTML = '<span class="rtag"><i>' + m.ic + '</i>' + RTAG[m.k] + '</span>'
-    + '<div class="tx">' + m.tx + '</div>'
-    + (m.sub ? '<div class="sub">' + m.sub + '</div>' : '');
-  box.appendChild(d);
-  requestAnimationFrame(()=> requestAnimationFrame(()=> d.classList.add('on')));
-  setTimeout(()=>{ if(d.parentNode) d.classList.remove('on'); }, LETTURA);
-  if(roamI % 3 === 0){
-    const giro = Math.floor(roamI / 3);
-    document.getElementById('bub').innerHTML =
-      BUBBLES[giro % BUBBLES.length].replace('{N}', QA.length) + '<span class="mini">TOCCA E LEGGI</span>';
-    document.getElementById('avatar').style
-      .setProperty('--tc', COLORI_BUB[giro % COLORI_BUB.length]);
-  }
-  roamI++;
-}
-function roamStart(){ roamStep(); roamTimer = setInterval(roamStep, DURATA); }
-function roamStop(){ clearInterval(roamTimer); roamTimer = null; }
-
-/* ─────────── cosa fai qui: la fascia fissa ───────────
-   Le cinque porte sono sempre le stesse — le cinque risposte della
-   prima domanda del check-in — cosi' chi la incrocia gia' una volta
-   la riconosce anche la seconda. Quello che cambia e' quale delle
-   cinque si accende da sola, a turno: e' l'invito a toccare, spostato
-   dalla frase (prima erano le bolle a suggerirlo) all'oggetto stesso. */
+/* le cinque risposte della prima domanda, nell'ordine di sempre */
 const ORDINE_CENTRO = ['ems','matrix','vacufit','ems2','riposo'];
-/* qui la carta e' larga un quinto della vetrina: le descrizioni lunghe
-   della domanda del check-in ci vanno a capo due volte. Un titolo e un
-   sottotitolo corti, su una riga sola, si leggono anche camminando —
-   la frase intera resta nel foglio dei macchinari e ne «il tuo caso» */
-const BAND_LABEL = {riposo:'A riposo'};
-const BAND_SUB = {ems:'elettromiostimolazione', matrix:'pesi digitali',
-  vacufit:'vuototerapia', ems2:'impulsi in camminata', riposo:'vengo e basta'};
-function centroBuild(){
-  const box = document.getElementById('centro');
-  if(!box) return;
-  box.innerHTML = '<div class="cfila">'
-    + ORDINE_CENTRO.map(k=>{
-        const m = MAC_DI(k);
-        return '<div class="ccard tocca" style="--mc:' + COL_MAC[k] + '"'
-          + ' onclick="apriRispostaCaso(\'' + k + '\')">'
-          + '<span class="cci">' + m[0] + '</span>'
-          + '<span class="ccn">' + (BAND_LABEL[k] || m[1]) + '</span>'
-          + '<span class="ccs">' + BAND_SUB[k] + '</span>'
-          + '<span class="cfr">›</span></div>';
-      }).join('') + '</div>';
-}
-/* ── il riflettore, e il pensiero che lo segue ──
-   Si accendono insieme: la porta si illumina e sotto compare, con un
-   cambio morbido, quello che si leggerebbe toccandola. Il pensiero e'
-   anche lui un tasto: porta alla stessa scheda della porta accesa. */
-let centroI = 0, centroTimer = null, CENTRO_ACCESO = ORDINE_CENTRO[0];
-/* Il riquadro dei premi cambia frase insieme alla porta accesa qui
-   sotto, e ne prende il colore: cinque frasi quanti sono i macchinari.
-   Nessun numero: le regole si scoprono toccando. E mai «clienti»: chi
-   viene da Zenith fa parte di qualcosa, anche chi non si allena qui. */
-const NASTRO = {
-  ems:     ['La costanza ha il suo premio', 'Ogni seduta ti avvicina a una seduta in regalo.'],
-  matrix:  ['Chi si prende cura di sé, vince', 'Più tempo dedichi al tuo benessere, più Zenith ti regala.'],
-  vacufit: ['Il tuo benessere è premiato', 'Chi torna a stare bene con Zenith vince sedute in regalo.'],
-  ems2:    ['Un regalo da condividere', 'Con la costanza vinci anche una seduta da donare a chi vuoi bene.'],
-  riposo:  ['Anche se non ti alleni qui', 'Basta venire a stare bene con Zenith: i premi sono anche tuoi.']
-};
-function disegnaNastro(k){
-  const n = document.getElementById('nastro'), t = document.getElementById('nastrot');
-  if(!n || !t || !NASTRO[k]) return;
-  n.style.setProperty('--nc', COL_MAC[k]);
-  t.classList.add('cambia');
-  setTimeout(()=>{ t.innerHTML = '<b>' + NASTRO[k][0] + '</b><small>' + NASTRO[k][1] + '</small>';
-    t.classList.remove('cambia'); }, 380);
-}
-function centroSpotStep(){
-  const carte = [...document.querySelectorAll('#centro .ccard')];
-  if(!carte.length) return;
-  const k = ORDINE_CENTRO[centroI % ORDINE_CENTRO.length];
-  carte.forEach(c=> c.classList.toggle('spot',
-    c.getAttribute('onclick').indexOf("'" + k + "'") >= 0));
-  CENTRO_ACCESO = k;
-  disegnaPensiero(k);
-  disegnaNastro(k);
-  centroI++;
-}
-function disegnaPensiero(k){
-  const box = document.getElementById('pens');
-  if(!box) return;
-  const m = MAC_DI(k), p = PENSIERI[k];
-  box.style.setProperty('--mc', COL_MAC[k]);
-  const scrivi = ()=>{
-    box.innerHTML = '<span class="pi">' + m[0] + '</span>'
-      + '<span class="px"><span class="pt">' + p.t + '</span>'
-      + '<span class="pf">' + p.f + '</span></span>'
-      + '<span class="pfr">›</span>';
-    box.classList.remove('cambia');
-  };
-  /* la prima volta si scrive e basta; dopo si sfuma, si cambia, si
-     riaccende — se no le parole si sostituiscono di scatto */
-  if(!box.innerHTML.trim()){ scrivi(); return; }
-  box.classList.add('cambia');
-  setTimeout(scrivi, 300);
-}
-function apriCasoAcceso(){ apriRispostaCaso(CENTRO_ACCESO); }
-/* Undici secondi, non più cinque: la frase sotto le porte è un pensiero
-   intero da leggere, non un'insegna che lampeggia. E undici non è un
-   multiplo dei nove e mezzo del manifesto — così le due cose non
-   cambiano mai insieme, che sarebbe uno scatto solo, più forte di
-   tutt'e due. */
-const CENTRO_GIRO = 11000;
-function centroSpotStart(){ centroSpotStep(); centroTimer = setInterval(centroSpotStep, CENTRO_GIRO); }
-
-/* ── I NOVE INGREDIENTI SI PRESENTANO ──
-   Si estrae a sorte da un sacchetto di nove; quando e' vuoto si rimescola (e il primo
-   nuovo non e' mai l'ultimo uscito). Fra un'uscita e l'altra passano da 25 a 45 secondi,
-   scelti a caso: un giro completo dura circa cinque minuti, e due ingredienti di fila
-   non arrivano mai uno dietro l'altro. Succede solo con la home davanti. */
-const INGREDIENTI = {
-  mln:   'Una famiglia, un protocollo, sei elementi e le loro regolazioni: insieme fanno 20,3 milioni di programmi. Il tuo è uno solo.',
-  fam:   'Nove famiglie, dal Benvenuto al Recupero, dalla Schiena al Sonno: dicono perché fai la seduta.',
-  prot:  'Ventiquattro protocolli dentro le famiglie: il modo di lavorare, dalle manovre lente alle pressioni profonde.',
-  min:   'Sdraiato e vestito, da 20 a 30 minuti: il tempo si sceglie in base a come stai.',
-  bracci:'Due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. La profondità si regola.',
-  airbag:'Compressione a onde su spalle, braccia, vita e gambe: la forza si regola, dalla più dolce alla più decisa.',
-  rulli: 'Rulli lungo la schiena, sui polpacci e sotto i piedi: si accendono dove servono e si regolano.',
-  calore:'Calore in fibra di carbonio sulla schiena: scioglie la tensione dove nasce, quando serve.',
-  ioni:  'Ioni negativi: abbassano i giri e preparano al sonno, quando servono.',
-  gz:    'Gravità zero: le gambe salgono sopra il livello del cuore e i liquidi tornano verso l\'alto.'
-};
-const TITOLO_INGREDIENTI = 'Il protocollo si combina con questi sei elementi, ognuno regolato a parte: ecco i 20,3 milioni di programmi';
-let ingSacco = [], ingUltimo = null, ingTimer = null, ingSpegni = null;
-function ingEstrai(){
-  if(!ingSacco.length){
-    ingSacco = Object.keys(INGREDIENTI);
-    for(let i = ingSacco.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [ingSacco[i], ingSacco[j]] = [ingSacco[j], ingSacco[i]]; }
-    if(ingSacco[ingSacco.length - 1] === ingUltimo) ingSacco.unshift(ingSacco.pop());
-  }
-  return ingUltimo = ingSacco.pop();
-}
-function ingPresenta(k){
-  const sez = document.querySelector('.sezione.cifre'), cbk = document.getElementById('cbk');
-  if(!sez || !cbk) return;
-  sez.classList.add('spot');
-  sez.querySelectorAll('[data-sp]').forEach(e=> e.classList.toggle('acceso', e.dataset.sp === k));
-  cbk.classList.add('cambia');
-  setTimeout(()=>{ cbk.textContent = INGREDIENTI[k]; cbk.classList.remove('cambia'); }, 320);
-  clearTimeout(ingSpegni);
-  ingSpegni = setTimeout(ingRiposa, 5200);
-}
-function ingRiposa(){
-  const sez = document.querySelector('.sezione.cifre'), cbk = document.getElementById('cbk');
-  if(!sez || !cbk) return;
-  sez.classList.remove('spot');
-  sez.querySelectorAll('[data-sp]').forEach(e=> e.classList.remove('acceso'));
-  cbk.classList.add('cambia');
-  setTimeout(()=>{ cbk.textContent = TITOLO_INGREDIENTI; cbk.classList.remove('cambia'); }, 320);
-}
-function ingProssimo(primo){
-  clearTimeout(ingTimer);
-  ingTimer = setTimeout(()=>{
-    if(typeof SCENE === 'undefined' || SCENE === 'idle') ingPresenta(ingEstrai());
-    ingProssimo(false);
-  }, primo ? 9000 + Math.random() * 6000 : 25000 + Math.random() * 20000);
-}
-ingProssimo(true);
-
-function centroSpotStop(){
-  clearInterval(centroTimer); centroTimer = null;
-  document.querySelectorAll('#centro .ccard').forEach(c=> c.classList.remove('spot'));
-}
 
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
 function go(n){
-  chiudiMacchine(); chiudiRegolamento();
+  chiudiMacchine(); chiudiRegolamento(); chiudiOperatori();
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
-  if(n === 'idle'){ if(!roamTimer) roamStart(); if(!centroTimer) centroSpotStart(); }
+  if(n === 'idle') disegnaOggi();
+  if(n !== 'respira') fermaRespiro();
   if(n !== 'ask' && typeof chiudiRicerca === 'function') chiudiRicerca();
-  else { roamStop(); centroSpotStop(); }
-  const via = (n === 'done') ? '0' : '1';
-  document.querySelector('.head').style.opacity = via;
-  document.getElementById('dbg').style.opacity = via;
+  /* il logo in cima sta solo dove non c'e' gia' una barra sua: la vetrina
+     e le domande. Le pagine interne hanno il logo piccolo a destra, il
+     check-in ha i quattro passi, la schermata finale il suo saluto */
+  const testa = (n === 'idle' || n === 'ask' || n === 'caso');
+  const h = document.querySelector('.head');
+  h.style.opacity = testa ? '1' : '0';
+  h.style.pointerEvents = testa ? '' : 'none';
+  document.getElementById('dbg').style.opacity = (n === 'idle' || n === 'ask' || n === 'caso') ? '1' : '0';
   idleReset();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   I SEI BISOGNI
+   Chi passa davanti al totem non pensa «EMS» o «gravità zero»: pensa
+   «mi fa male la schiena». Ogni bisogno ha la sua frase grande in alto,
+   la sua carta da toccare e la sua pagina «Scopri cosa fa per te»; e
+   porta con sé l'obiettivo del check-in (goal), che arriva gia' scelto.
+   Frase e carta girano insieme: 4 secondi a testa, 24 il giro.
+   ══════════════════════════════════════════════════════════════ */
+const IC_BIS = {
+  schiena: '<svg viewBox="0 0 48 48"><rect x="17" y="5" width="14" height="7" rx="3.5"/><rect x="15.5" y="15" width="17" height="8" rx="4"/><rect x="16.5" y="26" width="15" height="8" rx="4"/><rect x="18" y="37" width="12" height="7" rx="3.5"/></svg>',
+  gambe:   '<svg viewBox="0 0 48 48"><path d="M14 5h16l-2 17 3 21h-6l-3-16-3 16h-6l3-21z"/><path d="M40 10c2.5 3.5 3.5 5.8 3.5 7.5a3.5 3.5 0 0 1-7 0c0-1.7 1-4 3.5-7.5z"/></svg>',
+  testa:   '<svg viewBox="0 0 48 48"><path d="M30 43v-7h4a4 4 0 0 0 4-4v-5l3-1-3-6C38 12 32 6 24 6 15 6 9 13 9 21c0 5 2 8 5 11v11"/><path d="M17 19l3 3 3-4 3 4 3-3"/></svg>',
+  sonno:   '<svg viewBox="0 0 48 48"><path d="M33 31A15 15 0 0 1 17 10a15 15 0 1 0 16 21z"/><path d="M36 7l1.5 3.5L41 12l-3.5 1.5L36 17l-1.5-3.5L31 12l3.5-1.5z"/></svg>',
+  muscoli: '<svg viewBox="0 0 48 48"><path d="M5 20v8M10 14v20M15 17v14M33 17v14M38 14v20M43 20v8M15 24h18"/></svg>',
+  energia: '<svg viewBox="0 0 48 48"><path d="M27 4L11 27h12l-3 17 17-24H25z"/></svg>'
+};
+const FZ = {calore:['🔥','Calore','#f5851f'], rulli:['🌀','Rulli 4D','#8fd3ec'], airbag:['💨','Airbag','#e2bdd4'],
+            gz:['🪶','Gravità zero','#5fd08a'], ioni:['✨','Ioni','#b98adf'], piedi:['🦶','Rulli plantari','#8fd3ec']};
+const BISOGNI = [
+  {k:'schiena', c:'#dcab63', n:'Schiena e collo', s:'che tirano da ore', goal:'sollievo', gl:'sollievo alla schiena',
+   h1:'La schiena<br>ti <span class="gold">tira?</span>', sub:'Calore e rulli lenti lungo la colonna, mentre sei <b>sdraiato</b>. <b>Ti rialzi sciolto.</b>',
+   h2:'La schiena torna<br>al suo <span class="gold">posto.</span>', p:'Ore di scrivania o di guida si fermano lì: fra collo, spalle e lombare. Zenith le scioglie <b>mentre sei sdraiato</b>.',
+   mom:[['Calore','Il calore scioglie, i rulli lavorano lenti lungo la colonna.'],['Leggerezza','Spalle più basse, schiena sciolta, meno peso addosso.'],['Libertà','Ti alzi con meno tensione su collo e schiena.']],
+   fz:[['calore','sulla lombare'],['rulli','lungo la colonna'],['airbag','su spalle e vita'],['gz','la schiena si scarica']],
+   q:{activity:'riposo', giornata:'scrivania', zones:['lombare'], goal:'sollievo', mood:'stanco', pressione:'media'}},
+  {k:'gambe', c:'#77b795', n:'Gambe pesanti', s:'gonfie e stanche', goal:'drenaggio', gl:'gambe leggere',
+   h1:'Le gambe<br>ti <span class="gold">pesano?</span>', sub:'Venti minuti <b>sdraiato</b>, gambe sopra il cuore e compressione a onde. <b>Esci leggero.</b>',
+   h2:'Gambe leggere,<br>fino a <span class="gold">sera.</span>', p:'Ore in piedi o seduti, e i liquidi restano giù. Zenith alza le gambe sopra il cuore e le <b>accompagna verso l\'alto</b>.',
+   mom:[['Leggerezza','Gambe in alto e compressione a onde, dai piedi in su.'],['Sgonfie','Caviglie e polpacci meno pieni, le scarpe stringono meno.'],['Energia','Arrivi a sera con gambe che non pesano.']],
+   fz:[['gz','gambe sopra il cuore'],['airbag','compressione a onde'],['piedi','sotto la pianta'],['rulli','sui polpacci']],
+   q:{activity:'riposo', giornata:'inpiedi', zones:['gambe'], goal:'drenaggio', mood:'stanco', pressione:'media'}},
+  {k:'testa', c:'#b98adf', n:'Testa piena', s:'stress e pensieri', goal:'relax', gl:'relax profondo',
+   h1:'Testa<br><span class="gold">piena?</span>', sub:'Venti minuti senza telefono, in <b>gravità zero</b>. Stacchi tu, <b>lavora Zenith.</b>',
+   h2:'Stacca la testa.<br>Lavora <span class="gold">Zenith.</span>', p:'Lo stress non resta nella testa: si ferma nei muscoli. Zenith lo scioglie lì, con <b>manovre lente</b> e niente da fare per te.',
+   mom:[['Silenzio','Niente telefono, niente decisioni: solo il ritmo della capsula.'],['Calma','Il respiro rallenta, le spalle scendono da sole.'],['Lucidità','Ti svegli con la testa più leggera.']],
+   fz:[['ioni','abbassano i giri'],['gz','il corpo si abbandona'],['rulli','manovre lente'],['airbag','avvolgono spalle e braccia']],
+   q:{activity:'riposo', giornata:'tranquilla', zones:['cervicale'], goal:'relax', mood:'stressato', pressione:'media'}},
+  {k:'sonno', c:'#7d7ce0', n:'Dormo male', s:'sonno leggero', goal:'sonno', gl:'verso il sonno',
+   h1:'Dormi<br><span class="gold">male?</span>', sub:'Un dondolio lento e manovre lentissime: il corpo <b>abbassa i giri</b> e la sera cambia.',
+   h2:'Una sera più<br><span class="gold">tranquilla.</span>', p:'Il sonno comincia prima di andare a letto. Zenith rallenta il corpo con un <b>dondolio lento</b> e manovre lentissime.',
+   mom:[['Dondolio','Movimenti lenti, come un\'amaca: il corpo si lascia andare.'],['Sonno','La sera arriva più calma, ti addormenti prima.'],['Riposo','Ti svegli con la sensazione di aver dormito davvero.']],
+   fz:[['ioni','preparano il sonno'],['rulli','lentissimi'],['gz','gambe in alto'],['airbag','pressione dolce']],
+   q:{activity:'riposo', giornata:'tranquilla', zones:[], zmode:'nessuna', goal:'sonno', mood:'stanco', pressione:'dolce'}},
+  {k:'muscoli', c:'#c98ab0', n:'Muscoli stanchi', s:'dopo l\'allenamento', goal:'recupero', gl:'recupero muscolare',
+   h1:'Muscoli<br>a <span class="gold">pezzi?</span>', sub:'Dopo l\'allenamento Zenith porta <b>sangue nuovo</b> dove hai lavorato. <b>Domani lo senti.</b>',
+   h2:'L\'allenamento<br>diventa <span class="gold">risultato.</span>', p:'Il muscolo cresce nelle ore dopo il carico. Zenith porta <b>sangue nuovo</b> dove hai lavorato, mentre sei sdraiato.',
+   mom:[['Defaticamento','Rulli e compressione sciolgono quello che hai contratto.'],['Morbidi','Muscoli meno pieni, la stanchezza buona.'],['Pronto','Meno rigidità: hai voglia di tornare ad allenarti.']],
+   fz:[['rulli','dove hai lavorato'],['airbag','gambe, glutei, braccia'],['calore','sangue nuovo'],['gz','le gambe si scaricano']],
+   q:{activity:'ems', zones:['gambe','glutei'], goal:'recupero', mood:'dolorante', pressione:'media'}},
+  {k:'energia', c:'#e0997d', n:'Mi serve energia', s:'una carica vera', goal:'energia', gl:'energia',
+   h1:'Ti serve<br>una <span class="gold">carica?</span>', sub:'Ritmo vivace, postura attiva, rulli rapidi sotto i piedi: <b>venti minuti e riparti.</b>',
+   h2:'Venti minuti<br>e <span class="gold">riparti.</span>', p:'Quando la giornata ti svuota, Zenith cambia ritmo: <b>manovre vivaci</b> e rulli sotto i piedi rimettono in moto il circolo.',
+   mom:[['Sveglia','Ritmo vivo, i rulli lavorano rapidi.'],['Carica','Gambe che girano, testa sveglia.'],['Costanza','La settimana ti pesa meno.']],
+   fz:[['rulli','ritmo vivace'],['piedi','rulli plantari'],['airbag','circolo in moto'],['calore','scioglie e attiva']],
+   q:{activity:'riposo', giornata:'fisico', zones:[], zmode:'totale', goal:'energia', mood:'stanco', pressione:'media'}}
+];
+const BIS_DI = k => BISOGNI.find(b=> b.k === k);
+const T0_VETRINA = performance.now();
+function costruisciVetrina(){
+  document.getElementById('zslides').innerHTML = BISOGNI.map((b,i)=>
+    '<div class="zslide" style="animation-delay:' + (i*4) + 's"><div class="h1">' + b.h1 + '</div><div class="sub">' + b.sub + '</div></div>').join('');
+  document.getElementById('zdots').innerHTML = BISOGNI.map((b,i)=> '<i style="animation-delay:' + (i*4) + 's"></i>').join('');
+  document.getElementById('zgri').innerHTML = BISOGNI.map((b,i)=>
+    '<div class="zbis" style="--c:' + b.c + '; animation-delay:' + (i*4) + 's" onclick="apriBisogno(\'' + b.k + '\')">'
+    + '<div class="ic">' + IC_BIS[b.k] + '</div><div class="n">' + b.n + '</div><div class="s">' + b.s + '</div><span class="zpast">›</span></div>').join('');
+  document.getElementById('zndom').textContent = QA.length + ' risposte pronte';
+}
+/* la frase che si sta leggendo, se si tocca, apre la sua pagina */
+function apriBisognoCorrente(){
+  const i = Math.floor(((performance.now() - T0_VETRINA) % 24000) / 4000);
+  apriBisogno(BISOGNI[i].k);
+}
+
+/* ── un esempio vero di protocollo, per ogni bisogno ──
+   Lo stesso motore del check-in, su una risposta tipica: il nome che si
+   legge e' uno che la capsula fa davvero, non un'invenzione. */
+function esempioProtocollo(q){
+  try{
+    const p = MOTORE.motoreZenith({quiz:Object.assign({}, q), primaVolta:false, ora:18, ultime:[]});
+    const nome = MOTORE.nomeProtocollo(p.prog, p.S, (q.zones || []).length ? p.aria.icone : null);
+    return {nome: nome || (PROGRAMMI[p.prog] || {}).o, cat:(PROGRAMMI[p.prog] || {}).o || '', min:p.S.timer};
+  }catch(e){ return null; }
+}
+
+/* ── SCOPRI COSA FA PER TE ── */
+let BIS_APERTO = null;
+function apriBisogno(k){
+  const b = BIS_DI(k); if(!b) return;
+  BIS_APERTO = k;
+  const es = esempioProtocollo(b.q);
+  const sc = document.getElementById('s-scopri');
+  sc.style.setProperty('--c', b.c);
+  document.getElementById('zscopri').innerHTML =
+    '<div class="zbigic">' + IC_BIS[b.k] + '</div>'
+    + '<div><span class="lab">' + b.n.toUpperCase() + '</span></div>'
+    + '<div class="h2">' + b.h2 + '</div>'
+    + '<div class="sub">' + b.p + '</div>'
+    + '<div class="sez">COSA SENTIRAI</div>'
+    + '<div class="zmom3">' + b.mom.map((m,i)=> '<div class="zmom"><div class="q">' + ['SUBITO','STASERA','DOMANI'][i]
+        + '</div><div class="w">' + m[0] + '</div><div class="x">' + m[1] + '</div></div>').join('') + '</div>'
+    + '<div class="sez">COSA LAVORA PER TE</div>'
+    + '<div class="zfun4">' + b.fz.map(([f,s])=> '<div class="zfz" style="--fc:' + FZ[f][2] + '"><div class="e">' + FZ[f][0]
+        + '</div><div class="n">' + FZ[f][1] + '</div><div class="s">' + s + '</div></div>').join('') + '</div>'
+    + (es ? '<div class="znasce"><div class="k">IL TUO PROTOCOLLO NASCE OGGI</div>'
+        + '<div class="p">Su misura fra <b>20,3 milioni</b> di combinazioni, con un nome solo suo:</div>'
+        + '<div class="nm gold">' + esc(es.nome) + '</div>'
+        + '<div class="ct">un esempio · categoria ' + esc(es.cat) + ' · ' + es.min + ' minuti</div></div>' : '')
+    + '<div class="zcome"><span>🛋️ Sdraiato e vestito</span><span>⏱ 20–30 minuti</span><span>👤 Ti segue un operatore</span></div>'
+    + '<div class="zanche"><em>GUARDA ANCHE</em>' + BISOGNI.filter(x=> x.k !== k).map(x=>
+        '<span style="--k:' + x.c + '" onclick="apriBisogno(\'' + x.k + '\')">' + x.n + '</span>').join('') + '</div>'
+    + '<div class="zcta2" onclick="startCheck(\'' + b.goal + '\')"><span><div class="t1">La voglio provare</div>'
+    + '<div class="t2">Fai il check-in: «' + b.gl + '» è già scelto</div></span><span class="vai">›</span></div>';
+  go('scopri');
+}
+
+/* ── IL NASTRO DI OGGI ──
+   I nomi dei protocolli che la capsula ha fatto oggi, presi dallo
+   storico: chi passa vede che qui si lavora, e che ogni seduta ha un
+   nome suo. Nessun nome di cliente, solo quello del protocollo. Se oggi
+   non c'e' ancora niente, il nastro mostra gli esempi dei sei bisogni. */
+function disegnaOggi(){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  const oggi = new Date().toDateString();
+  const di = ((db && db.sessions) || []).filter(x=> x && x.date && new Date(x.date).toDateString() === oggi);
+  let nomi = di.map(x=> x.nome).filter(Boolean);
+  const box = document.getElementById('zdir');
+  if(!box) return;
+  box.classList.toggle('prima', !nomi.length);
+  document.getElementById('zdirk').textContent = nomi.length ? 'OGGI IN CAPSULA' : 'NATI IN CAPSULA';
+  document.getElementById('zdirc').textContent = di.length
+    ? di.length + (di.length === 1 ? ' seduta oggi' : ' sedute oggi') : '';
+  if(!nomi.length) nomi = BISOGNI.map(b=> (esempioProtocollo(b.q) || {}).nome).filter(Boolean);
+  nomi = [...new Set(nomi)].slice(-12);
+  while(nomi.length && nomi.length < 5) nomi = nomi.concat(nomi);
+  const riga = nomi.map(n=> esc(n) + '<em>✦</em>').join('');
+  document.getElementById('zdirn').innerHTML = riga + riga;
+}
+
+/* ── RESPIRA CON ZENITH ──
+   4 secondi dentro, 2 fermi, 6 fuori: 12 secondi il giro, cinque giri
+   fanno il minuto. La palla e l'anello si muovono da soli; qui si
+   scrivono solo la parola e il conto. */
+let RESP_T = null, RESP_0 = 0, RESP_DA_FINE = false;
+function apriRespira(daFine){
+  RESP_DA_FINE = daFine === true;
+  const b = document.querySelector('#s-respira .btnp');
+  if(b){ b.textContent = RESP_DA_FINE ? '‹ Torna al tuo protocollo' : 'Fai il check-in ›';
+    b.onclick = RESP_DA_FINE ? ()=> go('done') : ()=> startCheck(); }
+  go('respira');
+  fermaRespiro();
+  RESP_0 = performance.now();
+  passoRespiro();
+  RESP_T = setInterval(passoRespiro, 100);
+}
+function fermaRespiro(){ clearInterval(RESP_T); RESP_T = null; }
+function passoRespiro(){
+  const t = ((performance.now() - RESP_0) / 1000) % 12;
+  let fase, n, tot, scala;
+  const morbido = x => .5 - Math.cos(Math.PI * Math.min(1, Math.max(0, x))) / 2;
+  if(t < 4){ fase = 0; n = Math.floor(t) + 1; tot = 4; scala = .62 + .38 * morbido(t / 4); }
+  else if(t < 6){ fase = 1; n = Math.floor(t - 4) + 1; tot = 2; scala = 1; }
+  else { fase = 2; n = Math.floor(t - 6) + 1; tot = 6; scala = 1 - .38 * morbido((t - 6) / 6); }
+  document.getElementById('zfase').textContent = ['Inspira','Trattieni','Espira'][fase];
+  document.getElementById('zconta').textContent = n + ' · ' + tot;
+  document.getElementById('zpalla').style.transform = 'scale(' + scala.toFixed(3) + ')';
+  document.getElementById('zanello').setAttribute('stroke-dashoffset', (1885 * (1 - t / 12)).toFixed(1));
+  [...document.querySelectorAll('#zfasi span')].forEach((s,i)=> s.classList.toggle('on', i === fase));
 }
 
 /* ─────────── le domande e le risposte ─────────── */
@@ -2816,23 +2529,23 @@ function esc(t){ return String(t||'').replace(/[&<>"]/g, ch=>
 
 /* le cinque domande, copiate parola per parola dal gestionale */
 const PASSI_TUTTI = [
-  {k:'nome', step:'BENVENUTO', q:'Come ti chiami?', qs:'Scrivi nome e cognome per intero'},
+  {k:'nome', q:'Come ti chiami?', qs:'Bastano poche lettere: ti riconosco da solo.'},
   {k:'op',   q:'Chi ti segue oggi?', qs:'Tocca il tuo operatore'},
-  {k:'activity', q:'Cosa hai fatto oggi?', due:true, opts:[
+  {k:'activity', q:'Cosa hai fatto oggi?', qs:'Un tocco, e si va avanti da soli.', due:true, opts:[
     ['ems','⚡','EMS','elettromiostimolazione'],
     ['matrix','🏋️','Matrix','allenamento con pesi digitali'],
     ['vacufit','💨','Vacutherm','camminata in vuototerapia'],
     ['ems2','🌀','EMS2','elettromiostimolazione in camminata veloce'],
     ['riposo','😌','Nessun allenamento','giornata senza attività']]},
   /* solo per chi non si e' allenato: la giornata sceglie il programma */
-  {k:'giornata', q:'Com\'è stata la tua giornata?', due:true, spiega:true, opts:[
+  {k:'giornata', q:'Com\'è stata la tua giornata?', qs:'Così scelgo il programma giusto per te.', due:true, spiega:true, opts:[
     ['guida','🚗','Tante ore alla guida','Auto, furgone, viaggi: schiena e collo bloccati'],
     ['scrivania','💻','Tante ore alla scrivania','Computer e sedia: collo e spalle che tirano'],
     ['inpiedi','🧍','In piedi tutto il giorno','Negozio, cucina, corsia: gambe e piedi stanchi'],
     ['fisico','📦','Lavoro fisico','Pesi, scale, sforzo: muscoli affaticati'],
     ['tranquilla','🌿','Giornata tranquilla','Niente di particolare da recuperare']]},
-  {k:'zones', q:'Su quali zone lavoriamo?',
-   qs:'Tocca la figura, o le etichette qui sotto', zone:true},
+  {k:'zones', q:'Dove lo senti?',
+   qs:'Tocca la figura: fino a 3 zone, la prima guida il programma.', zone:true},
   /* spiega:true — la frase grande e' la situazione in cui il cliente si
      riconosce, e il nome della risposta diventa una targhetta sopra: nel
      modulo l'occhio va al grassetto, quindi il grassetto deve aiutare a
@@ -2873,17 +2586,30 @@ function primaVolta(){
   try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
   return !((db && db.sessions) || []).some(x=> x.clientId === D.clienteId);
 }
+/* ── QUATTRO PASSI ──
+   Il gestionale fa sette domande, una per schermata. Il totem ne fa le
+   stesse, ma in quattro passi: 1 chi sei, 2 cosa hai fatto (e, solo per
+   chi non si e' allenato, com'e' andata la giornata), 3 dove, 4 come vuoi
+   uscire e come stai, con la pressione e il massaggio sulla stessa
+   schermata. L'operatore non e' piu' una domanda: si propone da solo.
+   Il totale e' sempre 4, qualunque cosa uno risponda: «2 DI 4» non
+   diventa mai «3 DI 5» a meta' strada. */
+const PASSO_FINE = {k:'fine', q:'Come vuoi uscire?', qs:'Due tocchi: come vuoi sentirti, e come stai adesso.'};
 function passi(){
-  const prima = primaVolta(), aria = serveDomandaAria(D);
-  return PASSI_TUTTI.filter(p=> !(prima && p.k === 'pressione') && !(!aria && p.k === 'aria')
-    && !(p.k === 'giornata' && D.activity !== 'riposo'));
+  return PASSI_TUTTI.filter(p=> p.k === 'nome' || p.k === 'activity' || p.k === 'zones'
+    || (p.k === 'giornata' && D.activity === 'riposo')).concat([PASSO_FINE]);
 }
-/* «PASSO 3», e all'ultima «PASSO 7 · L'ULTIMA». Il totale non si scrive:
-   la domanda sull'aria compare solo dopo certe risposte, e un «3 DI 6»
-   che diventa «4 DI 7» sembra un errore. Che manchi poco lo dicono
-   la barra in alto e i trattini. */
+function numeroPasso(k){
+  return k === 'nome' ? 1 : (k === 'activity' || k === 'giornata') ? 2 : k === 'zones' ? 3 : 4;
+}
 function etichettaPasso(L, i){
-  return L[i].step || ('PASSO ' + i + (i === L.length - 1 ? ' · L\'ULTIMA' : ''));
+  const n = numeroPasso(L[i].k);
+  return n === 4 ? 'ULTIMO PASSO · 4 DI 4' : 'PASSO ' + n + ' DI 4';
+}
+/* le domande dell'ultimo passo: la pressione non si chiede alla prima
+   volta (come nel gestionale), il massaggio solo quando cambia la seduta */
+function domandeFine(){
+  return ['goal','mood'].concat(primaVolta() ? [] : ['pressione'], serveDomandaAria(D) ? ['aria'] : []);
 }
 
 /* Le sette zone, con lo stesso nome che portano nel gestionale. */
@@ -3144,50 +2870,138 @@ function chiudiRegolamento(e){
 }
 
 let PASSO = 0, FIELD = 'nome';
+/* l'operatore scelto a mano non si sovrascrive col predefinito */
+let OP_MANO = false;
 
-function startCheck(){
+function pulisciRisposte(){
+  D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
+  D.goal=''; D.mood=''; D.pressione=''; D.aria=''; D.giornata='';
+  D.clienteId=null; D.cell=''; D.cifre='';
+  OP_MANO = false;
+}
+/* dal bisogno scelto in vetrina arriva l'obiettivo: il passo 4 lo trova
+   gia' acceso, e il cliente lo conferma o lo cambia */
+function startCheck(goal){
+  pulisciRisposte();
+  if(typeof goal === 'string') D.goal = goal;
   PASSO = 0; FIELD = 'nome'; MODO = 'nome'; SEITU_VISTO = null;
   NON_SONO.clear(); CHIEDI = null;
-  D.clienteId = null; D.cell = ''; D.cifre = '';
   go('form'); disegnaPasso();
 }
 document.getElementById('gocheck').onclick = startCheck;
 
-/* le etichette del riepilogo, le stesse del gestionale */
-const QLBL = {nome:'Nome', op:'Operatore', activity:'Attività', zones:'Zone',
+/* ── CHI TI SEGUE ──
+   Quello dell'ultima seduta di questo cliente, se c'e'; se no quello che
+   ha aperto il turno nel gestionale. Il cliente lo vede scritto accanto
+   al suo nome («con Raffaele ✎») e lo cambia solo se oggi e' un altro. */
+function opPredefinito(){
+  const ops = operatori();
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  if(D.clienteId){
+    const ss = ((db && db.sessions) || []).filter(x=> x.clientId === D.clienteId && x.operatore && x.operatore.n)
+      .sort((a,b)=> a.date < b.date ? -1 : 1);
+    const u = ss[ss.length - 1];
+    const o = u && ops.find(x=> x.nome === u.operatore.n);
+    if(o) return o.id;
+  }
+  if(db && db.opAttivo && ops.some(o=> o.id === db.opAttivo)) return db.opAttivo;
+  return null;
+}
+function apriOperatori(){
+  document.getElementById('opgrid').innerHTML = operatori().map(o=>
+    '<div class="opcard in' + (D.op === o.id ? ' sel' : '') + '" style="--oc:' + (o.color || '#7a496c') + '"'
+    + ' onclick="scegliOp(\'' + o.id + '\')">'
+    + '<span class="av">' + iniziali(o.nome) + '</span>'
+    + '<span class="nm">' + esc(o.nome) + '</span></div>').join('');
+  document.getElementById('opvelo').classList.add('on');
+  idleReset();
+}
+function chiudiOperatori(e){
+  if(e && e.target !== e.currentTarget) return;
+  const v = document.getElementById('opvelo');
+  if(v) v.classList.remove('on');
+}
+
+/* le etichette del riepilogo */
+const QLBL = {nome:'Nome', op:'Operatore', activity:'Oggi', giornata:'Giornata', zones:'Zone',
               goal:'Obiettivo', mood:'Umore', pressione:'Pressione', aria:'Massaggio'};
 
 function rispostaDi(k){
   if(k === 'nome') return D.nome ? (D.nome + ' ' + D.cogn).trim() : '';
   if(k === 'op'){ const o = operatori().find(x=>x.id === D.op); return o ? o.nome : ''; }
-  if(k === 'zones') return D.zones.map(ZNOME).join(', ')
-    || (D.zmode === 'totale' ? 'Total body' : D.zmode === 'nessuna' ? 'Nessuna' : '');
+  if(k === 'zones') return D.zones.map(ZNOME).join(' · ')
+    || (D.zmode === 'totale' ? 'Tutto il corpo' : D.zmode === 'nessuna' ? 'Decide Zenith' : '');
   const P = PASSI_TUTTI.find(x=>x.k === k);
   const o = (P && P.opts || []).find(o=>o[0] === D[k]);
   return o ? o[2] : '';
 }
 
+/* il passo 4, in parole del cliente: corte, da leggere a un metro */
+const OBI = {recupero:['💪','Muscoli freschi','recupero dopo la fatica','#c98ab0'],
+  sollievo:['🎯','Sollievo','un punto che tira','#dcab63'],
+  drenaggio:['💧','Gambe leggere','meno gonfiore','#77b795'],
+  relax:['🧘','Staccare','relax profondo','#b98adf'],
+  sonno:['🌙','Dormire meglio','verso il sonno','#7d7ce0'],
+  energia:['☀️','Energia','una carica','#e0997d']};
+const PRESS_T = [['dolce','🪶 Più dolce'], ['abituale','⚖️ Come sempre'], ['decisa','💎 Più decisa']];
+const ARIA_T = [['completo','🌀 Rulli e aria'], ['soloaria','💨 Solo aria']];
+function sceltaFine(k, v){ D[k] = v; disegnaPasso(); idleReset(); }
+function corpoFine(){
+  const dom = domandeFine();
+  const umori = PASSI_TUTTI.find(p=> p.k === 'mood').opts;
+  return '<div class="zfine">'
+    + '<div class="zobi">' + Object.keys(OBI).map(k=>{ const o = OBI[k];
+        return '<div class="zob' + (D.goal === k ? ' sel' : '') + '" data-v="' + k + '" style="--c:' + o[3] + '" onclick="sceltaFine(\'goal\',\'' + k + '\')">'
+          + '<div class="e">' + o[0] + '</div><div class="n">' + o[1] + '</div><div class="s">' + o[2] + '</div></div>'; }).join('') + '</div>'
+    + '<div class="zq2">E adesso come ti senti?</div>'
+    + '<div class="zum5">' + umori.map(o=>
+        '<div class="zum' + (D.mood === o[0] ? ' sel' : '') + '" data-v="' + o[0] + '" onclick="sceltaFine(\'mood\',\'' + o[0] + '\')">'
+        + '<span class="e">' + o[1] + '</span><span class="n">' + o[2] + '</span></div>').join('') + '</div>'
+    + (dom.indexOf('pressione') >= 0
+        ? '<div class="zpress"><div class="k">Pressione<small>se non tocchi niente resta come l\'ultima volta</small></div>'
+          + '<div class="sg">' + PRESS_T.map(([v,t])=> '<span class="' + (D.pressione === v ? 'on' : '') + '" onclick="sceltaFine(\'pressione\',\'' + v + '\')">' + t + '</span>').join('') + '</div></div>'
+        : '')
+    + (dom.indexOf('aria') >= 0
+        ? '<div class="zpress due"><div class="k">Massaggio<small>dopo oggi puoi anche togliere i rulli</small></div>'
+          + '<div class="sg">' + ARIA_T.map(([v,t])=> '<span class="' + (D.aria === v ? 'on' : '') + '" onclick="sceltaFine(\'aria\',\'' + v + '\')">' + t + '</span>').join('') + '</div></div>'
+        : '')
+    + '</div>';
+}
+
 function disegnaPasso(){
   const L = passi();
   if(PASSO > L.length - 1) PASSO = L.length - 1;
-  const P = L[PASSO];
+  const P = L[PASSO], num = numeroPasso(P.k);
+  /* il passo 4 parte gia' compilato dove si puo': la pressione di sempre,
+     il massaggio completo. Il cliente tocca solo quello che vuole cambiare */
+  if(P.k === 'fine'){
+    if(!primaVolta() && !D.pressione) D.pressione = 'abituale';
+    if(serveDomandaAria(D) && !D.aria) D.aria = 'completo';
+  }
   document.getElementById('fstep').textContent = etichettaPasso(L, PASSO);
+  document.getElementById('fdots').innerHTML = [1,2,3,4].map(i=>
+    '<i class="' + (i < num ? 'fatto' : i === num ? 'now' : '') + '"></i>').join('');
+  const op = operatori().find(x=> x.id === D.op);
+  document.getElementById('fciao').innerHTML = P.k === 'nome'
+    ? '<span class="zesci" onclick="reset()">✕ Esci</span>'
+    : '<span class="zciao' + (D.clienteId ? '' : ' nuovo') + '" onclick="apriOperatori()"><i>' + (D.clienteId ? '✓' : '✦') + '</i>'
+      + 'Ciao ' + esc(D.nome || '') + '! <u>· ' + (op ? 'con ' + esc(op.nome) : 'chi ti segue?') + ' ✎</u></span>';
   document.getElementById('fq').textContent = P.q;
   const qs = document.getElementById('fqs');
   /* col cellulare il sottotitolo parla del numero, non del nome */
   qs.textContent = (P.k === 'nome' && MODO === 'cell') ? 'Scrivi il tuo numero di cellulare' : (P.qs || '');
   qs.style.display = P.qs ? 'block' : 'none';
-  document.getElementById('progbar').style.width = (PASSO / L.length * 100) + '%';
-  document.getElementById('fdots').innerHTML = L.map((_,i)=>
-    '<i class="' + (i < PASSO ? 'fatto' : i === PASSO ? 'now' : '') + '"></i>').join('');
   document.getElementById('frecap').innerHTML = L.slice(0, PASSO).map((st,i)=>{
     const v = rispostaDi(st.k);
     return v ? '<div class="rc" onclick="vaiAlPasso(' + i + ')"><em>' + QLBL[st.k] + '</em>'
-      + v + '</div>' : '';
+      + esc(v) + '</div>' : '';
   }).join('');
   const c = document.getElementById('fcorpo');
   c.classList.remove('connome');
-  c.closest('.form').classList.toggle('sunome', P.k === 'nome');
+  const form = c.closest('.form');
+  form.classList.toggle('sunome', P.k === 'nome');
+  form.classList.toggle('ultimo', P.k === 'fine');
 
   if(P.k === 'nome'){
     const l = corrispondenze();
@@ -3221,15 +3035,6 @@ function disegnaPasso(){
     numeri ? buildNum() : buildKb();
     giraSeiTu();
   }
-  else if(P.k === 'op'){
-    c.innerHTML = '<div class="opgrid">' + operatori().map(o=>
-      '<div class="opcard' + (D.op === o.id ? ' sel' : '') + '" style="--oc:' + (o.color || '#7a496c') + '"'
-      + ' onclick="scegliOp(\'' + o.id + '\')">'
-      + '<span class="av">' + iniziali(o.nome) + '</span>'
-      + '<span class="nm">' + o.nome + '</span></div>').join('') + '</div>';
-    [...document.querySelectorAll('.opcard')].forEach((el,i)=>
-      setTimeout(()=> el.classList.add('in'), 70 + i * 90));
-  }
   else if(P.zone){
     /* gli stessi tre gradini di etichette del gestionale: tre sopra,
        due in mezzo, due sotto — e il numero d'ordine sulla zona scelta,
@@ -3251,19 +3056,23 @@ function disegnaPasso(){
       +   '<div class="ztier t3">' + ['gambe','piedi'].map(chip).join('') + '</div>'
       + '</div></div>'
       + '<div class="zapex">'
-      +   rapida('totale', '🧍', 'Total body', 'tutto il corpo')
-      +   rapida('nessuna', '✨', 'Nessuna in particolare', 'decide Zenith')
-      + '</div>'
-      + '<div class="zhint">Fino a <b>3 zone</b> · la <b>prima</b> guida il programma</div>';
+      +   rapida('totale', '🧍', 'Tutto il corpo', 'nessuna zona più delle altre')
+      +   rapida('nessuna', '✨', 'Decidi tu, Zenith', 'nessuna in particolare')
+      + '</div>';
+  }
+  else if(P.k === 'fine'){
+    c.innerHTML = corpoFine();
   }
   else {
-    c.innerHTML = '<div class="opts' + (P.due ? ' due' : '') + (P.spiega ? ' spiega' : '') + '">' + P.opts.map(o=>
-      '<div class="opt' + (D[P.k] === o[0] ? ' sel' : '') + '" data-v="' + o[0] + '"'
+    const att = P.k === 'activity';
+    c.innerHTML = '<div class="opts' + (att ? ' att4' : (P.due ? ' due' : '') + (P.spiega ? ' spiega' : '')) + '">' + P.opts.map(o=>
+      '<div class="opt' + (D[P.k] === o[0] ? ' sel' : '') + (att && o[0] === 'riposo' ? ' largo' : '') + '" data-v="' + o[0] + '"'
+      + (att ? ' style="--c:' + COL_MAC[o[0]] + '"' : '')
       + ' onclick="scegli(\'' + P.k + '\',\'' + o[0] + '\')">'
       + '<span class="oi">' + o[1] + '</span>'
-      + '<span class="ox"><span class="ot">' + o[2] + '</span><span class="od">' + o[3] + '</span></span>'
+      + '<span class="ox"><span class="ot">' + (att ? ATT_BREVE[o[0]][0] : o[2]) + '</span><span class="od">' + (att ? ATT_BREVE[o[0]][1] : o[3]) + '</span></span>'
       + '<span class="ck">✓</span></div>').join('') + '</div>'
-      + (P.k === 'activity'
+      + (att
           ? '<div class="qinfo" onclick="apriMacchine()"><span class="ii">i</span>'
             + 'Cosa lascia ogni macchinario nel tuo corpo, e cosa fa Zenith</div>'
           : '');
@@ -3273,6 +3082,10 @@ function disegnaPasso(){
   aggiornaAvanti();
   idleReset();
 }
+/* le carte del passo 2: nome grande e una riga sola sotto */
+const ATT_BREVE = {ems:['EMS','elettromiostimolazione'], matrix:['Matrix','pesi digitali'],
+  vacufit:['Vacutherm','camminata nel vuoto'], ems2:['EMS2','impulsi in camminata'],
+  riposo:['Niente allenamento','sono qui solo per Zenith · poi ti chiedo com\'è andata la giornata']};
 
 function setField(f){ FIELD = f; disegnaPasso(); idleReset(); }
 
@@ -3360,7 +3173,7 @@ function kbGo(){
   if(FIELD === 'nome' && D.nome.trim()){ setField('cogn'); return; }
   if(completo()) passoAvanti();
 }
-function scegliOp(id){ D.op = id; disegnaPasso(); setTimeout(passoAvanti, 480); }
+function scegliOp(id){ D.op = id; OP_MANO = true; chiudiOperatori(); disegnaPasso(); }
 function scegli(k, v){ D[k] = v; disegnaPasso(); setTimeout(passoAvanti, 480); }
 let tostT = null;
 function tosta(msg){
@@ -3396,20 +3209,23 @@ function completo(){
     return !!(D.nome.trim() && D.cogn.trim());
   }
   if(P.k === 'zones') return D.zones.length > 0 || !!D.zmode;
+  if(P.k === 'fine') return domandeFine().every(k=> !!D[k]);
   return !!D[P.k];
 }
 function aggiornaAvanti(){
   const P = passi()[PASSO], b = document.getElementById('fnext');
   b.classList.toggle('off', !completo());
-  b.textContent = (P.k === 'zones' && D.zones.length)
-    ? 'AVANTI (' + D.zones.length + (D.zones.length === 1 ? ' zona' : ' zone') + ') ›'
+  b.textContent = P.k === 'fine' ? '✓ Ho finito'
+    : (P.k === 'zones' && D.zones.length)
+    ? 'AVANTI · ' + D.zones.length + (D.zones.length === 1 ? ' zona' : ' zone') + ' ›'
     : 'AVANTI ›';
 }
 function passoAvanti(){
   if(passi()[PASSO].k === 'nome' && chiediChi()) return;
   if(!completo()) return;
+  /* finito il nome si sa chi e': si propone chi lo ha seguito l'ultima volta */
+  if(passi()[PASSO].k === 'nome' && !OP_MANO) D.op = opPredefinito();
   if(PASSO < passi().length - 1){ PASSO++; disegnaPasso(); return; }
-  document.getElementById('progbar').style.width = '100%';
   finisci();
 }
 function passoIndietro(){
@@ -3555,30 +3371,33 @@ function premiBoxHTML(){
 }
 
 function finisci(){
+  /* il protocollo si disegna per primo: il nome che legge il cliente e'
+     lo stesso della targa dell'operatore, qui sotto */
+  const r = disegnaProtocollo(), S = r.pr.S, P = PROGRAMMI[r.pr.prog] || {};
   document.getElementById('dnome').textContent = D.nome || 'benvenuto';
-  /* chi lo segue ha un nome: «ho passato tutto a Raffaele» vale piu' di
-     «al tuo operatore», e il cliente sa chi aspettare. E l'ordine e'
-     quello vero: la capsula non e' gia' pronta ad aspettarlo, prima ci si
-     siede, l'operatore sistema la posizione, e solo dopo imposta il
-     programma */
+  document.getElementById('dnomep').textContent = r.nomeP;
+  document.getElementById('dcat').textContent = 'categoria ' + (P.o || r.pr.prog) + ' · ' + S.timer
+    + ' minuti · nato per te fra 20,3 milioni';
+  document.getElementById('dmin').textContent = S.timer + ' minuti, sdraiato. Lascia lavorare Zenith.';
+  /* gli elementi che oggi si accendono per lui: i colori sono quelli
+     della vetrina, cosi' li riconosce */
+  const acc = [S.calore && ['🔥 Calore','#f5851f'], S.ioni && ['✨ Ioni','#b98adf'], S.zerog && ['🪶 Gravità zero','#5fd08a'],
+    (S.polpacci || S.plantari) && ['🦵 Rulli gambe e piedi','#8fd3ec'], r.pr.soloAria && ['💨 Solo aria','#e2bdd4']].filter(Boolean);
+  const zone = D.zones.length ? D.zones.map(z=> ['🎯 ' + ZNOME(z), '#e6c65c'])
+    : [[D.zmode === 'totale' ? '🧍 Tutto il corpo' : '✨ Decide Zenith', '#e6c65c']];
+  document.getElementById('dchips').innerHTML = zone.concat(acc).map(([t,c])=>
+    '<span style="--c:' + c + '">' + t + '</span>').join('');
+  /* chi lo segue ha un nome: «Raffaele ti chiama» vale piu' di «il tuo
+     operatore», e il cliente sa chi aspettare */
   const op = operatori().find(x=> x.id === D.op);
-  document.getElementById('dmsg').innerHTML = (op
-      ? 'Ho passato tutto a <b>' + esc(op.nome) + '</b>: tra poco ti chiama. '
-      : 'Ho passato tutto al tuo operatore: tra poco ti chiama. ')
-    + 'Ti fa accomodare nella capsula, ti sistema la posizione e solo dopo imposta il tuo programma. Tu pensa a rilassarti.';
-  const chips = [NOMI[D.activity], D.activity === 'riposo' ? NOMI[D.giornata] : '', NOMI[D.goal], NOMI[D.mood], NOMI[D.pressione],
-                 serveDomandaAria(D) ? NOMI[D.aria] : '']
-    .concat(D.zones.length ? D.zones.map(ZNOME)
-      : D.zmode === 'totale' ? ['Total body']
-      : D.zmode === 'nessuna' ? ['Nessuna zona in particolare'] : [])
-    .filter(Boolean);
-  document.getElementById('dchips').innerHTML =
-    chips.map(c=> '<span class="chip">' + c + '</span>').join('');
+  document.getElementById('dmsg').innerHTML = op ? '<b>' + esc(op.nome) + '</b> ti chiama tra poco' : 'Il tuo operatore ti chiama tra poco';
+  const av = document.getElementById('dav');
+  av.textContent = op ? iniziali(op.nome) : 'Z';
+  av.style.setProperty('--oc', (op && op.color) || '#7cc6b8');
   document.getElementById('dpremi').innerHTML = premiBoxHTML();
   /* oggi sale di livello: la festa comincia gia' qui */
   if(D.clienteId && premiStato(D.clienteId).mancaDopoOggi === 0) setTimeout(()=> coriandoli(), 500);
   salvaCheckin();
-  disegnaProtocollo();
   document.getElementById('donewrap').scrollTop = 0;
   go('done');
 }
@@ -3776,12 +3595,11 @@ function disegnaProtocollo(){
           : 'prima la scheda anamnestica, poi il setup guidato della capsula')
     +   '</small></span>'
     +   '<span class="ag-go">›</span></div>';
+  return {pr, nomeP};
 }
 
 function reset(){
-  D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
-  D.goal=''; D.mood=''; D.pressione=''; D.aria=''; D.giornata='';
-  D.clienteId=null; D.cell=''; D.cifre='';
+  pulisciRisposte();
   MODO = 'nome';
   PASSO = 0; FIELD = 'nome';
   document.getElementById('risp').classList.remove('on');
@@ -3798,7 +3616,7 @@ function idleReset(){
   clearTimeout(idleT);
   /* sulla schermata finale c'e' da leggere la preparazione e il
      protocollo: due minuti invece di uno, e ogni tocco li fa ripartire */
-  if(SCENE !== 'idle') idleT = setTimeout(reset, SCENE === 'done' ? 120000 : 60000);
+  if(SCENE !== 'idle') idleT = setTimeout(reset, (SCENE === 'done' || SCENE === 'respira') ? 120000 : 60000);
 }
 ['pointerdown','keydown'].forEach(e=> addEventListener(e, idleReset));
 
@@ -3922,7 +3740,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v169.26.11(16)';
+const VETRINA_VERSION = 'v170.26.11(16)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
@@ -3930,9 +3748,8 @@ costruisciIndice();
 buildFiltri();
 buildGriglia();
 disegnaRicerca();
-roamStart();
-centroBuild();
-centroSpotStart();
+costruisciVetrina();
+disegnaOggi();
 </script>
 </body>
 </html>
