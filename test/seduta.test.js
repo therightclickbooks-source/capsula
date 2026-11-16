@@ -227,12 +227,12 @@ module.exports = async function(browser){
                  mood:'sereno', pressione:'media', prefSoloAria:false};
     go('proposal');
     const b = document.getElementById('okbtn');
-    const griglia = document.querySelector('.settinggrid').textContent;
+    const griglia = document.querySelector('.quad').textContent;
     return {abilitato: !!b && !b.disabled, griglia, tutto: document.body.innerText};
   });
   tac.t('il tasto OK della seduta e\' subito attivo, senza START da spuntare', pagina.abilitato);
-  tac.t('i riquadri dei valori mostrano Leg Kneading e Foot Roller come ON/OFF e niente musica',
-    /Leg Kneading/.test(pagina.griglia) && /Foot Roller/.test(pagina.griglia)
+  tac.t('il quadrante mostra Leg Kneading e Foot Roller accesi o spenti, e niente musica',
+    /Leg Kneading/.test(pagina.griglia) && /Foot Roller/.test(pagina.griglia) && /ACCESO|spento/.test(pagina.griglia)
       && !/Musica|Rulli piedi/.test(pagina.griglia), pagina.griglia.replace(/\s+/g, ' '));
   tac.t('la proposta non parla di Health Check, START o END',
     !/Health Check|\bSTART\b|\bEND\b/.test(pagina.tutto));

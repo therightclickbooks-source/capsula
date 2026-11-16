@@ -427,6 +427,129 @@ function motoreZenith(inp){
   return out;
 }
 
+/* ══ IL NOME DEL PROTOCOLLO ══
+   «Gently Rub Soothing» e' la CATEGORIA: il programma che si tocca sul
+   touchscreen, e resta quello. Il NOME del protocollo invece cambia con
+   le regolazioni, cosi' il cliente non legge sempre la stessa cosa: tre
+   parole inglesi, le prime due da due elenchi comuni, la terza
+   dall'elenco della sua categoria.
+   Ogni combinazione dei parametri principali ha il suo nome, e ogni nome
+   una combinazione sola: 4D (0-6), forza airbag (0-6), ioni, calore,
+   zero gravity, Leg Kneading, Foot Roller e le zone degli airbag (18
+   casi: quelle del programma, corpo intero, o una scelta fra spalle,
+   braccia, vita e gambe). Sono 7·7·2·2·2·2·2·18 = 28.224 combinazioni
+   per categoria, tante quanti i nomi 84·84·4: nessun nome avanza e
+   nessuno si ripete. Dal nome si torna ai parametri (daNome): e' cosi'
+   che si recupera una seduta persa scrivendo solo il nome.
+   Come nei 20,3 milioni, la durata non conta; le rifiniture neanche.
+   Il numero della combinazione passa per un mescolamento fisso (sempre lo
+   stesso, su ogni dispositivo): cambiando un solo parametro cambiano
+   tutte e tre le parole. Il seme NON si cambia mai: cambierebbero tutti
+   i nomi, anche quelli delle sedute gia' fatte. */
+const NOME_A = ['Amber','Velvet','Silver','Golden','Ivory','Pearl','Coral','Indigo','Opal','Jade',
+  'Emerald','Sapphire','Crystal','Copper','Bronze','Marble','Satin','Silk','Cashmere','Linen',
+  'Honey','Saffron','Lavender','Rose','Sage','Cedar','Vanilla','Ruby','Topaz','Azure',
+  'Cobalt','Lilac','Platinum','Onyx','Silent','Maple','Serene','Tranquil','Radiant','Mellow',
+  'Tender','Quiet','Olive','Turquoise','Calm','Teal','Pure','Clear','Bright','Hidden',
+  'Ancient','Still','Birch','Rising','Flowing','Dreaming','Morning','Evening','Midnight','Northern',
+  'Southern','Eastern','Western','Royal','Noble','Sacred','Secret','Lunar','Solar','Misty',
+  'Distant','Endless','Eternal','Timeless','Blissful','Peaceful','Graceful','Mystic','Celestial','Starlit',
+  'Moonlit','Sunlit','Gilded','Luminous'];
+const NOME_B = ['Harbor','Dune','Meadow','Tide','Ember','Horizon','Lagoon','Valley','River','Ocean',
+  'Forest','Garden','Island','Cove','Bay','Shore','Cliff','Canyon','Glacier','Summit',
+  'Prairie','Orchard','Grove','Willow','Breeze','Cloud','Moon','Star','Dawn','Dusk',
+  'Aurora','Ripple','Wave','Stream','Rain','Mist','Petal','Feather','Pebble','Fern',
+  'Moss','Lake','Fjord','Delta','Oasis','Reef','Lantern','Candle','Hearth','Haven',
+  'Pavilion','Terrace','Courtyard','Villa','Cabin','Chalet','Lighthouse','Bridge','Trail','Ridge',
+  'Plateau','Savanna','Blossom','Magnolia','Jasmine','Gardenia','Camellia','Peony','Iris','Sky',
+  'Rainbow','Comet','Galaxy','Nebula','Solstice','Equinox','Season','Waterfall','Fountain','Spring',
+  'Glade','Brook','Cascade','Sunrise'];
+/* la terza parola dice la categoria: quattro per ognuna, scelte sul suo carattere */
+const NOME_C = {
+  P01:['Balance','Harmony','Equilibrium','Wholeness'],      /* Health Mode: completo ed equilibrato */
+  P02:['Grace','Elegance','Radiance','Allure'],             /* Queen Bodycare */
+  P03:['Uplift','Lightness','Freedom','Poise'],             /* Shoulder Care */
+  P04:['Release','Unwinding','Restoration','Alignment'],    /* Back Relieve */
+  P05:['Contour','Sculpt','Core','Curve'],                  /* Buttock & Waist */
+  P06:['Stretch','Unfolding','Expansion','Suppleness'],     /* Muscle Relax: l'allungamento */
+  P07:['Remedy','Mending','Revival','Recovery'],            /* Soreness Improvement */
+  P08:['Stride','Footstep','Wanderer','Pathway'],           /* Leg & Foot Relief */
+  P09:['Crest','Ascent','Pinnacle','Apex'],                 /* Upper Body */
+  P10:['Roots','Grounding','Foundation','Anchor'],          /* Lower Body */
+  P11:['Meridian','Lotus','Bamboo','Zen'],                  /* TCM Massage */
+  P12:['Siam','Orchid','Temple','Monsoon'],                 /* Thai SPA */
+  P13:['Escape','Respite','Downtime','Reset'],              /* White-collar */
+  P14:['Signature','Masterpiece','Heritage','Legacy'],      /* Master Classic */
+  P15:['Awakening','Spark','Vigor','Zest'],                 /* Fresh Morning */
+  P16:['Interlude','Recharge','Breather','Siesta'],         /* Lunch Break */
+  P17:['Hammock','Cradle','Sway','Swing'],                  /* Shake Sleeping: il dondolio */
+  P18:['Slumber','Nocturne','Lullaby','Dreamland'],         /* Sleep Aid at Night */
+  P19:['Clarity','Focus','Composure','Mastery'],            /* CEO Fitness */
+  P20:['Journey','Voyage','Odyssey','Milestone'],           /* Long-term Driving */
+  P21:['Cooldown','Rebound','Refuel','Triumph'],            /* Exercise Recovery */
+  P22:['Caress','Whisper','Embrace','Comfort'],             /* Gently Rub Soothing */
+  P23:['Breath','Cushion','Billow','Zephyr'],               /* Airbag Massage: solo aria */
+  P24:['Bespoke','Atelier','Couture','Tailormade']};        /* Customised */
+const NOME_PROG = Object.keys(NOME_C);
+const ZONE_ARIA = ['spalle','braccia','vita','gambe'];
+const NOME_TOT = 7 * 7 * 32 * 18;   /* 28.224 = 84 · 84 · 4 */
+const nomeScarto = prog => (NOME_PROG.indexOf(prog) * 2357) % NOME_TOT;
+/* il mescolamento: una permutazione fissa dei 28.224 numeri, e la sua inversa */
+let NOME_MIX = null, NOME_DEMIX = null;
+function nomeMix(){
+  if(NOME_MIX) return;
+  NOME_MIX = new Int32Array(NOME_TOT); NOME_DEMIX = new Int32Array(NOME_TOT);
+  for(let i = 0; i < NOME_TOT; i++) NOME_MIX[i] = i;
+  let s = 0x5EED2026;
+  const caso = () => { s = (s + 0x6D2B79F5) >>> 0; let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  for(let i = NOME_TOT - 1; i > 0; i--){ const j = Math.floor(caso() * (i + 1)); const t = NOME_MIX[i]; NOME_MIX[i] = NOME_MIX[j]; NOME_MIX[j] = t; }
+  for(let i = 0; i < NOME_TOT; i++) NOME_DEMIX[NOME_MIX[i]] = i;
+}
+/* le zone degli airbag in un numero: 0 quelle del programma (nessuna scelta),
+   1 corpo intero, 2-17 una scelta fra spalle, braccia, vita e gambe */
+function zonaStato(z){
+  if(!z) return 0;
+  if(z.indexOf('tutto') >= 0) return 1;
+  let m = 0; ZONE_ARIA.forEach((k, i) => { if(z.indexOf(k) >= 0) m |= 1 << i; });
+  return 2 + m;
+}
+function statoZona(n){ return n === 0 ? null : n === 1 ? ['tutto'] : ZONE_ARIA.filter((k, i) => (n - 2) & (1 << i)); }
+/* zone: l'elenco delle icone accese (null = quelle del programma) */
+function nomeProtocollo(prog, S, zone){
+  const C = NOME_C[prog]; if(!C) return '';
+  S = S || {};
+  const v7 = x => lim(Math.round(+x || 0), 0, 6);
+  let k = v7(S.fourD) * 7 + v7(S.airbag);
+  [S.ioni, S.calore, S.zerog, S.polpacci, S.plantari].forEach(b => { k = k * 2 + (b ? 1 : 0); });
+  k = k * 18 + zonaStato(zone);
+  nomeMix();
+  let x = NOME_MIX[(k + nomeScarto(prog)) % NOME_TOT];
+  const c = x % 4; x = (x - c) / 4;
+  const a = x % 84;
+  return NOME_A[a] + ' ' + NOME_B[(x - a) / 84] + ' ' + C[c];
+}
+/* dal nome ai parametri: le maiuscole, le virgolette e i trattini non contano */
+function daNome(testo){
+  const p = String(testo || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[^a-z]+/g, ' ').trim().split(' ');
+  if(p.length !== 3) return null;
+  const trova = (l, w) => l.findIndex(x => x.toLowerCase() === w);
+  const a = trova(NOME_A, p[0]), b = trova(NOME_B, p[1]);
+  const prog = NOME_PROG.find(pg => trova(NOME_C[pg], p[2]) >= 0);
+  if(a < 0 || b < 0 || !prog) return null;
+  const x = (b * 84 + a) * 4 + trova(NOME_C[prog], p[2]);
+  nomeMix();
+  let k = (NOME_DEMIX[x] - nomeScarto(prog) + NOME_TOT) % NOME_TOT;
+  const z = k % 18; k = (k - z) / 18;
+  const bit = []; for(let i = 0; i < 5; i++){ bit.unshift(k % 2); k = (k - k % 2) / 2; }
+  const A = k % 7, zone = statoZona(z);
+  const S = {fourD:(k - A) / 7, airbag:A, ioni:!!bit[0], calore:!!bit[1], zerog:!!bit[2], polpacci:bit[3], plantari:bit[4]};
+  return {prog, S, zone, nome: nomeProtocollo(prog, S, zone)};
+}
+
 G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
-  TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE};
+  TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE,
+  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT};
 })(typeof window !== 'undefined' ? window : globalThis);

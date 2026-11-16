@@ -1,0 +1,210 @@
+/* ═══════════════════════════════════════════════════════════════
+   I NOMI DEI PROTOCOLLI, IL QUADRANTE, LE ISTRUZIONI CHIUSE,
+   LE SCHEDE DOPPIE E LE SEDUTE RECUPERATE
+   · ogni combinazione dei parametri principali ha un nome inglese suo,
+     e dal nome si torna ai parametri: 28.224 nomi per categoria;
+   · la proposta mostra il nome in grande, la categoria (il programma del
+     touchscreen) sotto, e il quadrante con le funzioni accese e spente;
+   · le istruzioni scritte dei passi stanno chiuse, il tasto del timer no;
+   · due schede della stessa persona si uniscono senza perdere niente;
+   · una seduta persa si rimette nella scheda col suo codice o col nome.
+   ═══════════════════════════════════════════════════════════════ */
+const { GESTIONALE, VETRINA, Taccuino } = require('./aiuto');
+
+function archivio(){
+  const anamnesi = {certificatoOk:false, zone:[], prefIntensita:'medio', sonno:'buono', caloreSensibile:false};
+  ['a1','a2','a3','a4','a5','a6','b1','b2','b3','b4','b5','b6','b7','b8','b9'].forEach(k=> anamnesi[k] = false);
+  const S = (d, a) => ({fourD:d, airbag:a, calore:true, ioni:false, zerog:true, polpacci:1, plantari:1, timer:20});
+  return {codeHash:'x', codeLen:4,
+    clients:[
+      {id:'c1', nome:'Palma', cognome:'Lux', genere:'F', telefono:'3331112222', anamnesi, cal:0, createdAt:'2026-09-01T10:00:00.000Z',
+       premiUsati:{'g1-1-b':{data:'2026-10-01T10:00:00.000Z'}}},
+      {id:'c2', nome:'palma', cognome:'LUX', genere:'', telefono:'', anamnesi:{zone:[]}, cal:0, createdAt:'2026-10-20T10:00:00.000Z', note:'fatta al totem'},
+      {id:'c3', nome:'Andrea', cognome:'Rossi', genere:'M', telefono:'3330000000', anamnesi, cal:0,
+       premiScelte:{'g1-1-r':{a:'c2', data:'2026-10-21T10:00:00.000Z'}}}],
+    sessions:[
+      {id:'s1', clientId:'c1', date:'2026-10-09T10:00:00.000Z', prog:'P22', fam:'Z1', zCode:'Z1·P22·D1A1CG', settings:S(1,1), scala:'capsula', quiz:{activity:'riposo', zones:[]}},
+      {id:'s2', clientId:'c2', date:'2026-10-20T10:00:00.000Z', prog:'P04', fam:'Z4', zCode:'Z4·P04·D2A2CG', settings:S(2,2), scala:'capsula', quiz:{activity:'riposo', zones:['lombare']}},
+      {id:'s3', clientId:'c2', date:'2026-11-02T10:00:00.000Z', prog:'P05', fam:'Z4', zCode:'Z4·P05·D3A2CG', settings:S(3,2), scala:'capsula', quiz:{activity:'riposo', zones:['glutei']},
+       omaggio:{da:'c2', pid:'g1-1-b'}}],
+    operators:[], checkins:[{id:'k1', clienteId:'c2', nome:'Palma', cognome:'Lux', quando:'2026-11-02T09:00:00.000Z'}]};
+}
+
+module.exports = async function(browser){
+  const tac = new Taccuino('i nomi dei protocolli, il quadrante, le schede doppie, le sedute recuperate');
+  const p = await browser.newPage({viewport:{width:430, height:900}});
+  p.on('pageerror', e => tac.rossi.push('errore di pagina: ' + e.message));
+  await p.addInitScript(d => { try{ if(!localStorage.getItem('zfl_app_v1')) localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await p.goto(GESTIONALE); await p.waitForTimeout(600);
+
+  /* 1 · i nomi: tutti diversi, tutti reversibili */
+  const nomi = await p.evaluate(() => {
+    const M = MOTORE, C = M.NOME_C, ZS = [null, ['tutto']], Z = ['spalle','braccia','vita','gambe'];
+    for(let m = 0; m < 16; m++) ZS.push(Z.filter((k, i) => m & (1 << i)));
+    const visti = new Set(); let n = 0, sbagli = 0;
+    for(const pg of Object.keys(C)) for(let d = 0; d < 7; d++) for(let a = 0; a < 7; a++) for(let b = 0; b < 32; b++) for(const z of ZS){
+      const S = {fourD:d, airbag:a, ioni:!!(b & 16), calore:!!(b & 8), zerog:!!(b & 4), polpacci:(b & 2) ? 1 : 0, plantari:b & 1};
+      const nm = M.nomeProtocollo(pg, S, z); n++; visti.add(nm);
+      const r = M.daNome(nm);
+      if(!r || r.prog !== pg || r.nome !== nm || r.S.fourD !== d || r.S.airbag !== a || JSON.stringify(r.zone) !== JSON.stringify(z)) sbagli++;
+    }
+    const base = {fourD:1, airbag:1, ioni:false, calore:true, zerog:true, polpacci:1, plantari:1};
+    const uno = M.nomeProtocollo('P22', base, null);
+    const variati = [{fourD:2}, {airbag:2}, {ioni:true}, {calore:false}, {zerog:false}, {polpacci:0}, {plantari:0}]
+      .map(v => M.nomeProtocollo('P22', Object.assign({}, base, v), null)).concat([M.nomeProtocollo('P22', base, ['tutto']), M.nomeProtocollo('P22', base, ['spalle','vita','gambe'])]);
+    const parole = M.NOME_A.concat(M.NOME_B, Object.values(C).flat());
+    return {n, distinti: visti.size, sbagli, uno, ancora: M.nomeProtocollo('P22', Object.assign({}, base), null), variati,
+      inglese: parole.every(w => /^[A-Z][a-z]+$/.test(w)), parole: parole.length, paroleDistinte: new Set(parole).size,
+      categoria: C.P22, scritto: M.daNome('  “' + uno.toLowerCase().replace(/ /g, '-') + '” ')};
+  });
+  tac.t('24 categorie × 28.224 combinazioni = 677.376 nomi, tutti diversi, e dal nome si torna sempre ai parametri',
+    nomi.n === 677376 && nomi.distinti === 677376 && nomi.sbagli === 0, JSON.stringify({n:nomi.n, distinti:nomi.distinti, sbagli:nomi.sbagli}));
+  tac.t('gli stessi parametri danno sempre lo stesso nome; cambiandone uno solo (4D, airbag, ioni, calore, zero gravity, rulli, zone) il nome cambia',
+    nomi.uno === nomi.ancora && nomi.variati.every(v => v !== nomi.uno) && new Set(nomi.variati).size === nomi.variati.length, JSON.stringify(nomi.variati));
+  tac.t('i nomi sono tre parole inglesi, l\'ultima della sua categoria (264 parole, nessuna ripetuta)',
+    nomi.inglese && nomi.parole === 264 && nomi.paroleDistinte === 264 && nomi.categoria.indexOf(nomi.uno.split(' ')[2]) >= 0, nomi.uno);
+  tac.t('il nome si riconosce anche scritto in minuscolo, con trattini e virgolette', !!nomi.scritto && nomi.scritto.nome === nomi.uno, JSON.stringify(nomi.scritto));
+
+  /* 2 · la proposta: il nome, la categoria, il quadrante, le istruzioni chiuse */
+  const prop = await p.evaluate(() => {
+    quizState = {clientId:'c3', activity:'riposo', giornata:'tranquilla', goal:'sollievo', zones:['cervicale','lombare'], mood:'dolorante', pressione:'media', prefSoloAria:false};
+    NAV = [{name:'home'}]; go('proposal');
+    const S = currentProt.S, q = document.querySelector('.quad');
+    const acceso = t => { const x = [...q.querySelectorAll('.qd-s')].find(e => e.textContent.indexOf(t) >= 0); return x ? x.classList.contains('on') : null; };
+    const det = [...document.querySelectorAll('details.gdet')];
+    const tm = document.querySelector('.tmgo-b');
+    return {titolo: document.querySelector('.pname2').textContent, atteso: '“' + nomeProt(currentProt) + '”',
+      categoria: document.querySelector('.pcat').textContent, prog: PROGRAMS[currentProt.prog].o,
+      quad: !!q, sopra: q && q.compareDocumentPosition(document.querySelector('.call.acc')) & Node.DOCUMENT_POSITION_FOLLOWING,
+      d: q.querySelector('.qd-v').textContent, S,
+      calore: acceso('Calore'), ioni: acceso('Ioni'), zerog: acceso('Zero Gravity'), leg: acceso('Leg Kneading'), foot: acceso('Foot Roller'),
+      vecchia: !!document.querySelector('.proposal .settinggrid'),
+      cassetti: det.length, aperti: det.filter(x => x.open).length,
+      timer: !!tm && !tm.closest('details') && tm.offsetHeight > 0,
+      legendaDentro: [...document.querySelectorAll('.glegend')].every(g => !!g.closest('details.gdet')),
+      testoTocco: !!document.querySelector('details.gdet summary') && /Leggi le istruzioni/.test(document.querySelector('details.gdet summary').textContent)};
+  });
+  tac.t('in cima alla proposta c\'è il nome del protocollo, non quello della categoria', prop.titolo === prop.atteso && prop.titolo.indexOf(prop.prog) < 0, prop.titolo);
+  tac.t('sotto il nome c\'è la categoria: il programma da toccare sul touchscreen', prop.categoria.indexOf(prop.prog) >= 0 && /touchscreen/.test(prop.categoria), prop.categoria);
+  tac.t('il quadrante sta sopra il «perché», con il 4D e gli interruttori accesi e spenti come nel protocollo',
+    prop.quad && !!prop.sopra && +prop.d === prop.S.fourD && prop.calore === !!prop.S.calore && prop.ioni === !!prop.S.ioni
+      && prop.zerog === !!prop.S.zerog && prop.leg === (prop.S.polpacci > 0) && prop.foot === (prop.S.plantari > 0) && !prop.vecchia, JSON.stringify(prop));
+  tac.t('le istruzioni scritte dei passi stanno chiuse sotto «Leggi le istruzioni»; il tasto del timer resta a vista',
+    prop.cassetti >= 6 && prop.aperti === 0 && prop.legendaDentro && prop.testoTocco && prop.timer, JSON.stringify({c:prop.cassetti, a:prop.aperti, t:prop.timer}));
+  const tutte = await p.evaluate(() => { const b = document.querySelector('.gall'); b.click();
+    const a = [...document.querySelectorAll('details.gdet')].every(d => d.open), t1 = b.textContent;
+    b.click(); return {a, t1, chiuse: [...document.querySelectorAll('details.gdet')].every(d => !d.open)}; });
+  tac.t('«Apri tutte le istruzioni» le apre tutte, e lo stesso tasto le richiude', tutte.a && /Chiudi/.test(tutte.t1) && tutte.chiuse, JSON.stringify(tutte));
+
+  /* 3 · la seduta registrata si porta il nome, e lo storico lo mostra con la categoria */
+  const reg = await p.evaluate(() => {
+    const atteso = nomeProt(currentProt);
+    document.getElementById('okbtn').click();
+    const s = DB.sessions[DB.sessions.length - 1];
+    go('client', {id:'c3'});
+    const riga = document.querySelector('.sessrow[data-sid="' + s.id + '"]');
+    return {nome: s.nome, atteso, aria: s.aria !== undefined, titolo: riga.querySelector('.sr-prog').textContent.trim(), cat: riga.querySelector('.sr-cat').textContent,
+      prog: PROGRAMS[s.prog].o};
+  });
+  tac.t('la seduta registrata si porta scritto il suo nome, e lo storico lo mostra con sotto la categoria',
+    reg.nome === reg.atteso && reg.aria && reg.titolo === reg.nome && reg.cat.indexOf(reg.prog) >= 0, JSON.stringify(reg));
+
+  /* 4 · le schede doppie */
+  const dop = await p.evaluate(() => {
+    const out = {};
+    go('clients'); out.elenco = !!document.querySelector('.dopbar') && /Palma Lux/i.test(document.querySelector('.dopbar').textContent);
+    go('client', {id:'c1'}); out.scheda = !!document.querySelector('.dopbar');
+    /* gia' aperta una seduta da registrare per il doppione */
+    aperteSalva([{clientId:'c2', stato:'registra', inizio:'2026-11-02T10:00:00.000Z', prot:{prog:'P04', fam:'Z4', S:{fourD:1, airbag:1}}, quiz:{}}]);
+    DB.codeHash = hash('1234');
+    confermaUnisci('c1', 'c2');
+    out.chiede = document.getElementById('modal').classList.contains('open') && /Unire/.test(document.getElementById('modal').textContent);
+    document.getElementById('mcode').value = '1234'; confirmCode();
+    out.clienti = DB.clients.map(c => c.id).join(',');
+    out.sedute = DB.sessions.filter(s => s.clientId === 'c1').length;
+    out.orfane = DB.sessions.filter(s => s.clientId === 'c2').length;
+    out.omaggio = DB.sessions.find(s => s.id === 's3').omaggio.da;
+    out.checkin = DB.checkins[0].clienteId;
+    out.regalo = DB.clients.find(c => c.id === 'c3').premiScelte['g1-1-r'].a;
+    out.premio = !!DB.clients.find(c => c.id === 'c1').premiUsati['g1-1-b'];
+    out.nota = DB.clients.find(c => c.id === 'c1').note;
+    out.anamnesiCompleta = anamnesiMancanti(DB.clients.find(c => c.id === 'c1')).length === 0;
+    out.aperte = aperte().map(a => a.clientId + ':' + a.stato).join(',');
+    out.vista = VIEW.name + ':' + VIEW.id;
+    out.nessunBanner = !document.querySelector('.dopbar');
+    return out;
+  });
+  tac.t('due schede con lo stesso nome (anche scritto diverso) si segnalano nell\'elenco e nella scheda', dop.elenco && dop.scheda, JSON.stringify(dop));
+  tac.t('unire chiede il Codice Zenith; poi resta una scheda sola con tutte le sedute', dop.chiede && dop.clienti === 'c1,c3' && dop.sedute === 3 && dop.orfane === 0 && dop.vista === 'client:c1' && dop.nessunBanner, JSON.stringify(dop));
+  tac.t('passano anche omaggi, check-in del totem, regali ricevuti e sedute da chiudere; i premi usati restano',
+    dop.omaggio === 'c1' && dop.checkin === 'c1' && dop.regalo === 'c1' && dop.premio && dop.aperte === 'c1:registra', JSON.stringify(dop));
+  tac.t('dei dati si completano quelli vuoti e l\'anamnesi resta la più completa', /fatta al totem/.test(dop.nota || '') && dop.anamnesiCompleta, JSON.stringify(dop));
+
+  /* 5 · recuperare una seduta persa */
+  const rec = await p.evaluate(() => {
+    const out = {};
+    go('client', {id:'c1'});
+    const prima = DB.sessions.length;
+    apriRecupera('c1');
+    const ok = () => document.getElementById('rc_ok').disabled === false;
+    const scrivi = t => { document.getElementById('rc_cod').value = t; rcAggiorna(); return {ok: ok(), testo: document.getElementById('rc_prev').textContent.replace(/\s+/g, ' ')}; };
+    out.vuoto = scrivi('');
+    out.sbagliato = scrivi('ciao come stai');
+    out.codice = scrivi('z1 p22 d1a1cg');
+    out.senzaFamiglia = scrivi('P04·D2A2ICG');
+    out.leg = (RECUPERO.leg = true, rcAggiorna(), document.getElementById('rc_prev').textContent.indexOf('Leg Kneading') >= 0);
+    document.getElementById('rc_cod').value = 'Z4·P04·D2A2ICG'; rcAggiorna();
+    document.getElementById('rc_data').value = '2026-10-30'; document.getElementById('rc_ora').value = '18:15';
+    rcSalva();
+    const s = DB.sessions[DB.sessions.length - 1];
+    out.salvata = {n: DB.sessions.length - prima, prog: s.prog, fam: s.fam, zCode: s.zCode, giorno: dayKey(s.date), ora: new Date(s.date).getHours() + ':' + new Date(s.date).getMinutes(),
+      leg: s.settings.polpacci, foot: s.settings.plantari, recuperata: s.recuperata, punti: s.points, nome: s.nome};
+    out.storico = !!document.querySelector('.sessrow[data-sid="' + s.id + '"] .sr-rec');
+    /* dal nome: torna tutto, anche le zone degli airbag */
+    const z = MOTORE.nomeProtocollo('P05', {fourD:3, airbag:2, ioni:true, calore:false, zerog:true, polpacci:0, plantari:1}, ['vita','gambe']);
+    apriRecupera('c1'); out.dalNome = scrivi(z);
+    document.getElementById('rc_data').value = '2026-10-31'; rcSalva();
+    const t = DB.sessions[DB.sessions.length - 1];
+    out.nome = {nome: t.nome, atteso: z, S: t.settings, aria: t.aria, prog: t.prog};
+    /* nel futuro no */
+    apriRecupera('c1'); document.getElementById('rc_cod').value = 'Z1·P22·D1A1CG'; rcAggiorna();
+    const domani = new Date(Date.now() + 2 * 864e5);
+    document.getElementById('rc_data').value = domani.toLocaleDateString('sv-SE'); const n0 = DB.sessions.length; rcSalva();
+    out.futuro = DB.sessions.length === n0; closeModal();
+    /* dallo storico si sceglie prima il cliente */
+    go('history'); out.tastoStorico = !!document.querySelector('.rcstor');
+    apriRecupera(); out.chiedeCliente = !!document.getElementById('rc_q');
+    document.getElementById('rc_q').value = 'rossi'; rcClienti(); document.querySelector('#rc_cl .unr').click();
+    out.scelto = RECUPERO.cid; closeModal();
+    return out;
+  });
+  tac.t('il recupero resta spento finché non riconosce un codice o un nome', !rec.vuoto.ok && !rec.sbagliato.ok && /Non riconosco/.test(rec.sbagliato.testo), JSON.stringify([rec.vuoto, rec.sbagliato]));
+  tac.t('riconosce il codice scritto come capita, anche senza la famiglia, e chiede i rulli che il codice non dice',
+    rec.codice.ok && /Gently Rub Soothing/.test(rec.codice.testo) && rec.senzaFamiglia.ok && /Back Relieve/.test(rec.senzaFamiglia.testo)
+      && /rulli di gambe e piedi/.test(rec.senzaFamiglia.testo) && rec.leg, JSON.stringify([rec.codice, rec.senzaFamiglia]));
+  tac.t('la seduta recuperata entra con giorno e ora scelti, conta 10 punti ed è segnata «recuperata» nello storico',
+    rec.salvata.n === 1 && rec.salvata.prog === 'P04' && rec.salvata.fam === 'Z4' && rec.salvata.zCode === 'Z4·P04·D2A2ICG' && rec.salvata.giorno === '2026-10-30'
+      && rec.salvata.ora === '18:15' && rec.salvata.leg === 1 && rec.salvata.foot === 0 && rec.salvata.recuperata && rec.salvata.punti === 10 && !!rec.salvata.nome && rec.storico,
+    JSON.stringify(rec.salvata));
+  tac.t('dal nome torna tutto: categoria, valori, rulli e zone degli airbag',
+    rec.dalNome.ok && rec.nome.nome === rec.nome.atteso && rec.nome.prog === 'P05' && rec.nome.S.fourD === 3 && rec.nome.S.ioni === true && rec.nome.S.calore === false
+      && rec.nome.S.polpacci === 0 && rec.nome.S.plantari === 1 && JSON.stringify(rec.nome.aria) === '["vita","gambe"]', JSON.stringify(rec.nome));
+  tac.t('una seduta nel futuro non si recupera', rec.futuro);
+  tac.t('dallo storico si recupera anche: prima si sceglie di chi è la seduta', rec.tastoStorico && rec.chiedeCliente && rec.scelto === 'c3', JSON.stringify(rec));
+  await p.close();
+
+  /* 6 · la vetrina mostra lo stesso nome al cliente */
+  const v = await browser.newPage({viewport:{width:1080, height:1920}});
+  v.on('pageerror', e => tac.rossi.push('errore di pagina (vetrina): ' + e.message));
+  await v.goto(VETRINA); await v.waitForTimeout(600);
+  const vet = await v.evaluate(() => {
+    Object.assign(D, {nome:'Prova', activity:'riposo', giornata:'tranquilla', zones:['lombare'], zmode:null, goal:'sollievo', mood:'stanco', pressione:'media'});
+    disegnaProtocollo();
+    const pr = costruisciProtocollo(D);
+    return {nom: document.querySelector('.targa .nom').textContent, cat: document.querySelector('.targa .cat').textContent,
+      atteso: '“' + MOTORE.nomeProtocollo(pr.prog, pr.S, pr.aria.icone) + '”', prog: pr.prog};
+  });
+  tac.t('anche la vetrina, dopo il check-in, mostra il nome del protocollo e sotto la categoria', vet.nom === vet.atteso && vet.cat.indexOf(vet.prog) >= 0, JSON.stringify(vet));
+  await v.close();
+  return tac;
+};

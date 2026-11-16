@@ -23,6 +23,7 @@ const PROVE = [
   ['chiusura',    require('./chiusura.test.js')],
   ['aperte',      require('./aperte.test.js')],
   ['nota',        require('./nota.test.js')],
+  ['nomi',        require('./nomi.test.js')],
   ['prova',       require('./prova.test.js')],
   ['prenotazioni', require('./prenotazioni.test.js')]
 ];

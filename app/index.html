@@ -487,7 +487,7 @@
 
   /* forms */
   label.f{display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin:14px 0 5px}
-  input[type=text],input[type=tel],input[type=date],input[type=password],select,textarea{
+  input[type=text],input[type=tel],input[type=date],input[type=time],input[type=password],select,textarea{
     width:100%; background:var(--surface2); border:1px solid var(--line); color:var(--text);
     border-radius:10px; padding:13px 14px; font-size:16px; font-family:inherit;
   }
@@ -929,6 +929,53 @@
 
   /* guided steps with screenshot markers */
   .gstep{margin:26px 0}
+  /* le istruzioni scritte, chiuse in un cassetto sotto la schermata */
+  .gdet{margin-top:9px; border:1px solid var(--line); border-radius:12px; background:var(--surface2); overflow:hidden}
+  .gdet > summary{list-style:none; display:flex; align-items:center; gap:9px; padding:12px 14px; cursor:pointer;
+    font-weight:800; font-size:14.5px; color:var(--accent-strong); -webkit-tap-highlight-color:transparent}
+  .gdet > summary::-webkit-details-marker{display:none}
+  .gdet .gd-n{margin-left:auto; font-size:12px; color:var(--faint); font-weight:700}
+  .gdet .gd-ch{color:var(--muted); transition:transform .2s}
+  .gdet[open] .gd-ch{transform:rotate(180deg)}
+  .gdet[open] > summary{border-bottom:1px solid var(--line)}
+  .gdet .gd-body{padding:4px 14px 12px}
+  .gstep.extra .gdet{border-color:#8fb2c9}
+  .gstep.extra .gdet > summary{color:#9fc2d6}
+  .gall{width:100%; margin:4px 0 2px}
+
+  /* schede doppie e sedute recuperate */
+  .dopbar .btn{margin-top:10px; width:100%}
+  .dopl{display:flex; flex-wrap:wrap; gap:7px; margin-top:9px}
+  .dopc{cursor:pointer; font-family:inherit; font-size:13px; font-weight:700}
+  .stbtn{margin:2px 0 12px}
+  .stbtn .btn{font-size:13.5px; padding-left:8px; padding-right:8px}
+  .rcstor{width:100%; margin:0 0 12px}
+  .unl{display:flex; flex-direction:column; gap:8px; margin:0 0 12px; max-height:46vh; overflow-y:auto}
+  .unr{display:flex; flex-direction:column; align-items:flex-start; gap:2px; width:100%; text-align:left; cursor:pointer;
+    font-family:inherit; color:var(--text); background:var(--surface2); border:1px solid var(--line); border-radius:13px; padding:11px 14px}
+  .unr:active{border-color:var(--accent)}
+  .unn{font-weight:800; font-size:15px}
+  .unn i{font-style:normal; font-size:11px; font-weight:800; color:#17121a; background:#e6c65c; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:2px}
+  .uns{font-size:12.5px; color:var(--muted)}
+  .une{font-size:13px; color:var(--faint); padding:6px 2px}
+  .unb{border:1px solid var(--line); border-radius:12px; padding:9px 12px; margin:0 0 8px; font-size:13.5px; color:var(--text); background:var(--surface2)}
+  .unb b{display:block; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ok); margin-bottom:2px}
+  .unb.via b{color:var(--warn)}
+  .rcchi{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; background:var(--surface2); border:1px solid var(--line);
+    border-radius:12px; padding:10px 13px; margin-bottom:6px}
+  .rcchi span{font-size:12.5px; color:var(--muted)}
+  .rccambia{margin-left:auto; background:none; border:none; color:var(--accent-strong); font:inherit; font-weight:700; cursor:pointer; text-decoration:underline}
+  .rcprev:empty{display:none}
+  .rcok{border:1.5px solid color-mix(in srgb, var(--ok) 60%, transparent); background:color-mix(in srgb, var(--ok) 9%, var(--surface2));
+    border-radius:14px; padding:11px 13px; margin:-4px 0 4px}
+  .rck{font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ok)}
+  .rcn{font-size:19px; font-weight:800; margin-top:4px; letter-spacing:-.01em}
+  .rcc{font-size:12.5px; color:var(--muted); margin-top:2px}
+  .rcv{font-size:13px; margin-top:7px; line-height:1.45}
+  .rcsw{margin-top:9px; font-size:12.5px; color:var(--muted)}
+  .rcsw .seg{margin-top:6px}
+  .rcno{border:1px solid color-mix(in srgb, var(--warn) 55%, transparent); border-radius:12px; padding:10px 12px; font-size:13px; color:var(--text); margin:-4px 0 4px}
+  .rcrow{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .gstep .gh{
     display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; row-gap:8px;
     background:linear-gradient(90deg, var(--surface2), transparent 80%);
@@ -1355,6 +1402,8 @@
     transition:color .16s, text-decoration-color .16s;
   }
   .sessrow .sr-prog:active{color:var(--accent-hi); text-decoration-color:var(--accent-hi)}
+  .sessrow .sr-cat{font-size:12px; color:var(--muted); margin-top:3px; letter-spacing:.01em}
+  .sessrow .sr-cat .sr-rec{color:#e6c65c; font-weight:700}
   .sessrow .sr-when{text-align:center; font-size:12.5px; color:var(--muted); margin-top:11px; font-variant-numeric:tabular-nums}
   .sessrow .sr-who{
     display:block; margin:2px auto 0; padding:0; background:none; border:none; font:inherit;
@@ -2167,6 +2216,57 @@
   .proposal .pfam{display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700;
     color:var(--muted); margin-top:6px}
   .proposal .pfam .fd{width:9px; height:9px; border-radius:50%; flex:none}
+  /* la categoria: il programma da toccare sul touchscreen, sotto il nome */
+  .pcat{font-size:13px; color:var(--muted); margin-top:5px; line-height:1.4}
+  .pcat b{color:var(--text)}
+
+  /* ══ il quadrante della seduta: acceso col suo colore, spento in grigio ══ */
+  .quad{margin:14px 0 4px; padding:14px 13px 13px; border-radius:18px;
+    background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 13%, var(--surface)), var(--surface2));
+    border:1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow:0 14px 34px -22px var(--accent)}
+  .qd-h{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:11px}
+  .qd-h span{font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-strong)}
+  .qd-h small{font-size:11px; font-weight:800; color:var(--text)}
+  .qd-h small i{font-style:normal; font-weight:600; color:var(--faint)}
+  .qd-livelli{display:grid; grid-template-columns:1fr 1fr .85fr; gap:8px}
+  .qd-l{border-radius:14px; padding:10px 11px 11px; background:var(--surface); border:1px solid var(--line); opacity:.5}
+  .qd-l.on{opacity:1; border-color:color-mix(in srgb, var(--qc) 70%, transparent);
+    background:color-mix(in srgb, var(--qc) 12%, var(--surface)); box-shadow:0 0 24px -12px var(--qc)}
+  .qd-lt{display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; color:var(--muted); line-height:1.2}
+  .qd-v{font-size:42px; font-weight:800; line-height:1; margin-top:7px; color:var(--qc); font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+  .qd-l:not(.on) .qd-v{color:var(--faint)}
+  .qd-v small{font-size:14px; margin-left:3px; color:var(--muted); letter-spacing:0}
+  .qd-tk{display:flex; gap:4px; margin-top:9px; align-items:center}
+  .qd-tk i{flex:1; height:6px; border-radius:3px; background:var(--line)}
+  .qd-tk i.on{background:var(--qc)}
+  .qd-tk b{font-size:11px; color:var(--qc)}
+  .qd-no{font-size:11px; color:var(--faint); margin-top:7px; line-height:1.3}
+  .qd-sw{display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin-top:9px}
+  .qd-s{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; padding:10px 3px 9px;
+    border-radius:13px; background:var(--surface); border:1px solid var(--line); opacity:.42; filter:grayscale(1)}
+  .qd-s.on{opacity:1; filter:none; border-color:color-mix(in srgb, var(--qc) 75%, transparent);
+    background:color-mix(in srgb, var(--qc) 16%, var(--surface)); box-shadow:0 0 22px -10px var(--qc)}
+  .qd-s .qd-ic{font-size:22px; line-height:1}
+  .qd-sn{font-size:11.5px; font-weight:800; line-height:1.15; margin-top:2px}
+  .qd-st{font-size:9.5px; font-weight:800; letter-spacing:.1em; color:var(--faint)}
+  .qd-s.on .qd-st{color:var(--qc)}
+  .qd-riga{display:flex; align-items:flex-start; gap:10px; margin-top:11px}
+  .qd-rk{flex:none; width:82px; font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding-top:6px; line-height:1.25}
+  .qd-zs{display:flex; flex-wrap:wrap; gap:6px; flex:1; min-width:0}
+  .qd-z, .qd-r{font-size:12px; font-weight:700; padding:5px 10px; border-radius:999px; background:var(--surface);
+    border:1px solid var(--line); color:var(--faint); line-height:1.3}
+  .qd-z.on{color:#17121a; background:#e2bdd4; border-color:#e2bdd4}
+  .qd-r.on{color:var(--text); border-color:var(--qc); background:color-mix(in srgb, var(--qc) 16%, var(--surface))}
+  /* nel tema chiaro i colori dei sei elementi si scuriscono: sul bianco si leggevano appena */
+  html.light .qd-v, html.light .qd-tk b, html.light .qd-s.on .qd-st{color:color-mix(in srgb, var(--qc) 60%, #2a1a26)}
+  html.light .qd-tk i.on{background:color-mix(in srgb, var(--qc) 80%, #2a1a26)}
+  @media(max-width:430px){
+    .qd-sw{grid-template-columns:repeat(3,1fr)}
+    .qd-v{font-size:36px}
+    .qd-rk{width:auto; flex-basis:100%; padding-top:0}
+    .qd-riga{flex-wrap:wrap; gap:6px}
+  }
   .pchip2{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:800;
     background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:6px 13px}
   .zline{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-top:13px}
@@ -3739,8 +3839,8 @@ function apriQR(){
     <div class="mm">Inquadra questo codice con la fotocamera del telefono: ci trovi
       <b>gli stessi passi</b> che vedi qui, da tenere in mano mentre regoli la capsula.</div>
     <div class="qrbox">${qrSVG(link, 300)}</div>
-    <div class="qrsotto"><b>${esc(currentProt.prog)} · ${esc(PROGRAMS[currentProt.prog].o)}</b>
-      <span>${esc(currentProt.zCode || '')}</span></div>
+    <div class="qrsotto"><b>“${esc(nomeProt(currentProt))}”</b>
+      <span>${esc(currentProt.prog)} · ${esc(PROGRAMS[currentProt.prog].o)} · ${esc(currentProt.zCode || '')}</span></div>
     <p class="hint" style="margin:10px 0 0; text-align:center">
       Sul telefono è <b>di sola lettura</b>: la registrazione della seduta
       resta qui, accanto al cliente.</p>
@@ -3778,9 +3878,11 @@ function vSetupQR(){
     <div class="proposal">
       <div class="phead">
         <div class="pkicker">${pchip(prot.prog)}<span class="pchip2">⏱ ${S.timer} min</span></div>
-        <div class="pname2">“${esc(P.o)}”</div>
+        <div class="pname2">“${esc(nomeProt(prot, prot.quizZones || []))}”</div>
+        <div class="pcat">Categoria <b>${esc(P.o)}</b> · è il nome da toccare sul touchscreen</div>
         <div class="pfam"><span class="fd" style="background:${F.color}"></span>${F.name}</div>
         ${prot.nome ? `<div class="pwhy" style="margin-top:8px">Cliente: <b>${esc(prot.nome)}</b></div>` : ''}
+        ${quadranteHTML(prot, prot.quizZones || [])}
         ${nExtra?`<div class="exnote"><span class="exdot">＋</span><span>Questo protocollo ha <b>${nExtra} ${nExtra>1?'sezioni extra facoltative':'sezione extra facoltativa'}</b>: la riconosci dal colore azzurro</span></div>`:''}
         <div class="zline"><span class="zpill">${esc(zCodeOf(prot.fam, prot.prog, S))}</span></div>
       </div>
@@ -3788,14 +3890,14 @@ function vSetupQR(){
         <div class="call ok" style="margin-top:2px"><b class="tt">Solo da leggere</b>
         Questi sono i passi per impostare la capsula. La registrazione della seduta
         si fa <b>sul totem</b>, accanto al cliente: è lì che vivono i dati.</div>
-        <div class="settinggrid">${macroCells(S)}</div>
       </div>
     </div>
     <h2>I passi sulla capsula</h2>
     <div class="glegenda">
       <div><span class="gseg tondo"></span><span><b>Cerchio rosso</b> = tasto da toccare o accendere</span></div>
-      <div><span class="gseg quadro"></span><span><b>Riquadro ambra</b> = valore da regolare: il numero giusto è scritto sotto la schermata</span></div>
+      <div><span class="gseg quadro"></span><span><b>Riquadro ambra</b> = valore da regolare: il numero giusto è nel quadrante</span></div>
     </div>
+    <button class="btn sec gall" onclick="istruzioniTutte(this)">📖 Apri tutte le istruzioni</button>
     ${steps.map(renderStep).join('')}
     <div class="actionbar">
       <button class="btn big" onclick="location.hash=''; NAV=[]; go('home')">✓ Ho finito — torna al gestionale</button>
@@ -4417,6 +4519,39 @@ function buildProtocol(client, quiz, opz){
 function zCodeOf(fam, prog, S){
   return `${fam}·${prog}·D${S.fourD}A${S.airbag}${S.ioni?'I':''}${S.calore?'C':''}${S.zerog?'G':''}`;
 }
+/* ── IL NOME DEL PROTOCOLLO E LA SUA CATEGORIA ──
+   La categoria e' il programma che si tocca sul touchscreen («Gently Rub
+   Soothing»): quella la legge l'operatore. Il cliente legge il NOME, che
+   cambia con le regolazioni (MOTORE.nomeProtocollo, nel motore). Le zone
+   degli airbag contano solo quando la seduta le sceglie, con la stessa
+   regola dei passi guidati; altrimenti restano quelle del programma. */
+function zoneAirbagApplicate(prot, qz){
+  if(prot.zoneFisse !== undefined) return prot.zoneFisse;   /* la ripetizione: le zone di allora */
+  qz = qz || prot.quizZones || [];
+  const aria = prot.aria || scegliZoneAirbag({zones:qz}, prot.fam, []);
+  return prot.prog === 'P23' || qz.length || String(aria.perche || '').indexOf('anamnesi') >= 0 ? aria.icone : null;
+}
+function nomeProt(prot, qz){
+  if(!prot) return '';
+  qz = qz || prot.quizZones || (typeof quizState !== 'undefined' && quizState.zones) || [];
+  return MOTORE.nomeProtocollo(prot.prog, prot.S, zoneAirbagApplicate(prot, qz)) || (PROGRAMS[prot.prog] || {}).o || prot.prog || '';
+}
+/* le sedute nuove il nome se lo portano scritto; quelle di prima lo
+   ricavano dai valori salvati e dalle zone di allora */
+function nomeSeduta(s){
+  if(!s) return '';
+  if(s.nome) return s.nome;
+  const S = Object.assign({}, s.settings || {});
+  if(s.scala !== 'capsula') inScalaCapsula(S);
+  let zone = s.aria;
+  if(zone === undefined){
+    const c = DB.clients.find(x => x.id === s.clientId) || {}, q = s.quiz || {};
+    const aria = scegliZoneAirbag(q, s.fam, (c.anamnesi || {}).zone);
+    zone = s.prog === 'P23' || (q.zones || []).length || aria.perche.indexOf('anamnesi') >= 0 ? aria.icone : null;
+  }
+  return MOTORE.nomeProtocollo(s.prog, S, zone) || (PROGRAMS[s.prog] || {}).o || s.prog || '';
+}
+function categoria(prog){ return (PROGRAMS[prog] || {}).o || prog || ''; }
 
 /* ---------- passi guidati con schermate ---------- */
 /* ══════════════════════════════════════════════════════════════
@@ -4540,7 +4675,7 @@ function buildSteps(prot){
      flesso (spalle) · mano (braccia) · ginocchio (vita e fianchi) · piede
      (gambe e piedi) · figura seduta (corpo intero). */
   const aria = prot.aria || scegliZoneAirbag({zones:prot.quizZones}, prot.fam, []);
-  const conZone = (prot.quizZones||[]).length || aria.perche.indexOf('anamnesi') >= 0;
+  const conZone = prot.zoneFisse !== undefined ? !!prot.zoneFisse : (prot.quizZones||[]).length || aria.perche.indexOf('anamnesi') >= 0;
   if (prog==='P23' || conZone){
     const ICONA = {spalle:TILE.airbag.SPALLE, braccia:TILE.airbag.BRACCIA, vita:TILE.airbag.VITA,
                    gambe:TILE.airbag.GAMBE, tutto:TILE.airbag.TUTTO};
@@ -4791,6 +4926,8 @@ function apriAzioni(){
       ${az('phone', '#e0997d', 'Da richiamare', 'fermi da ' + RICHIAMO_GIORNI + '+ giorni', "NAV=[]; go('stats',{period:0, mira:'richiami'})", rich)}
       ${az('cal', '#a88cf6', 'Sedute di oggi', 'chi è già passato', 'NAV=[]; apriOggi()', oggi)}
       ${az('trophy', '#5fc9ad', 'Premi Zenith', 'il regolamento', 'apriRegolamento()')}
+      ${az('history', '#8fb2c9', 'Recupera seduta', 'da codice o nome', 'apriRecupera()')}
+      ${az('users', '#e6c65c', 'Schede doppie', 'stesso nome, da unire', "NAV=[]; go('clients')", gruppiDoppi().length)}
     </div>
   </div>`;
   m.classList.add('open');
@@ -5092,6 +5229,9 @@ function vClients(){
       <input type="text" placeholder="Cerca nome o cognome…" value="${esc(VIEW.q||'')}" oninput="VIEW.q=this.value; refreshList()">
       <button class="btn" onclick="newClient()">＋ Nuovo</button>
     </div>
+    ${(()=>{ const g = gruppiDoppi(); return g.length ? `<div class="call amb dopbar"><b class="tt">⚠️ ${g.length === 1 ? 'Una persona ha due schede' : g.length + ' persone hanno più schede'}</b>
+      Le loro sedute sono divise: tocca il nome e unisci le schede.
+      <div class="dopl">${g.map((x, i) => `<button class="chip dopc" onclick="apriDoppio(${i})">${esc(x[0].nome)} ${esc(x[0].cognome)} · ${x.length} schede</button>`).join('')}</div></div>` : ''; })()}
     <div id="clientlist">${clientRows(list)}</div>`;
 }
 function clientRows(list){
@@ -5162,6 +5302,9 @@ function vClient(){
       </div>
     </div>
       ${favStrip(c)}
+    ${doppioniDi(c).map(d => `<div class="call amb dopbar"><b class="tt">⚠️ C'è un'altra scheda di ${esc(d.nome)} ${esc(d.cognome)}</b>
+      ${esc(rigaScheda(d))}. Le sedute sono divise fra le due schede: uniscile, e restano tutte qui.
+      <button class="btn" onclick="confermaUnisci('${c.id}','${d.id}')">⇄ Unisci in questa scheda</button></div>`).join('')}
     <div class="btnrow equal">
       <button class="btn info" onclick="editClient('${c.id}')">✎ Modifica scheda</button>
       <button class="btn" onclick="startCheckinFor('${c.id}')">▶ Nuova sessione</button>
@@ -5180,6 +5323,10 @@ function vClient(){
       const on = !!VIEW.favOnly;
       const list = on ? sess.filter(s=>s.fav && !isFirstSession(s)) : sess;
       return `<h2>Storico sessioni (${sess.length})</h2>
+      <div class="btnrow equal stbtn">
+        <button class="btn sec" onclick="apriRecupera('${c.id}')">＋ Recupera una seduta persa</button>
+        <button class="btn sec" onclick="apriUnisci('${c.id}')">⇄ Unisci una scheda doppia</button>
+      </div>
       ${nf?`<div class="favfilter ${on?'on':''}" onclick="VIEW.favOnly=${on?'false':'true'}; render()"
         ${ztAttr({t:'★ Solo le preferite',
           b:'Nasconde tutto e lascia <b>solo le sedute riuscite bene</b>, quelle segnate con la stella. Tocca di nuovo per rivederle tutte.',
@@ -5196,7 +5343,7 @@ function clientFavs(c){
                     .sort((a,b)=>b.date.localeCompare(a.date));
 }
 function favLine(f){
-  const nome = (PROGRAMS[f.prog]||{}).o || f.prog;
+  const nome = nomeSeduta(f);
   const giorno = new Date(f.date).toLocaleDateString('it-IT',{day:'numeric', month:'long', year:'numeric'});
   return esc(f.favNote ? nome+' — '+f.favNote : nome+' · '+giorno);
 }
@@ -5299,6 +5446,43 @@ function effMacro(c){
   const an=c.anamnesi||{};
   const base = an.prefIntensita==='delicato'?{intensita:2,fourD:2}:an.prefIntensita==='deciso'?{intensita:4,fourD:4}:{intensita:3,fourD:3};
   return {...base, airbag:3, calore:!an.caloreSensibile, ioni:an.sonno==='scarso', zerog:true, timer:20, plantari:1, polpacci:1};
+}
+/* ══ IL QUADRANTE DELLA SEDUTA ══
+   Tutte le funzioni del protocollo in un colpo d'occhio, in cima alla
+   proposta: quelle accese si illuminano col loro colore, quelle spente
+   restano grigie. I numeri sono quelli da portare sulla capsula; i passi
+   guidati, sotto, dicono dove si toccano. I colori sono quelli dei sei
+   elementi della vetrina. */
+function quadranteHTML(prot, qz){
+  const S = prot.S || {}, aria = zoneAirbagApplicate(prot, qz), soloAria = prot.prog === 'P23';
+  const tacche = v => `<span class="qd-tk">${[1,2,3].map(i => `<i class="${v >= i ? 'on' : ''}"></i>`).join('')}${v > 3 ? `<b>+${v - 3}</b>` : ''}</span>`;
+  const livello = (ic, nome, v, col, nota) => `<div class="qd-l${v > 0 ? ' on' : ''}" style="--qc:${col}">
+      <div class="qd-lt"><span class="qd-ic">${ic}</span>${nome}</div><div class="qd-v">${v}</div>${tacche(v)}${nota ? `<div class="qd-no">${nota}</div>` : ''}</div>`;
+  const interr = (ic, nome, on, col) => `<div class="qd-s${on ? ' on' : ''}" style="--qc:${col}">
+      <span class="qd-ic">${ic}</span><span class="qd-sn">${nome}</span><span class="qd-st">${on ? 'ACCESO' : 'spento'}</span></div>`;
+  const ZN = [['spalle','Spalle'],['braccia','Braccia'],['vita','Vita e fianchi'],['gambe','Gambe e piedi'],['tutto','Corpo intero']];
+  const zone = aria ? ZN.map(([k, n]) => `<span class="qd-z${aria.indexOf(k) >= 0 ? ' on' : ''}">${n}</span>`).join('')
+    : '<span class="qd-z on">Quelle del programma</span>';
+  const ev = pianoSeduta(prot).eventi;
+  const rif = ev.length ? ev.map(e => `<span class="qd-r on" style="--qc:${e.col === 'az' ? '#8fb2c9' : '#d4af37'}">✋ ${e.id === 'ref' ? 'Up' : 'Down'} · ${esc(e.zona)} · dal minuto ${e.a}</span>`).join('')
+    : '<span class="qd-r">Nessuna rifinitura</span>';
+  return `<div class="quad">
+    <div class="qd-h"><span>Il quadrante della seduta</span><small>acceso · <i>spento</i></small></div>
+    <div class="qd-livelli">
+      ${livello('🌀', 'Profondità 4D', soloAria ? 0 : S.fourD, '#e6c65c', soloAria ? 'rulli fermi: solo aria' : '')}
+      ${livello('💨', 'Forza airbag', S.airbag, '#e2bdd4')}
+      <div class="qd-l on" style="--qc:#8fd3ec"><div class="qd-lt"><span class="qd-ic">⏱</span>Tempo</div><div class="qd-v">${S.timer}<small>min</small></div><div class="qd-no">si imposta per primo</div></div>
+    </div>
+    <div class="qd-sw">
+      ${interr('🔥', 'Calore', !!S.calore, '#f5851f')}
+      ${interr('✨', 'Ioni', !!S.ioni, '#b98adf')}
+      ${interr('🛸', 'Zero Gravity', !!S.zerog, '#5fd08a')}
+      ${interr('🦵', 'Leg Kneading', S.polpacci > 0, '#8fd3ec')}
+      ${interr('🦶', 'Foot Roller', S.plantari > 0, '#8fd3ec')}
+    </div>
+    <div class="qd-riga"><span class="qd-rk">Zone airbag</span><div class="qd-zs">${zone}</div></div>
+    <div class="qd-riga"><span class="qd-rk">Rifiniture</span><div class="qd-zs">${rif}</div></div>
+  </div>`;
 }
 function macroCells(S){
   return `
@@ -5514,8 +5698,9 @@ function srDettagli(s){
 }
 /* nome del programma, cliente e data: tre disposizioni, stesso contenuto */
 function srIdentita(s, P, c){
+  /* il nome del protocollo, e sotto la categoria: quella che si tocca sul touchscreen */
   const prog = `<button class="sr-prog lk-${LK_STYLE}" onclick="openProg('${s.prog}'); event.stopPropagation()"
-    ${ztProgNome(s.prog)}>${esc(P.o)}${LK_STYLE==='c'?'<i class="lk-ch">›</i>':''}</button>`;
+    ${ztProgNome(s.prog)}>${esc(nomeSeduta(s))}${LK_STYLE==='c'?'<i class="lk-ch">›</i>':''}</button><div class="sr-cat">Categoria ${esc(P.o)}${s.recuperata ? ' · <span class="sr-rec">recuperata</span>' : ''}</div>`;
   const nome = c ? esc(c.nome+' '+c.cognome) : '';
   const dentro = LK_STYLE==='a' ? `<span class="wp-av">${c?esc(initials(c)):''}</span>${nome}`
                : LK_STYLE==='c' ? `<span class="wp-ic">${icon('users',13)}</span>${nome}`
@@ -5613,6 +5798,204 @@ function delSession(id, ev){
         if(o && o.premiUsati) delete o.premiUsati[s.omaggio.pid]; }
       DB.sessions = DB.sessions.filter(x=>x.id!==id); persist(); toast('Sessione cancellata'); render(); });
 }
+/* ══ LE SCHEDE DOPPIE ══
+   Capita di creare due volte la stessa persona (al totem, o di fretta):
+   le sedute si dividono fra due schede e i punti non tornano. Si uniscono
+   dalla scheda che deve restare: l'altra le passa tutto e sparisce.
+   Passano sedute, check-in del totem, premi usati e scelti, regali
+   ricevuti da altri e sedute da chiudere; dei dati anagrafici si
+   completano solo quelli vuoti, e l'anamnesi resta la piu' completa. */
+const chiaveNome = (a, b) => normA((a || '') + ' ' + (b || '')).normalize('NFD').replace(/[̀-ͯ]/g, '');
+function doppioniDi(c){
+  const k = chiaveNome(c.nome, c.cognome);
+  return DB.clients.filter(x => x.id !== c.id && (chiaveNome(x.nome, x.cognome) === k || chiaveNome(x.cognome, x.nome) === k));
+}
+function gruppiDoppi(){
+  const visti = new Set(), out = [];
+  DB.clients.forEach(c => { if(visti.has(c.id)) return; const d = doppioniDi(c);
+    if(d.length){ [c].concat(d).forEach(x => visti.add(x.id)); out.push([c].concat(d)); } });
+  return out;
+}
+/* la scheda in una riga: quante sedute, da quando a quando, il telefono */
+function rigaScheda(c){
+  const ss = DB.sessions.filter(s => s.clientId === c.id).sort((a,b) => a.date.localeCompare(b.date));
+  const g = d => new Date(d).toLocaleDateString('it-IT', {day:'numeric', month:'short', year:'numeric'});
+  return quanteSedute(ss.length) + (ss.length ? ' · ' + (ss.length === 1 ? 'il ' + g(ss[0].date) : 'dal ' + g(ss[0].date) + ' al ' + g(ss[ss.length-1].date)) : '')
+    + (c.telefono ? ' · ' + telCompleto(c) : '');
+}
+/* nei doppioni si entra dalla scheda con piu' sedute: e' quella che resta */
+function apriDoppio(i){
+  const g = gruppiDoppi()[i]; if(!g) return;
+  const n = c => DB.sessions.filter(s => s.clientId === c.id).length;
+  go('client', {id: g.slice().sort((a,b) => n(b) - n(a))[0].id});
+}
+function apriUnisci(tId){
+  const T = DB.clients.find(x => x.id === tId); if(!T) return;
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard"><div class="mt">⇄ Unisci un'altra scheda</div>
+    <div class="mm">Scegli la scheda doppia: le sue sedute passano a <b>${esc(T.nome)} ${esc(T.cognome)}</b>, e la doppia viene tolta.</div>
+    <input type="text" class="mtxt" id="un_q" placeholder="Cerca nome o cognome…" oninput="unisciLista('${tId}')" autocomplete="off">
+    <div id="un_l" class="unl">${unisciRighe(T, '')}</div>
+    <div class="mrow"><button class="btn sec" onclick="closeModal()">Annulla</button></div></div>`;
+  m.classList.add('open');
+}
+function unisciRighe(T, q){
+  q = normA(q);
+  const dop = doppioniDi(T);
+  const altri = q ? DB.clients.filter(x => x.id !== T.id && dop.indexOf(x) < 0
+    && (normA(x.nome + ' ' + x.cognome).includes(q) || normA(x.cognome + ' ' + x.nome).includes(q))).slice(0, 8) : [];
+  const riga = (x, stesso) => `<button class="unr" onclick="confermaUnisci('${T.id}','${x.id}')"><span class="unn">${esc(x.nome)} ${esc(x.cognome)}${stesso ? ' <i>stesso nome</i>' : ''}</span><span class="uns">${esc(rigaScheda(x))}</span></button>`;
+  return dop.map(x => riga(x, true)).join('') + altri.map(x => riga(x, false)).join('')
+    || `<div class="une">${q ? 'Nessuna scheda trovata.' : 'Nessuna scheda con lo stesso nome: cerca qui sopra quella da unire.'}</div>`;
+}
+function unisciLista(tId){
+  const T = DB.clients.find(x => x.id === tId); if(!T) return;
+  document.getElementById('un_l').innerHTML = unisciRighe(T, document.getElementById('un_q').value);
+}
+function confermaUnisci(tId, sId){
+  const T = DB.clients.find(x => x.id === tId), S = DB.clients.find(x => x.id === sId); if(!T || !S) return;
+  const n = DB.sessions.filter(s => s.clientId === tId || s.clientId === sId).length;
+  closeModal();
+  askCode('Unire le due schede?',
+    `<div class="unb"><b>Resta</b> ${esc(T.nome)} ${esc(T.cognome)} · ${esc(rigaScheda(T))}</div>
+     <div class="unb via"><b>Si unisce e viene tolta</b> ${esc(S.nome)} ${esc(S.cognome)} · ${esc(rigaScheda(S))}</div>
+     Dopo resta una scheda sola con <b>${quanteSedute(n)}</b> e <b>${n * 10} punti</b>. I dati che qui mancano si prendono dall'altra; l'anamnesi resta la più completa. Inserisci il Codice Zenith.`,
+    () => { unisciSchede(tId, sId); toast('⇄ Schede unite: ' + quanteSedute(n));
+      NAV = [{name:'home'},{name:'clients'}]; VIEW = {name:'client', id:tId}; render(); window.scrollTo(0,0); });
+}
+function unisciSchede(tId, sId){
+  const T = DB.clients.find(x => x.id === tId), S = DB.clients.find(x => x.id === sId);
+  if(!T || !S || T === S) return false;
+  DB.sessions.forEach(s => { if(s.clientId === sId) s.clientId = tId; if(s.omaggio && s.omaggio.da === sId) s.omaggio.da = tId; });
+  (DB.checkins || []).forEach(k => { if(k.clienteId === sId) k.clienteId = tId; });
+  DB.clients.forEach(g => Object.values(g.premiScelte || {}).forEach(x => { if(x && x.a === sId) x.a = tId; }));
+  T.premiUsati = Object.assign({}, S.premiUsati || {}, T.premiUsati || {});
+  T.premiScelte = Object.assign({}, S.premiScelte || {}, T.premiScelte || {});
+  if(!T.nascita && S.nascita) T.nascita = S.nascita;
+  if(!T.genere && S.genere) T.genere = S.genere;
+  if(!T.telefono && S.telefono){ T.telefono = S.telefono; T.prefisso = S.prefisso; T.paeseIso = S.paeseIso; }
+  T.attivita = [...new Set((T.attivita || []).concat(S.attivita || []))];
+  if(S.note && S.note !== T.note){ T.note = T.note ? T.note + '\n' + S.note : S.note; if(!T.noteFirma && S.noteFirma) T.noteFirma = S.noteFirma; }
+  if(S.anamnesi && anamnesiMancanti(S).length < anamnesiMancanti(T).length) T.anamnesi = S.anamnesi;
+  if(!T.macro && S.macro) T.macro = S.macro;
+  if(!T.calTuned && S.calTuned){ T.cal = S.cal; T.calx = S.calx; T.calTuned = S.calTuned; }
+  if(S.createdAt && (!T.createdAt || S.createdAt < T.createdAt)) T.createdAt = S.createdAt;
+  /* le sedute da chiudere passano anche loro (prima di togliere la scheda:
+     l'elenco tiene solo i clienti che esistono); di quelle da registrare ne resta una */
+  const una = {};
+  aperteSalva(aperte().map(p => p.clientId === sId ? Object.assign({}, p, {clientId:tId}) : p)
+    .filter(p => p.stato !== 'registra' || (una[p.clientId] ? false : (una[p.clientId] = true))));
+  DB.clients = DB.clients.filter(x => x.id !== sId);
+  persist();
+  return true;
+}
+
+/* ══ RECUPERARE UNA SEDUTA PERSA ══
+   Una seduta non registrata (o persa col telefono) si rimette nella scheda
+   scrivendo il suo CODICE (Z1·P22·D1A1CG: sul totem, sul QR, nello
+   storico) oppure il suo NOME (Velvet Harbor Caress). Il nome porta tutto
+   con se', anche Leg Kneading, Foot Roller e le zone degli airbag; il
+   codice no, e quei due interruttori si scelgono qui. La seduta entra con
+   la sua data, conta per punti e premi come le altre, ed e' segnata
+   «recuperata». La famiglia, quando il codice non la dice, e' quella in
+   cui il motore sceglie piu' spesso quel programma. */
+const FAM_DI = {P01:'Z8', P02:'Z3', P03:'Z5', P04:'Z4', P05:'Z4', P06:'Z2', P07:'Z2', P08:'Z3', P09:'Z2', P10:'Z2', P11:'Z6', P12:'Z8',
+  P13:'Z5', P14:'Z8', P15:'Z7', P16:'Z8', P17:'Z6', P18:'Z6', P19:'Z6', P20:'Z4', P21:'Z2', P22:'Z1', P23:'Z3', P24:'Z9'};
+function leggiSeduta(t){
+  const n = MOTORE.daNome(t);
+  if(n) return {da:'nome', prog:n.prog, fam:FAM_DI[n.prog], S:n.S, zone:n.zone};
+  const m = String(t || '').toUpperCase().replace(/\s+/g, '').match(/^(?:(Z\d)\W*)?(P\d{2})\W*D(\d)A(\d)([ICG]*)$/);
+  if(!m || !PROGRAMS[m[2]]) return null;
+  return {da:'codice', prog:m[2], fam: m[1] && ZFAM[m[1]] ? m[1] : FAM_DI[m[2]],
+    S:{fourD:+m[3], airbag:+m[4], ioni:m[5].indexOf('I') >= 0, calore:m[5].indexOf('C') >= 0, zerog:m[5].indexOf('G') >= 0, polpacci:0, plantari:0}, zone:null};
+}
+let RECUPERO = null;
+function oggiISO(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function apriRecupera(cid){
+  RECUPERO = {cid: cid || null, leg:false, foot:false, durata:20};
+  const c = cid ? DB.clients.find(x => x.id === cid) : null;
+  const m = document.getElementById('modal');
+  m.innerHTML = `<div class="mcard rcard"><div class="mt">＋ Recupera una seduta persa</div>
+    <div class="mm">Scrivi il <b>codice</b> della seduta (come Z1·P22·D1A1CG) oppure il suo <b>nome</b> (tre parole inglesi, come Velvet Harbor Caress): la rimetto nella scheda con la sua data.</div>
+    <label class="f mlab">Di chi è la seduta</label><div id="rc_chi">${c ? rcScelto(c) : rcCerca()}</div>
+    <label class="f mlab">Codice o nome della seduta</label>
+    <input type="text" class="mtxt" id="rc_cod" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="Z1·P22·D1A1CG oppure Velvet Harbor Caress" oninput="rcAggiorna()">
+    <div id="rc_prev" class="rcprev"></div>
+    <div class="rcrow"><div><label class="f mlab">Giorno</label><input type="date" class="mtxt" id="rc_data" value="${oggiISO()}" max="${oggiISO()}"></div>
+      <div><label class="f mlab">Ora</label><input type="time" class="mtxt" id="rc_ora" value="12:00"></div></div>
+    <label class="f mlab">Durata</label><div class="seg" id="rc_dur">${[15,20,25,30].map(t => `<span class="opt${t === 20 ? ' on' : ''}" onclick="rcDurata(${t})">${t}′</span>`).join('')}</div>
+    <label class="f mlab">Nota (facoltativa)</label><input type="text" class="mtxt" id="rc_nota" placeholder="es. fatta sabato, registrata dopo">
+    <div class="mrow"><button class="btn sec" onclick="closeModal()">Annulla</button><button class="btn" id="rc_ok" onclick="rcSalva()" disabled>＋ Aggiungi alla scheda</button></div></div>`;
+  m.classList.add('open');
+}
+function rcCerca(){
+  return `<input type="text" class="mtxt" id="rc_q" placeholder="Cerca nome o cognome…" oninput="rcClienti()" autocomplete="off"><div id="rc_cl" class="unl"></div>`;
+}
+function rcScelto(c){
+  return `<div class="rcchi"><b>${esc(c.nome)} ${esc(c.cognome)}</b><span>${esc(rigaScheda(c))}</span>${VIEW.name === 'client' ? '' : `<button class="rccambia" onclick="RECUPERO.cid=null; document.getElementById('rc_chi').innerHTML=rcCerca(); rcAggiorna()">cambia</button>`}</div>`;
+}
+function rcClienti(){
+  const q = normA(document.getElementById('rc_q').value);
+  const l = q ? DB.clients.filter(x => normA(x.nome + ' ' + x.cognome).includes(q) || normA(x.cognome + ' ' + x.nome).includes(q)).slice(0, 6) : [];
+  document.getElementById('rc_cl').innerHTML = l.map(x => `<button class="unr" onclick="rcScegli('${x.id}')"><span class="unn">${esc(x.nome)} ${esc(x.cognome)}</span><span class="uns">${esc(rigaScheda(x))}</span></button>`).join('')
+    || (q ? '<div class="une">Nessuna scheda trovata.</div>' : '');
+}
+function rcScegli(id){
+  const c = DB.clients.find(x => x.id === id); if(!c) return;
+  RECUPERO.cid = id; document.getElementById('rc_chi').innerHTML = rcScelto(c); rcAggiorna();
+}
+function rcDurata(t){
+  RECUPERO.durata = t;
+  document.querySelectorAll('#rc_dur .opt').forEach(o => o.classList.toggle('on', o.textContent === t + '′'));
+  rcAggiorna();
+}
+/* la seduta che uscira' dal codice o dal nome scritto */
+function rcSeduta(){
+  const r = leggiSeduta((document.getElementById('rc_cod') || {}).value);
+  if(!r) return null;
+  const S = Object.assign({intensita:0}, r.S, {timer: RECUPERO.durata});
+  if(r.da === 'codice'){ S.polpacci = RECUPERO.leg ? 1 : 0; S.plantari = RECUPERO.foot ? 1 : 0; }
+  return {r, prot:{prog:r.prog, fam:r.fam, S, zoneFisse:r.zone, manualRef:null, manualBasso:null}};
+}
+function rcAggiorna(){
+  const box = document.getElementById('rc_prev'), ok = document.getElementById('rc_ok'); if(!box) return;
+  const scritto = (document.getElementById('rc_cod').value || '').trim(), x = rcSeduta();
+  if(!x){
+    box.innerHTML = scritto ? '<div class="rcno">Non riconosco questo codice né questo nome. Il codice è come <b>Z1·P22·D1A1CG</b>, il nome sono <b>tre parole inglesi</b>.</div>' : '';
+    ok.disabled = true; return;
+  }
+  const {r, prot} = x, S = prot.S;
+  const acc = [S.calore && '🔥 Calore', S.ioni && '✨ Ioni', S.zerog && '🛸 Zero Gravity', S.polpacci && '🦵 Leg Kneading', S.plantari && '🦶 Foot Roller'].filter(Boolean);
+  const zone = r.zone ? r.zone.map(k => ARIA_NOME[k]).join(', ') : 'quelle del programma';
+  box.innerHTML = `<div class="rcok"><div class="rck">✓ ${r.da === 'nome' ? 'Nome riconosciuto' : 'Codice riconosciuto'}</div>
+    <div class="rcn">“${esc(nomeProt(prot))}”</div>
+    <div class="rcc">Categoria <b>${esc(categoria(r.prog))}</b> · ${esc(zCodeOf(r.fam, r.prog, S))}</div>
+    <div class="rcv">4D <b>${S.fourD}</b> · airbag <b>${S.airbag}</b> · ${S.timer} min${acc.length ? ' · ' + acc.join(' · ') : ''} · zone airbag: ${esc(zone)}</div>
+    ${r.da === 'codice' ? `<div class="rcsw"><span>Il codice non dice i rulli di gambe e piedi: accendi quelli che erano accesi</span>
+      <span class="seg"><span class="opt${RECUPERO.leg ? ' on' : ''}" onclick="RECUPERO.leg=!RECUPERO.leg; rcAggiorna()">🦵 Leg Kneading</span><span class="opt${RECUPERO.foot ? ' on' : ''}" onclick="RECUPERO.foot=!RECUPERO.foot; rcAggiorna()">🦶 Foot Roller</span></span></div>` : ''}
+  </div>`;
+  ok.disabled = !RECUPERO.cid;
+}
+function rcSalva(){
+  const x = rcSeduta(), c = RECUPERO && DB.clients.find(y => y.id === RECUPERO.cid);
+  if(!x || !c){ toast(!c ? 'Scegli prima di chi è la seduta' : 'Scrivi il codice o il nome della seduta'); return; }
+  const giorno = document.getElementById('rc_data').value, ora = document.getElementById('rc_ora').value || '12:00';
+  const quando = new Date(giorno + 'T' + ora + ':00');
+  if(!giorno || isNaN(quando.getTime())){ toast('Scegli il giorno della seduta'); return; }
+  if(quando.getTime() > Date.now()){ toast('Una seduta da recuperare non può essere nel futuro'); return; }
+  const {r, prot} = x, nota = (document.getElementById('rc_nota').value || '').trim();
+  /* la stessa seduta, lo stesso giorno, c'e' gia': si chiede prima di raddoppiarla */
+  if(DB.sessions.some(y => y.clientId === c.id && y.prog === r.prog && dayKey(y.date) === dayKey(quando.toISOString()))
+    && !confirm('Nella scheda c\'è già una seduta ' + categoria(r.prog) + ' in quel giorno. Aggiungerla lo stesso?')) return;
+  const s = {id:uid(), clientId:c.id, date:quando.toISOString(), prog:r.prog, fam:r.fam, zCode:zCodeOf(r.fam, r.prog, prot.S),
+    settings:prot.S, scala:'capsula', quiz:{}, quizLabel:'seduta recuperata', nome:nomeProt(prot), aria:r.zone,
+    manualRef:null, manualBasso:null, notes:nota, points:10, operatore:firmaOra(), recuperata:true};
+  if(nota && s.operatore) s.notesFirma = s.operatore;
+  DB.sessions.push(s); persist(); closeModal();
+  toast('＋ Seduta recuperata nella scheda di ' + c.nome);
+  NAV = [{name:'home'},{name:'clients'}]; VIEW = {name:'client', id:c.id}; render(); window.scrollTo(0,0);
+}
+
 function editClient(id, mira){
   draftClient = JSON.parse(JSON.stringify(DB.clients.find(x=>x.id===id)));
   PFX = {aperto:false, cerca:''};
@@ -6662,7 +7045,10 @@ function vProposal(){
     currentProt = copiaDati(ripresa.prot);
   } else if (isRep){
     currentProt = { prog:REPEAT.prog, fam:REPEAT.fam, S:{...REPEAT.S}, quizZones:(REPEAT.quiz&&REPEAT.quiz.zones)||[],
-      aria: scegliZoneAirbag(REPEAT.quiz||{}, REPEAT.fam, ((c&&c.anamnesi)||{}).zone),
+      /* le zone degli airbag di allora, se la seduta le ha scritte: cosi' anche il nome resta lo stesso */
+      aria: REPEAT.aria ? {icone:REPEAT.aria, perche:'le stesse zone della seduta che si ripete', testo:'Zone airbag: le stesse della seduta che si ripete.'}
+        : scegliZoneAirbag(REPEAT.quiz||{}, REPEAT.fam, ((c&&c.anamnesi)||{}).zone),
+      zoneFisse: REPEAT.aria,
       manualRef: REPEAT.manualRef, manualBasso: REPEAT.manualBasso,
       why:['Ripetizione della sessione del '+fmtDate(REPEAT.srcDate)+': i parametri di quella volta sono già impostati qui sotto — ritoccali se serve.'],
       zCode: zCodeOf(REPEAT.fam, REPEAT.prog, REPEAT.S) };
@@ -6681,8 +7067,10 @@ function vProposal(){
     <div class="proposal">
       <div class="phead">
         <div class="pkicker">${pchip(prog)}<span class="pchip2">⏱ ${S.timer} min</span>${isRep?'':`<span class="pchip2">${currentProt.soloAria?'💨 Solo aria':'🌀 Massaggio completo'}</span>`}</div>
-        <div class="pname2">“${P.o}”</div>
+        <div class="pname2">“${esc(nomeProt(currentProt))}”</div>
+        <div class="pcat" ${ztProgNome(prog)}>Categoria <b>${esc(P.o)}</b> · è il nome da toccare sul touchscreen</div>
         <div class="pfam"><span class="fd" style="background:${F.color}"></span>${F.name}</div>
+        ${quadranteHTML(currentProt)}
         ${(currentProt.cal||currentProt.calTuned)&&!isRep?`<div class="caltag ${currentProt.cal<0?'down':currentProt.cal>0?'up':'ok'}">
           <span class="calic">🎚️</span>
           <span class="calx"><b>${currentProt.cal===0?'Taratura personale trovata':'Taratura personale attiva: '+(currentProt.cal>0?'+':'')+currentProt.cal+' livell'+(Math.abs(currentProt.cal)>1?'i':'o')}</b>
@@ -6695,7 +7083,7 @@ function vProposal(){
                                       : 'Aveva riferito che era troppo leggera: la profondità 4D è già stata alzata dal sistema.'))}</small></span>
         </div>`:''}
         ${nExtra?`<div class="exnote"><span class="exdot">＋</span><span>Questo protocollo ha <b>${nExtra} ${nExtra>1?'sezioni extra facoltative':'sezione extra facoltativa'}</b>: la riconosci dal colore azzurro</span></div>`:''}
-        <div class="pwhy" style="margin-top:8px">${P.d}<br><span style="color:var(--faint)">“${P.o}” è il nome che leggi sul touchscreen della capsula</span></div>
+        <div class="pwhy" style="margin-top:8px">${P.d}<br><span style="color:var(--faint)">«${esc(nomeProt(currentProt))}» è il nome di questa combinazione: cambia con le regolazioni. Sulla capsula si tocca la categoria, “${esc(P.o)}”.</span></div>
         <div class="zline"><span class="zpill">${zCode}</span><button class="zhelp" onclick="openLegend()" ${ztAttr({t:'Il codice della seduta', s:'la targa di questa sessione', b:'Famiglia, protocollo e tutte le regolazioni in una riga sola: è la targa del programma. Serve a <b>ripetere identica</b> una seduta riuscita, anche fra mesi.', extra:'<div class="zt-b" style="margin-top:8px"><b>D</b> profondità 4D · <b>A</b> forza airbag (0–3) · <b>I</b> ioni accesi · <b>C</b> calore acceso · <b>G</b> zero gravity acceso</div>', f:'Tocca per la spiegazione completa'})}>?</button></div>
         <div class="zkey"><b>D</b> profondità 4D · <b>A</b> forza airbag, sulla scala 0–3 · <b>I</b> ioni · <b>C</b> calore · <b>G</b> zero gravity: accesi se la lettera c'è</div>
         <button class="qrcta" onclick="apriQR()">
@@ -6726,7 +7114,6 @@ function vProposal(){
           <li>Posizione regolata dalla <b>pulsantiera laterale</b>, <b>prima</b> di accendere il monitor</li>
           <li>Appena parte il programma di default: <b>Pausa</b>, e insieme <b>avvia il timer</b></li>
           <li>Il <b>Timing</b> si imposta per primo</li></ul></div>
-        <div class="settinggrid">${macroCells(S)}</div>
         ${isRep ? `<div class="card" style="margin-top:10px">
           <p class="hint" style="margin:0 0 6px"><b>Ritocca la ripetizione</b> — i valori qui sotto partono da quelli della sessione originale. Scala della capsula: 0 spento · 1 basso · 2 medio · 3 massimo; oltre il 3 solo a tua discrezione.</p>
           ${prog==='P23'?`<p class="hint" style="margin:0 0 8px">💨 Seduta solo aria: la profondità 4D regola i rulli, che qui restano fermi — si ritocca solo la forza dell'aria.</p>`:`
@@ -6741,11 +7128,12 @@ function vProposal(){
     </div>
 
     <h2>Setup guidato sulla capsula</h2>
-    <p class="hint gintro">Segui i passi nell'ordine: è l'ordine in cui la capsula risponde.</p>
+    <p class="hint gintro">Segui i passi nell'ordine: è l'ordine in cui la capsula risponde. Le istruzioni scritte si aprono con <b>📖 Leggi le istruzioni</b>, sotto ogni schermata; i valori sono nel quadrante in alto.</p>
     <div class="glegenda">
       <div><span class="gseg tondo"></span><span><b>Cerchio rosso</b> = tasto da toccare o accendere</span></div>
-      <div><span class="gseg quadro"></span><span><b>Riquadro ambra</b> = valore da regolare: il numero giusto è scritto sotto la schermata</span></div>
+      <div><span class="gseg quadro"></span><span><b>Riquadro ambra</b> = valore da regolare: il numero giusto è nel quadrante</span></div>
     </div>
+    <button class="btn sec gall" onclick="istruzioniTutte(this)">📖 Apri tutte le istruzioni</button>
     ${steps.map(renderStep).join('')}
     <label class="f">Nota sulla sessione (facoltativa — solo annotazioni, niente valori numerici)</label>
     <input type="text" id="sess_note" placeholder="es. ha gradito più pressione sulle spalle…">
@@ -6764,11 +7152,28 @@ function renderStep(st){
       ${st.img ? `<div class="shot"><img src="${IMG[st.img]}" alt="Schermata della capsula">
         ${st.markers.map((m,j)=>`<div class="marker ${m.type==='set'?'sq':''} ${m.pos[4]==='r'?'rt':m.pos[4]==='c'?'tondo':''}" style="left:${m.pos[0]}%; top:${m.pos[1]}%${m.pos[2]?`; width:${m.pos[2]}%; height:${m.pos[3]}%`:''}">${st.markers.length>1?`<span class="mn">${j+1}</span>`:''}</div>`).join('')}
       </div>` : ''}
-      ${st.markers.length ? `<div class="glegend">${st.markers.map((m,j)=>`<div class="gi">${st.markers.length>1?`<span class="gn ${m.type==='set'?'set':''}">${j+1}</span>`:`<span class="gn ${m.type==='set'?'set':''}">●</span>`}<span>${m.label}</span></div>`).join('')}</div>` : ''}
-      ${st.markers.length>1 && !GNOTE_DONE ? (GNOTE_DONE=true, '<div class="gnote">I numeri indicano <b>l\'ordine delle azioni</b>, non un valore da impostare: si fanno uno dopo l\'altro. Vale per tutti i passi che seguono.</div>') : ''}
-      ${st.extra||''}
+      ${istruzioniStep(st)}
       ${st.timerStart ? `<div class="tmgo"><div class="tmgo-l">INSIEME ALLA PAUSA</div><button class="btn tmgo-b" onclick="timerAvvia()">▶ Avvia il timer della seduta</button><div class="tmgo-n">Tocca ⏸ Pausa sulla capsula e subito dopo questo tasto. Poi scegli il programma e regoli tutto con calma: il timer ti avvisa da solo, con i suoni, di ogni passaggio.</div><div class="tmgo-s">⏱ Timer in corso — lo vedi in alto</div></div>` : ''}
     </div>`;
+}
+/* Le istruzioni scritte di un passo stanno chiuse: si vedono il titolo e
+   la schermata con i segni, e il testo si apre con un tocco. I valori da
+   impostare sono gia' nel quadrante in cima; il tasto del timer resta
+   sempre fuori, a vista. */
+function istruzioniStep(st){
+  const n = st.markers.length;
+  const testo = (n ? `<div class="glegend">${st.markers.map((m,j)=>`<div class="gi">${n>1?`<span class="gn ${m.type==='set'?'set':''}">${j+1}</span>`:`<span class="gn ${m.type==='set'?'set':''}">●</span>`}<span>${m.label}</span></div>`).join('')}</div>` : '')
+    + (n>1 && !GNOTE_DONE ? (GNOTE_DONE=true, '<div class="gnote">I numeri indicano <b>l\'ordine delle azioni</b>, non un valore da impostare: si fanno uno dopo l\'altro. Vale per tutti i passi che seguono.</div>') : '')
+    + (st.extra || '');
+  if(!testo) return '';
+  return `<details class="gdet"><summary><span class="gd-ic">📖</span><span class="gd-t">Leggi le istruzioni</span>`
+    + `<span class="gd-n">${n ? n + (n === 1 ? ' azione' : ' azioni') : ''}</span><span class="gd-ch">▾</span></summary><div class="gd-body">${testo}</div></details>`;
+}
+/* apre o chiude tutte le istruzioni insieme */
+function istruzioniTutte(b){
+  const d = [...document.querySelectorAll('details.gdet')], apri = d.some(x => !x.open);
+  d.forEach(x => { x.open = apri; });
+  if(b) b.textContent = apri ? '📕 Chiudi tutte le istruzioni' : '📖 Apri tutte le istruzioni';
 }
 /* ═══════════════════════════════════════════════════════════════
    IL TIMER DELLA SEDUTA — «la cabina di regia»
@@ -6908,7 +7313,7 @@ function timerAvvia(){
   const sig = [prot.prog, piano.dur, nome, piano.eventi.map(e => e.label + e.a + e.b).join(',')].join('|');
   if(TM && !TM.fine && TM.sig === sig){ TM.full = false; tmDisegna(true); tmTick(); return; }
   if(TM){ clearInterval(TM_H); TM_H = null; }
-  TM = {sig, dur:piano.dur, eventi:piano.eventi, info:{titolo:(PROGRAMS[prot.prog]||{}).o || '', nome, chips:tmChips(prot)},
+  TM = {sig, dur:piano.dur, eventi:piano.eventi, info:{titolo:nomeProt(prot), nome, chips:tmChips(prot)},
         run:true, t0:TM_NOW(), acc:0, fired:{}, ack:{}, fine:false, full:false, log:[]};
   apertaDaProposta();
   tmAudio(); tmSuono('via'); tmLock(true);
@@ -6937,6 +7342,7 @@ function timerVaiRif(id){
     if(!el){ toast('Il protocollo di questa seduta non è aperto'); return; }
     const alto = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tmh')) || 0;
     window.scrollTo({top: el.getBoundingClientRect().top + scrollY - alto - 12, behavior:'smooth'});
+    const det = el.querySelector('details.gdet'); if(det) det.open = true;
     el.classList.remove('battito'); void el.offsetWidth; el.classList.add('battito');
   }, 60);
 }
@@ -7223,8 +7629,7 @@ function quandoAperta(iso){
 function nomeAperta(p){
   const c = DB.clients.find(x => x.id === p.clientId) || {nome:'', cognome:''};
   const s = p.stato === 'chiudi' ? DB.sessions.find(x => x.id === p.sid) : null;
-  const prog = p.prot ? p.prot.prog : s ? s.prog : '';
-  return {c, titolo: PROGRAMS[prog] ? PROGRAMS[prog].o : ''};
+  return {c, titolo: p.prot ? nomeProt(p.prot, (p.quiz || {}).zones || p.prot.quizZones || []) : s ? nomeSeduta(s) : ''};
 }
 /* l'avviso in Home: sempre in cima, finche' c'e' una seduta da chiudere */
 function aperteHome(){
@@ -7273,6 +7678,9 @@ function confirmSession(){
     id:uid(), clientId:c.id, date:new Date().toISOString(),
     prog:currentProt.prog, fam:currentProt.fam, zCode:zCodeOf(currentProt.fam,currentProt.prog,currentProt.S),
     settings:{...currentProt.S}, scala:'capsula', quiz:{...q}, quizLabel:label,
+    /* il nome del protocollo resta scritto: lo storico non lo ricalcola */
+    nome: nomeProt(currentProt, currentProt.quizZones || q.zones || []),
+    aria: zoneAirbagApplicate(currentProt, currentProt.quizZones || q.zones || []),
     /* le rifiniture manuali: senza, ripetendo la seduta sparivano */
     manualRef: currentProt.manualRef || null, manualBasso: currentProt.manualBasso || null,
     notes:(document.getElementById('sess_note')||{}).value||'',
@@ -7396,7 +7804,7 @@ function messaggioZenith(c, s){
   const d = new Date(s.date), h = d.getHours();
   const ora = h < 12 ? 'mattina' : h < 18 ? 'pomeriggio' : 'sera';
   const q = s.quiz || {}, S = s.settings || {}, an = c.anamnesi || {};
-  const prog = (PROGRAMS[s.prog] || {}).o || 'il tuo programma';
+  const prog = nomeSeduta(s) || 'il tuo programma';
   const gap = prev ? Math.round((d - new Date(prev.date)) / 864e5) : null;
   const ids = [], frasi = [];
   const usa = (f, slot) => { if(!f) return; ids.push(f.id); frasi.push({slot, t: f.t}); };
@@ -9423,7 +9831,7 @@ function repeatSession(id, ev){
   }
   REPEAT = { srcId:id, clientId:s.clientId, prog:s.prog, fam:s.fam, S:Sr,
     manualRef: rifMan || null, manualBasso: rifBasso || null,
-    srcDate:s.date, quiz:s.quiz||{}, srcOp:s.operatore||null };
+    srcDate:s.date, quiz:s.quiz||{}, srcOp:s.operatore||null, aria:s.aria };
   quizState = {clientId:s.clientId, zones:(s.quiz&&s.quiz.zones)||[]};
   /* La ripetizione salta le cinque domande: senza questo passaggio la copia
      si prenderebbe l'ultimo operatore in turno, che puo' essere di ieri.
@@ -9991,6 +10399,7 @@ function vHistory(){
       ${motiv?`<div class="recmot">${motiv}</div>`:''}
     </div>`:''}
     ${filterBar(todayK, todayN, DB.sessions.length, filter, sess.length)}
+    <button class="btn sec rcstor" onclick="apriRecupera()">＋ Recupera una seduta persa</button>
     ${sess.length ? sess.map(s=>sessRow(s,{showClient:true})).join('') : '<p class="hint">Nessuna seduta '+(filter?'in questa data.':'registrata finora.')+'</p>'}`;
 }
 
@@ -10279,14 +10688,14 @@ function exportCSV(kind){
   const sep = ';';
   let rows = [];
   if (kind==='sessioni'){
-    rows.push(['Data','Ora','Cliente','Codice Z','Programma','Nome programma','Famiglia','Attività','Zone','Obiettivo','Pressione','Preferita','Nota preferita','Nota sessione'].join(sep));
+    rows.push(['Data','Ora','Cliente','Codice Z','Programma','Nome programma','Nome protocollo','Famiglia','Attività','Zone','Obiettivo','Pressione','Preferita','Nota preferita','Nota sessione'].join(sep));
     DB.sessions.filter(s=>inP(s.date)).sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>{
       const c = DB.clients.find(x=>x.id===s.clientId);
       const d = new Date(s.date);
       rows.push([
         csvCell(d.toLocaleDateString('it-IT')), csvCell(d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})),
         csvCell(c?c.nome+' '+c.cognome:'—'), csvCell(s.zCode), csvCell(s.prog),
-        csvCell(PROGRAMS[s.prog]?PROGRAMS[s.prog].o:''), csvCell((ZFAM[s.fam]||{}).name||s.fam),
+        csvCell(PROGRAMS[s.prog]?PROGRAMS[s.prog].o:''), csvCell(nomeSeduta(s)), csvCell((ZFAM[s.fam]||{}).name||s.fam),
         csvCell(s.quiz&&s.quiz.activity||''), csvCell(s.quiz&&s.quiz.zones?s.quiz.zones.join(', '):(s.quiz&&s.quiz.zone||'')),
         csvCell(s.quiz&&s.quiz.goal||''), csvCell(s.quiz&&s.quiz.pressione||''),
         csvCell(s.fav?'⭐':''), csvCell(s.favNote||''), csvCell(s.notes||'')
