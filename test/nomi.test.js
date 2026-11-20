@@ -166,6 +166,19 @@ module.exports = async function(browser){
     document.getElementById('rc_data').value = '2026-10-31'; rcSalva();
     const t = DB.sessions[DB.sessions.length - 1];
     out.nome = {nome: t.nome, atteso: z, S: t.settings, aria: t.aria, prog: t.prog};
+    /* a mano, campo per campo: lo stesso nome che darebbe il motore */
+    apriRecupera('c1');
+    out.manoVuoto = document.getElementById('rc_ok').disabled;
+    rcSet('prog','P08'); rcSet('fam','Z3'); rcSet('D',2); rcSet('A',3); rcSet('I'); rcSet('G'); rcSet('foot'); rcSet('zona','spalle'); rcSet('zona','gambe'); rcDurata(25);
+    const Sm = {fourD:2, airbag:3, ioni:true, calore:false, zerog:true, polpacci:0, plantari:1};
+    out.mano = {prev: document.getElementById('rc_prev').textContent, atteso: MOTORE.nomeProtocollo('P08', Sm, ['spalle','gambe']),
+      ok: !document.getElementById('rc_ok').disabled, leg: document.querySelectorAll('#rc_par .rcch b').length};
+    rcExtra(); rcRif('up','on'); rcRif('up','tkey','SHIATSU'); rcRif('dn','on'); rcRif('dn','plantare',2); rcRif('dn','da',24);
+    document.getElementById('rc_data').value = '2026-11-01'; rcSalva();
+    const u = DB.sessions[DB.sessions.length - 1];
+    out.rif = {up: u.manualRef && u.manualRef.tkey, upDa: u.manualRef && u.manualRef.da, dnPiedi: u.manualBasso && u.manualBasso.plantare,
+      piano: pianoSeduta({S:u.settings, manualRef:u.manualRef, manualBasso:u.manualBasso, fam:u.fam, prog:u.prog}).eventi.map(e => e.id + ':' + e.a).join(',')};
+    out.manoSalvata = {nome: u.nome, zCode: u.zCode, aria: u.aria, timer: u.settings.timer, foot: u.settings.plantari};
     /* nel futuro no */
     apriRecupera('c1'); document.getElementById('rc_cod').value = 'Z1·P22·D1A1CG'; rcAggiorna();
     const domani = new Date(Date.now() + 2 * 864e5);
@@ -190,7 +203,39 @@ module.exports = async function(browser){
     rec.dalNome.ok && rec.nome.nome === rec.nome.atteso && rec.nome.prog === 'P05' && rec.nome.S.fourD === 3 && rec.nome.S.ioni === true && rec.nome.S.calore === false
       && rec.nome.S.polpacci === 0 && rec.nome.S.plantari === 1 && JSON.stringify(rec.nome.aria) === '["vita","gambe"]', JSON.stringify(rec.nome));
   tac.t('una seduta nel futuro non si recupera', rec.futuro);
+  tac.t('a mano, scegliendo Z, P, D, A, I, C, G, extra e zone, esce lo stesso nome del motore e si salva',
+    rec.manoVuoto && rec.mano.ok && rec.mano.prev.indexOf(rec.mano.atteso) >= 0 && rec.mano.leg === 9 + 24
+      && rec.manoSalvata.nome === rec.mano.atteso && rec.manoSalvata.zCode === 'Z3·P08·D2A3IG'
+      && JSON.stringify(rec.manoSalvata.aria) === '["spalle","gambe"]' && rec.manoSalvata.timer === 25 && rec.manoSalvata.foot === 1,
+    JSON.stringify([rec.mano, rec.manoSalvata]));
+  tac.t('le rifiniture caricate a mano si salvano con tecnica, piedi e minuto, e il timer le accende a quel minuto',
+    rec.rif.up === 'SHIATSU' && rec.rif.upDa === 17 && rec.rif.dnPiedi === 2 && rec.rif.piano === 'ref:17,bas:22', JSON.stringify(rec.rif));
   tac.t('dallo storico si recupera anche: prima si sceglie di chi è la seduta', rec.tastoStorico && rec.chiedeCliente && rec.scelto === 'c3', JSON.stringify(rec));
+  /* 5b · regola durante la seduta: il ritocco si salva, la proposta resta scritta, il motore impara */
+  const rt = await p.evaluate(() => {
+    const c = DB.clients.find(x => x.id === 'c1'); c.cal = 0; c.calx = {};
+    const q = {clientId:'c1', step:0, operatore:null, activity:'ems', zones:['lombare'], zone:'lombare', goal:'recupero', mood:'stanco', pressione:'media', prefSoloAria:false};
+    quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const prima = {S: Object.assign({}, currentProt.S), nome: nomeProt(currentProt), up: !!currentProt.manualRef};
+    const pannello = !!document.getElementById('regola');
+    rtSet('A', Math.max(0, prima.S.airbag - 1)); rtSet('C'); if(!prima.up) rtRif('up', 'on');
+    const dopo = {nome: nomeProt(currentProt), sim: rifSim(currentProt), diff: differenze(currentProt),
+      titolo: document.querySelector('.pname2').textContent, aperta: (JSON.parse(localStorage.getItem('zfl_sedute_aperte')) || []).some(a => a.prot && a.prot.S.airbag === prima.S.airbag - 1)};
+    const n0 = DB.sessions.length; OMAGGIO = false; confirmSession();
+    const s = DB.sessions[DB.sessions.length - 1];
+    const salvata = {n: DB.sessions.length - n0, airbag: s.settings.airbag, calore: s.settings.calore, up: !!s.manualRef, proposta: s.proposta && s.proposta.nome, cambi: s.proposta && s.proposta.cambi.length};
+    const impara = {aria: c.calx.aria, calore: c.calx.calore};
+    quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const poi = {airbag: currentProt.S.airbag, calore: currentProt.S.calore, ritocco: !!currentProt.proposta};
+    VIEW = {name:'home'}; render();
+    return {prima, pannello, dopo, salvata, impara, poi};
+  });
+  tac.t('in fondo alla proposta c\'è il pannello «Regola durante la seduta», e un tocco cambia seduta, nome e simboli',
+    rt.pannello && rt.dopo.nome !== rt.prima.nome && /▲/.test(rt.dopo.sim) && /▲/.test(rt.dopo.titolo) && rt.dopo.diff.length >= 2 && rt.dopo.aperta, JSON.stringify(rt.dopo));
+  tac.t('si registra la seduta ritoccata, con sotto la proposta di partenza',
+    rt.salvata.n === 1 && rt.salvata.airbag === rt.prima.S.airbag - 1 && rt.salvata.calore === false && rt.salvata.up && rt.salvata.proposta === rt.prima.nome && rt.salvata.cambi >= 2, JSON.stringify(rt.salvata));
+  tac.t('il motore impara dal ritocco: la proposta dopo parte con airbag più bassi e calore spento',
+    rt.impara.aria === -1 && rt.impara.calore === -1 && rt.poi.airbag === rt.prima.S.airbag - 1 && rt.poi.calore === false && !rt.poi.ritocco, JSON.stringify([rt.impara, rt.poi]));
   await p.close();
 
   /* 6 · la vetrina mostra lo stesso nome al cliente */
