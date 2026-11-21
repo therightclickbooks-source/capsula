@@ -78,6 +78,11 @@ module.exports = async function(browser){
     const R = MOTORE.riattivaDopo;
     out.ria = {
       tutto: R({prog:'P04', S:{polpacci:1, plantari:1, airbag:2, zerog:true}, aria:{icone:['spalle','vita']}}),
+      /* dalla v173: gli airbag del programma tornano su corpo intero, tranne le zone spente;
+         la seduta solo aria e le sedute di prima riaccendono le loro zone */
+      spente: R({prog:'P04', S:{polpacci:1, plantari:1, airbag:2, zerog:true}, spente:['braccia','gambe']}),
+      p23: R({prog:'P23', S:{polpacci:0, plantari:0, airbag:2, zerog:true}, aria:{icone:['gambe']}, spente:['gambe']}),
+      fisse: R({prog:'P04', S:{polpacci:0, plantari:0, airbag:2}, zone:['spalle','vita'], spente:['braccia']}),
       sonno: R({prog:'P18', S:{polpacci:1, plantari:1, airbag:1, zerog:true}, aria:{icone:['tutto']}}),
       vuoto: R({prog:'P13', S:{polpacci:0, plantari:0, airbag:0}, aria:{icone:[]}}),
       perche: M(Object.assign({}, base, {quiz:{activity:'riposo', giornata:'tranquilla', zones:['cervicale','lombare'], goal:'sollievo', mood:'sereno', pressione:'media'}})).why.join(' ')
@@ -106,7 +111,14 @@ module.exports = async function(browser){
     /* due zone lontane: collo e gambe, collo e lombare */
     const cg = M(Object.assign({}, base, {quiz:{activity:'riposo', giornata:'tranquilla', zones:['cervicale','gambe'], goal:'sollievo', mood:'sereno', pressione:'media'}}));
     const cl = M(Object.assign({}, base, {quiz:{activity:'riposo', giornata:'tranquilla', zones:['cervicale','lombare'], goal:'sollievo', mood:'sereno', pressione:'media'}}));
-    out.cg = {up: cg.manualRef && cg.manualRef.zona, polpacci: cg.S.polpacci, aria: cg.aria.icone.join('+')};
+    out.cg = {up: cg.manualRef && cg.manualRef.zona, polpacci: cg.S.polpacci, spente: cg.spente.length, perAria: cg.why.some(w => /^💨/.test(w))};
+    /* gli airbag spenti su richiesta: la memoria del cliente li tiene spenti */
+    const qsp = {activity:'riposo', giornata:'tranquilla', zones:['gambe'], goal:'relax', mood:'sereno', pressione:'media'};
+    const sp = M(Object.assign({}, base, {quiz:qsp, calx:{spente:['gambe','braccia','pippo']}}));
+    const sp23 = M(Object.assign({}, base, {quiz:Object.assign({}, qsp, {prefSoloAria:true}), calx:{spente:['gambe']}}));
+    out.sp = {spente: sp.spente.join(','), why: sp.why.filter(w => /^💨/.test(w)).join(' '),
+      nomeUguale: MOTORE.nomeProtocollo(sp.prog, sp.S, null) === MOTORE.nomeProtocollo(M(Object.assign({}, base, {quiz:qsp})).prog, sp.S, null),
+      p23: sp23.prog, p23zone: sp23.aria.icone.join(','), p23spente: sp23.spente.length};
     out.cl = {up: !!cl.manualRef, dn: !!cl.manualBasso};
 
     /* la giornata: solo con «nessun allenamento» */
@@ -127,7 +139,10 @@ module.exports = async function(browser){
   tac.t('sensibile al calore e profilo soft non si scavalcano mai, nemmeno con le tarature al massimo', !r.sicurezza.length, r.sicurezza.slice(0,3).join('\n'));
   tac.t('mai due sedute uguali di fila quando esiste un\'alternativa adatta', r.senzaAlt === 0, r.senzaAlt + ' casi su ' + r.tot);
   tac.t('collo con obiettivi diversi: sedute diverse', new Set(r.collo.map(x => x.split(':')[1])).size >= 5, r.collo.join(' '));
-  tac.t('collo e gambe: rifinitura alta sul collo, Leg Kneading e airbag sulle gambe', /collo/.test(r.cg.up || '') && r.cg.polpacci === 1 && /gambe/.test(r.cg.aria), JSON.stringify(r.cg));
+  tac.t('collo e gambe: rifinitura alta sul collo e Leg Kneading; gli airbag restano quelli del programma', /collo/.test(r.cg.up || '') && r.cg.polpacci === 1 && r.cg.spente === 0 && !r.cg.perAria, JSON.stringify(r.cg));
+  tac.t('airbag spenti su richiesta: il motore li ricorda, in ordine e puliti, e lo scrive nel perché', r.sp.spente === 'braccia,gambe' && /spenti su «braccia» e «gambe e piedi»/.test(r.sp.why), JSON.stringify(r.sp));
+  tac.t('le zone spente non cambiano il nome del protocollo', r.sp.nomeUguale, JSON.stringify(r.sp));
+  tac.t('solo aria: le zone le sceglie il protocollo, senza quelle chieste spente', r.sp.p23 === 'P23' && r.sp.p23zone === 'spalle,braccia,vita' && r.sp.p23spente === 0, JSON.stringify(r.sp));
   tac.t('collo e lombare: tutte e due le rifiniture nella stessa seduta', r.cl.up && r.cl.dn, JSON.stringify(r.cl));
   tac.t('la giornata sceglie il programma: guida → P20, lavoro fisico → P06, scrivania → P13, in piedi → P10',
     r.giornata.guida === 'P20' && r.giornata.fisico === 'P06' && r.giornata.scrivania === 'P13' && r.giornata.inpiedi === 'P10', JSON.stringify(r.giornata));
@@ -144,7 +159,11 @@ module.exports = async function(browser){
   console.log('   rotazione 1: ' + rotTxt(r.rot) + '\n   rotazione 2: ' + rotTxt(r.rot2));
   const ri = r.ria;
   tac.t('dopo una rifinitura si riaccende quello che il programma aveva acceso: Leg Kneading, Foot Roller, airbag sulle stesse zone, e lo Zero Gravity se serve',
-    !ri.tutto.niente && ri.tutto.voci.map(v => v.k).join(',') === 'leg,foot,aria,zerog' && ri.tutto.voci[2].zone.join(',') === 'spalle,vita' && ri.tutto.voci[2].forza === 2, JSON.stringify(ri.tutto));
+    !ri.tutto.niente && ri.tutto.voci.map(v => v.k).join(',') === 'leg,foot,aria,zerog' && ri.tutto.voci[2].zone.join(',') === 'tutto' && ri.tutto.voci[2].forza === 2, JSON.stringify(ri.tutto));
+  tac.t('dopo una rifinitura gli airbag del programma tornano su tutte le zone tranne quelle spente; solo aria e sedute di prima riaccendono le loro',
+    ri.spente.voci[2].zone.join(',') === 'spalle,vita' && ri.spente.voci[2].spente.join(',') === 'braccia,gambe'
+      && ri.p23.voci.find(v => v.k === 'aria').zone.join(',') === 'gambe' && ri.fisse.voci.find(v => v.k === 'aria').zone.join(',') === 'spalle,vita',
+    JSON.stringify({spente: ri.spente.voci[2], p23: ri.p23.voci, fisse: ri.fisse.voci}));
   tac.t('nei programmi del sonno e della sera non si riaccende niente, e lo dice', ri.sonno.niente && /sonno/.test(ri.sonno.perche), JSON.stringify(ri.sonno));
   tac.t('se il programma non usava airbag né rulli di gambe e piedi, non c\'è niente da riaccendere', ri.vuoto.niente, JSON.stringify(ri.vuoto));
   tac.t('il «perché» dice i minuti delle rifiniture e cosa riaccendere', /8 minuti dalla fine/.test(ri.perche) && /5 minuti dalla fine/.test(ri.perche) && /si riaccendono/.test(ri.perche), ri.perche);

@@ -67,6 +67,8 @@ const GIORNATE = ['guida','scrivania','inpiedi','fisico','tranquilla'];
 
 function scalaCapsula(v){ return v <= 0 ? 0 : v <= 2 ? 1 : v === 3 ? 2 : 3; }
 const lim = (v, a, b) => Math.max(a, Math.min(b, v));
+/* «spalle», «spalle e braccia», «spalle, braccia e vita e fianchi» */
+const elenco = l => l.length < 2 ? (l[0] || '') : l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1];
 
 /* l'idoneita' dall'anamnesi: A = non idoneo, B = serve il certificato */
 function idoneitaDa(an){
@@ -85,8 +87,25 @@ function macroDa(macro, an){
     zerog:true, timer:20, plantari:1, polpacci:1});
 }
 
-/* ── le zone degli airbag: prima quelle di oggi, poi quelle dell'anamnesi ── */
+/* ── le zone degli airbag: prima quelle di oggi, poi quelle dell'anamnesi ──
+   Dalla v173 servono solo alla seduta solo aria (P23), dove gli airbag sono
+   tutto il massaggio. Nelle altre sedute lavorano gli airbag del programma,
+   con la loro alternanza: si spengono solo le zone che il cliente chiede
+   spente (zoneSpente). */
 const ARIA_NOME = {spalle:'spalle', braccia:'braccia', vita:'vita e fianchi', gambe:'gambe e piedi', tutto:'corpo intero'};
+const ZONE_SPEGNIBILI = ['spalle', 'braccia', 'vita', 'gambe'];
+/* le zone spente, pulite e sempre nello stesso ordine */
+function zoneSpente(z){ return Array.isArray(z) ? ZONE_SPEGNIBILI.filter(k => z.indexOf(k) >= 0) : []; }
+/* le zone accese meno quelle spente («corpo intero» si apre nelle quattro) */
+function senzaSpente(icone, spente){
+  spente = zoneSpente(spente);
+  if(!spente.length || !icone) return icone;
+  const tutte = icone.indexOf('tutto') >= 0 ? ZONE_SPEGNIBILI.slice() : icone.slice();
+  let r = tutte.filter(k => spente.indexOf(k) < 0);
+  /* spente proprio quelle scelte: lavorano le altre zone */
+  if(!r.length) r = ZONE_SPEGNIBILI.filter(k => spente.indexOf(k) < 0);
+  return r.length ? r : icone;
+}
 function scegliZoneAirbag(quiz, fam, anZone){
   const z2i = {cervicale:'spalle', spalle:'spalle', braccia:'braccia', dorsale:'vita', lombare:'vita',
                glutei:'vita', gambe:'gambe', piedi:'gambe'};
@@ -246,14 +265,26 @@ function firma(p){
    Usa solo cio' che viaggia anche nel QR (programma, valori, zone), cosi' il
    telefono dice esattamente le stesse cose del tablet. */
 const QUIETE = ['P17', 'P18'];
+/* gli airbag da riaccendere dopo una rifinitura: le zone della seduta, se
+   la seduta le sceglie (solo aria, o una seduta di prima della v173);
+   altrimenti corpo intero, tranne le zone che il cliente vuole spente.
+   p.zone: le zone applicate (null = quelle del programma) */
+function zoneDaRiaccendere(p){
+  p = p || {};
+  const z = p.zone !== undefined ? p.zone : (p.prog === 'P23' && p.aria ? p.aria.icone : null);
+  if(z && z.length) return z.slice();
+  const sp = zoneSpente(p.spente);
+  return sp.length ? ZONE_SPEGNIBILI.filter(k => sp.indexOf(k) < 0) : ['tutto'];
+}
 function riattivaDopo(p){
-  const S = (p && p.S) || {}, aria = (p && p.aria && p.aria.icone) || [];
+  const S = (p && p.S) || {}, aria = zoneDaRiaccendere(p);
   if(QUIETE.includes(p && p.prog))
     return {niente:true, perche:'programma per il sonno e la sera: gli ultimi minuti restano tranquilli, lavora solo la rifinitura', voci:[]};
   const voci = [];
   if(S.polpacci > 0) voci.push({k:'leg', nome:'Leg Kneading', dove:'tasto in basso, anche da questa schermata'});
   if(S.plantari > 0) voci.push({k:'foot', nome:'Foot Roller', dove:'tasto in basso, accanto a Leg Kneading'});
   if(S.airbag > 0 && aria.length) voci.push({k:'aria', nome:'Airbag', zone:aria.slice(), forza:S.airbag,
+    tutte: aria.length === 1 && aria[0] === 'tutto', spente: p && p.prog !== 'P23' ? zoneSpente(p.spente) : [],
     dove:'“Airbag” nella barra in alto → accendi ' + aria.map(k => ARIA_NOME[k] || k).join(', ')});
   if(S.zerog && voci.some(v => v.k === 'aria'))
     voci.push({k:'zerog', nome:'Zero Gravity', dove:'solo se aprendo gli airbag la poltrona si è rialzata: schermata Auto → Zero Gravity'});
@@ -346,7 +377,7 @@ function motoreZenith(inp){
   if(q.goal === 'energia') S.zerog = false;
   if(has('gambe') || q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio') S.polpacci = 1;
   if(has('piedi') || q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio' || q.goal === 'energia') S.plantari = 1;
-  if(has('gambe') && !soloAria) why.push('Gambe fra le zone: Leg Kneading acceso sui polpacci e airbag su gambe e piedi.');
+  if(has('gambe') && !soloAria) why.push('Gambe fra le zone: Leg Kneading acceso sui polpacci.');
   if(has('piedi') && !soloAria) why.push('Piedi fra le zone: Foot Roller acceso sulla pianta del piede.');
 
   /* ── le rifiniture ── */
@@ -436,19 +467,37 @@ function motoreZenith(inp){
       if(cosa.length && rif.length) why.push('🔁 Per non ripetere le ultime sedute, la rifinitura oggi cambia ' + cosa.join(', ') + ': sempre adatta allo stesso obiettivo.');
     }
   }
-  const aria = scegliZoneAirbag(q, fam, an.zone);
+  /* ── gli airbag: quelli del programma, con la sua alternanza. Si spengono
+     solo le zone che il cliente ha chiesto spente in una seduta passata
+     (il pannello «Regola durante la seduta» le ricorda: calx.spente).
+     Nella seduta solo aria le zone le sceglie il protocollo, senza quelle. */
+  const memSpente = zoneSpente(cx.spente);
+  let aria = scegliZoneAirbag(q, fam, an.zone);
+  const spente = prog === 'P23' ? [] : memSpente;
+  if(prog === 'P23' && memSpente.length){
+    const ic = senzaSpente(aria.icone, memSpente);
+    if(ic !== aria.icone){
+      /* il motivo resta quello di sempre (il QR lo porta come numero); le zone tolte a parte */
+      const senza = memSpente.filter(k => aria.icone.indexOf(k) >= 0 || aria.icone.indexOf('tutto') >= 0);
+      aria = {icone: ic, perche: aria.perche, senza,
+        testo: 'Zone airbag: ' + ic.map(k => ARIA_NOME[k]).join(', ') + ' — ' + aria.perche
+          + (senza.length ? ', senza ' + elenco(senza.map(k => '«' + ARIA_NOME[k] + '»')) + ' (le vuole spente)' : '') + '.'};
+    }
+  }
   if(manualRef || manualBasso){
     const rif = manualRef && manualBasso
       ? 'alta su ' + manualRef.zona + ' con ' + manualRef.tecnica + ' a 8 minuti dalla fine, poi anche bassa su ' + manualBasso.zona + ' con ' + manualBasso.tecnica + ' a 5 minuti dalla fine: lavorano insieme'
       : (manualRef ? 'alta su ' + manualRef.zona + ' con ' + manualRef.tecnica : 'bassa su ' + manualBasso.zona + ' con ' + manualBasso.tecnica) + ' negli ultimi 8 minuti';
-    const ri = riattivaDopo({prog, S, aria});
+    const ri = riattivaDopo({prog, S, aria, spente});
     why.push('✋ Rifinitura ' + rif + ', e una volta accese non si spengono fino alla fine. '
       + (ri.niente ? 'Dopo, non si riaccende niente: ' + ri.perche + '.'
                    : 'Dopo, si riaccendono ' + ri.voci.filter(v => v.k !== 'zerog').map(v => v.k === 'aria' ? 'gli airbag' : v.nome).join(', ') + ': la rifinitura li stacca.'));
   }
-  if(prog === 'P23' || (q.zones||[]).length || (an.zone||[]).length) why.push('💨 ' + aria.testo);
+  if(prog === 'P23') why.push('💨 ' + aria.testo);
+  else if(spente.length) why.push('💨 Airbag del programma, con la sua alternanza, ma spenti su ' + elenco(spente.map(k => '«' + ARIA_NOME[k] + '»'))
+    + ': in una seduta passata il cliente ha chiesto di spegnerli lì.');
   const zCode = fam + '·' + prog + '·D' + S.fourD + 'A' + S.airbag + (S.ioni ? 'I' : '') + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
-  const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, pool, alternato};
+  const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, spente, pool, alternato};
   out.firma = firma(out);
   return out;
 }
@@ -576,6 +625,7 @@ function daNome(testo){
 }
 
 G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
+  zoneSpente, senzaSpente, zoneDaRiaccendere, ZONE_SPEGNIBILI, elenco,
   TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE,
   nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA};
 })(typeof window !== 'undefined' ? window : globalThis);

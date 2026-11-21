@@ -169,16 +169,17 @@ module.exports = async function(browser){
     /* a mano, campo per campo: lo stesso nome che darebbe il motore */
     apriRecupera('c1');
     out.manoVuoto = document.getElementById('rc_ok').disabled;
-    rcSet('prog','P08'); rcSet('fam','Z3'); rcSet('D',2); rcSet('A',3); rcSet('I'); rcSet('G'); rcSet('foot'); rcSet('zona','spalle'); rcSet('zona','gambe'); rcDurata(25);
+    rcSet('prog','P08'); rcSet('fam','Z3'); rcSet('D',2); rcSet('A',3); rcSet('I'); rcSet('G'); rcSet('foot'); rcSet('spegni','braccia'); rcDurata(25);
     const Sm = {fourD:2, airbag:3, ioni:true, calore:false, zerog:true, polpacci:0, plantari:1};
-    out.mano = {prev: document.getElementById('rc_prev').textContent, atteso: MOTORE.nomeProtocollo('P08', Sm, ['spalle','gambe']),
-      ok: !document.getElementById('rc_ok').disabled, leg: document.querySelectorAll('#rc_par .rcch b').length};
+    out.mano = {prev: document.getElementById('rc_prev').textContent, atteso: MOTORE.nomeProtocollo('P08', Sm, null),
+      ok: !document.getElementById('rc_ok').disabled, leg: document.querySelectorAll('#rc_par .rcch b').length,
+      spenta: (document.querySelector('#rc_par .opt.azoff') || {}).textContent || ''};
     rcExtra(); rcRif('up','on'); rcRif('up','tkey','SHIATSU'); rcRif('dn','on'); rcRif('dn','plantare',2); rcRif('dn','da',24);
     document.getElementById('rc_data').value = '2026-11-01'; rcSalva();
     const u = DB.sessions[DB.sessions.length - 1];
     out.rif = {up: u.manualRef && u.manualRef.tkey, upDa: u.manualRef && u.manualRef.da, dnPiedi: u.manualBasso && u.manualBasso.plantare,
       piano: pianoSeduta({S:u.settings, manualRef:u.manualRef, manualBasso:u.manualBasso, fam:u.fam, prog:u.prog}).eventi.map(e => e.id + ':' + e.a).join(',')};
-    out.manoSalvata = {nome: u.nome, zCode: u.zCode, aria: u.aria, timer: u.settings.timer, foot: u.settings.plantari};
+    out.manoSalvata = {nome: u.nome, zCode: u.zCode, aria: u.aria, spente: u.spente, timer: u.settings.timer, foot: u.settings.plantari};
     /* nel futuro no */
     apriRecupera('c1'); document.getElementById('rc_cod').value = 'Z1·P22·D1A1CG'; rcAggiorna();
     const domani = new Date(Date.now() + 2 * 864e5);
@@ -203,10 +204,10 @@ module.exports = async function(browser){
     rec.dalNome.ok && rec.nome.nome === rec.nome.atteso && rec.nome.prog === 'P05' && rec.nome.S.fourD === 3 && rec.nome.S.ioni === true && rec.nome.S.calore === false
       && rec.nome.S.polpacci === 0 && rec.nome.S.plantari === 1 && JSON.stringify(rec.nome.aria) === '["vita","gambe"]', JSON.stringify(rec.nome));
   tac.t('una seduta nel futuro non si recupera', rec.futuro);
-  tac.t('a mano, scegliendo Z, P, D, A, I, C, G, extra e zone, esce lo stesso nome del motore e si salva',
-    rec.manoVuoto && rec.mano.ok && rec.mano.prev.indexOf(rec.mano.atteso) >= 0 && rec.mano.leg === 9 + 24
+  tac.t('a mano, scegliendo Z, P, D, A, I, C, G, extra e airbag spenti, esce lo stesso nome del motore e si salva col segno ⊘',
+    rec.manoVuoto && rec.mano.ok && rec.mano.prev.indexOf(rec.mano.atteso) >= 0 && /⊘ braccia/.test(rec.mano.prev) && rec.mano.spenta === '⊘ braccia' && rec.mano.leg === 9 + 24
       && rec.manoSalvata.nome === rec.mano.atteso && rec.manoSalvata.zCode === 'Z3·P08·D2A3IG'
-      && JSON.stringify(rec.manoSalvata.aria) === '["spalle","gambe"]' && rec.manoSalvata.timer === 25 && rec.manoSalvata.foot === 1,
+      && rec.manoSalvata.aria === null && JSON.stringify(rec.manoSalvata.spente) === '["braccia"]' && rec.manoSalvata.timer === 25 && rec.manoSalvata.foot === 1,
     JSON.stringify([rec.mano, rec.manoSalvata]));
   tac.t('le rifiniture caricate a mano si salvano con tecnica, piedi e minuto, e il timer le accende a quel minuto',
     rec.rif.up === 'SHIATSU' && rec.rif.upDa === 17 && rec.rif.dnPiedi === 2 && rec.rif.piano === 'ref:17,bas:22', JSON.stringify(rec.rif));
@@ -236,6 +237,49 @@ module.exports = async function(browser){
     rt.salvata.n === 1 && rt.salvata.airbag === rt.prima.S.airbag - 1 && rt.salvata.calore === false && rt.salvata.up && rt.salvata.proposta === rt.prima.nome && rt.salvata.cambi >= 2, JSON.stringify(rt.salvata));
   tac.t('il motore impara dal ritocco: la proposta dopo parte con airbag più bassi e calore spento',
     rt.impara.aria === -1 && rt.impara.calore === -1 && rt.poi.airbag === rt.prima.S.airbag - 1 && rt.poi.calore === false && !rt.poi.ritocco, JSON.stringify([rt.impara, rt.poi]));
+  /* 5b' · gli airbag del programma, e la zona spenta su richiesta (v173) */
+  const sp = await p.evaluate(() => {
+    const c = DB.clients.find(x => x.id === 'c1'); c.cal = 0; c.calx = {};
+    const q = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['braccia','gambe'], zone:'braccia', goal:'relax', mood:'sereno', pressione:'media', prefSoloAria:false};
+    RT = null; quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const pan = document.getElementById('regola');
+    const prima = {nome: nomeProt(currentProt), passoAria: buildSteps(currentProt).some(x => x.img === 'airbag'),
+      tasto: !!pan && /Tutti quelli del programma/.test(pan.textContent), zona: (document.querySelector('.quad .qd-zs') || {}).textContent || ''};
+    rtSet('spegni', 'braccia');
+    const passo = buildSteps(currentProt).find(x => x.img === 'airbag');
+    const dopo = {nome: nomeProt(currentProt), sim: spenteSim(currentProt), titolo: document.querySelector('.pname2').textContent,
+      diff: differenze(currentProt), passo: passo && passo.title, marcatori: passo ? passo.markers.length : 0,
+      chip: tmChips(currentProt).join(' | '), quad: (document.querySelector('.quad').textContent.match(/⊘ Braccia · spenti/) || [''])[0]};
+    OMAGGIO = false; confirmSession();
+    const s = DB.sessions[DB.sessions.length - 1];
+    const salvata = {spente: s.spente, nome: s.nome, cambi: s.proposta && s.proposta.cambi, memoria: (c.calx.spente || []).join(',')};
+    quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const poi = {spente: (currentProt.spente || []).join(','), perche: currentProt.why.some(w => /spenti su «braccia»/.test(w)), ritocco: !!currentProt.proposta,
+      tasto: (document.querySelector('#regola .opt.azoff') || {}).textContent || '',
+      /* il tasto della zona spenta resta toccabile, per riaccenderla */
+      clic: (b => !!b && getComputedStyle(b).pointerEvents !== 'none' && getComputedStyle(b).opacity === '1')(document.querySelector('#regola .opt.azoff'))};
+    /* ripetendo una seduta vecchia vale il desiderio di oggi */
+    const vecchia = DB.sessions.find(x => x.clientId === 'c1' && x.id !== s.id && x.prog);
+    let rip = null;
+    if(vecchia){ DB.operators = DB.operators || []; const ops = DB.operators; DB.operators = []; repeatSession(vecchia.id); rip = (currentProt.spente || []).join(','); DB.operators = ops; }
+    /* riaccesa: la memoria si cancella */
+    RT = null; VIEW = {name:'home'}; render();
+    quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    rtSet('spegni', 'braccia'); OMAGGIO = false; confirmSession();
+    const riaccesa = {memoria: c.calx.spente === undefined, cambi: (DB.sessions[DB.sessions.length - 1].proposta || {}).cambi};
+    RT = null; VIEW = {name:'home'}; render();
+    return {prima, dopo, salvata, poi, rip, riaccesa};
+  });
+  tac.t('con le zone dette dal cliente gli airbag restano quelli del programma: nessun passo da fare, nel quadrante «Quelle del programma»',
+    !sp.prima.passoAria && sp.prima.tasto && /Quelle del programma/.test(sp.prima.zona), JSON.stringify(sp.prima));
+  tac.t('spegnere una zona dal pannello: il nome resta, accanto compare ⊘, nei passi «Spegni l\'icona» e nel timer la stessa zona',
+    sp.dopo.nome === sp.prima.nome && sp.dopo.sim === '⊘ braccia' && /⊘ braccia/.test(sp.dopo.titolo) && sp.dopo.diff.indexOf('⊘ Airbag spenti su braccia') >= 0
+      && sp.dopo.passo === 'Spegni gli airbag su una zona' && sp.dopo.marcatori === 1 && /⊘ braccia/.test(sp.dopo.chip) && sp.dopo.quad, JSON.stringify(sp.dopo));
+  tac.t('la seduta si salva con la zona spenta, e il motore se la ricorda: la prossima proposta parte già spenta lì, e lo scrive',
+    JSON.stringify(sp.salvata.spente) === '["braccia"]' && sp.salvata.memoria === 'braccia' && sp.poi.spente === 'braccia' && sp.poi.perche && !sp.poi.ritocco && sp.poi.tasto === '⊘ braccia' && sp.poi.clic,
+    JSON.stringify([sp.salvata, sp.poi]));
+  tac.t('ripetendo una seduta vecchia, gli airbag spenti sono quelli che il cliente vuole oggi', sp.rip === null || sp.rip === 'braccia', JSON.stringify(sp.rip));
+  tac.t('riaccesa dal pannello, la memoria si cancella', sp.riaccesa.memoria && (sp.riaccesa.cambi || []).indexOf('Airbag di nuovo accesi su braccia') >= 0, JSON.stringify(sp.riaccesa));
   await p.close();
 
   /* 5c · i desideri scelti dal cliente al totem arrivano come ritocchi, e l'operatore li vede */
@@ -265,7 +309,7 @@ module.exports = async function(browser){
     disegnaProtocollo();
     const pr = costruisciProtocollo(D);
     return {nom: document.querySelector('.targa .nom').textContent, cat: document.querySelector('.targa .cat').textContent,
-      atteso: '“' + MOTORE.nomeProtocollo(pr.prog, pr.S, pr.aria.icone) + '”', prog: pr.prog};
+      atteso: '“' + MOTORE.nomeProtocollo(pr.prog, pr.S, pr.prog === 'P23' ? pr.aria.icone : null) + '”', prog: pr.prog};
   });
   tac.t('anche la vetrina, dopo il check-in, mostra il nome del protocollo e sotto la categoria', vet.nom === vet.atteso && vet.cat.indexOf(vet.prog) >= 0, JSON.stringify(vet));
   await v.close();

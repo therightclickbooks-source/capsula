@@ -103,12 +103,25 @@ module.exports = async function(browser){
   tac.t('le icone airbag vanno da sinistra a destra: spalle, braccia, vita, gambe, corpo intero',
     icone.SPALLE[0] < icone.BRACCIA[0] && icone.BRACCIA[0] < icone.VITA[0]
       && icone.VITA[0] < icone.GAMBE[0] && icone.GAMBE[0] < icone.TUTTO[0], JSON.stringify(icone));
-  const gambe = sedute.find(s => s.q.zones.join() === 'braccia,gambe' && s.prog !== 'P23');
-  const zonePasso = gambe && gambe.passi.find(x => x.img === 'airbag');
-  tac.t('«gambe» accende la quarta icona (il piede), «braccia» la seconda (la mano)',
-    !!zonePasso && zonePasso.marcatori.some(m => m.pos[0] === icone.GAMBE[0] && /gambe/.test(m.label))
-      && zonePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /braccia/.test(m.label)),
-    zonePasso ? JSON.stringify(zonePasso.marcatori) : 'nessun passo airbag');
+  /* dalla v173 gli airbag sono quelli del programma: le zone dette dal
+     cliente non li comandano piu', e il passo degli airbag non c'e' */
+  no = ogni(s => s.prog === 'P23' || !s.passi.some(x => x.img === 'airbag'));
+  tac.t('con le zone dette dal cliente gli airbag restano quelli del programma: nessun passo «accendi solo»', !no.length,
+    no.length + ' sedute, per es. ' + (no[0] ? JSON.stringify(no[0].q) : ''));
+  /* gli airbag spenti su richiesta: «gambe» spegne la quarta icona (il piede), «braccia» la seconda (la mano) */
+  const spentePasso = await p.evaluate(()=>{
+    const c = JSON.parse(JSON.stringify(DB.clients[0])); c.calx = {spente:['gambe','braccia']};
+    const pr = buildProtocol(c, {activity:'riposo', giornata:'scrivania', zones:[], goal:'relax', mood:'sereno', pressione:'media', prefSoloAria:false});
+    pr.quizZones = [];
+    const x = buildSteps(pr).find(s => s.img === 'airbag');
+    return x ? {titolo:x.title, testo:x.extra, marcatori:x.markers.map(m => ({pos:m.pos, label:m.label}))} : null;
+  });
+  tac.t('airbag spenti su «gambe» e «braccia»: si spengono la quarta icona (il piede) e la seconda (la mano), il resto non si tocca',
+    !!spentePasso && /Spegni gli airbag su 2 zone/.test(spentePasso.titolo) && spentePasso.marcatori.length === 2
+      && spentePasso.marcatori.some(m => m.pos[0] === icone.GAMBE[0] && /Spegni l'icona “gambe e piedi”/.test(m.label))
+      && spentePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /Spegni l'icona “braccia”/.test(m.label))
+      && /quelli del programma/.test(spentePasso.testo) && /corpo intero/.test(spentePasso.testo),
+    JSON.stringify(spentePasso));
 
   /* le zone degli airbag le decide il protocollo: nella seduta solo aria
      ci sono sempre, e sono icone precise, non «tocca quelle desiderate» */
@@ -456,11 +469,16 @@ module.exports = async function(browser){
       c.anamnesi.zone = sottoinsieme(3); c.anamnesi.caloreSensibile = rnd(4) === 0; c.anamnesi.sonno = scelto(['buono','discontinuo','scarso']);
       c.anamnesi.prefIntensita = scelto(['delicato','medio','deciso']);
       if(rnd(6) === 0){ c.anamnesi.b2 = true; c.anamnesi.certificatoOk = true; }
+      /* dalla v173: zone degli airbag spente a caso */
+      if(rnd(3) === 0) c.calx = {spente: ['spalle','braccia','vita','gambe'].filter(() => rnd(3) === 0)};
       const primaVolta = rnd(5) === 0; const sedutaFatta = DB.sessions.length;
       if(primaVolta) DB.sessions = [];
       const q = {activity:scelto(attivita), goal:scelto(obiettivi), zones:sottoinsieme(3), mood:scelto(umori), pressione:scelto(pressioni), prefSoloAria: rnd(5) === 0, when:scelto(['mattina','pranzo','sera'])};
       let prot; try{ prot = buildProtocol(c, q); }catch(e){ continue; }
       prot.quizZones = q.zones;
+      /* ogni tanto una seduta di prima ripetuta, con le zone di allora */
+      if(rnd(8) === 0 && prot.prog !== 'P23'){ prot.zoneFisse = scelto([['gambe'], ['spalle','vita'], ['tutto'], null]);
+        if(prot.zoneFisse) prot.aria = {icone: prot.zoneFisse.slice(), perche:'le stesse zone della seduta che si ripete'}; }
       const A = JSON.stringify(passi(prot));
       const dec = decodificaSeduta(codificaSeduta(prot, 'Prova', q.zones));
       const B = dec ? JSON.stringify(passi(dec)) : 'NULL';
@@ -468,7 +486,8 @@ module.exports = async function(browser){
       try{ const t = linkSeduta(prot, 'Maria Antonietta di Savoia', q.zones, 'https://therightclickbooks-source.github.io/capsula/app/');
         out.lungo = Math.max(out.lungo || 0, new TextEncoder().encode(t).length); if(i % 12 === 0) qrMatrice(t); else if(new TextEncoder().encode(t).length > capienza(10)) throw new Error('lungo'); }catch(e){ out.qrNo = (out.qrNo || 0) + 1; }
       out.n++; if(primaVolta) out.prima++; if(prot.manualRef || prot.manualBasso) out.conManuale++; if(prot.prog === 'P23') out.soloAria++;
-      if(A.includes('zona degli airbag') || A.includes('zone degli airbag')) out.conAria++;
+      if(A.includes('zona degli airbag') || A.includes('zone degli airbag') || A.includes('Spegni gli airbag')) out.conAria++;
+      if(nomeProt(prot) !== nomeProt(dec) || spenteSim(prot) !== spenteSim(dec)){ out.diversi++; if(!out.esempio) out.esempio = {nome:[nomeProt(prot), nomeProt(dec)], sp:[spenteSim(prot), spenteSim(dec)]}; }
       if(A !== B){ out.diversi++; if(!out.esempio) out.esempio = {q, anam:c.anamnesi.zone, sens:c.anamnesi.caloreSensibile, prog:prot.prog,
         titoliTablet: JSON.parse(A).map(s=>s.t), titoliTelefono: dec ? JSON.parse(B).map(s=>s.t) : null}; }
       if(primaVolta) DB.sessions = [{id:'s0', clientId:'cprova', date:'2026-01-01T10:00:00.000Z'}];
@@ -481,7 +500,7 @@ module.exports = async function(browser){
 
   /* e la prova vera: si apre il link che sta nel QR, in una pagina nuova (come fa il telefono) */
   const codice = await p.evaluate(()=>{
-    const c = JSON.parse(JSON.stringify(DB.clients[0])); c.anamnesi.zone = ['lombare'];
+    const c = JSON.parse(JSON.stringify(DB.clients[0])); c.anamnesi.zone = ['lombare']; c.calx = {spente:['braccia']};
     const prot = buildProtocol(c, {activity:'ems', goal:'recupero', zones:[], mood:'sereno', pressione:'media', prefSoloAria:false}); prot.quizZones = [];
     return {hash: codificaSeduta(prot, 'Giulia', []), titoli: buildSteps(prot).map(s=> s.title)};
   });
@@ -489,8 +508,8 @@ module.exports = async function(browser){
   tel.on('pageerror', e => tac.rossi.push('errore di pagina (telefono): ' + e.message));
   await tel.goto(GESTIONALE + '#s=' + codice.hash); await tel.waitForTimeout(900);
   const sulTel = await tel.evaluate(()=> ({vista: VIEW.name, testo: document.getElementById('app').innerText}));
-  tac.t('aprendo il link del QR, il telefono mostra il passo «Accendi la zona degli airbag», come il tablet',
-    sulTel.vista === 'setupqr' && /Accendi la zona degli airbag/.test(sulTel.testo) && codice.titoli.includes('Accendi la zona degli airbag'), sulTel.vista + ' ' + sulTel.testo.slice(0, 200));
+  tac.t('aprendo il link del QR, il telefono mostra il passo «Spegni gli airbag su una zona» e il segno ⊘ accanto al nome, come il tablet',
+    sulTel.vista === 'setupqr' && /Spegni gli airbag su una zona/.test(sulTel.testo) && /⊘ braccia/.test(sulTel.testo) && codice.titoli.includes('Spegni gli airbag su una zona'), sulTel.vista + ' ' + sulTel.testo.slice(0, 200));
   await tel.close();
 
   await p.close();
