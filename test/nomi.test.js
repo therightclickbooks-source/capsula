@@ -238,6 +238,24 @@ module.exports = async function(browser){
     rt.impara.aria === -1 && rt.impara.calore === -1 && rt.poi.airbag === rt.prima.S.airbag - 1 && rt.poi.calore === false && !rt.poi.ritocco, JSON.stringify([rt.impara, rt.poi]));
   await p.close();
 
+  /* 5c · i desideri scelti dal cliente al totem arrivano come ritocchi, e l'operatore li vede */
+  const p3 = await browser.newPage({viewport:{width:430, height:900}});
+  p3.on('pageerror', e => tac.rossi.push('errore di pagina (desideri): ' + e.message));
+  await p3.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await p3.goto(GESTIONALE); await p3.waitForTimeout(700);
+  const des = await p3.evaluate(() => {
+    const base = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['lombare'], zone:'lombare', goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false};
+    quizState = Object.assign({}, base); VIEW = {name:'proposal'}; render();
+    const senza = {calore: currentProt.S.calore, zerog: currentProt.S.zerog};
+    RT = null; quizState = Object.assign({}, base, {desideri:{calore: !senza.calore, zerog: !senza.zerog}}); VIEW = {name:'proposal'}; render();
+    const con = {calore: currentProt.S.calore, zerog: currentProt.S.zerog, diff: differenze(currentProt), why: currentProt.why.some(w => /Richiesto dal cliente al totem/.test(w))};
+    RT = null; VIEW = {name:'home'}; render();
+    return {senza, con};
+  });
+  tac.t('i desideri del cliente dal totem arrivano nel gestionale come ritocchi, scritti nel perché',
+    des.con.calore === !des.senza.calore && des.con.zerog === !des.senza.zerog && des.con.diff.length === 2 && des.con.why, JSON.stringify(des));
+  await p3.close();
+
   /* 6 · la vetrina mostra lo stesso nome al cliente */
   const v = await browser.newPage({viewport:{width:1080, height:1920}});
   v.on('pageerror', e => tac.rossi.push('errore di pagina (vetrina): ' + e.message));

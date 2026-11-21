@@ -52,6 +52,17 @@ const TECNICA_ALT_PER = {
   sonno:{MASSAGE:'KNEADING'},
   drenaggio:{TAPPING:'MASSAGE'}};
 const tecnicaAlt = (tkey, goal) => (TECNICA_ALT_PER[goal] || {})[tkey] || TECNICA_ALT[tkey];
+/* le altre regolazioni della rifinitura, per variare senza cambiare intenzione:
+   la larghezza vicina (piu' ampia per chi cerca relax, sonno, leggerezza o
+   energia; piu' raccolta per chi cerca sollievo o recupero) e l'intervallo
+   vicino (tutta la zona ↔ zona locale; il punto fisso passa alla zona locale) */
+const larghezzaAlt = (wkey, goal) => ['relax','sonno','drenaggio','energia'].includes(goal)
+  ? ({W_NARROW:'W_MEDIUM', W_MEDIUM:'W_WIDE', W_WIDE:'W_MEDIUM'})[wkey]
+  : ({W_NARROW:'W_MEDIUM', W_MEDIUM:'W_NARROW', W_WIDE:'W_MEDIUM'})[wkey];
+const intervalloAlt = ikey => ({INT_WHOLE:'INT_LOCAL', INT_LOCAL:'INT_WHOLE', INT_FIXED:'INT_LOCAL'})[ikey];
+/* quante sedute ricorda il motore per non ripetersi: con le stesse risposte
+   la stessa seduta torna, al piu' presto, dopo MEMORIA sedute diverse */
+const MEMORIA = 7;
 const GIORNATE = ['guida','scrivania','inpiedi','fisico','tranquilla'];
 
 function scalaCapsula(v){ return v <= 0 ? 0 : v <= 2 ? 1 : v === 3 ? 2 : 3; }
@@ -254,7 +265,7 @@ function riattivaDopo(p){
    leggono il gestionale e il totem dallo stesso archivio */
 function ultimeDa(sessions, clientId){
   return (sessions || []).filter(x => x.clientId === clientId && x.prog)
-    .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 3)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, MEMORIA)
     .map(s => ({prog: s.prog, firma: firma({prog: s.prog, S: s.settings || {}, manualRef: s.manualRef, manualBasso: s.manualBasso})}));
 }
 
@@ -386,28 +397,43 @@ function motoreZenith(inp){
   if(soft){ S.fourD = Math.min(S.fourD, 1); S.airbag = Math.min(S.airbag, 2); why.push('Profilo soft: idoneità con certificato medico.'); }
 
   /* ── mai due sedute uguali di fila, e piu' varieta' possibile ──
-     Con le stesse risposte le varianti adatte sono fino a quattro: il
-     programma migliore e l'altro adatto, ognuno con la tecnica di
-     rifinitura giusta o con la sua alternativa. Si prende la prima che il
-     cliente non ha fatto nelle ultime tre sedute; se le ha fatte tutte, la
-     piu' lontana nel tempo. Mai quella dell'ultima volta. */
-  const recenti = (inp.ultime || (inp.ultima ? [inp.ultima] : [])).map(u => u && u.firma).filter(Boolean).slice(0, 3);
+     Con le stesse risposte le varianti adatte sono fino a sedici: il
+     programma migliore o l'altro adatto, e per le rifiniture la tecnica, la
+     larghezza dei rulli e l'intervallo giusti o i loro vicini, sempre dentro
+     la stessa intenzione. L'ordine va dalla piu' vicina alla proposta
+     migliore (un cambio solo) alla piu' lontana. Si prende la prima che il
+     cliente non ha fatto nelle ultime MEMORIA sedute; se le ha fatte tutte,
+     la piu' lontana nel tempo. Mai quella dell'ultima volta. Cosi', a
+     risposte identiche, la stessa seduta torna solo dopo otto sedute. */
+  const recenti = (inp.ultime || (inp.ultima ? [inp.ultima] : [])).map(u => u && u.firma).filter(Boolean).slice(0, MEMORIA);
   if(!prima && recenti.length){
-    const alt = r => { const t = r && tecnicaAlt(r.tkey, q.goal); return t ? Object.assign({}, r, {tkey:t, tecnica:TECNICA_NOME[t]}) : r; };
+    const tocca = (r, f) => { if(!r) return r; const o = Object.assign({}, r); f(o); return o; };
+    const conTec = r => tocca(r, o => { const t = tecnicaAlt(o.tkey, q.goal); if(t){ o.tkey = t; o.tecnica = TECNICA_NOME[t]; } });
+    const conLar = r => tocca(r, o => { const w = larghezzaAlt(o.wkey, q.goal); if(w){ o.wkey = w; o.larghezza = LARGHEZZA_NOME[w]; } });
+    const conInt = r => tocca(r, o => { const k = intervalloAlt(o.ikey); if(k){ o.ikey = k; o.intervallo = INTERVALLO_NOME[k]; } });
+    /* le combinazioni: 1 tecnica, 2 programma, 4 larghezza, 8 intervallo; prima i cambi singoli */
+    const maschere = Array.from({length:16}, (_, m) => m)
+      .sort((a, b) => (a.toString(2).replace(/0/g, '').length - b.toString(2).replace(/0/g, '').length) || a - b);
     const varianti = [];
-    [false, true].forEach(cambiaTec => pool.slice(0, 2).forEach((pg, i) => {
-      const v = {prog:pg, S, manualRef: cambiaTec ? alt(manualRef) : manualRef, manualBasso: cambiaTec ? alt(manualBasso) : manualBasso, altroProg: i > 0, cambiaTec};
+    maschere.forEach(m => {
+      if((m & 2) && pool.length < 2) return;
+      const cambia = r => { if(m & 1) r = conTec(r); if(m & 4) r = conLar(r); if(m & 8) r = conInt(r); return r; };
+      const v = {prog: m & 2 ? pool[1] : pool[0], S, manualRef: cambia(manualRef), manualBasso: cambia(manualBasso),
+        altroProg: !!(m & 2), cambiaTec: !!(m & 1), cambiaLar: !!(m & 4), cambiaInt: !!(m & 8)};
       v.firma = firma(v);
       if(!varianti.some(x => x.firma === v.firma)) varianti.push(v);
-    }));
+    });
     const quando = f => { const i = recenti.indexOf(f); return i < 0 ? 99 : i; };
     const scelta = varianti.filter(v => v.firma !== recenti[0])
       .sort((a, b) => quando(b.firma) - quando(a.firma))[0];
     if(scelta && varianti[0].firma !== scelta.firma && recenti.includes(varianti[0].firma)){
       prog = scelta.prog; manualRef = scelta.manualRef; manualBasso = scelta.manualBasso; alternato = true;
-      const tec = [scelta.manualRef, scelta.manualBasso].filter(Boolean).map(r => r.tecnica).join(' e ');
+      const rif = [scelta.manualRef, scelta.manualBasso].filter(Boolean);
       if(scelta.altroProg) why.push('🔁 Con queste risposte ha già fatto ' + pool[0] + ' di recente: oggi si alterna con ' + scelta.prog + ', adatto allo stesso obiettivo.');
-      if(scelta.cambiaTec) why.push('🔁 Per non ripetere le ultime sedute, la rifinitura oggi usa ' + tec + ', adatta allo stesso obiettivo.');
+      const cosa = [scelta.cambiaTec && 'la tecnica ' + rif.map(r => r.tecnica).join(' e '),
+        scelta.cambiaLar && 'la larghezza ' + rif.map(r => r.larghezza).join(' e '),
+        scelta.cambiaInt && 'l\'intervallo ' + rif.map(r => r.intervallo).join(' e ')].filter(Boolean);
+      if(cosa.length && rif.length) why.push('🔁 Per non ripetere le ultime sedute, la rifinitura oggi cambia ' + cosa.join(', ') + ': sempre adatta allo stesso obiettivo.');
     }
   }
   const aria = scegliZoneAirbag(q, fam, an.zone);
@@ -551,5 +577,5 @@ function daNome(testo){
 
 G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
   TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE,
-  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT};
+  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA};
 })(typeof window !== 'undefined' ? window : globalThis);

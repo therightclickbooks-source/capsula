@@ -175,7 +175,7 @@ module.exports = async function(browser){
   tac.t('si scrive D\'Angelo, con la maiuscola dopo l\'apostrofo', tast.cogn === "D'Angelo", tast.cogn);
   tac.t('si scrive Nicolò con il tasto degli accenti', tast.nome === 'Nicolò', tast.nome);
   tac.t('«dangelo» senza apostrofo trova lo stesso D\'Angelo', tast.trova);
-  tac.t('il totale dei passi e\' sempre 4, qualunque cosa uno risponda', tast.passo === '4', tast.passo);
+  tac.t('il totale dei passi e\' sempre 5, qualunque cosa uno risponda', tast.passo === '5', tast.passo);
 
   /* ── la tastiera del telefono ── */
   const tel = await p.evaluate(()=>{

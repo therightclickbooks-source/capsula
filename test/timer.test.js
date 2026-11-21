@@ -100,8 +100,9 @@ module.exports = async function(browser){
     passo: (document.querySelector('.tmgo-b').closest('.gstep').querySelector('.gt') || {}).textContent, quanti: document.querySelectorAll('.tmgo-b').length,
     chip: Array.from(document.querySelectorAll('.tmchip')).map(c => c.textContent)}));
   tac.t('sul telefono il tasto «Avvia il timer» sta nel passo della Pausa, una volta sola', prima.go && !prima.barra && prima.quanti === 1 && /pausa e avvia il timer/.test(prima.passo) && !/Timing/.test(prima.passo), JSON.stringify(prima));
-  tac.t('al massimo due sezioni extra: le due rifiniture, con i loro minuti scritti',
-    prima.chip.join('|') === 'dal minuto 12 alla fine|dal minuto 15 alla fine', JSON.stringify(prima.chip));
+  /* scritte come il display della capsula, che conta all'indietro: «mancano 8:00», non «minuto 12» */
+  tac.t('al massimo due sezioni extra: le due rifiniture, scritte col conto alla rovescia del display',
+    prima.chip.join('|') === 'quando mancano 8:00|quando mancano 5:00', JSON.stringify(prima.chip));
   /* dentro i passi: i tasti per riaccendere Leg Kneading e Foot Roller, e le zone degli airbag */
   const passi = await p.evaluate(() => Array.from(document.querySelectorAll('.gstep')).filter(g => /Rifinitura|riaccendi gli airbag/.test(g.querySelector('.gt').textContent))
     .map(g => ({t: g.querySelector('.gt').textContent, leg: /Riaccendi “Leg Kneading”/.test(g.textContent), foot: /Riaccendi “Foot Roller”/.test(g.textContent),

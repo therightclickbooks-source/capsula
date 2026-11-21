@@ -27,13 +27,13 @@ module.exports = async function(browser){
     const c = DB.clients[0];
     const risposte = {activity:'ems', zones:['lombare'], zone:'lombare', goal:'recupero', mood:'stanco', pressione:'decisa', prefSoloAria:false};
     const giri = [];
-    for(let i = 0; i < 6; i++){
+    for(let i = 0; i < 20; i++){
       quizState = Object.assign({clientId:'c1', step:0}, JSON.parse(JSON.stringify(risposte)));
       const steps = activeQuizSteps();
       giri.push({seq: quizState.seq, domande: steps.map(s=> s.t).join('|'), ordine: steps.map(s=> s.k).join(','),
         ultima: steps[steps.length-1].type, completo: steps.every(s=> s.type !== 'cards' || s.opts.every(o=> o.length === 4 && o[2])),
         valori: steps.filter(s=> s.opts).map(s=> s.k + ':' + s.opts.map(o=> o[0]).join('/')).sort().join(' ')});
-      DB.sessions.push({id:'q' + i, clientId:'c1', date:'2026-02-0' + (i + 1) + 'T10:00:00.000Z', prog:'P04', settings:{}, quiz:{...quizState}});
+      DB.sessions.push({id:'q' + i, clientId:'c1', date:'2026-02-' + String(i + 1).padStart(2, '0') + 'T10:00:00.000Z', prog:'P04', settings:{}, quiz:{...quizState}});
     }
     /* lo stesso protocollo con le stesse risposte, qualunque sequenza */
     const firme = [0,1,2,3,4].map(seq => buildProtocol(c, Object.assign({seq}, risposte), {senzaVarieta:true}).firma);
@@ -44,8 +44,9 @@ module.exports = async function(browser){
     return {giri, firme, schermo};
   });
   const seqs = r.giri.map(g => g.seq);
-  tac.t('le sequenze vanno a giro e mai la stessa due volte di fila', seqs.join(',') === '1,2,3,4,0,1', seqs.join(','));
-  tac.t('le cinque sequenze hanno domande diverse', new Set(r.giri.slice(0,5).map(g => g.domande)).size === 5, r.giri.map(g => g.domande).join('\n'));
+  tac.t('le sequenze si scelgono a caso, ma mai una delle ultime tre', seqs.every((v, i) => seqs.slice(Math.max(0, i - 3), i).indexOf(v) < 0), seqs.join(','));
+  tac.t('in venti sedute escono tutte e cinque le sequenze', new Set(seqs).size === 5, seqs.join(','));
+  tac.t('le cinque sequenze hanno domande diverse', new Set(r.giri.map(g => g.domande)).size === 5, r.giri.map(g => g.domande).join('\n'));
   tac.t('le risposte possibili sono le stesse in tutte le sequenze', new Set(r.giri.map(g => g.valori)).size === 1, r.giri.map(g => g.valori).join('\n'));
   tac.t('ogni risposta ha icona, nome e spiegazione', r.giri.every(g => g.completo), JSON.stringify(r.giri));
   tac.t('l\'attività è sempre la prima domanda e le zone mai l\'ultima',

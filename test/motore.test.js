@@ -68,9 +68,9 @@ module.exports = async function(browser){
     });
     /* stesse risposte per sei sedute di fila: le varianti adatte ruotano */
     const giri = q => { let ult = [], seq = [];
-      for(let i = 0; i < 6; i++){ const x = M(Object.assign({}, base, {quiz:q, ultime:ult}));
-        seq.push({prog:x.prog, tec:[x.manualRef, x.manualBasso].filter(Boolean).map(r => r.tkey).join('+'), firma:x.firma});
-        ult = [{prog:x.prog, firma:x.firma}].concat(ult).slice(0, 3); }
+      for(let i = 0; i < 10; i++){ const x = M(Object.assign({}, base, {quiz:q, ultime:ult}));
+        seq.push({prog:x.prog, tec:[x.manualRef, x.manualBasso].filter(Boolean).map(r => r.tkey + '/' + r.wkey.slice(2,3) + '/' + r.ikey.slice(4,5)).join('+'), firma:x.firma});
+        ult = [{prog:x.prog, firma:x.firma}].concat(ult).slice(0, MOTORE.MEMORIA); }
       return seq; };
     out.rot = giri({activity:'ems', zones:['lombare'], goal:'recupero', mood:'carico', pressione:'media'});
     out.rot2 = giri({activity:'riposo', giornata:'tranquilla', zones:['cervicale'], goal:'relax', mood:'stressato', pressione:'media'});
@@ -136,10 +136,11 @@ module.exports = async function(browser){
   const usati = Object.keys(r.prog).sort();
   tac.t('dopo la prima volta escono tutti i programmi tranne P22 (prima volta), P23 (solo aria) e P24 (personalizzato)',
     ['P01','P02','P03','P04','P05','P06','P07','P08','P09','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21'].every(k => usati.includes(k)), usati.join(' '));
-  const rotOk = s => new Set(s.slice(0, 4).map(x => x.firma)).size === 4 && s[4].firma === s[0].firma && s.every((x, i) => !i || x.firma !== s[i-1].firma);
+  /* con le stesse risposte: otto sedute tutte diverse, poi si ricomincia dalla migliore */
+  const rotOk = s => new Set(s.slice(0, 8).map(x => x.firma)).size === 8 && s[8].firma === s[0].firma && s.every((x, i) => !i || x.firma !== s[i-1].firma);
   const rotTxt = s => s.map(x => x.prog + ' ' + x.tec).join(' → ');
-  tac.t('con le stesse risposte quattro sedute diverse di fila, poi si ricomincia dalla migliore (dopo EMS, lombare)', rotOk(r.rot), rotTxt(r.rot));
-  tac.t('con le stesse risposte quattro sedute diverse di fila (relax, collo, stressato)', rotOk(r.rot2), rotTxt(r.rot2));
+  tac.t('con le stesse risposte otto sedute diverse di fila, poi si ricomincia dalla migliore (dopo EMS, lombare)', rotOk(r.rot), rotTxt(r.rot));
+  tac.t('con le stesse risposte otto sedute diverse di fila (relax, collo, stressato)', rotOk(r.rot2), rotTxt(r.rot2));
   console.log('   rotazione 1: ' + rotTxt(r.rot) + '\n   rotazione 2: ' + rotTxt(r.rot2));
   const ri = r.ria;
   tac.t('dopo una rifinitura si riaccende quello che il programma aveva acceso: Leg Kneading, Foot Roller, airbag sulle stesse zone, e lo Zero Gravity se serve',
@@ -165,12 +166,12 @@ module.exports = async function(browser){
     const c = DB.clients[0], q = {activity:'ems', zones:['lombare'], goal:'recupero', mood:'carico', pressione:'media', prefSoloAria:false};
     const salva = (pr, d) => DB.sessions.push({id:'v' + d, clientId:'c1', date:'2026-02-0' + d + 'T10:00:00.000Z', prog:pr.prog, settings:pr.S, manualRef:pr.manualRef, manualBasso:pr.manualBasso});
     const seq = [];
-    for(let d = 1; d <= 5; d++){ const pr = buildProtocol(c, q); seq.push(pr.firma); salva(pr, d); }
+    for(let d = 1; d <= 9; d++){ const pr = buildProtocol(c, q); seq.push(pr.firma); salva(pr, d); }
     const rip = buildProtocol(c, q, {senzaVarieta:true}).firma;
     return {seq, rip};
   });
-  tac.t('nel gestionale, con le sedute salvate, le stesse risposte danno quattro sedute diverse e poi la migliore',
-    new Set(ga.seq.slice(0, 4)).size === 4 && ga.seq[4] === ga.seq[0], ga.seq.join('\n'));
+  tac.t('nel gestionale, con le sedute salvate, le stesse risposte danno otto sedute diverse e poi la migliore',
+    new Set(ga.seq.slice(0, 8)).size === 8 && ga.seq[8] === ga.seq[0], ga.seq.join('\n'));
   tac.t('«ripeti seduta» resta identica: la varietà non la tocca', ga.rip === ga.seq[0], ga.rip);
   await p.close();
 

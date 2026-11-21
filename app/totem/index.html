@@ -649,9 +649,20 @@ html,body{overscroll-behavior:none}
    l'altro non e' un dettaglio del disegno: e' il disegno. Piu' grande
    di prima di un terzo, perche' si tocca da lontano. */
 .zwrap{display:flex; flex-direction:column; align-items:center; gap:20px}
-.zfigs{display:flex; gap:56px; justify-content:center}
+.zfigs{display:flex; gap:90px; justify-content:center}
 .bodyfig{display:flex; flex-direction:column; align-items:center}
-.bodyfig svg{height:540px; width:auto; display:block; overflow:visible}
+.bodyfig svg{height:680px; width:auto; display:block; overflow:visible}
+.bodyfig .tst{fill:#4a3852; stroke:rgba(255,255,255,.28); stroke-width:1}
+.bodyfig .viso circle{fill:rgba(255,255,255,.45)} .bodyfig .viso path{fill:none; stroke:rgba(255,255,255,.45); stroke-width:1.2; stroke-linecap:round}
+.bodyfig .capelli{fill:#2a1f2e; stroke:rgba(255,255,255,.18); stroke-width:.8}
+.bodyfig .corpo{stroke:none}
+.bodyfig .bordo{fill:none; stroke:rgba(255,255,255,.32); stroke-width:1.2; pointer-events:none}
+.bodyfig .dett path{fill:none; stroke:rgba(255,255,255,.13); stroke-width:1.1; stroke-linecap:round; pointer-events:none}
+.bodyfig .bz{cursor:pointer}
+.bodyfig .bz rect{fill:rgba(255,255,255,.10); stroke:#0c0a0f; stroke-width:2.6; transition:fill .25s}
+.bodyfig .bz:active rect{fill:rgba(230,198,92,.4)}
+.bodyfig .bz.on rect{fill:#e6c65c; fill-opacity:.9; stroke:#0c0a0f; filter:none}
+.bodyfig .bz.on{filter:drop-shadow(0 0 10px rgba(230,198,92,.75))}
 .bodyfig .parte{fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.2);
   stroke-width:1.3}
 .bodyfig .face circle{fill:rgba(255,255,255,.5); stroke:none}
@@ -659,28 +670,23 @@ html,body{overscroll-behavior:none}
 .bodyfig .face path.hair{fill:rgba(255,255,255,.3); stroke:rgba(255,255,255,.3)}
 /* un pezzo che si puo' toccare si vede che si puo' toccare: filo
    tratteggiato e fondo un po' piu' chiaro degli altri */
-.bodyfig .bz rect{fill:rgba(255,255,255,.1); stroke:rgba(255,255,255,.42);
-  stroke-width:1.6; stroke-dasharray:5 3.5; cursor:pointer;
-  transition:fill .16s ease, stroke .16s ease}
-.bodyfig .bz.on rect{fill:#e6c65c; fill-opacity:.92; stroke:#fff; stroke-width:1.8;
-  stroke-dasharray:none; filter:drop-shadow(0 0 8px rgba(230,198,92,.9))}
-.bodylabel{font-size:20px; letter-spacing:.16em; font-weight:800;
-  color:rgba(255,255,255,.45); margin-top:14px}
+.bodylabel{font-size:22px; letter-spacing:.26em; font-weight:800;
+  color:rgba(255,255,255,.5); margin-top:14px}
 
 .zcols{display:flex; flex-direction:column; gap:14px; align-items:center}
 .ztier{display:flex; gap:16px; justify-content:center}
 .zchip{position:relative; background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16);
-  border-radius:22px; min-height:74px; padding:14px 18px; font-size:23px; font-weight:700;
+  border-radius:24px; min-height:78px; padding:14px 18px; font-size:28px; font-weight:800;
   display:flex; align-items:center; justify-content:center; text-align:center; cursor:pointer;
   transition:background .2s, border-color .2s}
 .zchip.on{border-color:#e6c65c; background:rgba(212,175,55,.17)}
-.ztier.t1 .zchip{width:296px} .ztier.t2 .zchip{width:282px} .ztier.t3 .zchip{width:268px}
+.ztier .zchip{min-width:200px; padding:14px 28px; white-space:nowrap}
 .zn{position:absolute; top:-13px; right:-11px; width:38px; height:38px; border-radius:50%;
   background:#e6c65c; color:#0c0a0f; font-size:21px; font-weight:800;
   display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px #0c0a0f}
 
 .zapex{display:grid; grid-template-columns:1fr 1fr; gap:18px;
-  max-width:700px; margin:4px auto 0}
+  max-width:920px; margin:4px auto 0}
 /* ── le due scorciatoie ──
    Chi non sa quale zona scegliere — ed e' quasi sempre chi entra la
    prima volta — deve trovarle senza cercarle. Non gridano: il fondo
@@ -695,8 +701,8 @@ html,body{overscroll-behavior:none}
   display:flex; align-items:center; justify-content:center; line-height:1;
   background:rgba(230,198,92,.14); border:1px solid rgba(230,198,92,.34)}
 .zquick .zqx{display:flex; flex-direction:column; min-width:0}
-.zquick .zql{font-size:24px; font-weight:800; line-height:1.2; color:#f4e7c4}
-.zquick .zqs{font-size:17px; color:rgba(255,255,255,.55); margin-top:4px}
+.zquick .zql{font-size:28px; font-weight:800; line-height:1.2; color:#f4e7c4}
+.zquick .zqs{font-size:20px; color:rgba(255,255,255,.55); margin-top:4px}
 .zhint{text-align:center; font-size:20px; color:rgba(255,255,255,.5); margin-top:8px}
 .zhint b{color:#e6c65c}
 
@@ -1070,24 +1076,30 @@ html,body{overscroll-behavior:none}
 
 /* ── la frase grande, con la capsula a destra ── */
 .zhero{position:relative; height:548px; flex:none}
-.zgancio{display:inline-flex; align-items:center; gap:18px; padding:12px 24px 12px 22px; border-radius:999px; font-size:21px; font-weight:800; letter-spacing:.2em;
+.zgancio.t-c{background:rgba(230,198,92,.12); border-color:rgba(230,198,92,.45); color:#f3dc8a}
+.zgancio.t-r{background:rgba(230,198,92,.12); border-color:rgba(230,198,92,.45); color:#f3dc8a}
+.zgancio.t-d{background:rgba(143,211,236,.12); border-color:rgba(143,211,236,.45); color:#bfe6f5}
+.zgancio{transition:all .5s; display:inline-flex; align-items:center; gap:18px; padding:12px 24px 12px 22px; border-radius:999px; font-size:21px; font-weight:800; letter-spacing:.2em;
   background:rgba(226,189,212,.10); border:1.5px solid rgba(226,189,212,.35); color:#f1d9e7}
 .zgancio i{width:12px; height:12px; border-radius:50%; background:#e6c65c; animation:zpolso 1.6s ease-out infinite}
 @keyframes zpolso{0%{box-shadow:0 0 0 0 rgba(230,198,92,.7)} 100%{box-shadow:0 0 0 16px rgba(230,198,92,0)}}
 .zslides{position:relative; height:384px; margin-top:28px; z-index:3; cursor:pointer}
-.zslide{position:absolute; left:0; top:0; width:566px; opacity:0; animation:zgira 24s infinite both}
+.zslide{position:absolute; left:0; top:0; width:566px; opacity:0; transform:translateY(-18px); transition:opacity .3s ease, transform .3s ease; pointer-events:none}
+/* la nuova entra solo quando la vecchia e' uscita: le due non si sovrappongono mai */
+.zslide.on{opacity:1; transform:none; transition:opacity .6s ease .32s, transform .7s cubic-bezier(.22,1,.36,1) .32s}
+.zslide.t-d .h1{letter-spacing:-.035em}
+.zslide.t-d .sub{color:#8fd3ec; font-weight:700}
 .zslide .h1{font-size:112px; line-height:.98; font-weight:800; letter-spacing:-.045em; white-space:nowrap}
 .zslide .sub{margin-top:24px; font-size:34px; line-height:1.32; color:rgba(255,255,255,.78); font-weight:500}
 .zslide .sub b{color:#fff}
-@keyframes zgira{0%{opacity:0; transform:translateY(26px)} 2%{opacity:1; transform:none} 15.5%{opacity:1; transform:none} 16.66%{opacity:0; transform:translateY(-20px)} 100%{opacity:0}}
 .zriga{display:flex; align-items:center; gap:26px; margin-top:22px; position:relative; z-index:3}
 .zdots{display:flex; gap:10px; flex:none}
-.zdots i{width:16px; height:16px; border-radius:999px; background:rgba(255,255,255,.18); animation:zpunto 24s infinite both}
-@keyframes zpunto{0%{width:16px; background:rgba(255,255,255,.18)} 2%{width:54px; background:#e6c65c} 15.5%{width:54px; background:#e6c65c} 16.66%{width:16px; background:rgba(255,255,255,.18)} 100%{width:16px; background:rgba(255,255,255,.18)}}
+.zdots i{width:16px; height:16px; border-radius:999px; background:rgba(255,255,255,.18); transition:width .5s, background .5s; cursor:pointer}
+.zdots i.on{width:54px; background:var(--c, #e6c65c)}
 .ztre{display:flex; gap:10px; margin-left:auto}
 .ztre span{font-size:21px; font-weight:700; padding:10px 17px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.88); white-space:nowrap}
 .ztre span b{color:#e6c65c}
-.zcaps{position:absolute; right:-46px; top:46px; width:430px; height:430px; pointer-events:none; animation:zgalla 6s ease-in-out infinite alternate}
+.zcaps{position:absolute; right:-46px; top:46px; width:430px; height:430px; z-index:4; animation:zgalla 6s ease-in-out infinite alternate}
 @keyframes zgalla{from{transform:translateY(-8px)} to{transform:translateY(10px)}}
 .zcaps .alone{position:absolute; inset:30px; border-radius:50%; background:radial-gradient(circle, rgba(226,189,212,.34), rgba(122,73,108,.14) 55%, transparent 70%)}
 .zcaps .cer{position:absolute; border-radius:50%; border:2px solid rgba(230,198,92,.38)}
@@ -1109,13 +1121,9 @@ html,body{overscroll-behavior:none}
 .zbis{--c:#dcab63; position:relative; height:228px; border-radius:32px; padding:22px 22px 20px; cursor:pointer;
   background:linear-gradient(160deg, color-mix(in srgb, var(--c) 24%, #17121c), #141018 72%);
   border:2px solid color-mix(in srgb, var(--c) 60%, transparent); box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08);
-  animation:zaccendi 24s infinite both; transition:filter .15s}
+  transition:filter .15s, transform .6s cubic-bezier(.22,1,.36,1), box-shadow .6s, border-color .6s}
+.zbis.acceso{transform:scale(1.045); border-color:var(--c); box-shadow:0 0 0 7px color-mix(in srgb, var(--c) 22%, transparent), 0 26px 54px -20px var(--c)}
 .zbis:active{filter:brightness(1.25)}
-@keyframes zaccendi{0%{transform:none; box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08); border-color:color-mix(in srgb, var(--c) 60%, transparent)}
-  2%{transform:scale(1.045); box-shadow:0 0 0 7px color-mix(in srgb, var(--c) 22%, transparent), 0 26px 54px -20px var(--c); border-color:var(--c)}
-  15.5%{transform:scale(1.045); box-shadow:0 0 0 7px color-mix(in srgb, var(--c) 22%, transparent), 0 26px 54px -20px var(--c); border-color:var(--c)}
-  16.66%{transform:none; box-shadow:0 18px 40px -26px var(--c), inset 0 1px 0 rgba(255,255,255,.08); border-color:color-mix(in srgb, var(--c) 60%, transparent)}
-  100%{transform:none}}
 .zbis .ic{width:88px; height:88px; border-radius:27px; display:flex; align-items:center; justify-content:center; color:color-mix(in srgb, var(--c) 70%, #fff);
   background:color-mix(in srgb, var(--c) 34%, #1a141f); border:1.5px solid color-mix(in srgb, var(--c) 55%, transparent); box-shadow:0 0 34px -6px var(--c)}
 .zic svg, .zbis .ic svg{width:56px; height:56px; fill:none; stroke:currentColor; stroke-width:3.4; stroke-linecap:round; stroke-linejoin:round}
@@ -1165,7 +1173,7 @@ html,body{overscroll-behavior:none}
 .zsec b{display:block; font-size:25px; font-weight:800; line-height:1.15}
 .zsec small{display:block; font-size:19px; color:rgba(255,255,255,.6); font-weight:600; margin-top:2px}
 .zsec .zpast{margin-left:auto; width:40px; height:40px; font-size:22px}
-@media (prefers-reduced-motion:reduce){ .zslide, .zdots i, .zbis, .zcta::after, .znastro div{animation-duration:0s} }
+@media (prefers-reduced-motion:reduce){ .zcta::after, .znastro div{animation-duration:0s} }
 
 /* ── la barra in cima alle pagine interne ── */
 .ztop{position:absolute; top:52px; left:56px; right:56px; display:flex; align-items:center; justify-content:space-between; z-index:20}
@@ -1183,7 +1191,7 @@ html,body{overscroll-behavior:none}
 .zscopri .lab{display:inline-block; font-size:21px; font-weight:800; letter-spacing:.2em; color:var(--c); margin-top:26px}
 .zscopri .h2{font-size:100px; line-height:1; font-weight:800; letter-spacing:-.04em; margin-top:12px}
 .zscopri > *{flex-shrink:0}
-.zscopri .sez{font-size:20px; font-weight:800; letter-spacing:.22em; color:rgba(255,255,255,.55); margin:32px 0 14px}
+.zscopri .sez{font-size:20px; font-weight:800; letter-spacing:.22em; color:rgba(255,255,255,.55); margin:26px 0 12px}
 .zmom3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
 .zmom{border-radius:28px; padding:22px 22px 24px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)}
 .zmom .q{font-size:19px; font-weight:800; letter-spacing:.16em; color:var(--c)}
@@ -1195,7 +1203,7 @@ html,body{overscroll-behavior:none}
 .zfz .e{font-size:42px; line-height:1.1}
 .zfz .n{font-size:23px; font-weight:800; margin-top:8px}
 .zfz .s{font-size:18px; color:rgba(255,255,255,.65); margin-top:4px; line-height:1.3}
-.znasce{margin-top:30px; border-radius:32px; padding:26px 30px; background:linear-gradient(135deg, rgba(230,198,92,.16), rgba(122,73,108,.18)); border:1.5px solid rgba(230,198,92,.45)}
+.znasce{margin-top:24px; border-radius:32px; padding:26px 30px; background:linear-gradient(135deg, rgba(230,198,92,.16), rgba(122,73,108,.18)); border:1.5px solid rgba(230,198,92,.45)}
 .znasce .k{font-size:20px; font-weight:800; letter-spacing:.2em; color:#f3dc8a}
 .znasce .p{font-size:26px; color:rgba(255,255,255,.82); margin-top:10px; line-height:1.35}
 .znasce .nm{font-size:60px; font-weight:800; letter-spacing:-.025em; margin-top:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -1258,9 +1266,9 @@ html,body{overscroll-behavior:none}
 .form .fhead{top:10.2%; left:64px; right:64px; height:auto; text-align:left}
 .form .q{font-size:84px; letter-spacing:-.04em; line-height:1.02; margin-top:0}
 .form .qs{font-size:30px; color:rgba(255,255,255,.66); margin-top:16px; font-weight:500}
-.form .corpo{top:25%; height:55.4%; left:64px; right:64px}
+.form .corpo{top:24.4%; height:54.2%; left:64px; right:64px}
 .corpo.connome{top:20.4%; bottom:13.6%}
-.form .qrecap{top:81.2%; height:5.4%; left:64px; right:64px; justify-content:flex-start}
+.form .qrecap{top:79.4%; height:7.6%; left:64px; right:64px; justify-content:flex-start; align-content:flex-end; overflow:hidden}
 .form .navrow{left:64px; right:64px}
 .form .qrecap .rc{font-size:22px; padding:10px 18px; border-radius:999px}
 .form .qrecap .rc em{font-size:15px}
@@ -1332,6 +1340,114 @@ html,body{overscroll-behavior:none}
 .zattesa .zpast{margin-left:auto}
 .zfatto .chiude{text-align:center; font-size:22px; color:rgba(255,255,255,.4); font-weight:600; margin-top:6px}
 .zfatto .chiude .giu{display:inline-block; margin:0; font-size:22px; letter-spacing:0}
+
+/* ══ LE SCHEDE CHE SI APRONO TOCCANDO ══ */
+.zinfo{position:absolute; inset:0; z-index:85; display:none; align-items:flex-end; justify-content:center; padding:0 40px 60px;
+  background:rgba(8,6,11,.78); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px)}
+.zinfo.on{display:flex; animation:zisu .35s cubic-bezier(.22,1,.36,1)}
+@keyframes zisu{from{opacity:0} to{opacity:1}}
+.zicard{width:100%; max-width:1000px; max-height:88%; display:flex; flex-direction:column; border-radius:48px; overflow:hidden;
+  background:linear-gradient(170deg, color-mix(in srgb, var(--c) 20%, #1a141f), #120e16 55%); border:2px solid color-mix(in srgb, var(--c) 55%, transparent);
+  box-shadow:0 40px 90px -30px color-mix(in srgb, var(--c) 60%, transparent); animation:zisu2 .45s cubic-bezier(.22,1,.36,1)}
+@keyframes zisu2{from{transform:translateY(60px)} to{transform:none}}
+.zib{padding:46px 48px 10px; overflow-y:auto}
+.zih{display:flex; gap:30px; align-items:center}
+.ziic{width:150px; height:150px; flex:none; border-radius:44px; display:flex; align-items:center; justify-content:center; font-size:84px;
+  background:color-mix(in srgb, var(--c) 22%, transparent); border:2px solid color-mix(in srgb, var(--c) 60%, transparent); box-shadow:0 0 70px -12px var(--c)}
+.zik{font-size:21px; font-weight:800; letter-spacing:.22em; color:var(--c)}
+.zit1{font-size:72px; font-weight:800; letter-spacing:-.035em; line-height:1.02; margin-top:8px}
+.zis{font-size:27px; color:rgba(255,255,255,.62); margin-top:10px; font-weight:600}
+.zip{font-size:32px; line-height:1.42; color:rgba(255,255,255,.88); margin-top:34px}
+.zip b{color:#f3dc8a}
+.zi2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:30px}
+.zi2 div{border-radius:28px; padding:24px 26px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)}
+.zi2 b{display:block; font-size:19px; letter-spacing:.18em; color:var(--c)}
+.zi2 span{display:block; font-size:26px; line-height:1.38; margin-top:10px; color:rgba(255,255,255,.88)}
+.zi2 span b{display:inline; font-size:inherit; letter-spacing:0; color:#fff}
+.zigrid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:30px}
+.zit{--c:#e6c65c; position:relative; border-radius:28px; padding:22px 20px 24px; cursor:pointer;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--c) 20%, #17121c), #141018 75%); border:2px solid color-mix(in srgb, var(--c) 60%, transparent)}
+.zit:active{filter:brightness(1.25)}
+.zit .e{display:inline-block; font-size:52px; line-height:1.1}
+.zit b{display:block; font-size:29px; font-weight:800; margin-top:10px}
+.zit small{display:block; font-size:20px; color:rgba(255,255,255,.62); margin-top:4px; padding-right:40px}
+.zit .zpast{position:absolute; right:16px; bottom:16px; width:40px; height:40px; font-size:22px}
+.zirig{display:flex; flex-direction:column; gap:12px; margin-top:28px}
+.zirig div{display:flex; align-items:center; gap:20px; font-size:28px; font-weight:700; padding:18px 22px; border-radius:24px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1)}
+.zirig span{font-size:38px; width:56px; text-align:center}
+.ziex{margin-top:28px; border-radius:30px; padding:24px 28px; background:linear-gradient(135deg, rgba(230,198,92,.16), rgba(122,73,108,.18)); border:1.5px solid rgba(230,198,92,.45)}
+.ziex small{display:block; font-size:19px; font-weight:800; letter-spacing:.2em; color:#f3dc8a}
+.ziex b{display:block; font-size:52px; font-weight:800; letter-spacing:-.025em; margin-top:8px}
+.ziex span{display:block; font-size:23px; color:rgba(255,255,255,.7); margin-top:6px}
+.zipie{display:flex; gap:18px; padding:26px 48px 40px}
+.zipie .zich{width:300px; height:116px; border-radius:34px; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:800; cursor:pointer;
+  background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.18)}
+.zipie .zigo{flex:1; height:116px; border-radius:34px; display:flex; align-items:center; justify-content:center; gap:16px; font-size:40px; font-weight:800; cursor:pointer;
+  background:linear-gradient(120deg,#b685a8,#8a5579 55%,#6d3f60); box-shadow:0 22px 46px -22px rgba(169,119,154,.9)}
+.zipie .zich:active, .zipie .zigo:active{transform:scale(.985)}
+/* le piccole animazioni degli elementi */
+.anim-calore{animation:zcal 2.4s ease-in-out infinite}
+@keyframes zcal{0%,100%{box-shadow:0 0 40px -12px #f5851f} 50%{box-shadow:0 0 90px 6px #f5851f}}
+.anim-gz{animation:zgz 3.6s ease-in-out infinite}
+@keyframes zgz{0%,100%{transform:rotate(0)} 50%{transform:rotate(-14deg) translateY(-6px)}}
+.anim-airbag{animation:zair 1.8s ease-in-out infinite}
+@keyframes zair{0%,100%{transform:scale(1)} 50%{transform:scale(1.1)}}
+.anim-rulli span, .ziic.anim-rulli{animation:zrul 3s linear infinite}
+@keyframes zrul{to{transform:rotate(360deg)}}
+.anim-piedi{animation:zpie 1.4s ease-in-out infinite}
+@keyframes zpie{0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}}
+.anim-ioni{animation:zion 2.2s ease-in-out infinite}
+@keyframes zion{0%,100%{filter:brightness(1); transform:scale(1)} 50%{filter:brightness(1.5); transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){ [class*="anim-"]{animation:none !important} }
+/* cio' che in vetrina si tocca */
+.zorb, .ztre span, .zcaps .alone, .zcaps svg, .znastro span[data-n], .zfz, .zcome span{cursor:pointer}
+.zorb:active, .ztre span:active, .zfz:active, .zcome span:active{filter:brightness(1.3)}
+.znastro span[data-n]:active{color:#fff}
+
+/* ══ COMPONI IL TUO ══ */
+.zcomp{position:absolute; top:172px; left:64px; right:64px; bottom:60px; display:flex; flex-direction:column}
+.zcomp > *{flex-shrink:0}
+.zcomp .lab{font-size:21px; font-weight:800; letter-spacing:.2em; color:var(--c)}
+.zcomp .h2{font-size:76px; line-height:1; font-weight:800; letter-spacing:-.04em; margin-top:12px}
+.zcomp .sub{font-size:26px; line-height:1.35; color:rgba(255,255,255,.74); margin-top:12px; font-weight:500}
+.zcr{margin-top:20px}
+.zcl{font-size:28px; font-weight:800; letter-spacing:-.01em}
+.zcl small{font-size:20px; color:rgba(255,255,255,.5); font-weight:600; margin-left:10px}
+.zcch{display:flex; flex-wrap:wrap; gap:12px; margin-top:12px}
+.zcc{--cc:#e6c65c; display:inline-flex; align-items:center; gap:8px; font-size:25px; font-weight:800; padding:15px 22px; border-radius:999px; cursor:pointer;
+  background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.16); transition:all .2s}
+.zcc:active{transform:scale(.96)}
+.zcc.on{background:color-mix(in srgb, var(--cc) 22%, transparent); border-color:var(--cc); box-shadow:0 0 0 4px color-mix(in srgb, var(--cc) 18%, transparent)}
+.zcc i{font-style:normal; width:32px; height:32px; border-radius:50%; background:#e6c65c; color:#2a1a10; display:inline-flex; align-items:center; justify-content:center; font-size:19px}
+.zcc b{font-size:18px; letter-spacing:.1em; text-transform:uppercase; padding:3px 9px; border-radius:999px; background:rgba(255,255,255,.1); color:rgba(255,255,255,.7)}
+.zcc.on b{background:var(--cc); color:#1a1220}
+.zcres{margin-top:auto; border-radius:34px; padding:24px 30px 26px; text-align:center;
+  background:linear-gradient(160deg, rgba(122,73,108,.38), rgba(20,16,24,.92)); border:2px solid rgba(230,198,92,.55); box-shadow:0 30px 70px -30px rgba(230,198,92,.5)}
+.zcres.nuovo{animation:zcnuovo .7s cubic-bezier(.22,1,.36,1)}
+@keyframes zcnuovo{0%{transform:scale(.97); box-shadow:0 0 0 0 rgba(230,198,92,.7)} 100%{transform:none; box-shadow:0 30px 70px -30px rgba(230,198,92,.5)}}
+.zcres .k{font-size:20px; font-weight:800; letter-spacing:.24em; color:#f3dc8a}
+.zcres .nm{font-size:66px; font-weight:800; letter-spacing:-.03em; margin-top:8px; line-height:1.05}
+.zcres .ct{font-size:23px; color:rgba(255,255,255,.64); margin-top:8px}
+.zcacc{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:14px}
+.zcacc span{font-size:21px; font-weight:800; padding:8px 15px; border-radius:999px; border:1.5px solid var(--c); background:color-mix(in srgb, var(--c) 16%, transparent)}
+.zcomp .zcta2{margin-top:22px}
+.dprima{font-size:24px; color:#f3dc8a; margin-top:12px; line-height:1.4}
+.dprima:empty{display:none}
+/* le carte delle domande dal passo 4 in poi: la stessa forma del passo 2 */
+.opts.att4.carte{grid-auto-rows:270px; gap:22px}
+.opts.att4.carte.n2{grid-auto-rows:320px}
+.opts.att4.carte .opt .ot{font-size:50px; white-space:nowrap}
+.opts.att4.carte .opt .ox{min-width:0; max-width:100%}
+.opts.att4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.opts.att4 .opt{min-width:0; overflow:hidden}
+.opts.att4.carte .opt .od{font-size:25px; line-height:1.3}
+.opts.att4 .opt{position:relative}
+.opts.att4 .opt .ck{position:absolute; top:24px; right:24px; bottom:auto}
+/* la pagina del bisogno: il protocollo d'esempio porta a «Componi il tuo» */
+.znasce.tocca2{cursor:pointer; position:relative}
+.znasce.tocca2:active{filter:brightness(1.2)}
+.znasce .zcgo{display:flex; align-items:center; gap:14px; margin-top:10px; font-size:25px; font-weight:800; color:#f3dc8a}
+.znasce .zcgo .zpast{margin-left:auto; background:#e6c65c; color:#2a1a10; border:none}
 </style>
 </head>
 <body>
@@ -1357,13 +1473,13 @@ html,body{overscroll-behavior:none}
     <div class="vetr">
 
       <div class="zhero">
-        <span class="zgancio"><i></i>TI SUCCEDE?</span>
+        <span class="zgancio" id="zgancio"><i></i>TI SUCCEDE?</span>
         <div class="zslides" id="zslides" onclick="apriBisognoCorrente()"></div>
         <div class="zriga">
           <div class="zdots" id="zdots"></div>
-          <div class="ztre"><span>🛋️ Sdraiato e vestito</span><span>⏱ <b>20–30</b> min</span><span>✦ Su misura per te</span></div>
+          <div class="ztre"><span onclick="apriInfo('sdraiato')">🛋️ Sdraiato e vestito</span><span onclick="apriInfo('durata')">⏱ <b>20–30</b> min</span><span onclick="apriInfo('misura')">✦ Su misura per te</span></div>
         </div>
-        <div class="zcaps" aria-hidden="true">
+        <div class="zcaps" onclick="apriInfo('capsula')">
           <div class="alone"></div><div class="cer c3"></div><div class="cer c1"></div><div class="cer c2"></div>
           <svg viewBox="66 50 480 300" fill="none">
             <defs>
@@ -1382,10 +1498,10 @@ html,body{overscroll-behavior:none}
             <path d="M150 300 C250 330 380 322 470 290 L470 312 C380 342 250 348 150 322 Z" fill="url(#gbr)"/>
           </svg>
           <span class="didas">LA CAPSULA ZENITH</span>
-          <span class="zorb" style="--c:#5fd08a; left:214px; top:34px"><i></i>Gravità zero</span>
-          <span class="zorb" style="--c:#f5851f; left:14px; top:72px; animation-delay:-1.3s"><i></i>Calore</span>
-          <span class="zorb" style="--c:#e2bdd4; left:224px; top:346px; animation-delay:-2.1s"><i></i>Airbag a onde</span>
-          <span class="zorb" style="--c:#8fd3ec; left:36px; top:356px; animation-delay:-.6s"><i></i>Rulli 4D</span>
+          <span class="zorb" style="--c:#5fd08a; left:214px; top:34px" onclick="event.stopPropagation(); apriInfo('gz')"><i></i>Gravità zero</span>
+          <span class="zorb" style="--c:#f5851f; left:14px; top:72px; animation-delay:-1.3s" onclick="event.stopPropagation(); apriInfo('calore')"><i></i>Calore</span>
+          <span class="zorb" style="--c:#e2bdd4; left:224px; top:346px; animation-delay:-2.1s" onclick="event.stopPropagation(); apriInfo('airbag')"><i></i>Airbag a onde</span>
+          <span class="zorb" style="--c:#8fd3ec; left:36px; top:356px; animation-delay:-.6s" onclick="event.stopPropagation(); apriInfo('rulli')"><i></i>Rulli 4D</span>
         </div>
       </div>
 
@@ -1402,7 +1518,7 @@ html,body{overscroll-behavior:none}
         <span class="zcart" onclick="apriRegolamento()">🎁 Ogni 13 sedute, una in regalo ›</span>
         <div class="zcta" id="gocheck">
           <span class="mano"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 22V9.5a3.5 3.5 0 0 1 7 0V21"/><path d="M26 19.5a3.5 3.5 0 0 1 7 0V23"/><path d="M33 21.5a3.5 3.5 0 0 1 7 0V31c0 7-5 12-12 12h-2c-5 0-8-2.5-10.5-6.5L10 28.5a3.4 3.4 0 0 1 5.6-3.8L19 29"/></svg></span>
-          <span class="tx"><span class="t1">Fai il check-in</span><span class="t2">4 passi, un minuto · poi ti chiama il tuo operatore</span></span>
+          <span class="tx"><span class="t1">Fai il check-in</span><span class="t2">5 passi, un minuto · poi ti chiama il tuo operatore</span></span>
           <span class="vai">›</span>
         </div>
       </div>
@@ -1419,6 +1535,12 @@ html,body{overscroll-behavior:none}
   <section class="scene" id="s-scopri">
     <div class="ztop"><span class="zind" onclick="go('idle')">‹ Torna alla vetrina</span><img class="zlogo" alt="Zenith"></div>
     <div class="zscopri" id="zscopri"></div>
+  </section>
+
+  <!-- ═══ 1d · COMPONI IL TUO ═══ -->
+  <section class="scene" id="s-componi">
+    <div class="ztop"><span class="zind" id="zcback" onclick="apriBisogno(COMP ? COMP.k : BIS_APERTO)">‹ Torna</span><img class="zlogo" alt="Zenith"></div>
+    <div class="zcomp" id="zcomp"></div>
   </section>
 
   <!-- ═══ 1c · RESPIRA CON ZENITH ═══ -->
@@ -1520,6 +1642,7 @@ html,body{overscroll-behavior:none}
       <div class="tuo"><div class="k">IL TUO PROTOCOLLO DI OGGI</div>
         <div class="nm gold" id="dnomep"></div>
         <div class="ct" id="dcat"></div>
+        <div class="dprima" id="dprima"></div>
         <div class="zacc" id="dchips"></div></div>
       <div class="chiama"><span class="avv" id="dav">Z</span><span><div class="t" id="dmsg"></div><div class="s">Siediti e respira: la capsula la prepara lui.</div></span></div>
       <div class="zfilo">
@@ -1541,6 +1664,14 @@ html,body{overscroll-behavior:none}
     <div class="blocco proto" id="proto"></div>
    </div>
   </section>
+
+  <!-- la scheda che si apre toccando la capsula, un elemento, un nome -->
+  <div class="zinfo" id="zinfo" onclick="chiudiInfo(event)">
+    <div class="zicard" onclick="event.stopPropagation()">
+      <div class="zib"></div>
+      <div class="zipie"><span class="zich" onclick="chiudiInfo()">Chiudi</span><span class="zigo" onclick="chiudiInfo(); startCheck()">Fai il check-in ›</span></div>
+    </div>
+  </div>
 
   <!-- chi ti segue oggi: si apre dal ✎ accanto al nome -->
   <div class="velo" id="opvelo" onclick="chiudiOperatori(event)">
@@ -1582,7 +1713,7 @@ html,body{overscroll-behavior:none}
   <div class="dbg" id="dbg"></div>
 </div></div>
 
-<script src="../motore.js?v=171.26.11.20"></script>
+<script src="../motore.js?v=172.26.11.21"></script>
 <script>
 const LOGO = "data:image/png;base64,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";
 /* ══════════════════════════════════════════════════════════════
@@ -1646,16 +1777,6 @@ const ICONA_DOMANDE = '<svg class="qico" viewBox="0 0 100 100" aria-hidden="true
   + '<path class="sc2" d="M13 76 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3z" fill="#e2bdd4"/></svg>';
 document.getElementById('orbs').innerHTML = ICONA_DOMANDE;
 
-/* le domande che agganciano: si cercano per testo dentro QA, cosi' se una
-   cambia parole o sparisce la vetrina non mostra una domanda che non c'e' */
-const DOMANDE_VETRINA = ['Fa male? Che pressione si sente?', 'Cos\'è la gravità zero?',
-  'Posso venire anche senza allenarmi?', 'Ho le gambe pesanti: cosa fate?',
-  'Mi fa male la schiena: cosa fate?', 'Dormo male. Può aiutarmi?',
-  'Non è una poltrona massaggiante?', 'Quanto ci metto a capire se fa per me?',
-  'Meglio prima o dopo l\'allenamento?', 'Cosa vuol dire «quattro mani»?',
-  'Posso parlare durante la seduta?', 'Ogni quanto posso venire?',
-  'Cosa sono gli ioni negativi?', 'Posso scegliere io il programma?', 'Posso vincere delle sedute omaggio?',
-  'Ho la cervicale da ufficio: serve?', 'E se non voglio i rulli?'];
 /* ══════════ LE DOMANDE ══════════
    Quante sono lo dice la vetrina stessa (QA.length): un numero preciso
    incuriosisce piu' di «hai una domanda?», e non va mai aggiornato a mano.
@@ -1793,7 +1914,7 @@ const ORDINE_CENTRO = ['ems','matrix','vacufit','ems2','riposo'];
 /* ─────────── il cambio di schermata ─────────── */
 let SCENE = 'idle';
 function go(n){
-  chiudiMacchine(); chiudiRegolamento(); chiudiOperatori();
+  chiudiMacchine(); chiudiRegolamento(); chiudiOperatori(); chiudiInfo();
   document.querySelectorAll('.scene').forEach(s=> s.classList.remove('on'));
   document.getElementById('s-' + n).classList.add('on');
   SCENE = n;
@@ -1867,21 +1988,251 @@ const BISOGNI = [
    fz:[['rulli','ritmo vivace'],['piedi','rulli plantari'],['airbag','circolo in moto'],['calore','scioglie e attiva']],
    q:{activity:'riposo', giornata:'fisico', zones:[], zmode:'totale', goal:'energia', mood:'stanco', pressione:'media'}}
 ];
+/* ══════════ LE FRASI DELLA VETRINA ══════════
+   Sessanta frasi, dieci per ogni bisogno, e ognuna accende il SUO
+   rettangolo qui sotto: chi legge «le caviglie gonfie» vede illuminarsi
+   «Gambe pesanti», e sa gia' dove toccare. Tre famiglie:
+   · TI SUCCEDE? — un fastidio in cui riconoscersi, e cosa ci fa Zenith;
+   · LO SAPEVI? — un fatto vero del metodo;
+   · LO CHIEDONO TUTTI — una domanda pronta: toccandola si apre la risposta.
+   Girano un bisogno alla volta (schiena, gambe, testa, sonno, muscoli,
+   energia), cosi' due frasi di fila non accendono mai lo stesso
+   rettangolo. Sei secondi ciascuna: il tempo di leggerla camminando. */
+const gd = t => '<span class="gold">' + t + '</span>';
+const FRASI = {
+  schiena: [
+    ['p', 'La schiena<br>ti ' + gd('tira?'), 'Calore e rulli lenti lungo la colonna, mentre sei <b>sdraiato</b>. <b>Ti rialzi sciolto.</b>'],
+    ['p', 'Ti alzi, e la schiena<br>arriva ' + gd('prima di te?'), '<b>Zenith</b> la scioglie con calore e rulli lenti, proprio dove nasce la tensione.'],
+    ['d', 'Mi fa male la schiena: cosa fate?'],
+    ['p', 'Ore di ' + gd('guida,') + '<br>collo bloccato?', '<b>Zenith</b> scioglie collo e schiena che il volante ha tenuto fermi per ore.'],
+    ['c', 'Calore sulla schiena,<br>' + gd('dove serve.'), 'Un pannello in fibra di carbonio scalda la zona lombare e scioglie la tensione dove nasce.'],
+    ['p', 'Il collo si irrigidisce<br>davanti allo ' + gd('schermo?'), '<b>Zenith</b> lavora trapezi e base del collo: la testa torna a girare libera.'],
+    ['d', 'Ho la cervicale da ufficio: serve?'],
+    ['p', 'Le spalle stanno ' + gd('su,') + '<br>anche quando non vuoi?', 'Airbag su spalle e braccia, rulli sui trapezi: <b>Zenith le riporta giù.</b>'],
+    ['c', 'Due bracci,<br>come ' + gd('quattro mani.'), 'Uno in 4D sulla parte alta, uno in 3D sulla parte bassa: lavorano insieme sulla tua schiena.'],
+    ['p', 'Quel punto preciso<br>che ' + gd('tira sempre?'), 'Il tuo operatore porta i rulli <b>esattamente lì</b>, negli ultimi minuti della seduta.'],
+    ['d', 'Cosa vuol dire «quattro mani»?']],
+  gambe: [
+    ['p', 'Le gambe<br>ti ' + gd('pesano?'), 'Venti minuti <b>sdraiato</b>, gambe sopra il cuore e compressione a onde. <b>Esci leggero.</b>'],
+    ['p', 'Caviglie gonfie<br>che a sera ' + gd('non passano?'), '<b>Zenith</b> comprime dai piedi verso l\'alto, con le gambe sopra il cuore.'],
+    ['d', 'Ho le gambe pesanti: cosa fate?'],
+    ['c', 'Gravità zero,<br>' + gd('letteralmente.'), 'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'],
+    ['p', 'In piedi tutto il giorno,<br>i piedi ' + gd('non ce la fanno?'), '<b>Zenith</b>: rulli sotto la pianta e compressione a onde su polpacci e piedi.'],
+    ['p', 'Seduto tutto il giorno,<br>gambe ' + gd('di piombo?'), '<b>Zenith</b> scarica la colonna in gravità zero e rimette in moto le gambe.'],
+    ['d', 'Cos\'è la gravità zero?'],
+    ['c', 'Compressione a onde,<br>dai piedi ' + gd('in su.'), 'Una spremitura dolce che accompagna i liquidi dove devono andare.'],
+    ['p', 'Mani e piedi<br>sempre ' + gd('freddi?'), 'Compressione e calore riattivano il circolo, dai piedi in su: <b>ci pensa Zenith.</b>'],
+    ['d', 'E se non voglio i rulli?']],
+  testa: [
+    ['p', 'Testa<br>' + gd('piena?'), 'Venti minuti senza telefono, in <b>gravità zero</b>. Stacchi tu, <b>lavora Zenith.</b>'],
+    ['p', 'Lo stress non resta<br>nella ' + gd('testa.'), 'Si deposita nei muscoli: <b>Zenith</b> lo scioglie proprio lì, con manovre lente.'],
+    ['d', 'Non è una poltrona massaggiante?'],
+    ['p', 'Vorresti staccare,<br>ma ' + gd('non sai come?'), 'Su <b>Zenith</b> non devi fare niente: ti sdrai, e al resto pensa la capsula.'],
+    ['c', 'Ioni negativi,<br>come ' + gd('al mare.'), 'Nelle sedute di relax e sonno l\'aria intorno a te si fa più fresca e leggera.'],
+    ['p', 'Allenamento finito,<br>testa ' + gd('ancora accesa?'), '<b>Zenith</b> abbassa i giri: il recupero comincia dalla mente.'],
+    ['d', 'Cosa sono gli ioni negativi?'],
+    ['c', 'Zenith non indovina.<br>' + gd('Ti ascolta.'), 'Poche domande su come stai oggi, e la tua parola a fine seduta tara la prossima.'],
+    ['p', 'Un massaggio sì,<br>ma ' + gd('un\'ora') + ' non ce l\'hai?', 'Con <b>Zenith</b> bastano venti minuti, e ogni minuto è scelto per te.'],
+    ['d', 'Posso parlare durante la seduta?']],
+  sonno: [
+    ['p', 'Dormi<br>' + gd('male?'), 'Un dondolio lento e manovre lentissime: il corpo <b>abbassa i giri</b> e la sera cambia.'],
+    ['p', 'Dormi otto ore<br>e ne senti ' + gd('quattro?'), '<b>Zenith</b> abbassa i giri: manovre lente, ioni e dondolio preparano il sonno vero.'],
+    ['d', 'Dormo male. Può aiutarmi?'],
+    ['c', 'Un dondolio lento,<br>come ' + gd('un\'amaca.'), 'Manovre lentissime che accompagnano il corpo verso il riposo.'],
+    ['p', 'Vai a letto stanco<br>ma ' + gd('non ti rilassi?'), '<b>Zenith</b> ha i protocolli del sonno: il corpo impara di nuovo a staccare.'],
+    ['p', 'La sera arriva<br>e sei ' + gd('ancora teso?'), 'Venti minuti di dondolio lento con <b>Zenith</b>, e la serata cambia.'],
+    ['d', 'Quanto ci metto a capire se fa per me?'],
+    ['c', 'Si abbassano<br>' + gd('i giri.'), 'Manovre lentissime, ioni e gravità zero: il sistema nervoso rallenta.'],
+    ['p', 'Ti svegli<br>già ' + gd('stanco?'), 'Il riposo vero comincia la sera prima: <b>Zenith</b> prepara il corpo a staccare.'],
+    ['d', 'Ogni quanto posso venire?']],
+  muscoli: [
+    ['p', 'Muscoli<br>a ' + gd('pezzi?'), 'Dopo l\'allenamento <b>Zenith</b> porta <b>sangue nuovo</b> dove hai lavorato. <b>Domani lo senti.</b>'],
+    ['p', 'Ti alleni bene.<br>Ma ' + gd('recuperi male?'), '<b>Zenith</b> è il defaticamento che il tuo allenamento si merita, in venti minuti.'],
+    ['d', 'Meglio prima o dopo l\'allenamento?'],
+    ['p', 'Il leg day di ieri<br>si sente ' + gd('sulle scale?'), 'Rulli e compressione su gambe e glutei: con <b>Zenith</b> le scale tornano scale.'],
+    ['c', 'Il muscolo cresce<br>' + gd('dopo') + ' il carico.', 'Non sotto i pesi, ma nelle ore dopo: <b>Zenith</b> gli dà le condizioni giuste.'],
+    ['p', 'Dopo l\'allenamento<br>servono ' + gd('giorni?'), '<b>Zenith</b> accorcia l\'attesa: sangue nuovo dove hai lavorato, subito dopo.'],
+    ['d', 'Mi alleno. Quando dovrei venire?'],
+    ['c', 'La capsula<br>' + gd('si ricorda di te.'), 'Se dici che era troppo leggera, la volta dopo parte già corretta.'],
+    ['p', 'Weekend attivo,<br>lunedì ' + gd('a pezzi?'), 'Venti minuti di <b>Zenith</b> il lunedì sera, e la settimana riparte leggera.'],
+    ['d', 'Fa male? Che pressione si sente?']],
+  energia: [
+    ['p', 'Ti serve<br>una ' + gd('carica?'), 'Ritmo vivace, postura attiva, rulli rapidi sotto i piedi: <b>venti minuti e riparti.</b>'],
+    ['p', 'Torni a casa<br>e ti manca ' + gd('l\'energia?'), '<b>Zenith</b> ha un protocollo che ti rimette in moto: venti minuti, ritmo vivo.'],
+    ['d', 'Posso venire anche senza allenarmi?'],
+    ['c', gd('20,3 milioni') + '<br>di combinazioni.', 'Le tue risposte compongono una seduta che non si ripete: ognuna ha un nome solo suo.'],
+    ['p', 'Ti muovi ' + gd('meno') + '<br>di quanto pensi?', '<b>Zenith</b> ridà circolo a quello che la giornata tiene fermo.'],
+    ['p', 'La mattina<br>parti ' + gd('al rallentatore?'), 'Ritmo vivace e rulli rapidi sotto i piedi: <b>Zenith</b> è il caffè in versione trattamento.'],
+    ['d', 'Il protocollo cambia ogni volta?'],
+    ['c', 'Nessuna seduta<br>è ' + gd('uguale') + ' a un\'altra.', 'Il protocollo nasce da come stai oggi, non da come stavi il mese scorso.'],
+    ['r', gd('Ogni 13 sedute,') + '<br>una in regalo.', 'Ogni seduta vale punti, e i punti non si azzerano mai. <b>Tocca per le regole.</b>'],
+    ['d', 'Posso vincere delle sedute omaggio?']]
+};
+const TAG_FRASE = {p:'TI SUCCEDE?', c:'LO SAPEVI?', d:'LO CHIEDONO TUTTI', r:'LO SAPEVI?'};
+/* le domande che agganciano: si cercano per testo dentro QA, cosi' se una
+   cambia parole o sparisce la vetrina non mostra una domanda che non c'e' */
+const DOMANDE_VETRINA = Object.values(FRASI).flat().filter(f => f[0] === 'd').map(f => f[1]);
+/* una domanda in vetrina va a capo dopo il punto o i due punti, se c'e' */
+function aCapo(q){
+  const i = q.search(/[:.?] /);
+  return i > 0 && i < q.length - 3 ? q.slice(0, i + 1) + '<br>' + q.slice(i + 2) : q;
+}
+let FRASI_GIRO = null;
+function frasiVetrina(){
+  if(FRASI_GIRO) return FRASI_GIRO;
+  const per = BISOGNI.map(b => (FRASI[b.k] || []).map(f => {
+    if(f[0] === 'd'){ const qa = QA.findIndex(x => x.q === f[1]); return qa < 0 ? null : {k:b.k, t:'d', h:aCapo(f[1]), sub:'Tocca qui: la risposta è pronta ›', qa}; }
+    return {k:b.k, t:f[0], h:f[1], sub:f[2]};
+  }).filter(Boolean));
+  FRASI_GIRO = [];
+  for(let i = 0; per.some(l => i < l.length); i++) per.forEach(l => { if(i < l.length) FRASI_GIRO.push(l[i]); });
+  return FRASI_GIRO;
+}
 const BIS_DI = k => BISOGNI.find(b=> b.k === k);
-const T0_VETRINA = performance.now();
+/* ── la vetrina che gira ──
+   Una frase alla volta, e con lei si accende il suo rettangolo e il suo
+   pallino. La grandezza del titolo si adatta alla frase: le corte restano
+   enormi, le lunghe scendono quanto basta per stare nella casella. */
+const DURATA_FRASE = 6000;
+let FR_I = 0, FR_T = null;
 function costruisciVetrina(){
-  document.getElementById('zslides').innerHTML = BISOGNI.map((b,i)=>
-    '<div class="zslide" style="animation-delay:' + (i*4) + 's"><div class="h1">' + b.h1 + '</div><div class="sub">' + b.sub + '</div></div>').join('');
-  document.getElementById('zdots').innerHTML = BISOGNI.map((b,i)=> '<i style="animation-delay:' + (i*4) + 's"></i>').join('');
-  document.getElementById('zgri').innerHTML = BISOGNI.map((b,i)=>
-    '<div class="zbis" style="--c:' + b.c + '; animation-delay:' + (i*4) + 's" onclick="apriBisogno(\'' + b.k + '\')">'
+  const L = frasiVetrina();
+  document.getElementById('zslides').innerHTML = L.map((f, i) =>
+    '<div class="zslide t-' + f.t + '" data-i="' + i + '"><div class="h1">' + f.h + '</div><div class="sub">' + f.sub + '</div></div>').join('');
+  document.getElementById('zdots').innerHTML = BISOGNI.map(b => '<i style="--c:' + b.c + '" onclick="event.stopPropagation(); vaiAlBisogno(\'' + b.k + '\')"></i>').join('');
+  document.getElementById('zgri').innerHTML = BISOGNI.map(b =>
+    '<div class="zbis" data-k="' + b.k + '" style="--c:' + b.c + '" onclick="apriBisogno(\'' + b.k + '\')">'
     + '<div class="ic">' + IC_BIS[b.k] + '</div><div class="n">' + b.n + '</div><div class="s">' + b.s + '</div><span class="zpast">›</span></div>').join('');
   document.getElementById('zndom').textContent = QA.length + ' risposte pronte';
+  adattaFrasi();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(adattaFrasi);
+  mostraFrase(0);
+  giroFrasi();
 }
-/* la frase che si sta leggendo, se si tocca, apre la sua pagina */
+function adattaFrasi(){
+  const box = document.getElementById('zslides'); if(!box) return;
+  const H = box.clientHeight;
+  box.querySelectorAll('.zslide').forEach(sl => {
+    const h = sl.querySelector('.h1'), W = sl.clientWidth;
+    /* prima si prova a tenere le righe come sono scritte, scendendo fino a
+       76 punti; se una riga resta troppo lunga, la frase va a capo da sola
+       e si scende ancora, ma solo quanto serve per stare nella casella */
+    let f = 112;
+    h.style.whiteSpace = 'nowrap'; h.style.fontSize = f + 'px';
+    while(f > 76 && (h.scrollWidth > W + 1 || sl.offsetHeight > H)){ f -= 4; h.style.fontSize = f + 'px'; }
+    if(h.scrollWidth > W + 1){
+      h.style.whiteSpace = 'normal'; f = 84; h.style.fontSize = f + 'px';
+      while(f > 52 && (h.scrollWidth > W + 1 || sl.offsetHeight > H)){ f -= 4; h.style.fontSize = f + 'px'; }
+    }
+  });
+}
+function mostraFrase(i){
+  const L = frasiVetrina(); FR_I = (i + L.length) % L.length;
+  const f = L[FR_I];
+  document.querySelectorAll('#zslides .zslide').forEach(s => s.classList.toggle('on', +s.dataset.i === FR_I));
+  document.querySelectorAll('#zgri .zbis').forEach(c => c.classList.toggle('acceso', c.dataset.k === f.k));
+  document.querySelectorAll('#zdots i').forEach((d, j) => d.classList.toggle('on', BISOGNI[j].k === f.k));
+  const tag = document.getElementById('zgancio'); if(tag) tag.lastChild.textContent = TAG_FRASE[f.t];
+  if(tag) tag.className = 'zgancio t-' + f.t;
+}
+function giroFrasi(){ clearInterval(FR_T); FR_T = setInterval(()=>{ if(typeof SCENE === 'undefined' || SCENE === 'idle') mostraFrase(FR_I + 1); }, DURATA_FRASE); }
+/* un pallino porta alla prossima frase di quel bisogno */
+function vaiAlBisogno(k){
+  const L = frasiVetrina();
+  for(let n = 1; n <= L.length; n++){ const j = (FR_I + n) % L.length; if(L[j].k === k){ mostraFrase(j); break; } }
+  giroFrasi();
+}
+/* la frase che si sta leggendo, se si tocca: la domanda apre la sua
+   risposta, il regalo il regolamento, le altre la pagina del bisogno */
 function apriBisognoCorrente(){
-  const i = Math.floor(((performance.now() - T0_VETRINA) % 24000) / 4000);
-  apriBisogno(BISOGNI[i].k);
+  const f = frasiVetrina()[FR_I]; if(!f) return;
+  if(f.t === 'd') apriRisposta(f.qa);
+  else if(f.t === 'r') apriRegolamento();
+  else apriBisogno(f.k);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LE SCHEDE CHE SI APRONO TOCCANDO
+   Quasi tutto, in vetrina, si tocca: la capsula, le etichette che le
+   girano intorno, le tre etichette sotto la frase, i nomi del nastro,
+   gli elementi nelle pagine dei bisogni. Ognuno apre la stessa scheda,
+   con la stessa forma: cos'e', cosa senti, quando lo usiamo. In fondo,
+   sempre, l'invito al check-in.
+   ══════════════════════════════════════════════════════════════ */
+const ELEMENTI = {
+  calore: {ic:'🔥', c:'#f5851f', t:'Calore', s:'sulla zona lombare',
+    p:'Un pannello in fibra di carbonio scalda la parte bassa della schiena. Il calore scioglie i muscoli e prepara il lavoro dei rulli: la tensione si allenta proprio dove nasce.',
+    senti:'Un tepore che si allarga piano, mai bruciante.',
+    quando:'Nelle sedute per la schiena e per il sollievo. Se lo trovi troppo caldo, la volta dopo si spegne da solo.'},
+  gz: {ic:'🪶', c:'#5fd08a', t:'Gravità zero', s:'le gambe sopra il cuore',
+    p:'La capsula si inclina e porta le gambe sopra il livello del cuore. La colonna si scarica, il peso si distribuisce e il sangue torna su più facilmente.',
+    senti:'Lo schienale che si inclina piano, e una leggerezza strana: come galleggiare.',
+    quando:'Per gambe pesanti, drenaggio e relax. La regola il tuo operatore prima di partire.'},
+  airbag: {ic:'💨', c:'#e2bdd4', t:'Airbag a onde', s:'spalle, braccia, vita e gambe',
+    p:'Cuscini d\'aria che si gonfiano e si sgonfiano a onde, come una pressoterapia: avvolgono spalle, braccia, fianchi e gambe e accompagnano i liquidi verso l\'alto.',
+    senti:'Una stretta morbida che sale e scende, a tempo, come un abbraccio.',
+    quando:'In quasi tutte le sedute. La forza va dalla più dolce alla più decisa, e si può fare anche solo aria, senza rulli.'},
+  rulli: {ic:'🌀', c:'#8fd3ec', t:'Rulli 4D', s:'due bracci, come quattro mani',
+    p:'Dentro lo schienale ci sono due bracci con i rulli: uno in 4D sulla parte alta, uno in 3D sulla parte bassa. I rulli non scorrono soltanto: entrano ed escono con la profondità giusta per te.',
+    senti:'Mani che impastano, premono, picchiettano: sei tecniche diverse, dalla più delicata alla più profonda.',
+    quando:'In ogni seduta di massaggio completo. Negli ultimi minuti il tuo operatore può portarli su un punto preciso.'},
+  piedi: {ic:'🦶', c:'#8fd3ec', t:'Rulli gambe e piedi', s:'polpacci e pianta del piede',
+    p:'Rulli dedicati frizionano i polpacci e lavorano sotto la pianta del piede, dove si accumula la stanchezza di chi sta in piedi tutto il giorno.',
+    senti:'Una pressione profonda sotto i piedi, e un massaggio che risale i polpacci.',
+    quando:'Dopo EMS2 e Vacutherm, per le gambe pesanti e quando serve una carica.'},
+  ioni: {ic:'✨', c:'#b98adf', t:'Ioni negativi', s:'l\'aria fresca del mare',
+    p:'La capsula arricchisce l\'aria che respiri di ioni negativi, come succede vicino al mare o dopo un temporale.',
+    senti:'Niente: non si sentono e non si vedono. Rendono solo più fresca l\'aria intorno a te.',
+    quando:'Nelle sedute di relax e di sonno, quando la testa ha bisogno di staccare.'}
+};
+const INFO = {
+  capsula: {ic:'🛸', c:'#e6c65c', k:'LA CAPSULA ZENITH', t:'Sei elementi,<br>una seduta sola.', s:'Tocca un elemento per scoprire cosa fa',
+    p:'Zenith non è una poltrona con un tasto: è una capsula che combina sei elementi, ognuno regolato a parte. Le tue risposte decidono quali si accendono e quanto: <b>20,3 milioni di combinazioni</b>, e la tua nasce oggi.', grid:true},
+  sdraiato: {ic:'🛋️', c:'#e2bdd4', k:'COME SI FA', t:'Sdraiato<br>e vestito.', s:'Non ti spogli e non ti cambi',
+    p:'Ti sdrai così come sei, e al resto pensa il tuo operatore: sistema la posizione, imposta la capsula e resta a un passo da te.',
+    righe:[['⌚','Togli orologio, bracciali e collane'],['👖','Svuota le tasche'],['👕','Resta vestito, comodo'],['🧦','Togli le scarpe: i calzini antiscivolo te li diamo noi']]},
+  durata: {ic:'⏱', c:'#7ecbe8', k:'QUANTO DURA', t:'Da 20<br>a 30 minuti.', s:'Il tempo giusto lo decide Zenith',
+    p:'La durata nasce da come stai oggi: venti minuti per una carica o un relax veloce, fino a trenta per un recupero profondo. La prima volta sono quindici minuti, tutti dolci, con ogni sensazione spiegata prima che arrivi.'},
+  misura: {ic:'✦', c:'#e6c65c', k:'SU MISURA', t:'Il tuo protocollo<br>ha un nome.', s:'Ogni combinazione si chiama in modo diverso',
+    p:'Poche domande su come stai oggi, e la capsula compone la tua seduta fra <b>20,3 milioni di combinazioni</b>. Ognuna ha un nome solo suo, in tre parole: lo leggi alla fine del check-in, e se ti è piaciuta si ripete identica.', esempio:true}
+};
+function apriInfo(k){
+  const E = ELEMENTI[k], I = INFO[k], x = E ? Object.assign({k:'L\'ELEMENTO', t:E.t + '.'}, E) : I;
+  if(!x) return;
+  let corpo = '<div class="zip">' + x.p + '</div>';
+  if(E) corpo += '<div class="zi2"><div><b>COSA SENTI</b><span>' + E.senti + '</span></div><div><b>QUANDO LO USIAMO</b><span>' + E.quando + '</span></div></div>';
+  if(x.grid) corpo += '<div class="zigrid">' + Object.keys(ELEMENTI).map(e => { const y = ELEMENTI[e];
+    return '<div class="zit" style="--c:' + y.c + '" onclick="apriInfo(\'' + e + '\')"><span class="e anim-' + e + '">' + y.ic + '</span><b>' + y.t + '</b><small>' + y.s + '</small><span class="zpast">›</span></div>'; }).join('') + '</div>';
+  if(x.righe) corpo += '<div class="zirig">' + x.righe.map(r => '<div><span>' + r[0] + '</span>' + r[1] + '</div>').join('') + '</div>';
+  if(x.esempio){ const es = esempioProtocollo(BISOGNI[Math.floor(Math.random() * BISOGNI.length)].q);
+    if(es) corpo += '<div class="ziex"><small>UN ESEMPIO DI OGGI</small><b class="gold">' + esc(es.nome) + '</b><span>categoria ' + esc(es.cat) + '</span></div>'; }
+  scheda(x.c, x.ic, 'anim-' + k, x.k, x.t, x.s, corpo);
+}
+/* un nome del nastro: il protocollo che quel nome descrive */
+function apriNome(nome){
+  const r = MOTORE.daNome(nome); if(!r) return;
+  const P = PROGRAMMI[r.prog] || {}, S = r.S;
+  const acc = [S.calore && 'calore', S.ioni && 'ioni', S.zerog && 'gz', (S.polpacci || S.plantari) && 'piedi'].filter(Boolean);
+  const forza = v => ['spenta','leggera','media','profonda','profonda','intensa','intensa'][Math.max(0, Math.min(6, v | 0))];
+  const corpo = '<div class="zip">' + esc(P.d || '') + '.</div>'
+    + '<div class="zi2"><div><b>I RULLI</b><span>Profondità <b>' + forza(S.fourD) + '</b></span></div><div><b>GLI AIRBAG</b><span>Forza <b>' + forza(S.airbag) + '</b>'
+    + (r.zone ? ' · ' + (r.zone.indexOf('tutto') >= 0 ? 'tutto il corpo' : r.zone.join(', ')) : '') + '</span></div></div>'
+    + (acc.length ? '<div class="zigrid">' + acc.map(e => { const y = ELEMENTI[e];
+        return '<div class="zit" style="--c:' + y.c + '" onclick="apriInfo(\'' + e + '\')"><span class="e">' + y.ic + '</span><b>' + y.t + '</b><small>acceso</small><span class="zpast">›</span></div>'; }).join('') + '</div>' : '')
+    + '<div class="ziex"><small>È NATO OGGI IN CAPSULA</small><span>Ogni nome è una combinazione sola. Il tuo nasce dalle tue risposte.</span></div>';
+  scheda('#e6c65c', '✦', '', 'CATEGORIA ' + esc((P.o || r.prog).toUpperCase()), '<span class="gold">' + esc(nome) + '</span>', 'un protocollo fatto oggi', corpo);
+}
+function scheda(c, ic, anim, kicker, tit, sot, corpo){
+  const v = document.getElementById('zinfo');
+  v.style.setProperty('--c', c);
+  v.querySelector('.zib').innerHTML = '<div class="zih"><span class="ziic ' + anim + '">' + ic + '</span><span><div class="zik">' + kicker + '</div>'
+    + '<div class="zit1">' + tit + '</div><div class="zis">' + sot + '</div></span></div>' + corpo;
+  v.classList.add('on'); v.querySelector('.zib').scrollTop = 0;
+  idleReset();
+}
+function chiudiInfo(e){
+  if(e && e.target !== e.currentTarget) return;
+  const v = document.getElementById('zinfo'); if(v) v.classList.remove('on');
 }
 
 /* ── un esempio vero di protocollo, per ogni bisogno ──
@@ -1912,18 +2263,116 @@ function apriBisogno(k){
     + '<div class="zmom3">' + b.mom.map((m,i)=> '<div class="zmom"><div class="q">' + ['SUBITO','STASERA','DOMANI'][i]
         + '</div><div class="w">' + m[0] + '</div><div class="x">' + m[1] + '</div></div>').join('') + '</div>'
     + '<div class="sez">COSA LAVORA PER TE</div>'
-    + '<div class="zfun4">' + b.fz.map(([f,s])=> '<div class="zfz" style="--fc:' + FZ[f][2] + '"><div class="e">' + FZ[f][0]
+    + '<div class="zfun4">' + b.fz.map(([f,s])=> '<div class="zfz" style="--fc:' + FZ[f][2] + '" onclick="apriInfo(\'' + (f === 'gz' ? 'gz' : f) + '\')"><div class="e">' + FZ[f][0]
         + '</div><div class="n">' + FZ[f][1] + '</div><div class="s">' + s + '</div></div>').join('') + '</div>'
-    + (es ? '<div class="znasce"><div class="k">IL TUO PROTOCOLLO NASCE OGGI</div>'
-        + '<div class="p">Su misura fra <b>20,3 milioni</b> di combinazioni, con un nome solo suo:</div>'
+    + (es ? '<div class="znasce tocca2" onclick="apriComponi(\'' + b.k + '\')"><div class="k">IL TUO PROTOCOLLO NASCE OGGI</div>'
+        + '<div class="p">Un nome solo suo, fra <b>20,3 milioni</b> di combinazioni. Per esempio:</div>'
         + '<div class="nm gold">' + esc(es.nome) + '</div>'
-        + '<div class="ct">un esempio · categoria ' + esc(es.cat) + ' · ' + es.min + ' minuti</div></div>' : '')
-    + '<div class="zcome"><span>🛋️ Sdraiato e vestito</span><span>⏱ 20–30 minuti</span><span>👤 Ti segue un operatore</span></div>'
+        + '<div class="zcgo">✎ Componilo tu: scegli cosa senti, e il nome cambia<span class="zpast">›</span></div></div>' : '')
+    + '<div class="zcome"><span onclick="apriInfo(\'sdraiato\')">🛋️ Sdraiato e vestito</span><span onclick="apriInfo(\'durata\')">⏱ 20–30 minuti</span><span onclick="apriInfo(\'misura\')">✦ Su misura per te</span></div>'
     + '<div class="zanche"><em>GUARDA ANCHE</em>' + BISOGNI.filter(x=> x.k !== k).map(x=>
         '<span style="--k:' + x.c + '" onclick="apriBisogno(\'' + x.k + '\')">' + x.n + '</span>').join('') + '</div>'
     + '<div class="zcta2" onclick="startCheck(\'' + b.goal + '\')"><span><div class="t1">La voglio provare</div>'
     + '<div class="t2">Fai il check-in: «' + b.gl + '» è già scelto</div></span><span class="vai">›</span></div>';
   go('scopri');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COMPONI IL TUO
+   La seconda strada per arrivare al protocollo, dalla pagina di un
+   bisogno: il cliente tocca poche risposte scritte come parla lui, e a
+   ogni tocco lo STESSO motore del check-in compone la seduta e le da' il
+   suo nome. La durata no: quella la decide Zenith. Con «Lo voglio cosi'»
+   resta un solo passo, il nome: le risposte viaggiano gia' nel biglietto
+   per il gestionale, e i tre desideri (calore, gambe in alto, rulli sotto
+   i piedi) arrivano all'operatore come ritocchi richiesti dal cliente.
+   ══════════════════════════════════════════════════════════════ */
+let COMP = null;
+const ZONE_COMP = [['cervicale','Collo e spalle'], ['braccia','Braccia'], ['dorsale','Centro schiena'], ['lombare','Lombare'],
+  ['glutei','Glutei'], ['gambe','Gambe'], ['piedi','Piedi']];
+const DES = [['calore','🔥','Calore sulla schiena'], ['zerog','🪶','Gambe in alto'], ['plantari','🦶','Rulli sotto i piedi']];
+function apriComponi(k){
+  const b = BIS_DI(k || BIS_APERTO); if(!b) return;
+  COMP = {k:b.k, activity:b.q.activity, giornata:b.q.giornata || 'tranquilla', zones:(b.q.zones || []).slice(), zmode:b.q.zmode || null,
+    mood:b.q.mood, pressione:b.q.pressione || 'media', goal:b.goal, des:{}};
+  if(!COMP.zones.length && !COMP.zmode) COMP.zmode = 'nessuna';
+  document.getElementById('s-componi').style.setProperty('--c', b.c);
+  document.getElementById('zcback').textContent = '‹ Torna a «' + b.n + '»';
+  disegnaComponi();
+  go('componi');
+}
+/* il protocollo che esce dalle scelte, con i desideri applicati */
+function protComponi(C){
+  const q = {activity:C.activity, giornata:C.activity === 'riposo' ? C.giornata : '', zones:C.zones.slice(), zmode:C.zmode,
+    goal:C.goal, mood:C.mood, pressione:C.pressione};
+  const p = MOTORE.motoreZenith({quiz:q, primaVolta:false, ora:new Date().getHours(), ultime:[]});
+  applicaDesideri(p, C.des);
+  const zoneN = p.prog === 'P23' || C.zones.length ? p.aria.icone : null;
+  return {p, nome: MOTORE.nomeProtocollo(p.prog, p.S, zoneN) || (PROGRAMMI[p.prog] || {}).o};
+}
+function applicaDesideri(p, des){
+  if(!des || !p || !p.S) return p;
+  if(des.calore != null) p.S.calore = !!des.calore;
+  if(des.zerog != null) p.S.zerog = !!des.zerog;
+  if(des.plantari != null && !p.soloAria) p.S.plantari = des.plantari ? 1 : 0;
+  return p;
+}
+function compSet(k, v){
+  const C = COMP;
+  if(k === 'zona'){
+    if(v === 'totale' || v === 'nessuna'){ C.zones = []; C.zmode = v; }
+    else { const i = C.zones.indexOf(v);
+      if(i >= 0) C.zones.splice(i, 1);
+      else { if(C.zones.length >= 3){ tosta('Massimo 3 zone: togline una per aggiungerne un\'altra'); return; } C.zones.push(v); }
+      C.zmode = C.zones.length ? null : 'nessuna'; }
+  } else if(k === 'des'){
+    const ora = protComponi(C).p.S;
+    C.des[v] = !(v === 'plantari' ? ora.plantari > 0 : ora[v]);
+  } else C[k] = v;
+  disegnaComponi(true);
+  idleReset();
+}
+function disegnaComponi(cambio){
+  const C = COMP, b = BIS_DI(C.k), r = protComponi(C), S = r.p.S, P = PROGRAMMI[r.p.prog] || {};
+  const chip = (on, onclick, html, col) => '<span class="zcc' + (on ? ' on' : '') + '"' + (col ? ' style="--cc:' + col + '"' : '') + ' onclick="' + onclick + '">' + html + '</span>';
+  const att = PASSI_TUTTI.find(x => x.k === 'activity').opts, umo = PASSI_TUTTI.find(x => x.k === 'mood').opts;
+  const acc = [S.calore && ELEMENTI.calore, S.ioni && ELEMENTI.ioni, S.zerog && ELEMENTI.gz, (S.polpacci || S.plantari) && ELEMENTI.piedi].filter(Boolean);
+  const vecchio = document.getElementById('zcnome'), prima = vecchio ? vecchio.textContent : '';
+  document.getElementById('zcomp').innerHTML =
+    '<div class="lab">COMPONI IL TUO · ' + b.n.toUpperCase() + '</div>'
+    + '<div class="h2">Scegli tu.<br>Zenith <span class="gold">compone.</span></div>'
+    + '<div class="sub">Tocca le risposte: il protocollo cambia e prende un nome nuovo. Quanto dura, lo decide Zenith.</div>'
+    + '<div class="zcr"><div class="zcl">Oggi ti sei allenato?</div><div class="zcch">' + att.map(o =>
+        chip(C.activity === o[0], 'compSet(\'activity\',\'' + o[0] + '\')', o[1] + ' ' + (o[0] === 'riposo' ? 'No' : o[2]), COL_MAC[o[0]])).join('') + '</div></div>'
+    + '<div class="zcr"><div class="zcl">Dove lo senti? <small>fino a 3</small></div><div class="zcch">' + ZONE_COMP.map(([z, n]) =>
+        chip(C.zones.indexOf(z) >= 0, 'compSet(\'zona\',\'' + z + '\')', (C.zones.indexOf(z) >= 0 ? '<i>' + (C.zones.indexOf(z) + 1) + '</i>' : '') + n)).join('')
+        + chip(C.zmode === 'totale', 'compSet(\'zona\',\'totale\')', '🧍 Tutto il corpo') + chip(C.zmode === 'nessuna', 'compSet(\'zona\',\'nessuna\')', '✨ Decide Zenith') + '</div></div>'
+    + '<div class="zcr"><div class="zcl">Come ti senti adesso?</div><div class="zcch">' + umo.map(o =>
+        chip(C.mood === o[0], 'compSet(\'mood\',\'' + o[0] + '\')', o[1] + ' ' + o[2])).join('') + '</div></div>'
+    + '<div class="zcr"><div class="zcl">Quanto forte?</div><div class="zcch">'
+        + chip(C.pressione === 'dolce', 'compSet(\'pressione\',\'dolce\')', '🪶 Più dolce') + chip(C.pressione === 'media', 'compSet(\'pressione\',\'media\')', '⚖️ Media')
+        + chip(C.pressione === 'decisa', 'compSet(\'pressione\',\'decisa\')', '💎 Più decisa') + '</div></div>'
+    + '<div class="zcr"><div class="zcl">Qualcosa in più? <small>acceso o spento, scegli tu</small></div><div class="zcch">' + DES.map(([k, ic, n]) => {
+        const on = k === 'plantari' ? S.plantari > 0 : !!S[k];
+        return chip(on, 'compSet(\'des\',\'' + k + '\')', ic + ' ' + n + '<b>' + (on ? 'sì' : 'no') + '</b>'); }).join('') + '</div></div>'
+    + '<div class="zcres' + (cambio && prima && prima !== '“' + r.nome + '”' ? ' nuovo' : '') + '"><div class="k">IL TUO PROTOCOLLO</div>'
+    + '<div class="nm gold" id="zcnome">“' + esc(r.nome) + '”</div>'
+    + '<div class="ct">categoria ' + esc(P.o || r.p.prog) + ' · dura ' + S.timer + ' minuti, lo decide Zenith</div>'
+    + (acc.length ? '<div class="zcacc">' + acc.map(e => '<span style="--c:' + e.c + '">' + e.ic + ' ' + e.t + '</span>').join('') + '</div>' : '')
+    + '</div>'
+    + '<div class="zcta2" onclick="startCheckRapido()"><span><div class="t1">Lo voglio così</div>'
+    + '<div class="t2">Un solo passo: scrivi il tuo nome, e il tuo operatore lo trova pronto</div></span><span class="vai">›</span></div>';
+}
+/* ── il check-in di un solo passo ── */
+let RAPIDO = false;
+function startCheckRapido(){
+  if(!COMP) return;
+  const C = COMP, nome = protComponi(C).nome;
+  startCheck(C.goal);
+  Object.assign(D, {activity:C.activity, giornata:C.activity === 'riposo' ? C.giornata : '', zones:C.zones.slice(), zmode:C.zmode,
+    goal:C.goal, mood:C.mood, pressione:C.pressione, desideri:Object.assign({}, C.des), composto:nome});
+  RAPIDO = true; PASSO = 0;
+  disegnaPasso();
 }
 
 /* ── IL NASTRO DI OGGI ──
@@ -1946,7 +2395,7 @@ function disegnaOggi(){
   if(!nomi.length) nomi = BISOGNI.map(b=> (esempioProtocollo(b.q) || {}).nome).filter(Boolean);
   nomi = [...new Set(nomi)].slice(-12);
   while(nomi.length && nomi.length < 5) nomi = nomi.concat(nomi);
-  const riga = nomi.map(n=> esc(n) + '<em>✦</em>').join('');
+  const riga = nomi.map(n=> '<span data-n onclick="apriNome(this.textContent)">' + esc(n) + '</span><em>✦</em>').join('');
   document.getElementById('zdirn').innerHTML = riga + riga;
 }
 
@@ -2425,8 +2874,8 @@ function giraSeiTu(){
     setTimeout(()=>{
       g.textContent = 'AVANTI ›'; g.classList.add('avanti'); g.classList.remove('cambia');
       g.onclick = passoAvanti;
-    }, 220);
-  }, 1500);
+    }, 180);
+  }, 500);   /* mezzo secondo: il tempo di vedere la spunta verde */
 }
 function scegliCliente(id){
   const c = clienti().find(x=> x.id === id); if(!c) return;
@@ -2550,24 +2999,24 @@ const PASSI_TUTTI = [
      riconosce, e il nome della risposta diventa una targhetta sopra: nel
      modulo l'occhio va al grassetto, quindi il grassetto deve aiutare a
      scegliere. I nomi restano quelli (li usa il riepilogo e il gestionale) */
-  {k:'goal', q:'Come vuoi sentirti quando esci?', spiega:true, opts:[
+  {k:'goal', q:'Come vuoi uscire?', qs:'Scegli come vuoi sentirti alla fine: la seduta nasce da qui.', spiega:true, opts:[
     ['recupero','💪','Recupero muscolare','Hai fatto fatica e vuoi muscoli di nuovo freschi'],
     ['sollievo','🎯','Sollievo mirato','C\'è un punto preciso che tira o fa male'],
     ['drenaggio','💧','Leggerezza & drenaggio','Senti le gambe pesanti o gonfie'],
     ['relax','🧘','Relax profondo','Vuoi staccare la testa e sciogliere il corpo'],
     ['sonno','🌙','Verso il sonno','Dormi male o vuoi una sera più tranquilla'],
     ['energia','☀️','Energia','Ti serve una carica per affrontare la giornata']]},
-  {k:'mood', q:'E adesso, come ti senti?', due:true, spiega:true, opts:[
+  {k:'mood', q:'E adesso, come ti senti?', qs:'Una risposta sola: quella più vicina a come stai.', due:true, spiega:true, opts:[
     ['sereno','🙂','Sereno','Nessun fastidio particolare: stai bene'],
     ['stanco','🥱','Stanco','La giornata ti ha svuotato, poche energie'],
     ['stressato','😣','Stressato','Testa piena, nervi tesi, pensieri che corrono'],
     ['dolorante','😖','Indolenzito','Muscoli doloranti o rigidi, magari da ieri'],
     ['carico','🔥','Carico','Tanta energia e voglia di muoverti']]},
-  {k:'pressione', q:'Che pressione desideri oggi?', due:true, spiega:true, opts:[
+  {k:'pressione', q:'Che pressione vuoi oggi?', qs:'Se va bene come l\'ultima volta, tocca «Come sempre».', due:true, spiega:true, opts:[
     ['dolce','🪶','Più dolce del solito','Oggi è una giornata delicata: la capsula ci va piano'],
     ['decisa','💎','Più decisa','Vuoi sentire il lavoro in profondità'],
     ['media','⚖️','Pressione media','Né troppo né poco: la regolazione di base']]},
-  {k:'aria', q:'Come vuoi il massaggio oggi?', qs:'Rulli e aria insieme, oppure solo la compressione ad aria', due:true, spiega:true, opts:[
+  {k:'aria', q:'Come vuoi il massaggio oggi?', qs:'Rulli e aria insieme, oppure solo la compressione ad aria.', due:true, spiega:true, opts:[
     ['completo','🌀','Massaggio completo','Rulli e aria insieme: il lavoro più profondo'],
     ['soloaria','💨','Solo aria','Solo compressione ad aria, come una pressoterapia: niente rulli']]},
 ];
@@ -2586,28 +3035,30 @@ function primaVolta(){
   try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
   return !((db && db.sessions) || []).some(x=> x.clientId === D.clienteId);
 }
-/* ── QUATTRO PASSI ──
-   Il gestionale fa sette domande, una per schermata. Il totem ne fa le
-   stesse, ma in quattro passi: 1 chi sei, 2 cosa hai fatto (e, solo per
-   chi non si e' allenato, com'e' andata la giornata), 3 dove, 4 come vuoi
-   uscire e come stai, con la pressione e il massaggio sulla stessa
-   schermata. L'operatore non e' piu' una domanda: si propone da solo.
-   Il totale e' sempre 4, qualunque cosa uno risponda: «2 DI 4» non
-   diventa mai «3 DI 5» a meta' strada. */
-const PASSO_FINE = {k:'fine', q:'Come vuoi uscire?', qs:'Due tocchi: come vuoi sentirti, e come stai adesso.'};
+/* ── CINQUE PASSI, UNA DOMANDA PER PAGINA ──
+   1 chi sei · 2 cosa hai fatto (e, solo per chi non si e' allenato, com'e'
+   andata la giornata) · 3 dove · 4 come vuoi uscire · 5 come ti senti
+   adesso, e poi — solo se servono — la pressione (non alla prima volta) e
+   il massaggio (solo quando cambia la seduta). Ogni domanda ha la sua
+   pagina: si tocca la risposta e si va avanti da soli. Le domande in piu'
+   stanno dentro il quinto passo, cosi' il totale resta sempre 5.
+   «Componi il tuo» ha un passo solo: il nome. */
 function passi(){
+  if(RAPIDO) return PASSI_TUTTI.filter(p=> p.k === 'nome');
+  const dom = domandeFine();
   return PASSI_TUTTI.filter(p=> p.k === 'nome' || p.k === 'activity' || p.k === 'zones'
-    || (p.k === 'giornata' && D.activity === 'riposo')).concat([PASSO_FINE]);
+    || (p.k === 'giornata' && D.activity === 'riposo') || dom.indexOf(p.k) >= 0);
 }
 function numeroPasso(k){
-  return k === 'nome' ? 1 : (k === 'activity' || k === 'giornata') ? 2 : k === 'zones' ? 3 : 4;
+  return k === 'nome' ? 1 : (k === 'activity' || k === 'giornata') ? 2 : k === 'zones' ? 3 : k === 'goal' ? 4 : 5;
 }
 function etichettaPasso(L, i){
+  if(RAPIDO) return 'UN SOLO PASSO · CHI SEI';
   const n = numeroPasso(L[i].k);
-  return n === 4 ? 'ULTIMO PASSO · 4 DI 4' : 'PASSO ' + n + ' DI 4';
+  return n === 5 ? 'ULTIMO PASSO · 5 DI 5' : 'PASSO ' + n + ' DI 5';
 }
-/* le domande dell'ultimo passo: la pressione non si chiede alla prima
-   volta (come nel gestionale), il massaggio solo quando cambia la seduta */
+/* le domande dopo le zone: la pressione non si chiede alla prima volta
+   (come nel gestionale), il massaggio solo quando cambia la seduta */
 function domandeFine(){
   return ['goal','mood'].concat(primaVolta() ? [] : ['pressione'], serveDomandaAria(D) ? ['aria'] : []);
 }
@@ -2654,22 +3105,39 @@ const ATTIVE = {
 };
 const ORDINE = ['cervicale','dorsale','lombare','glutei','braccia','gambe','piedi'];
 
+/* ── LA SAGOMA, DISEGNATA COME UN CORPO VERO (v172) ──
+   Un contorno umano con le sue proporzioni — spalle, braccia staccate dal
+   busto, vita, gambe — e le zone dentro, ritagliate sulla forma del corpo:
+   la zona accesa ha il profilo vero della schiena o delle gambe, non un
+   rettangolo. Fra una zona e l'altra resta una riga scura, perche' l'occhio
+   capisca dove finisce una e comincia l'altra. Davanti si toccano quattro
+   zone, di spalle tutte e sette, come nel gestionale. */
+const CORPO_D = 'M119.0 54.0 C122.3 55.7 119.2 61.2 121.0 64.0 C122.8 66.8 126.2 69.2 130.0 71.0 C133.8 72.8 139.8 73.5 144.0 75.0 C148.2 76.5 152.2 77.5 155.0 80.0 C157.8 82.5 159.5 86.0 161.0 90.0 C162.5 94.0 163.2 98.7 164.0 104.0 C164.8 109.3 165.5 116.0 166.0 122.0 C166.5 128.0 166.8 134.3 167.0 140.0 C167.2 145.7 167.3 150.7 167.0 156.0 C166.7 161.3 165.5 166.7 165.0 172.0 C164.5 177.3 164.5 182.7 164.0 188.0 C163.5 193.3 162.5 199.7 162.0 204.0 C161.5 208.3 160.8 210.7 161.0 214.0 C161.2 217.3 163.2 220.3 163.0 224.0 C162.8 227.7 161.5 233.7 160.0 236.0 C158.5 238.3 155.5 239.3 154.0 238.0 C152.5 236.7 151.3 232.0 151.0 228.0 C150.7 224.0 151.7 219.0 152.0 214.0 C152.3 209.0 152.7 203.7 153.0 198.0 C153.3 192.3 154.0 186.0 154.0 180.0 C154.0 174.0 153.3 167.7 153.0 162.0 C152.7 156.3 152.5 151.3 152.0 146.0 C151.5 140.7 150.8 135.3 150.0 130.0 C149.2 124.7 147.8 114.0 147.0 114.0 C146.2 114.0 145.7 124.3 145.0 130.0 C144.3 135.7 143.8 142.0 143.0 148.0 C142.2 154.0 140.0 160.0 140.0 166.0 C140.0 172.0 141.8 178.3 143.0 184.0 C144.2 189.7 146.2 194.7 147.0 200.0 C147.8 205.3 148.0 210.0 148.0 216.0 C148.0 222.0 147.5 229.3 147.0 236.0 C146.5 242.7 146.0 249.3 145.0 256.0 C144.0 262.7 142.0 270.0 141.0 276.0 C140.0 282.0 139.0 286.7 139.0 292.0 C139.0 297.3 140.8 302.3 141.0 308.0 C141.2 313.7 140.8 320.0 140.0 326.0 C139.2 332.0 137.3 338.7 136.0 344.0 C134.7 349.3 132.8 354.0 132.0 358.0 C131.2 362.0 130.3 365.0 131.0 368.0 C131.7 371.0 134.5 373.3 136.0 376.0 C137.5 378.7 140.0 381.7 140.0 384.0 C140.0 386.3 138.7 389.0 136.0 390.0 C133.3 391.0 126.5 391.3 124.0 390.0 C121.5 388.7 121.3 385.7 121.0 382.0 C120.7 378.3 121.7 373.0 122.0 368.0 C122.3 363.0 122.8 357.3 123.0 352.0 C123.2 346.7 123.3 342.0 123.0 336.0 C122.7 330.0 121.5 322.3 121.0 316.0 C120.5 309.7 120.2 304.0 120.0 298.0 C119.8 292.0 120.3 286.7 120.0 280.0 C119.7 273.3 118.8 264.7 118.0 258.0 C117.2 251.3 116.0 245.0 115.0 240.0 C114.0 235.0 112.8 230.3 112.0 228.0 C111.2 225.7 110.7 226.0 110.0 226.0 C109.3 226.0 108.8 225.7 108.0 228.0 C107.2 230.3 106.0 235.0 105.0 240.0 C104.0 245.0 102.8 251.3 102.0 258.0 C101.2 264.7 100.3 273.3 100.0 280.0 C99.7 286.7 100.2 292.0 100.0 298.0 C99.8 304.0 99.5 309.7 99.0 316.0 C98.5 322.3 97.3 330.0 97.0 336.0 C96.7 342.0 96.8 346.7 97.0 352.0 C97.2 357.3 97.7 363.0 98.0 368.0 C98.3 373.0 99.3 378.3 99.0 382.0 C98.7 385.7 98.5 388.7 96.0 390.0 C93.5 391.3 86.7 391.0 84.0 390.0 C81.3 389.0 80.0 386.3 80.0 384.0 C80.0 381.7 82.5 378.7 84.0 376.0 C85.5 373.3 88.3 371.0 89.0 368.0 C89.7 365.0 88.8 362.0 88.0 358.0 C87.2 354.0 85.3 349.3 84.0 344.0 C82.7 338.7 80.8 332.0 80.0 326.0 C79.2 320.0 78.8 313.7 79.0 308.0 C79.2 302.3 81.0 297.3 81.0 292.0 C81.0 286.7 80.0 282.0 79.0 276.0 C78.0 270.0 76.0 262.7 75.0 256.0 C74.0 249.3 73.5 242.7 73.0 236.0 C72.5 229.3 72.0 222.0 72.0 216.0 C72.0 210.0 72.2 205.3 73.0 200.0 C73.8 194.7 75.8 189.7 77.0 184.0 C78.2 178.3 80.0 172.0 80.0 166.0 C80.0 160.0 77.8 154.0 77.0 148.0 C76.2 142.0 75.7 135.7 75.0 130.0 C74.3 124.3 73.8 114.0 73.0 114.0 C72.2 114.0 70.8 124.7 70.0 130.0 C69.2 135.3 68.5 140.7 68.0 146.0 C67.5 151.3 67.3 156.3 67.0 162.0 C66.7 167.7 66.0 174.0 66.0 180.0 C66.0 186.0 66.7 192.3 67.0 198.0 C67.3 203.7 67.7 209.0 68.0 214.0 C68.3 219.0 69.3 224.0 69.0 228.0 C68.7 232.0 67.5 236.7 66.0 238.0 C64.5 239.3 61.5 238.3 60.0 236.0 C58.5 233.7 57.2 227.7 57.0 224.0 C56.8 220.3 58.8 217.3 59.0 214.0 C59.2 210.7 58.5 208.3 58.0 204.0 C57.5 199.7 56.5 193.3 56.0 188.0 C55.5 182.7 55.5 177.3 55.0 172.0 C54.5 166.7 53.3 161.3 53.0 156.0 C52.7 150.7 52.8 145.7 53.0 140.0 C53.2 134.3 53.5 128.0 54.0 122.0 C54.5 116.0 55.2 109.3 56.0 104.0 C56.8 98.7 57.5 94.0 59.0 90.0 C60.5 86.0 62.2 82.5 65.0 80.0 C67.8 77.5 71.8 76.5 76.0 75.0 C80.2 73.5 86.2 72.8 90.0 71.0 C93.8 69.2 97.2 66.8 99.0 64.0 C100.8 61.2 97.7 55.7 101.0 54.0 C104.3 52.3 115.7 52.3 119.0 54.0Z';
+const ZONA_FORMA = {
+  cervicale: [[66, 52, 88, 47]],
+  braccia:   [[149, 102, 24, 140], [47, 102, 24, 140]],
+  dorsale:   [[68, 103, 84, 49]],
+  lombare:   [[68, 155, 84, 37]],
+  glutei:    [[66, 195, 88, 43]],
+  gambe:     [[70, 241, 80, 111]],
+  piedi:     [[70, 355, 80, 40]]
+};
 function sagoma(vista){
-  const viva = ATTIVE[vista];
-  const pezzi = ORDINE.map(id=> viva.indexOf(id) >= 0
-    ? '<g class="bz' + (D.zones.includes(id) ? ' on' : '') + '" data-z="' + id
-      + '" onclick="tapZona(\'' + id + '\')">' + PEZZI[id] + '</g>'
-    : '<g class="parte">' + PEZZI[id] + '</g>').join('');
-  const viso = vista === 'front'
-    ? '<g class="face"><circle cx="101" cy="32" r="3"/><circle cx="119" cy="32" r="3"/>'
-      + '<path d="M110 34 v9 h4"/><path d="M100 46 Q110 53 120 46"/>'
-      + '<path d="M88 27 Q99 13 110 14 Q121 13 132 27"/></g>'
-    : '<g class="face">'
-      + '<path class="hair" d="M87 34 Q97 11 110 11 Q123 11 133 34 L132 43 Q110 31 88 43 Z"/>'
-      + '<path d="M101 55 Q110 52 119 55"/></g>';
-  return '<div class="bodyfig"><svg viewBox="0 0 220 396">'
-    + '<circle class="parte" cx="110" cy="36" r="26"/>' + pezzi + viso + '</svg>'
-    + '<div class="bodylabel">' + (vista === 'front' ? 'FRONTE' : 'RETRO') + '</div></div>';
+  const viva = ATTIVE[vista], id = 'cp' + vista;
+  const forma = z => ZONA_FORMA[z].map(r => '<rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '"/>').join('');
+  const zone = ORDINE.filter(z => viva.indexOf(z) >= 0).map(z =>
+    '<g class="bz' + (D.zones.includes(z) ? ' on' : '') + '" data-z="' + z + '" clip-path="url(#' + id + ')" onclick="tapZona(\'' + z + '\')">' + forma(z) + '</g>').join('');
+  const dettagli = vista === 'front'
+    ? '<path d="M92 80 Q101 86 110 84 Q119 86 128 80" /><path d="M110 92 V150" /><path d="M96 174 Q110 180 124 174" />'
+    : '<path d="M110 58 V232" /><path d="M84 104 Q92 122 88 140" /><path d="M136 104 Q128 122 132 140" /><path d="M96 228 Q110 236 124 228" />';
+  const testa = vista === 'front'
+    ? '<ellipse class="tst" cx="110" cy="30" rx="19" ry="23"/><g class="viso"><circle cx="103" cy="28" r="1.8"/><circle cx="117" cy="28" r="1.8"/><path d="M104 40 Q110 43 116 40"/></g>'
+    : '<ellipse class="tst" cx="110" cy="30" rx="19" ry="23"/><path class="capelli" d="M91 30 Q92 7 110 7 Q128 7 129 30 Q129 45 124 50 Q110 44 96 50 Q91 45 91 30Z"/>';
+  return '<div class="bodyfig"><svg viewBox="0 0 220 400"><defs><clipPath id="' + id + '"><path d="' + CORPO_D + '"/></clipPath>'
+    + '<linearGradient id="pel' + vista + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2c2232"/><stop offset=".5" stop-color="#4a3852"/><stop offset="1" stop-color="#2c2232"/></linearGradient></defs>'
+    + testa + '<path class="corpo" d="' + CORPO_D + '" fill="url(#pel' + vista + ')"/>' + zone
+    + '<g class="dett">' + dettagli + '</g><path class="bordo" d="' + CORPO_D + '"/></svg>'
+    + '<div class="bodylabel">' + (vista === 'front' ? 'DAVANTI' : 'DIETRO') + '</div></div>';
 }
 
 /* ─── i macchinari del centro ───
@@ -2876,8 +3344,8 @@ let OP_MANO = false;
 function pulisciRisposte(){
   D.nome=''; D.cogn=''; D.op=null; D.activity=''; D.zones=[]; D.zmode=null;
   D.goal=''; D.mood=''; D.pressione=''; D.aria=''; D.giornata='';
-  D.clienteId=null; D.cell=''; D.cifre='';
-  OP_MANO = false;
+  D.clienteId=null; D.cell=''; D.cifre=''; D.desideri=null; D.composto=''; D.seq=0;
+  OP_MANO = false; RAPIDO = false;
 }
 /* dal bisogno scelto in vetrina arriva l'obiettivo: il passo 4 lo trova
    gia' acceso, e il cliente lo conferma o lo cambia */
@@ -2932,66 +3400,146 @@ function rispostaDi(k){
   if(k === 'op'){ const o = operatori().find(x=>x.id === D.op); return o ? o.nome : ''; }
   if(k === 'zones') return D.zones.map(ZNOME).join(' · ')
     || (D.zmode === 'totale' ? 'Tutto il corpo' : D.zmode === 'nessuna' ? 'Decide Zenith' : '');
+  const c = carteDi(k).find(o=> o[0] === D[k]);
+  if(c) return c[2];
   const P = PASSI_TUTTI.find(x=>x.k === k);
   const o = (P && P.opts || []).find(o=>o[0] === D[k]);
   return o ? o[2] : '';
 }
 
-/* il passo 4, in parole del cliente: corte, da leggere a un metro */
-const OBI = {recupero:['💪','Muscoli freschi','recupero dopo la fatica','#c98ab0'],
-  sollievo:['🎯','Sollievo','un punto che tira','#dcab63'],
-  drenaggio:['💧','Gambe leggere','meno gonfiore','#77b795'],
-  relax:['🧘','Staccare','relax profondo','#b98adf'],
-  sonno:['🌙','Dormire meglio','verso il sonno','#7d7ce0'],
-  energia:['☀️','Energia','una carica','#e0997d']};
-const PRESS_T = [['dolce','🪶 Più dolce'], ['abituale','⚖️ Come sempre'], ['decisa','💎 Più decisa']];
-const ARIA_T = [['completo','🌀 Rulli e aria'], ['soloaria','💨 Solo aria']];
-function sceltaFine(k, v){ D[k] = v; disegnaPasso(); idleReset(); }
-function corpoFine(){
-  const dom = domandeFine();
-  const umori = PASSI_TUTTI.find(p=> p.k === 'mood').opts;
-  return '<div class="zfine">'
-    + '<div class="zobi">' + Object.keys(OBI).map(k=>{ const o = OBI[k];
-        return '<div class="zob' + (D.goal === k ? ' sel' : '') + '" data-v="' + k + '" style="--c:' + o[3] + '" onclick="sceltaFine(\'goal\',\'' + k + '\')">'
-          + '<div class="e">' + o[0] + '</div><div class="n">' + o[1] + '</div><div class="s">' + o[2] + '</div></div>'; }).join('') + '</div>'
-    + '<div class="zq2">E adesso come ti senti?</div>'
-    + '<div class="zum5">' + umori.map(o=>
-        '<div class="zum' + (D.mood === o[0] ? ' sel' : '') + '" data-v="' + o[0] + '" onclick="sceltaFine(\'mood\',\'' + o[0] + '\')">'
-        + '<span class="e">' + o[1] + '</span><span class="n">' + o[2] + '</span></div>').join('') + '</div>'
-    + (dom.indexOf('pressione') >= 0
-        ? '<div class="zpress"><div class="k">Pressione<small>se non tocchi niente resta come l\'ultima volta</small></div>'
-          + '<div class="sg">' + PRESS_T.map(([v,t])=> '<span class="' + (D.pressione === v ? 'on' : '') + '" onclick="sceltaFine(\'pressione\',\'' + v + '\')">' + t + '</span>').join('') + '</div></div>'
-        : '')
-    + (dom.indexOf('aria') >= 0
-        ? '<div class="zpress due"><div class="k">Massaggio<small>dopo oggi puoi anche togliere i rulli</small></div>'
-          + '<div class="sg">' + ARIA_T.map(([v,t])=> '<span class="' + (D.aria === v ? 'on' : '') + '" onclick="sceltaFine(\'aria\',\'' + v + '\')">' + t + '</span>').join('') + '</div></div>'
-        : '')
-    + '</div>';
+/* ── LE CARTE DELLE DOMANDE ──
+   Ogni domanda ha la stessa forma del passo 2: carte grandi a due a due,
+   emoji, titolo e una riga sotto, ognuna col suo colore. Un tocco e si va
+   avanti. [valore, emoji, titolo, riga sotto, colore] */
+const CARTE = {
+  giornata: [['guida','🚗','Ore alla guida','auto, furgone, viaggi: schiena e collo bloccati','#dcab63'],
+             ['scrivania','💻','Ore alla scrivania','computer e sedia: collo e spalle che tirano','#8fb2c9'],
+             ['inpiedi','🧍','In piedi tutto il giorno','negozio, cucina, corsia: gambe e piedi stanchi','#77b795'],
+             ['fisico','📦','Lavoro fisico','pesi, scale, sforzo: muscoli affaticati','#c98ab0'],
+             ['tranquilla','🌿','Giornata tranquilla','niente di particolare da recuperare','#5fd08a']],
+  goal: [['recupero','💪','Muscoli freschi','hai fatto fatica e vuoi recuperare','#c98ab0'],
+         ['sollievo','🎯','Sollievo','c\'è un punto preciso che tira','#dcab63'],
+         ['drenaggio','💧','Gambe leggere','gambe pesanti o gonfie','#77b795'],
+         ['relax','🧘','Staccare','testa libera, corpo sciolto','#b98adf'],
+         ['sonno','🌙','Dormire meglio','una sera più tranquilla','#7d7ce0'],
+         ['energia','☀️','Energia','una carica per ripartire','#e0997d']],
+  mood: [['sereno','🙂','Sereno','sto bene, nessun fastidio','#5fd08a'],
+         ['stanco','🥱','Stanco','la giornata mi ha svuotato','#7d7ce0'],
+         ['stressato','😣','Stressato','testa piena, nervi tesi','#b98adf'],
+         ['dolorante','😖','Indolenzito','muscoli doloranti o rigidi','#c98ab0'],
+         ['carico','🔥','Carico','tanta energia, voglia di muovermi','#e0997d']],
+  pressione: [['abituale','⚖️','Come sempre','come l\'ultima volta: va bene così','#e6c65c'],
+              ['dolce','🪶','Più dolce','oggi è una giornata delicata','#e2bdd4'],
+              ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità','#8fd3ec']],
+  aria: [['completo','🌀','Massaggio completo','rulli e aria insieme: il più profondo','#8fd3ec'],
+         ['soloaria','💨','Solo aria','solo compressione, come una pressoterapia','#e2bdd4']]
+};
+/* ── LE CINQUE SEQUENZE, ANCHE AL TOTEM ──
+   Le stesse cinque del gestionale, ma dette al cliente col «tu». Cambiano
+   le parole delle domande e, per «come vuoi uscire» e «come ti senti»,
+   anche le icone e le parole delle risposte; i valori restano gli stessi,
+   quindi il protocollo non cambia. Si sceglie a caso fra le sequenze che
+   il cliente non ha avuto nelle ultime tre sedute: le stesse domande
+   tornano, al piu' presto, alla quinta. La 0 e' quella scritta nei passi. */
+const SEQ_TOTEM = [
+  null,
+  {q:{activity:['Che allenamento hai fatto prima di venire qui?', 'Tocca il macchinario: si va avanti da soli.'],
+      giornata:['Come hai passato la giornata?', 'Il programma parte da qui.'],
+      zones:['Dove senti più tensione?'],
+      goal:['Cosa vuoi portarti a casa?', 'Scegli come vuoi sentirti alla fine della seduta.'],
+      mood:['Che energia senti adesso?', 'Tocca quella più vicina a come stai.'],
+      pressione:['Quanto intenso lo vuoi oggi?'],
+      aria:['Rulli e aria, o solo aria?']},
+   goal:{recupero:['🔋','Muscoli rigenerati','via la fatica dell\'allenamento'], sollievo:['📍','Meno fastidio','un punto che tira o fa male'],
+     drenaggio:['🦵','Gambe leggere','meno gonfiore e pesantezza'], relax:['🌊','Testa libera','calma per corpo e mente'],
+     sonno:['😴','Dormire meglio','una notte più serena'], energia:['🚀','Ricarica','energia per il resto del giorno']},
+   mood:{sereno:['😊','Tranquillo','sto bene così'], stanco:['😴','Scarico','poche energie oggi'], stressato:['🤯','Teso','testa piena di pensieri'],
+     dolorante:['🤕','Dolorante','sento i muscoli'], carico:['🔥','Su di giri','energia da vendere']}},
+  {q:{activity:['Da quale macchinario arrivi?', 'Un tocco, e si va avanti da soli.'],
+      giornata:['Cosa hai fatto per gran parte del giorno?', 'Così scelgo il programma giusto per te.'],
+      zones:['Quale parte del corpo chiede attenzione?'],
+      goal:['Su cosa puntiamo oggi?', 'La seduta nasce da qui.'],
+      mood:['Con una parola: come stai oggi?', 'Una risposta sola.'],
+      pressione:['Come preferisci la pressione oggi?'],
+      aria:['Che massaggio preferisci oggi?']},
+   goal:{recupero:['🧩','Recuperare','rimettere in sesto i muscoli'], sollievo:['🩹','Togliere un fastidio','lavoriamo su un punto preciso'],
+     drenaggio:['🍃','Sgonfiare','circolazione e leggerezza'], relax:['🛁','Rilassarmi','una pausa tutta per me'],
+     sonno:['🛌','Riposare bene','una notte più profonda'], energia:['🔆','Svegliarmi','più carica e più lucidità']},
+   mood:{sereno:['🌤️','In forma','giornata nella norma'], stanco:['🪫','Affaticato','giornata lunga'], stressato:['🌪️','Sotto pressione','tanti pensieri'],
+     dolorante:['🦴','Muscoli doloranti','si fanno sentire'], carico:['⚡','Pieno di energia','voglia di fare']}},
+  {q:{activity:['Prima di Zenith, cosa hai fatto al centro?', 'Tocca e vai avanti.'],
+      giornata:['Come hai impegnato il corpo oggi?', 'Il programma parte da qui.'],
+      zones:['Quali zone vuoi sciogliere oggi?'],
+      goal:['Come vorresti uscire dalla capsula?', 'Scegli come vuoi sentirti alla fine.'],
+      mood:['Com\'è il tuo umore adesso?', 'Tocca quello più vicino a come stai.'],
+      pressione:['Che tocco preferisci oggi?'],
+      aria:['Oggi rulli e aria, o solo aria?']},
+   goal:{recupero:['🛠️','Muscoli a nuovo','via la fatica dell\'allenamento'], sollievo:['🎯','Senza quel fastidio','in una zona precisa'],
+     drenaggio:['🪶','Più leggerezza','gambe sgonfie, circolazione attiva'], relax:['😌','Corpo sciolto','e mente libera'],
+     sonno:['🌙','Pronto per la notte','un sonno più profondo'], energia:['⚡','Carica','energia per ripartire']},
+   mood:{sereno:['🙂','Di buon umore','nessun problema'], stanco:['😪','Giù di energie','oggi sono stanco'], stressato:['😤','Nervoso','tanto stress addosso'],
+     dolorante:['😬','Acciaccato','qualche muscolo dolorante'], carico:['🤩','Alle stelle','energia a mille']}},
+  {q:{activity:['Raccontaci: cosa hai fatto al centro oggi?', 'Un tocco e si va avanti.'],
+      giornata:['Che tipo di giornata hai avuto?', 'Così scelgo il programma giusto per te.'],
+      zones:['Dove senti più rigidità?'],
+      goal:['Cosa desideri da questa seduta?', 'Scegli come vuoi sentirti alla fine.'],
+      mood:['Che giornata è, dentro di te?', 'Una risposta sola: la più vicina.'],
+      pressione:['Più leggero o più forte, oggi?'],
+      aria:['Il massaggio di oggi: completo o solo aria?']},
+   goal:{recupero:['🏁','Smaltire l\'allenamento','muscoli meno pieni e rigidi'], sollievo:['✋','Sciogliere un punto','un nodo o un fastidio preciso'],
+     drenaggio:['🫗','Drenare','via liquidi e gonfiore'], relax:['🕯️','Calma totale','lasciar andare tutto'],
+     sonno:['💤','Prepararmi a dormire','rilassarmi per la notte'], energia:['🌅','Ripartire','una carica per il resto del giorno']},
+   mood:{sereno:['🌈','Serena','va tutto bene'], stanco:['🐢','Lenta','manca la benzina'], stressato:['⏰','Frenetica','sempre di corsa'],
+     dolorante:['🩹','Pesante per il corpo','muscoli che fanno male'], carico:['🎉','Esplosiva','tanta voglia di fare']}}
+];
+const SEQ_RECENTI = 3;
+/* la sequenza per questo cliente: a caso, mai una delle sue ultime tre */
+function scegliSeq(clienteId){
+  let db = null;
+  try{ db = JSON.parse(localStorage.getItem('zfl_app_v1')); }catch(e){}
+  const usate = clienteId ? ((db && db.sessions) || []).filter(x => x.clientId === clienteId)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, SEQ_RECENTI)
+    .map(x => x.quiz && x.quiz.seq).filter(v => v != null) : [];
+  const libere = SEQ_TOTEM.map((_, i) => i).filter(i => usate.indexOf(i) < 0);
+  const L = libere.length ? libere : SEQ_TOTEM.map((_, i) => i);
+  return L[Math.floor(Math.random() * L.length)];
+}
+/* la domanda e la riga sotto, nella sequenza di oggi */
+function testoDomanda(P){
+  const V = SEQ_TOTEM[D.seq | 0], v = V && V.q[P.k];
+  return {q: v && v[0] ? v[0] : P.q, qs: v && v[1] ? v[1] : P.qs};
+}
+/* le carte di una domanda, nella sequenza di oggi: i valori e i colori restano */
+function carteDi(k){
+  const V = SEQ_TOTEM[D.seq | 0], alt = V && V[k];
+  return (CARTE[k] || []).map(o => alt && alt[o[0]] ? [o[0], alt[o[0]][0], alt[o[0]][1], alt[o[0]][2], o[4]] : o);
 }
 
 function disegnaPasso(){
   const L = passi();
   if(PASSO > L.length - 1) PASSO = L.length - 1;
   const P = L[PASSO], num = numeroPasso(P.k);
-  /* il passo 4 parte gia' compilato dove si puo': la pressione di sempre,
-     il massaggio completo. Il cliente tocca solo quello che vuole cambiare */
-  if(P.k === 'fine'){
-    if(!primaVolta() && !D.pressione) D.pressione = 'abituale';
-    if(serveDomandaAria(D) && !D.aria) D.aria = 'completo';
-  }
+  /* la pressione parte da «come sempre» e il massaggio da «completo»:
+     il cliente tocca solo se vuole cambiare */
+  if(P.k === 'pressione' && !D.pressione) D.pressione = 'abituale';
+  if(P.k === 'aria' && !D.aria) D.aria = 'completo';
   document.getElementById('fstep').textContent = etichettaPasso(L, PASSO);
-  document.getElementById('fdots').innerHTML = [1,2,3,4].map(i=>
-    '<i class="' + (i < num ? 'fatto' : i === num ? 'now' : '') + '"></i>').join('');
+  const barre = RAPIDO ? [1] : [1,2,3,4,5];
+  const fd = document.getElementById('fdots');
+  fd.style.gridTemplateColumns = 'repeat(' + barre.length + ',1fr)';
+  fd.innerHTML = barre.map(i=> '<i class="' + (RAPIDO ? 'now' : i < num ? 'fatto' : i === num ? 'now' : '') + '"></i>').join('');
   const op = operatori().find(x=> x.id === D.op);
   document.getElementById('fciao').innerHTML = P.k === 'nome'
     ? '<span class="zesci" onclick="reset()">✕ Esci</span>'
     : '<span class="zciao' + (D.clienteId ? '' : ' nuovo') + '" onclick="apriOperatori()"><i>' + (D.clienteId ? '✓' : '✦') + '</i>'
       + 'Ciao ' + esc(D.nome || '') + '! <u>· ' + (op ? 'con ' + esc(op.nome) : 'chi ti segue?') + ' ✎</u></span>';
-  document.getElementById('fq').textContent = P.q;
+  const T = testoDomanda(P);
+  document.getElementById('fq').textContent = T.q;
   const qs = document.getElementById('fqs');
   /* col cellulare il sottotitolo parla del numero, non del nome */
-  qs.textContent = (P.k === 'nome' && MODO === 'cell') ? 'Scrivi il tuo numero di cellulare' : (P.qs || '');
-  qs.style.display = P.qs ? 'block' : 'none';
+  qs.textContent = (P.k === 'nome' && MODO === 'cell') ? 'Scrivi il tuo numero di cellulare'
+    : (RAPIDO && D.composto) ? 'Un solo passo, e «' + D.composto + '» è pronto per il tuo operatore.' : (T.qs || '');
+  qs.style.display = T.qs ? 'block' : 'none';
   document.getElementById('frecap').innerHTML = L.slice(0, PASSO).map((st,i)=>{
     const v = rispostaDi(st.k);
     return v ? '<div class="rc" onclick="vaiAlPasso(' + i + ')"><em>' + QLBL[st.k] + '</em>'
@@ -3001,7 +3549,7 @@ function disegnaPasso(){
   c.classList.remove('connome');
   const form = c.closest('.form');
   form.classList.toggle('sunome', P.k === 'nome');
-  form.classList.toggle('ultimo', P.k === 'fine');
+  form.classList.toggle('ultimo', PASSO === L.length - 1 && !RAPIDO);
 
   if(P.k === 'nome'){
     const l = corrispondenze();
@@ -3051,17 +3599,26 @@ function disegnaPasso(){
     c.innerHTML = '<div class="zwrap">'
       + '<div class="zfigs">' + sagoma('front') + sagoma('back') + '</div>'
       + '<div class="zcols">'
-      +   '<div class="ztier t1">' + ['cervicale','braccia','dorsale'].map(chip).join('') + '</div>'
-      +   '<div class="ztier t2">' + ['lombare','glutei'].map(chip).join('') + '</div>'
-      +   '<div class="ztier t3">' + ['gambe','piedi'].map(chip).join('') + '</div>'
+      +   '<div class="ztier t1">' + ['cervicale','braccia','dorsale','lombare'].map(chip).join('') + '</div>'
+      +   '<div class="ztier t2">' + ['glutei','gambe','piedi'].map(chip).join('') + '</div>'
       + '</div></div>'
       + '<div class="zapex">'
       +   rapida('totale', '🧍', 'Tutto il corpo', 'nessuna zona più delle altre')
       +   rapida('nessuna', '✨', 'Decidi tu, Zenith', 'nessuna in particolare')
       + '</div>';
   }
-  else if(P.k === 'fine'){
-    c.innerHTML = corpoFine();
+  else if(CARTE[P.k]){
+    const L2 = carteDi(P.k), dispari = L2.length % 2 === 1;
+    c.innerHTML = '<div class="opts att4 carte n' + L2.length + '">' + L2.map((o, j)=>
+      '<div class="opt' + (D[P.k] === o[0] ? ' sel' : '') + (dispari && j === L2.length - 1 ? ' largo' : '') + '" data-v="' + o[0] + '"'
+      + ' style="--c:' + o[4] + '" onclick="scegli(\'' + P.k + '\',\'' + o[0] + '\')">'
+      + '<span class="oi">' + o[1] + '</span>'
+      + '<span class="ox"><span class="ot">' + o[2] + '</span><span class="od">' + o[3] + '</span></span>'
+      + '<span class="ck">✓</span></div>').join('') + '</div>';
+    [...document.querySelectorAll('.opt')].forEach((el,i)=> setTimeout(()=> el.classList.add('in'), 60 + i * 70));
+    /* un titolo lungo si stringe quanto basta per stare su una riga */
+    c.querySelectorAll('.opt .ot').forEach(t => { let f = 50; const W = t.closest('.opt').clientWidth - 64;
+      while(f > 34 && t.scrollWidth > W){ f -= 2; t.style.fontSize = f + 'px'; } });
   }
   else {
     const att = P.k === 'activity';
@@ -3209,13 +3766,12 @@ function completo(){
     return !!(D.nome.trim() && D.cogn.trim());
   }
   if(P.k === 'zones') return D.zones.length > 0 || !!D.zmode;
-  if(P.k === 'fine') return domandeFine().every(k=> !!D[k]);
   return !!D[P.k];
 }
 function aggiornaAvanti(){
   const P = passi()[PASSO], b = document.getElementById('fnext');
   b.classList.toggle('off', !completo());
-  b.textContent = P.k === 'fine' ? '✓ Ho finito'
+  b.textContent = (PASSO === passi().length - 1 && !RAPIDO) ? '✓ Ho finito'
     : (P.k === 'zones' && D.zones.length)
     ? 'AVANTI · ' + D.zones.length + (D.zones.length === 1 ? ' zona' : ' zone') + ' ›'
     : 'AVANTI ›';
@@ -3225,6 +3781,8 @@ function passoAvanti(){
   if(!completo()) return;
   /* finito il nome si sa chi e': si propone chi lo ha seguito l'ultima volta */
   if(passi()[PASSO].k === 'nome' && !OP_MANO) D.op = opPredefinito();
+  /* e si sceglie la sequenza di domande: mai una delle sue ultime tre */
+  if(passi()[PASSO].k === 'nome') D.seq = scegliSeq(D.clienteId);
   if(PASSO < passi().length - 1){ PASSO++; disegnaPasso(); return; }
   finisci();
 }
@@ -3272,7 +3830,11 @@ function salvaCheckin(){
             goal:D.goal, mood:D.mood, pressione:D.pressione,
             giornata: D.activity === 'riposo' ? D.giornata : '',
             /* la risposta viaggia solo se la domanda e' stata fatta */
-            aria: serveDomandaAria(D) ? D.aria : '' }
+            aria: serveDomandaAria(D) ? D.aria : '',
+            /* i desideri di «Componi il tuo»: il gestionale li applica come ritocchi */
+            desideri: D.desideri && Object.keys(D.desideri).length ? Object.assign({}, D.desideri) : undefined,
+            /* la sequenza di domande di oggi: il gestionale la registra, e la prossima volta non torna */
+            seq: D.seq | 0 }
   });
   try{ localStorage.setItem('zfl_app_v1', JSON.stringify(db)); }catch(e){}
 }
@@ -3378,6 +3940,11 @@ function finisci(){
   document.getElementById('dnomep').textContent = r.nomeP;
   document.getElementById('dcat').textContent = 'categoria ' + (P.o || r.pr.prog) + ' · ' + S.timer
     + ' minuti · nato per te fra 20,3 milioni';
+  /* chi ha composto il suo protocollo ma e' alla prima volta: si parte dal
+     Benvenuto, e lo si dice chiaro, col nome di quello composto */
+  const nota = document.getElementById('dprima');
+  nota.innerHTML = D.composto && primaVolta() && D.composto !== r.nomeP
+    ? 'È la tua prima volta: si parte dal <b>Benvenuto</b>, 15 minuti dolci. «' + esc(D.composto) + '» lo fai dalla prossima.' : '';
   document.getElementById('dmin').textContent = S.timer + ' minuti, sdraiato. Lascia lavorare Zenith.';
   /* gli elementi che oggi si accendono per lui: i colori sono quelli
      della vetrina, cosi' li riconosce */
@@ -3473,6 +4040,12 @@ function costruisciProtocollo(q){
     ultime: prima ? [] : MOTORE.ultimeDa(sue, id)});
   if(D.zmode === 'totale') p.why.push('Nessuna zona indicata: Total body, riequilibrio dalla nuca ai piedi.');
   if(D.zmode === 'nessuna') p.why.push('Nessuna zona in particolare: il programma è scelto dall\'obiettivo e da come sta oggi.');
+  /* i desideri scelti in «Componi il tuo»: non alla prima volta, che resta il Benvenuto */
+  const des = q.desideri || D.desideri;
+  if(des && !prima && Object.keys(des).length){
+    applicaDesideri(p, des);
+    p.why.push('🙋 Scelto dal cliente in vetrina: ' + Object.keys(des).map(k => (k === 'calore' ? 'calore ' : k === 'zerog' ? 'gambe in alto ' : 'rulli sotto i piedi ') + (des[k] ? 'sì' : 'no')).join(', ') + '.');
+  }
   return p;
 }
 
@@ -3740,7 +4313,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v171.26.11(20)';
+const VETRINA_VERSION = 'v172.26.11(21)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
