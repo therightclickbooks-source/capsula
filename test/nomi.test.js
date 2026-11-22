@@ -279,6 +279,23 @@ module.exports = async function(browser){
     JSON.stringify(sp.salvata.spente) === '["braccia"]' && sp.salvata.memoria === 'braccia' && sp.poi.spente === 'braccia' && sp.poi.perche && !sp.poi.ritocco && sp.poi.tasto === '⊘ braccia' && sp.poi.clic,
     JSON.stringify([sp.salvata, sp.poi]));
   tac.t('ripetendo una seduta vecchia, gli airbag spenti sono quelli che il cliente vuole oggi', sp.rip === null || sp.rip === 'braccia', JSON.stringify(sp.rip));
+  /* Leg Kneading spento dal pannello: anche questo si ricorda (v174) */
+  const lk = await p.evaluate(() => {
+    const c = DB.clients.find(x => x.id === 'c1'); c.cal = 0; c.calx = {};
+    const q = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['gambe'], zone:'gambe', goal:'relax', mood:'sereno', pressione:'media', prefSoloAria:false};
+    RT = null; quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const prima = currentProt.S.polpacci, quad = (document.querySelector('.quad').textContent.match(/Leg Kneading\s*PROGRAMMA/) || [''])[0];
+    rtSet('leg'); OMAGGIO = false; confirmSession();
+    const mem = c.calx.noLeg === true;
+    RT = null; quizState = Object.assign({}, q); VIEW = {name:'proposal'}; render();
+    const poi = currentProt.S.polpacci;
+    rtSet('leg'); OMAGGIO = false; confirmSession();
+    const cancellata = c.calx.noLeg === undefined;
+    RT = null; VIEW = {name:'home'}; render();
+    return {prima, quad, mem, poi, cancellata};
+  });
+  tac.t('Leg Kneading: nel quadrante «PROGRAMMA»; spento dal pannello si ricorda, riacceso la memoria si cancella',
+    lk.prima === 1 && !!lk.quad && lk.mem && lk.poi === 0 && lk.cancellata, JSON.stringify(lk));
   tac.t('riaccesa dal pannello, la memoria si cancella', sp.riaccesa.memoria && (sp.riaccesa.cambi || []).indexOf('Airbag di nuovo accesi su braccia') >= 0, JSON.stringify(sp.riaccesa));
   await p.close();
 

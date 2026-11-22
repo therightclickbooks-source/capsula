@@ -85,8 +85,24 @@ module.exports = async function(browser){
     no.length + ' sedute, per es. ' + (no[0] ? (no[0].passi.find(x => vietate.test(x.testo)) || {}).titolo : ''));
 
   no = ogni(s => s.passi.every(x => x.marcatori.every(m =>
-    !/Leg Kneading|Foot Roller/.test(m.label) || /non ha livelli/.test(m.label))));
-  tac.t('Leg Kneading e Foot Roller si accendono soltanto, senza livelli', !no.length, no.length + ' sedute');
+    !/Leg Kneading|Foot Roller/.test(m.label) || /non ha livelli/.test(m.label) || /^Spegni/.test(m.label))));
+  tac.t('Leg Kneading e Foot Roller non hanno livelli: si riaccendono e basta, o si spengono', !no.length, no.length + ' sedute');
+  /* dalla v174 li accende il programma: all'inizio non si toccano, e la nota lo dice */
+  no = ogni(s => s.passi.every(x => x.marcatori.every(m => !/^Attiva “(Leg Kneading|Foot Roller)”/.test(m.label)))
+    && (s.prog === 'P23' || s.passi.some(x => /Leg Kneading e Foot Roller li accende il programma/.test(x.testo))));
+  tac.t('Leg Kneading e Foot Roller li accende il programma: nessun «Attiva», e la nota dice di non toccarli', !no.length,
+    no.length + ' sedute, per es. ' + (no[0] ? JSON.stringify(no[0].q) : ''));
+  const rulliOff = await p.evaluate(()=>{
+    const c = JSON.parse(JSON.stringify(DB.clients[0])); c.calx = {noLeg:true};
+    const pr = buildProtocol(c, {activity:'riposo', giornata:'scrivania', zones:['gambe'], goal:'relax', mood:'sereno', pressione:'media', prefSoloAria:false});
+    pr.quizZones = ['gambe'];
+    const x = buildSteps(pr).find(s => /Regola i parametri/.test(s.title));
+    return {polpacci: pr.S.polpacci, plantari: pr.S.plantari, perche: pr.why.some(w => /Leg Kneading spento/.test(w)),
+      marcatori: x.markers.filter(m => /Leg Kneading|Foot Roller/.test(m.label)).map(m => m.label), nota: /tranne quello segnato/.test(x.extra)};
+  });
+  tac.t('il cliente che non vuole Leg Kneading: spento anche con le gambe fra le zone, un solo segno «Spegni», scritto nel perché',
+    rulliOff.polpacci === 0 && rulliOff.plantari === 1 && rulliOff.perche && rulliOff.marcatori.length === 1 && /^Spegni “Leg Kneading”/.test(rulliOff.marcatori[0]) && rulliOff.nota,
+    JSON.stringify(rulliOff));
 
   no = ogni(s => s.passi.every(x => x.marcatori.every(m => {
     const v = (m.label.match(/porta il valore a <b>(\d+)<\/b>/) || [])[1];

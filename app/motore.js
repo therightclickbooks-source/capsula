@@ -6,9 +6,10 @@
    passandogli quello che sanno. Una regola si cambia in un posto solo.
 
    Le regole, in breve:
-   · la ZONA dice DOVE si lavora: le zone degli airbag, la rifinitura UP
-     (dal collo al centro schiena), la rifinitura DOWN (dalla lombare ai
-     glutei), i rulli di polpacci e piedi;
+   · la ZONA dice DOVE si lavora: la rifinitura UP (dal collo al centro
+     schiena) e la rifinitura DOWN (dalla lombare ai glutei). Airbag, Leg
+     Kneading e Foot Roller li accende il programma (dalla v173-v174): si
+     spengono solo se il cliente lo chiede, e il motore se lo ricorda;
    · l'OBIETTIVO dice COME: il programma, il ritmo, la tecnica, la
      profondita';
    · l'ATTIVITA' e la GIORNATA (per chi non si e' allenato) scelgono fra
@@ -285,7 +286,7 @@ function riattivaDopo(p){
   if(S.plantari > 0) voci.push({k:'foot', nome:'Foot Roller', dove:'tasto in basso, accanto a Leg Kneading'});
   if(S.airbag > 0 && aria.length) voci.push({k:'aria', nome:'Airbag', zone:aria.slice(), forza:S.airbag,
     tutte: aria.length === 1 && aria[0] === 'tutto', spente: p && p.prog !== 'P23' ? zoneSpente(p.spente) : [],
-    dove:'“Airbag” nella barra in alto → accendi ' + aria.map(k => ARIA_NOME[k] || k).join(', ')});
+    dove:'“Airbag” nella barra in alto → accendi ' + aria.map(k => ARIA_NOME[k] || k).join(', ') + ' (sfondo azzurro)'});
   if(S.zerog && voci.some(v => v.k === 'aria'))
     voci.push({k:'zerog', nome:'Zero Gravity', dove:'solo se aprendo gli airbag la poltrona si è rialzata: schermata Auto → Zero Gravity'});
   if(!voci.length) return {niente:true, perche:'il programma non usava né airbag né rulli di gambe e piedi', voci};
@@ -375,10 +376,15 @@ function motoreZenith(inp){
   if(q.goal === 'relax' || q.goal === 'sonno' || q.mood === 'stressato') S.ioni = true;
   if(q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio' || gambeOggi || soloAria) S.zerog = true;
   if(q.goal === 'energia') S.zerog = false;
-  if(has('gambe') || q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio') S.polpacci = 1;
-  if(has('piedi') || q.activity === 'ems2' || q.activity === 'vacufit' || q.goal === 'drenaggio' || q.goal === 'energia') S.plantari = 1;
-  if(has('gambe') && !soloAria) why.push('Gambe fra le zone: Leg Kneading acceso sui polpacci.');
-  if(has('piedi') && !soloAria) why.push('Piedi fra le zone: Foot Roller acceso sulla pianta del piede.');
+  /* Leg Kneading e Foot Roller: dalla v174 li accende il programma, come
+     gli airbag, e l'operatore non li tocca. Si spengono solo se il cliente
+     non li vuole: nella sua scheda (macro), o chiesto durante una seduta
+     passata (il pannello «Regola durante la seduta» lo ricorda in
+     calx.noLeg e calx.noFoot) */
+  S.polpacci = M.polpacci > 0 && !cx.noLeg ? 1 : 0;
+  S.plantari = M.plantari > 0 && !cx.noFoot ? 1 : 0;
+  if(!soloAria && cx.noLeg) why.push('🦵 Leg Kneading spento: in una seduta passata il cliente ha chiesto di spegnerlo.');
+  if(!soloAria && cx.noFoot) why.push('🦶 Foot Roller spento: in una seduta passata il cliente ha chiesto di spegnerlo.');
 
   /* ── le rifiniture ── */
   let manualRef = null, manualBasso = null;
