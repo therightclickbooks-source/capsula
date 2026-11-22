@@ -260,7 +260,7 @@ module.exports = async function(browser){
     const passo = buildSteps(currentProt).find(x => x.img === 'airbag');
     const dopo = {nome: nomeProt(currentProt), sim: spenteSim(currentProt), titolo: document.querySelector('.pname2').textContent,
       diff: differenze(currentProt), passo: passo && passo.title, marcatori: passo ? passo.markers.length : 0,
-      chip: tmChips(currentProt).join(' | '), quad: [...document.querySelectorAll('.quad .qd-ai.off b')].map(b => b.textContent).join(',')};
+      chip: tmChips(currentProt).map(c => typeof c === 'string' ? c : c.t + (c.v ? ' ' + c.v : '')).join(' | '), quad: [...document.querySelectorAll('.quad .qd-ai.off b')].map(b => b.textContent).join(',')};
     OMAGGIO = false; confirmSession();
     const s = DB.sessions[DB.sessions.length - 1];
     const salvata = {spente: s.spente, nome: s.nome, cambi: s.proposta && s.proposta.cambi, memoria: (c.calx.spente || []).join(',')};
@@ -285,7 +285,7 @@ module.exports = async function(browser){
     sp.prima.passoAria === 'Airbag automatici · 0' && sp.prima.tasto && /automatici: seguono il programma/.test(sp.prima.zona) && sp.prima.tutteAccese === 5, JSON.stringify(sp.prima));
   tac.t('escludere una zona dal pannello: il nome cambia, accanto compare ⊘, nei passi «Airbag automatici, tranne braccia», nel quadrante e nel timer la stessa zona',
     sp.dopo.nome !== sp.prima.nome && sp.dopo.sim === '⊘ braccia' && /⊘ braccia/.test(sp.dopo.titolo) && sp.dopo.diff.indexOf('⊘ Airbag spenti su braccia') >= 0
-      && sp.dopo.passo === 'Airbag automatici, tranne braccia' && sp.dopo.marcatori === 1 && /⊘ braccia/.test(sp.dopo.chip) && sp.dopo.quad === 'Braccia,Corpo intero', JSON.stringify(sp.dopo));
+      && sp.dopo.passo === 'Airbag automatici, tranne braccia' && sp.dopo.marcatori === 1 && /Zone airbag tutti → tranne braccia/.test(sp.dopo.chip) && sp.dopo.quad === 'Braccia,Corpo intero', JSON.stringify(sp.dopo));
   tac.t('la seduta si salva con la zona spenta, e il motore se la ricorda: la prossima proposta parte già spenta lì, e lo scrive',
     JSON.stringify(sp.salvata.spente) === '["braccia"]' && sp.salvata.memoria === 'braccia' && sp.poi.spente === 'braccia' && sp.poi.perche && !sp.poi.ritocco && sp.poi.tasto === 'Braccia' && sp.poi.clic,
     JSON.stringify([sp.salvata, sp.poi]));
@@ -321,6 +321,28 @@ module.exports = async function(browser){
   });
   tac.t('ripetendo una seduta di prima della v173 il nome resta lo stesso, e gli airbag si controllano soltanto (niente «accendi solo»)',
     vec.rip === vec.nome && vec.passi.length === 1 && vec.passi[0] === 'Airbag automatici · 0', JSON.stringify(vec));
+  /* v178: il timer che gira segue i ritocchi: nome nuovo, «era» il nome di
+     prima, e le voci cambiate ognuna col suo colore */
+  const tmr = await p.evaluate(() => {
+    const c = DB.clients.find(x => x.id === 'c1'); c.calx = {};
+    RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['lombare'], zone:'lombare', goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false};
+    VIEW = {name:'proposal'}; render(); timerAvvia();
+    const prima = TM.info.titolo;
+    rtSet('D', Math.max(0, currentProt.S.fourD - 1)); rtSet('aria', 'braccia'); rtSet('I');
+    TM.full = true; tmDisegna(true);
+    const box = document.getElementById('tmr');
+    const r = {prima, ora: TM.info.titolo, nome: nomeProt(currentProt), era: TM.info.prima,
+      cambiati: [...box.querySelectorAll('.tc.cambiato')].map(x => x.textContent.replace(/\s+/g, ' ').trim()),
+      nuovi: [...box.querySelectorAll('.tc.nuovo')].map(x => x.textContent.replace(/\s+/g, ' ').trim()),
+      testa: (box.querySelector('.tm-who') || {}).textContent || '', legenda: !!box.querySelector('.tm-leg')};
+    timerChiudi();
+    RT = null; VIEW = {name:'home'}; render();
+    return r;
+  });
+  tac.t('il timer segue i ritocchi: nome nuovo, «era» la proposta, voci cambiate e aggiunte in un altro colore',
+    tmr.ora !== tmr.prima && tmr.ora.indexOf(tmr.nome) === 0 && tmr.era && tmr.prima.indexOf(tmr.era.split(' ')[0]) === 0 && /SEDUTA RITOCCATA/.test(tmr.testa)
+      && tmr.cambiati.some(x => /^4D \d → \d$/.test(x)) && tmr.cambiati.some(x => /Zone airbag tutti → solo braccia/.test(x)) && tmr.nuovi.some(x => /Ioni/.test(x)) && tmr.legenda,
+    JSON.stringify(tmr));
   tac.t('riaccesa dal pannello, la memoria si cancella', sp.riaccesa.memoria && (sp.riaccesa.cambi || []).indexOf('Airbag di nuovo accesi su braccia') >= 0, JSON.stringify(sp.riaccesa));
   await p.close();
 
