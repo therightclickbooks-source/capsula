@@ -419,6 +419,37 @@ module.exports = async function(browser){
   tac.t('le tecniche delle rifiniture nell\'ordine della capsula, con le sue icone', dopo3.tec === 'Kneading,Tapping,Tap,Massage,Knead and Knock,Shiatsu', dopo3.tec);
   tac.t('nella pagina del protocollo niente striscia «seduta da chiudere» in cima', !dopo3.striscia);
 
+  /* 6c · v179: gli effetti della scheda. Il nome e' fatto di lettere ma si
+     legge uguale; le bolle ci sono solo in questa pagina; a pagina ferma le
+     lettere volano via e tornano, senza far scorrere la pagina di lato */
+  const fx = await browser.newPage({viewport:{width:430, height:900}});
+  fx.on('pageerror', e => tac.rossi.push('errore di pagina (effetti): ' + e.message));
+  await fx.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await fx.goto(GESTIONALE); await fx.waitForTimeout(600);
+  const ef = await fx.evaluate(() => { RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['lombare'], zone:'lombare',
+    goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false}; VIEW = {name:'proposal'}; render();
+    const n = document.querySelector('.pn-t');
+    return {testo: n.textContent, atteso: '“' + nomeProt(currentProt) + '”', lettere: n.querySelectorAll('.pl').length, entra: n.classList.contains('entra'),
+      bolle: document.querySelectorAll('#fxBolle i').length, testata: document.querySelectorAll('.phead .p-bolle i').length, vfx: app.classList.contains('vfx'),
+      titolo: document.querySelector('.fx-tit').textContent};
+  });
+  await fx.waitForTimeout(1800);
+  const quieta = await fx.evaluate(() => { FX.tocco = Date.now() - 10000; FX.via = 0; fxBattito();
+    return {via: document.querySelector('.pn-t').classList.contains('via'), gira: !!document.querySelector('.quad.gira'),
+      quiete: document.documentElement.classList.contains('fx-quiete')}; });
+  await fx.waitForTimeout(900);
+  const largo = await fx.evaluate(() => document.scrollingElement.scrollWidth - innerWidth);
+  await fx.mouse.click(5, 5);
+  const fuori = await fx.evaluate(() => { const calma = !document.documentElement.classList.contains('fx-quiete');
+    VIEW = {name:'home'}; render(); return {calma, bolle: !!document.getElementById('fxBolle'), vfx: app.classList.contains('vfx')}; });
+  await fx.close();
+  tac.t('effetti: il nome è fatto di lettere ma si legge uguale, e arriva lettera per lettera', ef.testo === ef.atteso && ef.lettere >= ef.atteso.replace(/ /g, '').length && ef.entra
+    && ef.titolo === 'Setup guidato sulla capsula', JSON.stringify(ef));
+  tac.t('effetti: bolle dietro la pagina e nella testata', ef.bolle >= 10 && ef.testata >= 6 && ef.vfx, JSON.stringify(ef));
+  tac.t('effetti: a pagina ferma le lettere volano via e i numeri girano; la pagina non scorre di lato', quieta.via && quieta.gira && quieta.quiete && largo <= 0,
+    JSON.stringify({quieta, largo}));
+  tac.t('effetti: un tocco rimette la pagina calma; fuori dal protocollo niente bolle', fuori.calma && !fuori.bolle && !fuori.vfx, JSON.stringify(fuori));
+
   /* 7 · v175: lo stesso check-in da' lo stesso nome sul totem e nel gestionale,
      con la variante (anche «tutto il corpo», «decide Zenith», la giornata, i desideri) */
   const casi = [
