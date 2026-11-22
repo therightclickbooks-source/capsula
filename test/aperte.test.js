@@ -59,8 +59,9 @@ module.exports = async function(browser){
       tmh: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--tmh')) || 0};
     return {qui, altrove};
   });
-  tac.t('finito il timer, sulla proposta resta la striscia «Finita? Tocca ✓ OK in basso»',
-    fine.qui.timer === null && fine.qui.sap && /Tocca «✓ OK» in basso/.test(fine.qui.testo), JSON.stringify(fine.qui));
+  /* v177: nella pagina del protocollo niente striscia in cima, c'e' gia' «✓ OK» */
+  tac.t('finito il timer, sulla pagina del protocollo non resta nessuna striscia in cima: c\'è già «✓ OK»',
+    fine.qui.timer === null && !fine.qui.sap && !fine.qui.testo.trim(), JSON.stringify(fine.qui));
   tac.t('su un\'altra schermata la striscia dice chi è da chiudere, col tasto per tornarci, e non copre la pagina',
     fine.altrove.sap && /Giulia Esposito/.test(fine.altrove.testo) && fine.altrove.tasto && fine.altrove.tmh > 30, JSON.stringify(fine.altrove));
 

@@ -50,14 +50,14 @@ module.exports = async function(browser){
     prot.quizZones = q.zones;
     return {q, prog: prot.prog, S: prot.S,
       passi: buildSteps(prot).map(s => ({img: s.img, kind: s.kind || '', titolo: s.title, timer: !!s.timerStart,
-        testo: s.title + ' ' + (s.extra || '') + ' ' + s.markers.map(m => m.label).join(' '),
+        testo: s.title + ' ' + (s.nota || '') + ' ' + (s.extra || '') + ' ' + s.markers.map(m => m.label).join(' '),
         marcatori: s.markers.map(m => ({pos: m.pos, label: m.label, type: m.type || ''}))}))};
   }), casi);
 
   const ogni = f => sedute.filter(s => !f(s));
 
   let no = ogni(s => s.passi[0].img === null && /pulsantiera/.test(s.passi[0].titolo)
-                   && /monitor ancora spento/.test(s.passi[0].titolo));
+                   && /Monitor spento/.test(s.passi[0].titolo));
   tac.t('il primo passo e\' la pulsantiera, a monitor spento', !no.length,
     no.length + ' sedute, per es. ' + (no[0] ? no[0].passi[0].titolo : ''));
 
@@ -65,9 +65,16 @@ module.exports = async function(browser){
   tac.t('il secondo passo accende il tablet e mette in Pausa il programma di default', !no.length,
     no.length + ' sedute');
 
-  /* il timer parte insieme alla pausa, in tutti i protocolli: un tasto solo, nel secondo passo */
-  no = ogni(s => s.passi[1].timer && s.passi.filter(x => x.timer).length === 1);
-  tac.t('in ogni protocollo il tasto del timer sta nel passo della Pausa, e solo lì', !no.length, no.length + ' sedute');
+  /* v177: il timer parte subito dopo il Timing, in tutti i protocolli: un tasto solo */
+  no = ogni(s => s.passi.filter(x => x.timer).length === 1 && /^Timing a \d+ minuti, poi avvia il timer$/.test(s.passi.find(x => x.timer).titolo)
+    && !s.passi[1].timer);
+  tac.t('in ogni protocollo il tasto del timer sta nel passo del Timing, e solo lì', !no.length, no.length + ' sedute');
+  /* v177: sotto la schermata dei parametri i numeri di 4D e airbag; lo Zero Gravity sta li', per ultimo */
+  no = ogni(s => { const par = s.passi.find(x => x.titolo === 'Regola i parametri'); if(!par) return false;
+    const zg = par.marcatori.filter(m => /Zero Gravity/.test(m.label));
+    return (s.S.zerog ? zg.length === 1 && par.marcatori[par.marcatori.length - 1] === zg[0] : !zg.length)
+      && !s.passi.some(x => /Per ultimo: attiva lo Zero Gravity/.test(x.titolo)); });
+  tac.t('lo Zero Gravity si accende per ultimo nella schermata dei parametri, senza un passo a parte', !no.length, no.length + ' sedute');
 
   no = ogni(s => {
     const t = s.passi.findIndex(x => /Timing/.test(x.titolo));
@@ -98,10 +105,11 @@ module.exports = async function(browser){
     pr.quizZones = ['gambe'];
     const x = buildSteps(pr).find(s => /Regola i parametri/.test(s.title));
     return {polpacci: pr.S.polpacci, plantari: pr.S.plantari, perche: pr.why.some(w => /Leg Kneading spento/.test(w)),
-      marcatori: x.markers.filter(m => /Leg Kneading|Foot Roller/.test(m.label)).map(m => m.label), nota: /tranne quello segnato/.test(x.extra)};
+      marcatori: x.markers.filter(m => /Leg Kneading|Foot Roller/.test(m.label)).map(m => m.label), nota: /Questo cliente non vuole il Leg Kneading: va spento/.test(x.extra)};
   });
-  tac.t('il cliente che non vuole Leg Kneading: spento anche con le gambe fra le zone, un solo segno «Spegni», scritto nel perché',
-    rulliOff.polpacci === 0 && rulliOff.plantari === 1 && rulliOff.perche && rulliOff.marcatori.length === 1 && /^Spegni “Leg Kneading”/.test(rulliOff.marcatori[0]) && rulliOff.nota,
+  tac.t('il cliente che non vuole Leg Kneading: spento anche con le gambe fra le zone, segnato «Spegni», scritto nel perché; il Foot Roller resta «deve essere acceso»',
+    rulliOff.polpacci === 0 && rulliOff.plantari === 1 && rulliOff.perche && rulliOff.marcatori.length === 2 && /^Spegni “Leg Kneading”/.test(rulliOff.marcatori[0])
+      && /^“Foot Roller” \(in basso\) <b>deve essere acceso/.test(rulliOff.marcatori[1]) && rulliOff.nota,
     JSON.stringify(rulliOff));
 
   no = ogni(s => s.passi.every(x => x.marcatori.every(m => {
@@ -121,8 +129,15 @@ module.exports = async function(browser){
       && icone.VITA[0] < icone.GAMBE[0] && icone.GAMBE[0] < icone.TUTTO[0], JSON.stringify(icone));
   /* dalla v173 gli airbag sono quelli del programma: le zone dette dal
      cliente non li comandano piu', e il passo degli airbag non c'e' */
-  no = ogni(s => s.prog === 'P23' || !s.passi.some(x => x.img === 'airbag'));
-  tac.t('con le zone dette dal cliente gli airbag restano quelli del programma: nessun passo «accendi solo»', !no.length,
+  /* v176: gli airbag sono automatici. Si controlla solo che siano accesi
+     (se no, si accendono tutti): nessuna icona segnata, con o senza zone */
+  no = ogni(s => s.prog === 'P23' || !(s.S.airbag > 0) || s.passi.some(x => x.img === 'airbag' && x.titolo === 'Airbag automatici'
+    && !x.marcatori.length && /accendile tutte/.test(x.testo) && /automatica e segue il programma/.test(x.testo)));
+  tac.t('airbag automatici: la schermata con una nota, senza icone da accendere; nelle istruzioni «se sono spenti, accendili tutti»', !no.length,
+    no.length + ' sedute, per es. ' + (no[0] ? JSON.stringify(no[0].q) : ''));
+  /* Leg Kneading e Foot Roller: segnati «devono essere accesi», l'operatore controlla soltanto */
+  no = ogni(s => s.prog === 'P23' || ['Leg Kneading','Foot Roller'].every(n => s.passi.some(x => x.marcatori.some(m => m.label.indexOf('“' + n + '” (in basso) <b>deve essere acceso</b>') === 0))));
+  tac.t('Leg Kneading e Foot Roller sono segnati «devono essere accesi»: di solito lo sono già, si controlla', !no.length,
     no.length + ' sedute, per es. ' + (no[0] ? JSON.stringify(no[0].q) : ''));
   /* gli airbag spenti su richiesta: «gambe» spegne la quarta icona (il piede), «braccia» la seconda (la mano) */
   const spentePasso = await p.evaluate(()=>{
@@ -132,11 +147,11 @@ module.exports = async function(browser){
     const x = buildSteps(pr).find(s => s.img === 'airbag');
     return x ? {titolo:x.title, testo:x.extra, marcatori:x.markers.map(m => ({pos:m.pos, label:m.label}))} : null;
   });
-  tac.t('airbag spenti su «gambe» e «braccia»: si spengono la quarta icona (il piede) e la seconda (la mano), il resto non si tocca',
-    !!spentePasso && /Spegni gli airbag su 2 zone/.test(spentePasso.titolo) && spentePasso.marcatori.length === 2
-      && spentePasso.marcatori.some(m => m.pos[0] === icone.GAMBE[0] && /Spegni l'icona “gambe e piedi”/.test(m.label))
-      && spentePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /Spegni l'icona “braccia”/.test(m.label))
-      && /quelli del programma/.test(spentePasso.testo) && /corpo intero/.test(spentePasso.testo),
+  tac.t('il cliente non vuole gli airbag su «gambe» e «braccia»: segnate solo la quarta icona (il piede) e la seconda (la mano), con la nota',
+    !!spentePasso && spentePasso.titolo === 'Airbag automatici, tranne braccia e gambe e piedi' && spentePasso.marcatori.length === 2
+      && spentePasso.marcatori.some(m => m.pos[0] === icone.GAMBE[0] && /non vuole l'airbag su “gambe e piedi”/.test(m.label))
+      && spentePasso.marcatori.some(m => m.pos[0] === icone.BRACCIA[0] && /non vuole l'airbag su “braccia”/.test(m.label))
+      && /automatici/.test(spentePasso.testo) && /Il cliente non vuole l'airbag su «braccia» e «gambe e piedi»/.test(spentePasso.testo),
     JSON.stringify(spentePasso));
 
   /* le zone degli airbag le decide il protocollo: nella seduta solo aria
@@ -502,7 +517,7 @@ module.exports = async function(browser){
       try{ const t = linkSeduta(prot, 'Maria Antonietta di Savoia', q.zones, 'https://therightclickbooks-source.github.io/capsula/app/');
         out.lungo = Math.max(out.lungo || 0, new TextEncoder().encode(t).length); if(i % 12 === 0) qrMatrice(t); else if(new TextEncoder().encode(t).length > capienza(10)) throw new Error('lungo'); }catch(e){ out.qrNo = (out.qrNo || 0) + 1; }
       out.n++; if(primaVolta) out.prima++; if(prot.manualRef || prot.manualBasso) out.conManuale++; if(prot.prog === 'P23') out.soloAria++;
-      if(A.includes('zona degli airbag') || A.includes('zone degli airbag') || A.includes('Spegni gli airbag')) out.conAria++;
+      if(A.includes('zona degli airbag') || A.includes('zone degli airbag') || A.includes('Airbag automatici')) out.conAria++;
       if(nomeProt(prot) !== nomeProt(dec) || spenteSim(prot) !== spenteSim(dec)){ out.diversi++; if(!out.esempio) out.esempio = {nome:[nomeProt(prot), nomeProt(dec)], sp:[spenteSim(prot), spenteSim(dec)]}; }
       if(A !== B){ out.diversi++; if(!out.esempio) out.esempio = {q, anam:c.anamnesi.zone, sens:c.anamnesi.caloreSensibile, prog:prot.prog,
         titoliTablet: JSON.parse(A).map(s=>s.t), titoliTelefono: dec ? JSON.parse(B).map(s=>s.t) : null}; }
@@ -524,8 +539,8 @@ module.exports = async function(browser){
   tel.on('pageerror', e => tac.rossi.push('errore di pagina (telefono): ' + e.message));
   await tel.goto(GESTIONALE + '#s=' + codice.hash); await tel.waitForTimeout(900);
   const sulTel = await tel.evaluate(()=> ({vista: VIEW.name, testo: document.getElementById('app').innerText}));
-  tac.t('aprendo il link del QR, il telefono mostra il passo «Spegni gli airbag su una zona» e il segno ⊘ accanto al nome, come il tablet',
-    sulTel.vista === 'setupqr' && /Spegni gli airbag su una zona/.test(sulTel.testo) && /⊘ braccia/.test(sulTel.testo) && codice.titoli.includes('Spegni gli airbag su una zona'), sulTel.vista + ' ' + sulTel.testo.slice(0, 200));
+  tac.t('aprendo il link del QR, il telefono mostra «Airbag automatici, tranne braccia» e il segno ⊘ accanto al nome, come il tablet',
+    sulTel.vista === 'setupqr' && /Airbag automatici, tranne braccia/.test(sulTel.testo) && /⊘ braccia/.test(sulTel.testo) && codice.titoli.includes('Airbag automatici, tranne braccia'), sulTel.vista + ' ' + sulTel.testo.slice(0, 200));
   await tel.close();
 
   await p.close();

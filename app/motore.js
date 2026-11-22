@@ -506,7 +506,7 @@ function motoreZenith(inp){
   /* la variante del nome: cambia con ogni risposta, e non ripete un nome
      che il cliente ha avuto nelle ultime sedute (vedi varianteDa) */
   const variante = varianteDa(q, prog, S, prog === 'P23' ? aria.icone : null,
-    (inp.ultime || []).map(u => u && u.nome).filter(Boolean).slice(0, MEMORIA));
+    (inp.ultime || []).map(u => u && u.nome).filter(Boolean).slice(0, MEMORIA), spente);
   const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, spente, pool, alternato, variante};
   out.firma = firma(out);
   return out;
@@ -539,14 +539,38 @@ function sommaRisposte(q){
   return pos(V_ATT, q.activity) + (q.activity === 'riposo' ? pos(GIORNATE, q.giornata) : 0)
     + pos(V_OBI, q.goal) + pos(V_UMO, q.mood) + pos(V_PRE, q.pressione) + zone + (totale ? 9 : 0);
 }
-function varianteDa(q, prog, S, zone, recenti){
+function varianteDa(q, prog, S, zone, recenti, spente){
   const p23 = prog === 'P23', N = p23 ? VAR_N23 : VAR_N, passo = p23 ? 3 : 5;
   const v0 = sommaRisposte(q) % N;
   for(let i = 0; i < N; i++){
     const v = (v0 + i * passo) % N;
-    if(!recenti || recenti.indexOf(nomeProtocollo(prog, S, zone, v)) < 0) return v;
+    if(!recenti || recenti.indexOf(nomeProtocollo(prog, S, zone, varianteNome(prog, v, spente))) < 0) return v;
   }
   return v0;
+}
+/* ══ GLI AIRBAG NEL NOME (v176) ══
+   Scegliendo o escludendo una zona degli airbag il nome cambia: alla
+   variante si aggiungono le zone spente, ognuna col suo peso (spalle 1,
+   braccia 2, vita 4, gambe 8). Due scelte diverse danno sempre una somma
+   diversa (da 0 a 15, meno di 18): il nome cambia sempre. Nella solo aria
+   le zone sono gia' nel nome, e qui non si aggiunge niente.
+   variante: quella delle risposte (puo' mancare nelle sedute di prima) */
+function pesoSpente(spente){ return zoneSpente(spente).reduce((m, k) => m | (1 << ZONE_SPEGNIBILI.indexOf(k)), 0); }
+function varianteNome(prog, variante, spente){
+  if(prog === 'P23') return variante;
+  const m = pesoSpente(spente), conV = typeof variante === 'number' && isFinite(variante);
+  if(!m) return conV ? variante : undefined;
+  return ((conV ? variante : 0) + m) % VAR_N;
+}
+/* la variante delle risposte, dal nome e dalle zone spente: il contrario di varianteNome */
+function varianteDaNome(prog, vNome, spente){
+  if(prog === 'P23' || typeof vNome !== 'number') return vNome;
+  return ((vNome - pesoSpente(spente)) % VAR_N + VAR_N) % VAR_N;
+}
+/* il nome di un protocollo, con le sue zone spente */
+function nomeDi(p, zone){
+  if(!p) return '';
+  return nomeProtocollo(p.prog, p.S, p.prog === 'P23' ? zone : null, varianteNome(p.prog, p.variante, p.spente));
 }
 
 /* ══ IL NOME DEL PROTOCOLLO ══
@@ -687,5 +711,6 @@ function daNome(testo){
 G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
   zoneSpente, senzaSpente, zoneDaRiaccendere, ZONE_SPEGNIBILI, elenco,
   TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE,
-  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA, zonaStato, sommaRisposte, varianteDa, VAR_N, VAR_N23};
+  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA, zonaStato, sommaRisposte, varianteDa, VAR_N, VAR_N23,
+  varianteNome, varianteDaNome, pesoSpente, nomeDi};
 })(typeof window !== 'undefined' ? window : globalThis);

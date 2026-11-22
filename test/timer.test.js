@@ -42,29 +42,28 @@ module.exports = async function(browser){
         for(const activity of ['ems','riposo','vacufit']){
           const prot = buildProtocol(DB.clients[0], {activity, goal, zones, pressione:'media', mood:'sereno', prefSoloAria:false});
           prot.quizZones = zones;
+          /* v177: lo Zero Gravity sta nella schermata dei parametri, per ultimo:
+             gli airbag sono automatici e la loro pagina non si apre, la poltrona
+             si muove una volta sola */
           const st = buildSteps(prot), tit = st.map(s => s.title);
           const z = tit.findIndex(t => /Zero Gravity/.test(t));
           const par = tit.findIndex(t => /Regola i parametri/.test(t));
-          const parTxt = st[par].markers.map(m => m.label).join(' ');
-          if(/Zero Gravity/.test(parTxt)) out.male.push('zero gravity ancora fra i parametri: ' + prot.prog);
+          const mk = st[par].markers, zg = mk.findIndex(m => m.pos === TILE.auto.ZEROG);
           const fine = tit.findIndex(t => /A fine seduta/.test(t));
+          if(z >= 0) out.male.push('c\'e\' ancora un passo a parte per lo zero gravity: ' + prot.prog);
           if(prot.S.zerog){
             out.zg++;
-            const aria = tit.findIndex(t => /zon[ae] degli airbag/.test(t));
-            const ult = st.map((s,i) => [s,i]).filter(([s]) => s.kind !== 'extra' && !/A fine seduta/.test(s.title)).pop()[1];
-            if(z !== ult) out.male.push('zero gravity non e\' l\'ultimo passo: ' + tit.join(' | '));
-            if(aria >= 0 && aria > z) out.male.push('airbag dopo lo zero gravity');
-            if(st[z].markers.length !== 1) out.male.push('lo zero gravity deve avere un solo tasto');
+            if(zg !== mk.length - 1) out.male.push('zero gravity non e\' l\'ultimo tasto dei parametri: ' + prot.prog);
             if(st.filter(s => s.markers.some(m => m.pos === TILE.auto.ZEROG)).length !== 1) out.male.push('il tasto Zero Gravity compare piu\' di una volta');
-          } else { out.senza++; if(z >= 0) out.male.push('passo zero gravity con zero gravity spento'); }
+          } else { out.senza++; if(zg >= 0) out.male.push('tasto zero gravity con zero gravity spento'); }
           const primoExtra = st.findIndex(s => s.kind === 'extra');
-          if(primoExtra >= 0){ out.extraInFondo++; if(!(primoExtra > z && primoExtra < fine)) out.male.push('extra fuori posto: ' + tit.join(' | ')); }
+          if(primoExtra >= 0){ out.extraInFondo++; if(!(primoExtra > par && primoExtra < fine)) out.male.push('extra fuori posto: ' + tit.join(' | ')); }
         }
     return out;
   });
-  tac.t('lo Zero Gravity e\' l\'ultimo passo di impostazione, da solo, mai fra i parametri',
+  tac.t('lo Zero Gravity e\' l\'ultimo tasto della schermata dei parametri, una volta sola, senza un passo a parte',
     !ordine.male.length && ordine.zg > 0 && ordine.senza > 0, JSON.stringify(ordine.male.slice(0,2)) + ' zg=' + ordine.zg + ' senza=' + ordine.senza);
-  tac.t('gli extra restano in fondo, dopo lo Zero Gravity e prima della domanda finale', ordine.extraInFondo > 0 && !ordine.male.length, 'extra=' + ordine.extraInFondo);
+  tac.t('gli extra restano in fondo, dopo i parametri e prima della domanda finale', ordine.extraInFondo > 0 && !ordine.male.length, 'extra=' + ordine.extraInFondo);
 
   /* ── 2 · i minuti ── */
   const minuti = await p.evaluate(() => {
@@ -99,7 +98,7 @@ module.exports = async function(browser){
   const prima = await p.evaluate(() => ({go: !!document.querySelector('.tmgo-b'), barra: !!document.querySelector('#tmr.bar'),
     passo: (document.querySelector('.tmgo-b').closest('.gstep').querySelector('.gt') || {}).textContent, quanti: document.querySelectorAll('.tmgo-b').length,
     chip: Array.from(document.querySelectorAll('.tmchip')).map(c => c.textContent)}));
-  tac.t('sul telefono il tasto «Avvia il timer» sta nel passo della Pausa, una volta sola', prima.go && !prima.barra && prima.quanti === 1 && /pausa e avvia il timer/.test(prima.passo) && !/Timing/.test(prima.passo), JSON.stringify(prima));
+  tac.t('sul telefono il tasto «Avvia il timer» sta nel passo del Timing, una volta sola', prima.go && !prima.barra && prima.quanti === 1 && /^Timing a 20 minuti, poi avvia il timer$/.test(prima.passo), JSON.stringify(prima));
   /* scritte come il display della capsula, che conta all'indietro: «mancano 8:00», non «minuto 12» */
   tac.t('al massimo due sezioni extra: le due rifiniture, scritte col conto alla rovescia del display',
     prima.chip.join('|') === 'quando mancano 8:00|quando mancano 5:00', JSON.stringify(prima.chip));
