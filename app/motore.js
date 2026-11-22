@@ -298,7 +298,7 @@ function riattivaDopo(p){
 function ultimeDa(sessions, clientId){
   return (sessions || []).filter(x => x.clientId === clientId && x.prog)
     .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, MEMORIA)
-    .map(s => ({prog: s.prog, firma: firma({prog: s.prog, S: s.settings || {}, manualRef: s.manualRef, manualBasso: s.manualBasso})}));
+    .map(s => ({prog: s.prog, nome: s.nome || '', firma: firma({prog: s.prog, S: s.settings || {}, manualRef: s.manualRef, manualBasso: s.manualBasso})}));
 }
 
 /* ══ IL MOTORE ══
@@ -503,9 +503,50 @@ function motoreZenith(inp){
   else if(spente.length) why.push('💨 Airbag del programma, con la sua alternanza, ma spenti su ' + elenco(spente.map(k => '«' + ARIA_NOME[k] + '»'))
     + ': in una seduta passata il cliente ha chiesto di spegnerli lì.');
   const zCode = fam + '·' + prog + '·D' + S.fourD + 'A' + S.airbag + (S.ioni ? 'I' : '') + (S.calore ? 'C' : '') + (S.zerog ? 'G' : '');
-  const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, spente, pool, alternato};
+  /* la variante del nome: cambia con ogni risposta, e non ripete un nome
+     che il cliente ha avuto nelle ultime sedute (vedi varianteDa) */
+  const variante = varianteDa(q, prog, S, prog === 'P23' ? aria.icone : null,
+    (inp.ultime || []).map(u => u && u.nome).filter(Boolean).slice(0, MEMORIA));
+  const out = {prog, fam, S, why, zCode, manualRef, manualBasso, soloAria, soloAriaConflitto, aria, spente, pool, alternato, variante};
   out.firma = firma(out);
   return out;
+}
+
+/* ══ LA VARIANTE DEL NOME (v175) ══
+   Il cliente deve vedere il nome cambiare a OGNI risposta che tocca, anche
+   quando la risposta non cambia nessun valore della capsula (l'umore, una
+   zona in piu'...). Il nome ha uno spazio libero: quello che fino alla v172
+   diceva le zone degli airbag, e che dalla v173 non serve piu' (gli airbag
+   sono quelli del programma). Li' va la VARIANTE, un numero da 0 a 17 che
+   viene dalle risposte. Nella seduta solo aria (P23) quello spazio dice
+   ancora le zone accese, e la variante va al posto della 4D (da 0 a 6),
+   che senza rulli resta sempre ferma.
+   Ogni risposta pesa: attivita', giornata, obiettivo, umore, pressione e
+   una per ogni zona; «tutto il corpo» pesa 9. Cambiando UNA risposta la
+   somma cambia di 1-10, mai di un multiplo di 18: il nome cambia sempre.
+   Se il nome che ne esce e' fra quelli delle ultime sedute del cliente, la
+   variante va avanti di un passo, finche' ne trova uno nuovo: con le
+   stesse risposte, la volta dopo nasce un nome diverso. */
+const VAR_N = 18, VAR_N23 = 7;
+const V_ATT = ['ems','ems2','vacufit','matrix','riposo'], V_OBI = ['recupero','sollievo','drenaggio','relax','sonno','energia'];
+const V_UMO = ['sereno','stanco','stressato','dolorante','carico'], V_PRE = ['dolce','media','decisa','abituale'];
+const V_ZONE = ['cervicale','spalle','braccia','dorsale','lombare','glutei','gambe','piedi'];
+function sommaRisposte(q){
+  q = q || {};
+  const pos = (l, v) => l.indexOf(v) + 1;      /* 0 se manca */
+  const zone = V_ZONE.filter(z => (q.zones || []).indexOf(z) >= 0).length;
+  const totale = q.zmode === 'totale' || (!(q.zones || []).length && q.zone === 'totale');
+  return pos(V_ATT, q.activity) + (q.activity === 'riposo' ? pos(GIORNATE, q.giornata) : 0)
+    + pos(V_OBI, q.goal) + pos(V_UMO, q.mood) + pos(V_PRE, q.pressione) + zone + (totale ? 9 : 0);
+}
+function varianteDa(q, prog, S, zone, recenti){
+  const p23 = prog === 'P23', N = p23 ? VAR_N23 : VAR_N, passo = p23 ? 3 : 5;
+  const v0 = sommaRisposte(q) % N;
+  for(let i = 0; i < N; i++){
+    const v = (v0 + i * passo) % N;
+    if(!recenti || recenti.indexOf(nomeProtocollo(prog, S, zone, v)) < 0) return v;
+  }
+  return v0;
 }
 
 /* ══ IL NOME DEL PROTOCOLLO ══
@@ -523,6 +564,10 @@ function motoreZenith(inp){
    nessuno si ripete. Dal nome si torna ai parametri (daNome): e' cosi'
    che si recupera una seduta persa scrivendo solo il nome.
    Come nei 20,3 milioni, la durata non conta; le rifiniture neanche.
+   Dalla v175 lo spazio delle zone (18 casi) e' la VARIANTE: ogni
+   combinazione di valori ha 18 nomi, e le risposte scelgono quale (vedi
+   varianteDa). Dal nome si torna sempre ai valori e alla variante, e
+   ritorna lo stesso nome: anche quelli dati prima.
    Il numero della combinazione passa per un mescolamento fisso (sempre lo
    stesso, su ogni dispositivo): cambiando un solo parametro cambiano
    tutte e tre le parole. Il seme NON si cambia mai: cambierebbero tutti
@@ -597,14 +642,19 @@ function zonaStato(z){
   return 2 + m;
 }
 function statoZona(n){ return n === 0 ? null : n === 1 ? ['tutto'] : ZONE_ARIA.filter((k, i) => (n - 2) & (1 << i)); }
-/* zone: l'elenco delle icone accese (null = quelle del programma) */
-function nomeProtocollo(prog, S, zone){
+/* zone: l'elenco delle icone accese (null = quelle del programma).
+   variante (dalla v175, facoltativa): nelle sedute coi rulli prende il posto
+   delle zone (0-17); nella solo aria (P23) quello della 4D (0-6). Senza
+   variante il nome e' quello di sempre: i nomi gia' dati non cambiano */
+function nomeProtocollo(prog, S, zone, variante){
   const C = NOME_C[prog]; if(!C) return '';
   S = S || {};
   const v7 = x => lim(Math.round(+x || 0), 0, 6);
-  let k = v7(S.fourD) * 7 + v7(S.airbag);
+  const conV = typeof variante === 'number' && isFinite(variante), mod = (v, n) => ((Math.round(v) % n) + n) % n;
+  const p23 = prog === 'P23';
+  let k = (p23 && conV ? mod(variante, VAR_N23) : v7(S.fourD)) * 7 + v7(S.airbag);
   [S.ioni, S.calore, S.zerog, S.polpacci, S.plantari].forEach(b => { k = k * 2 + (b ? 1 : 0); });
-  k = k * 18 + zonaStato(zone);
+  k = k * 18 + (!p23 && conV ? mod(variante, VAR_N) : zonaStato(zone));
   nomeMix();
   let x = NOME_MIX[(k + nomeScarto(prog)) % NOME_TOT];
   const c = x % 4; x = (x - c) / 4;
@@ -625,13 +675,17 @@ function daNome(testo){
   let k = (NOME_DEMIX[x] - nomeScarto(prog) + NOME_TOT) % NOME_TOT;
   const z = k % 18; k = (k - z) / 18;
   const bit = []; for(let i = 0; i < 5; i++){ bit.unshift(k % 2); k = (k - k % 2) / 2; }
-  const A = k % 7, zone = statoZona(z);
-  const S = {fourD:(k - A) / 7, airbag:A, ioni:!!bit[0], calore:!!bit[1], zerog:!!bit[2], polpacci:bit[3], plantari:bit[4]};
-  return {prog, S, zone, nome: nomeProtocollo(prog, S, zone)};
+  const A = k % 7, d = (k - A) / 7;
+  const S = {fourD:d, airbag:A, ioni:!!bit[0], calore:!!bit[1], zerog:!!bit[2], polpacci:bit[3], plantari:bit[4]};
+  /* dalla v175 lo spazio delle zone, nelle sedute coi rulli, e' la variante
+     (anche nei nomi di prima: il nome resta identico); nella solo aria la
+     variante e' al posto della 4D, che senza rulli e' ferma */
+  if(prog === 'P23'){ S.fourD = 0; const zone = statoZona(z); return {prog, S, zone, variante:d, nome: nomeProtocollo(prog, S, zone, d)}; }
+  return {prog, S, zone:null, variante:z, nome: nomeProtocollo(prog, S, null, z)};
 }
 
 G.MOTORE = {motoreZenith, firma, ultimeDa, riattivaDopo, scalaCapsula, idoneitaDa, macroDa, scegliZoneAirbag, ARIA_NOME,
   zoneSpente, senzaSpente, zoneDaRiaccendere, ZONE_SPEGNIBILI, elenco,
   TECNICA_NOME, LARGHEZZA_NOME, INTERVALLO_NOME, ZONA_RIF, GIORNATE,
-  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA};
+  nomeProtocollo, daNome, NOME_A, NOME_B, NOME_C, NOME_TOT, MEMORIA, zonaStato, sommaRisposte, varianteDa, VAR_N, VAR_N23};
 })(typeof window !== 'undefined' ? window : globalThis);

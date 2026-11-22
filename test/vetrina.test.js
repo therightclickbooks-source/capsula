@@ -193,6 +193,33 @@ module.exports = async function(browser){
   tac.t('«Componi il tuo» sta nello schermo per ogni bisogno', cp.sborda.every(x => x <= 0), JSON.stringify(cp.sborda));
   tac.t('«Lo voglio così» chiede soltanto il nome', cp.r.passi === 'nome' && /UN SOLO PASSO/.test(cp.r.etichetta), JSON.stringify(cp.r));
 
+  /* ── v175: OGNI tocco in «Componi il tuo» fa nascere un nome nuovo ── */
+  const tocchi = await pf.evaluate(()=>{
+    let seme = 175; const rnd = n => { seme = (seme * 1664525 + 1013904223) >>> 0; return (seme >>> 12) % n; };
+    const att = PASSI_TUTTI.find(x => x.k === 'activity').opts.map(o => o[0]), umo = PASSI_TUTTI.find(x => x.k === 'mood').opts.map(o => o[0]);
+    const out = {tocchi:0, uguali:0, esempi:[]};
+    BISOGNI.forEach(b => {
+      apriComponi(b.k);
+      for(let i = 0; i < 80; i++){
+        const C = COMP, prima = document.getElementById('zcnome').textContent;
+        const tipo = rnd(5); let k, v;
+        if(tipo === 0){ v = att[rnd(att.length)]; if(v === C.activity) continue; k = 'activity'; }
+        else if(tipo === 1){ v = umo[rnd(umo.length)]; if(v === C.mood) continue; k = 'mood'; }
+        else if(tipo === 2){ v = ['dolce','media','decisa'][rnd(3)]; if(v === C.pressione) continue; k = 'pressione'; }
+        else if(tipo === 3){ const z = ZONE_COMP.map(x => x[0]).concat(['totale','nessuna']); v = z[rnd(z.length)]; k = 'zona';
+          if(v === C.zmode || (C.zones.length >= 3 && C.zones.indexOf(v) < 0 && v !== 'totale' && v !== 'nessuna')) continue; }
+        else { v = DES[rnd(DES.length)][0]; k = 'des'; }
+        compSet(k, v); out.tocchi++;
+        const dopo = document.getElementById('zcnome').textContent;
+        if(dopo === prima){ out.uguali++; if(out.esempi.length < 3) out.esempi.push(b.k + ' ' + k + '=' + v + ' ' + dopo); }
+      }
+    });
+    go('idle');
+    return out;
+  });
+  tac.t('in «Componi il tuo» ogni tocco fa nascere un nome nuovo (' + tocchi.tocchi + ' tocchi provati su tutti i bisogni)',
+    tocchi.tocchi > 300 && tocchi.uguali === 0, JSON.stringify(tocchi));
+
   /* ── il respiro: 4 dentro, 2 fermi, 6 fuori ── */
   const rs = await pf.evaluate(async ()=>{
     apriRespira();

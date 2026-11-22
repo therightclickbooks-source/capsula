@@ -45,8 +45,12 @@ module.exports = async function(browser){
     for(const pg of Object.keys(C)) for(let d = 0; d < 7; d++) for(let a = 0; a < 7; a++) for(let b = 0; b < 32; b++) for(const z of ZS){
       const S = {fourD:d, airbag:a, ioni:!!(b & 16), calore:!!(b & 8), zerog:!!(b & 4), polpacci:(b & 2) ? 1 : 0, plantari:b & 1};
       const nm = M.nomeProtocollo(pg, S, z); n++; visti.add(nm);
-      const r = M.daNome(nm);
-      if(!r || r.prog !== pg || r.nome !== nm || r.S.fourD !== d || r.S.airbag !== a || JSON.stringify(r.zone) !== JSON.stringify(z)) sbagli++;
+      /* dalla v175: nelle sedute coi rulli lo spazio delle zone e' la variante,
+         nella solo aria la variante sta al posto della 4D; il nome torna identico */
+      const r = M.daNome(nm), p23 = pg === 'P23';
+      if(!r || r.prog !== pg || r.nome !== nm || r.S.airbag !== a
+        || (p23 ? r.S.fourD !== 0 || r.variante !== d || JSON.stringify(r.zone) !== JSON.stringify(z)
+                : r.S.fourD !== d || r.zone !== null || r.variante !== M.zonaStato(z))) sbagli++;
     }
     const base = {fourD:1, airbag:1, ioni:false, calore:true, zerog:true, polpacci:1, plantari:1};
     const uno = M.nomeProtocollo('P22', base, null);
@@ -57,7 +61,7 @@ module.exports = async function(browser){
       inglese: parole.every(w => /^[A-Z][a-z]+$/.test(w)), parole: parole.length, paroleDistinte: new Set(parole).size,
       categoria: C.P22, scritto: M.daNome('  “' + uno.toLowerCase().replace(/ /g, '-') + '” ')};
   });
-  tac.t('24 categorie × 28.224 combinazioni = 677.376 nomi, tutti diversi, e dal nome si torna sempre ai parametri',
+  tac.t('24 categorie × 28.224 combinazioni = 677.376 nomi, tutti diversi, e dal nome si torna sempre ai parametri e alla variante',
     nomi.n === 677376 && nomi.distinti === 677376 && nomi.sbagli === 0, JSON.stringify({n:nomi.n, distinti:nomi.distinti, sbagli:nomi.sbagli}));
   tac.t('gli stessi parametri danno sempre lo stesso nome; cambiandone uno solo (4D, airbag, ioni, calore, zero gravity, rulli, zone) il nome cambia',
     nomi.uno === nomi.ancora && nomi.variati.every(v => v !== nomi.uno) && new Set(nomi.variati).size === nomi.variati.length, JSON.stringify(nomi.variati));
@@ -200,9 +204,9 @@ module.exports = async function(browser){
     rec.salvata.n === 1 && rec.salvata.prog === 'P04' && rec.salvata.fam === 'Z4' && rec.salvata.zCode === 'Z4·P04·D2A2ICG' && rec.salvata.giorno === '2026-10-30'
       && rec.salvata.ora === '18:15' && rec.salvata.leg === 1 && rec.salvata.foot === 0 && rec.salvata.recuperata && rec.salvata.punti === 10 && !!rec.salvata.nome && rec.storico,
     JSON.stringify(rec.salvata));
-  tac.t('dal nome torna tutto: categoria, valori, rulli e zone degli airbag',
+  tac.t('dal nome torna tutto: categoria, valori e rulli; la seduta recuperata ha lo stesso nome (gli airbag sono quelli del programma)',
     rec.dalNome.ok && rec.nome.nome === rec.nome.atteso && rec.nome.prog === 'P05' && rec.nome.S.fourD === 3 && rec.nome.S.ioni === true && rec.nome.S.calore === false
-      && rec.nome.S.polpacci === 0 && rec.nome.S.plantari === 1 && JSON.stringify(rec.nome.aria) === '["vita","gambe"]', JSON.stringify(rec.nome));
+      && rec.nome.S.polpacci === 0 && rec.nome.S.plantari === 1 && rec.nome.aria === null, JSON.stringify(rec.nome));
   tac.t('una seduta nel futuro non si recupera', rec.futuro);
   tac.t('a mano, scegliendo Z, P, D, A, I, C, G, extra e airbag spenti, esce lo stesso nome del motore e si salva col segno ⊘',
     rec.manoVuoto && rec.mano.ok && rec.mano.prev.indexOf(rec.mano.atteso) >= 0 && /⊘ braccia/.test(rec.mano.prev) && rec.mano.spenta === '⊘ braccia' && rec.mano.leg === 9 + 24
@@ -326,9 +330,36 @@ module.exports = async function(browser){
     disegnaProtocollo();
     const pr = costruisciProtocollo(D);
     return {nom: document.querySelector('.targa .nom').textContent, cat: document.querySelector('.targa .cat').textContent,
-      atteso: '“' + MOTORE.nomeProtocollo(pr.prog, pr.S, pr.prog === 'P23' ? pr.aria.icone : null) + '”', prog: pr.prog};
+      atteso: '“' + MOTORE.nomeProtocollo(pr.prog, pr.S, pr.prog === 'P23' ? pr.aria.icone : null, pr.variante) + '”', prog: pr.prog};
   });
   tac.t('anche la vetrina, dopo il check-in, mostra il nome del protocollo e sotto la categoria', vet.nom === vet.atteso && vet.cat.indexOf(vet.prog) >= 0, JSON.stringify(vet));
   await v.close();
+
+  /* 7 · v175: lo stesso check-in da' lo stesso nome sul totem e nel gestionale,
+     con la variante (anche «tutto il corpo», «decide Zenith», la giornata, i desideri) */
+  const casi = [
+    {activity:'riposo', giornata:'scrivania', zones:['lombare'], zmode:null, goal:'sollievo', mood:'stanco', pressione:'media'},
+    {activity:'ems', giornata:'', zones:[], zmode:'totale', goal:'recupero', mood:'carico', pressione:'decisa'},
+    {activity:'riposo', giornata:'guida', zones:[], zmode:'nessuna', goal:'relax', mood:'stressato', pressione:'dolce', desideri:{calore:false, zerog:false}},
+    {activity:'vacufit', giornata:'', zones:['gambe','piedi','braccia'], zmode:null, goal:'drenaggio', mood:'sereno', pressione:'media'}];
+  const vt = await browser.newPage({viewport:{width:1080, height:1920}});
+  vt.on('pageerror', e => tac.rossi.push('errore di pagina (vetrina 2): ' + e.message));
+  await vt.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await vt.goto(VETRINA); await vt.waitForTimeout(600);
+  const sulTotem = await vt.evaluate(casi => casi.map(q => { Object.assign(D, {nome:'Palma', clienteId:'c1', desideri:null}, JSON.parse(JSON.stringify(q)));
+    return disegnaProtocollo().nomeP; }), casi);
+  await vt.close();
+  const gq = await browser.newPage({viewport:{width:430, height:900}});
+  gq.on('pageerror', e => tac.rossi.push('errore di pagina (gestionale 2): ' + e.message));
+  await gq.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await gq.goto(GESTIONALE); await gq.waitForTimeout(600);
+  const nelGest = await gq.evaluate(casi => casi.map(q => {
+    /* come arriva il biglietto del totem: la zona di regola, o «totale» / «nessuna» */
+    RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:q.activity, zones:q.zones.slice(), zone: q.zones.length ? q.zones[0] : q.zmode,
+      giornata:q.giornata || null, goal:q.goal, mood:q.mood, pressione:q.pressione, prefSoloAria:false, desideri:q.desideri || null};
+    VIEW = {name:'proposal'}; render(); const n = nomeProt(currentProt); RT = null; VIEW = {name:'home'}; render(); return n; }), casi);
+  await gq.close();
+  tac.t('lo stesso check-in dà lo stesso nome sul totem e nel gestionale (variante compresa)',
+    sulTotem.every((n, i) => n && n === nelGest[i]), JSON.stringify({sulTotem, nelGest}));
   return tac;
 };

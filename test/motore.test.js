@@ -91,6 +91,15 @@ module.exports = async function(browser){
     out.mattina = M(Object.assign({}, base, {ora:10, quiz:{activity:'riposo', giornata:'tranquilla', zones:[], goal:'relax', mood:'stanco', pressione:'media'}})).prog;
     out.sera = M(Object.assign({}, base, {ora:20, quiz:{activity:'riposo', giornata:'tranquilla', zones:[], goal:'relax', mood:'stanco', pressione:'media'}})).prog;
     out.distinte = out.firme.size; delete out.firme;
+    /* v175: con le stesse risposte, un nome gia' avuto nelle ultime sedute non torna */
+    const qv = {activity:'riposo', giornata:'scrivania', zones:['lombare'], goal:'sollievo', mood:'stanco', pressione:'media'};
+    const storia = [], nomiV = [];
+    for(let i = 0; i < 8; i++){
+      const pr = M(Object.assign({}, base, {quiz:qv, ultime:storia.slice()}));
+      const nm = MOTORE.nomeProtocollo(pr.prog, pr.S, null, pr.variante);
+      nomiV.push(nm); storia.unshift({prog:pr.prog, firma:pr.firma, nome:nm});
+    }
+    out.nomiV = nomiV;
 
     /* il 4 solo se chiesto: pressione decisa e una taratura «troppo leggera» */
     const q4 = {activity:'ems', zones:['lombare'], goal:'recupero', mood:'carico', pressione:'decisa', prefSoloAria:false};
@@ -167,6 +176,8 @@ module.exports = async function(browser){
   tac.t('nei programmi del sonno e della sera non si riaccende niente, e lo dice', ri.sonno.niente && /sonno/.test(ri.sonno.perche), JSON.stringify(ri.sonno));
   tac.t('se il programma non usava airbag né rulli di gambe e piedi, non c\'è niente da riaccendere', ri.vuoto.niente, JSON.stringify(ri.vuoto));
   tac.t('il «perché» dice i minuti delle rifiniture e cosa riaccendere', /8 minuti dalla fine/.test(ri.perche) && /5 minuti dalla fine/.test(ri.perche) && /si riaccendono/.test(ri.perche), ri.perche);
+  tac.t('con le stesse risposte, otto sedute di fila hanno otto nomi diversi (un nome già avuto non torna)',
+    new Set(r.nomiV).size === 8, r.nomiV.join(' · '));
   tac.t('il relax segue l\'ora: la mattina P11, la sera P18', r.mattina === 'P11' && r.sera === 'P18', JSON.stringify({mattina:r.mattina, sera:r.sera}));
   console.log('   (' + r.tot + ' sedute provate, ' + r.distinte + ' diverse; tecniche: ' + JSON.stringify(r.tecniche) + ')');
 
