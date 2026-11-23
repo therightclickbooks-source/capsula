@@ -218,8 +218,8 @@ module.exports = async function(browser){
       && rec.manoSalvata.nome === rec.mano.atteso && rec.manoSalvata.zCode === 'Z3·P08·D2A3IG'
       && rec.manoSalvata.aria === null && JSON.stringify(rec.manoSalvata.spente) === '["braccia"]' && rec.manoSalvata.timer === 25 && rec.manoSalvata.foot === 1,
     JSON.stringify([rec.mano, rec.manoSalvata]));
-  tac.t('le rifiniture caricate a mano si salvano con tecnica, piedi e minuto, e il timer le accende a quel minuto',
-    rec.rif.up === 'SHIATSU' && rec.rif.upDa === 17 && rec.rif.dnPiedi === 2 && rec.rif.piano === 'ref:17,bas:22', JSON.stringify(rec.rif));
+  tac.t('le rifiniture caricate a mano si salvano con tecnica, piedi e minuto (v186: qualsiasi minuto, anche l\'ultimo), e il timer le accende a quel minuto',
+    rec.rif.up === 'SHIATSU' && rec.rif.upDa === 17 && rec.rif.dnPiedi === 2 && rec.rif.piano === 'ref:17,bas:24', JSON.stringify(rec.rif));
   tac.t('dallo storico si recupera anche: prima si sceglie di chi è la seduta', rec.tastoStorico && rec.chiedeCliente && rec.scelto === 'c3', JSON.stringify(rec));
   /* 5b · regola durante la seduta: il ritocco si salva, la proposta resta scritta, il motore impara */
   const rt = await p.evaluate(() => {
