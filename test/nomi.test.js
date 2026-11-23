@@ -328,7 +328,7 @@ module.exports = async function(browser){
     RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['lombare'], zone:'lombare', goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false};
     VIEW = {name:'proposal'}; render(); timerAvvia();
     const prima = TM.info.titolo;
-    rtSet('D', Math.max(0, currentProt.S.fourD - 1)); rtSet('aria', 'braccia'); rtSet('I');
+    rtSet('D', Math.max(0, currentProt.S.fourD - 1)); rtSet('spegni', 'braccia'); rtSet('I');
     TM.full = true; tmDisegna(true);
     const box = document.getElementById('tmr');
     const r = {prima, ora: TM.info.titolo, nome: nomeProt(currentProt), era: TM.info.prima,
@@ -339,9 +339,24 @@ module.exports = async function(browser){
     RT = null; VIEW = {name:'home'}; render();
     return r;
   });
+  /* v182: toccando una voce sotto il timer a tutto schermo si va al suo tasto nel pannello */
+  const voce = await p.evaluate(async () => {
+    RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['lombare'], zone:'lombare', goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false};
+    VIEW = {name:'proposal'}; render(); timerAvvia(); TM.full = true; tmDisegna(true); scrollTo(0, 0);
+    const box = document.getElementById('tmr'), r = {};
+    r.voci = [...box.querySelectorAll('.tm-chips [data-act="regola"]')].map(x => x.getAttribute('data-k')).join(',');
+    box.querySelector('.tm-chips [data-k="D"]').click();
+    await new Promise(x => setTimeout(x, 1200));
+    const d = document.querySelector('#regola [data-anc="D"]').getBoundingClientRect();
+    r.full = TM.full; r.inVista = d.top > 0 && d.bottom < innerHeight; r.acceso = document.querySelector('#regola [data-anc="D"]').classList.contains('rg-qui');
+    timerChiudi(); RT = null; VIEW = {name:'home'}; render();
+    return r;
+  });
+  tac.t('a tutto schermo, toccando «4D» il timer si rimpicciolisce e la pagina va dritta al tasto della 4D nel pannello',
+    /^D,A,/.test(voce.voci) && !voce.full && voce.inVista && voce.acceso, JSON.stringify(voce));
   tac.t('il timer segue i ritocchi: nome nuovo, «era» la proposta, voci cambiate e aggiunte in un altro colore',
     tmr.ora !== tmr.prima && tmr.ora.indexOf(tmr.nome) === 0 && tmr.era && tmr.prima.indexOf(tmr.era.split(' ')[0]) === 0 && /SEDUTA RITOCCATA/.test(tmr.testa)
-      && tmr.cambiati.some(x => /^4D \d → \d$/.test(x)) && tmr.cambiati.some(x => /Zone airbag tutti → solo braccia/.test(x)) && tmr.nuovi.some(x => /Ioni/.test(x)) && tmr.legenda,
+      && tmr.cambiati.some(x => /^4D \d → \d$/.test(x)) && tmr.cambiati.some(x => /Zone airbag tutti → tranne braccia/.test(x)) && tmr.nuovi.some(x => /Ioni/.test(x)) && tmr.legenda,
     JSON.stringify(tmr));
   tac.t('riaccesa dal pannello, la memoria si cancella', sp.riaccesa.memoria && (sp.riaccesa.cambi || []).indexOf('Airbag di nuovo accesi su braccia') >= 0, JSON.stringify(sp.riaccesa));
   await p.close();
@@ -411,9 +426,10 @@ module.exports = async function(browser){
   await piu.click(); await pg.waitForTimeout(250);
   const y2 = await pg.evaluate(() => document.querySelectorAll('#regola .rp-dial[data-anc="D"] .rp-pm')[1].getBoundingClientRect().top);
   await pg.close();
-  tac.t('pannello: toccando «Braccia» si accendono solo le braccia, e il nome cambia', dopo1.sp === 'spalle,vita,gambe' && dopo1.on === 'Braccia' && !dopo1.tutti && dopo1.nome !== n0,
+  /* v182: toccando una zona la si spegne (il cliente non la vuole), le altre restano accese */
+  tac.t('pannello: toccando «Braccia» si spengono solo le braccia, le altre restano accese, e il nome cambia', dopo1.sp === 'braccia' && dopo1.on === 'Spalle,Vita e fianchi,Gambe e piedi' && !dopo1.tutti && dopo1.nome !== n0,
     JSON.stringify({n0, dopo1}));
-  tac.t('pannello: un altro tocco aggiunge la zona; «Tutti quelli del programma» riporta il nome di prima', dopo2.sp === 'spalle,vita' && dopo2.nome !== dopo1.nome && dopo3.sp === '' && dopo3.nome === n0,
+  tac.t('pannello: un altro tocco spegne anche quella zona; «Tutti quelli del programma» riporta il nome di prima', dopo2.sp === 'braccia,gambe' && dopo2.nome !== dopo1.nome && dopo3.sp === '' && dopo3.nome === n0,
     JSON.stringify({dopo2, dopo3}));
   tac.t('toccando un tasto del pannello la pagina resta ferma lì (zona airbag e + della 4D)', Math.abs(dopo1.y - y0) < 3 && Math.abs(y2 - y1) < 3, JSON.stringify({y0, y: dopo1.y, y1, y2}));
   tac.t('le tecniche delle rifiniture nell\'ordine della capsula, con le sue icone', dopo3.tec === 'Kneading,Tapping,Tap,Massage,Knead and Knock,Shiatsu', dopo3.tec);
@@ -431,14 +447,14 @@ module.exports = async function(browser){
     const tec = () => [...document.querySelectorAll('#regola .rcrif.up .rp-ics.tre')][0];
     const t = () => [...tec().querySelectorAll('.rp-ic')].map(b => b.querySelector('b').textContent + ':' + b.className.replace('rp-ic', '').trim()).filter(x => !/:$/.test(x)).join('|');
     const r = {z0: z(), t0: t()};
-    rtSet('aria', 'braccia'); r.z1 = z();
+    rtSet('spegni', 'braccia'); r.z1 = z();
     const k = currentProt.manualRef.tkey; rtRif('up', 'tkey', k === 'SHIATSU' ? 'KNEADING' : 'SHIATSU'); r.t1 = t();
     const ic = tec().querySelector('.rp-ic:not(.on):not(.orig) .capic');
     r.bianca = ic ? getComputedStyle(ic).filter : '';
     return r; });
   await col.close();
   tac.t('pannello: senza ritocchi gli airbag del programma sono tutti azzurri, e la tecnica del programma pure', colori.z0 === 'on|on|on|on' && /^[^|]+:on$/.test(colori.t0), JSON.stringify(colori));
-  tac.t('pannello: toccando «Braccia» le braccia restano azzurre, le altre zone spente col bordo giallo', colori.z1 === 'off mod|on|off mod|off mod', JSON.stringify(colori));
+  tac.t('pannello: spegnendo «Braccia» le braccia diventano grigie col bordo giallo, le altre restano azzurre', colori.z1 === 'on|off mod|on|on', JSON.stringify(colori));
   tac.t('pannello: la tecnica cambiata è gialla tratteggiata, quella del programma resta azzurra, le altre bianche',
     /:on mod/.test(colori.t1) && /:orig/.test(colori.t1) && colori.t1.split('|').length === 2 && /grayscale/.test(colori.bianca), JSON.stringify(colori));
 
