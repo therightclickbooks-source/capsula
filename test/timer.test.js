@@ -295,7 +295,8 @@ module.exports = async function(browser){
       const box = document.getElementById('tmr');
       const chips = Array.from(box.querySelectorAll('.tc')).map(c => c.textContent);
       /* le luci dell'aurora (v178) sono piu' grandi dello schermo di proposito: il loro strato le taglia, e la pagina non scorre (sx qui sotto) */
-      const fuori = Array.from(box.querySelectorAll('*')).filter(e => { if(e.closest('.tm-aurora')) return false; const b = e.getBoundingClientRect(); return b.width > 0 && (b.right > innerWidth + 1 || b.left < -1); }).length;
+      /* v185: anche gli addobbi di Natale (corona, ghirlanda, neve) escono di proposito e il loro strato li taglia */
+      const fuori = Array.from(box.querySelectorAll('*')).filter(e => { if(e.closest('.tm-aurora, .zn-strato, .zn-corona')) return false; const b = e.getBoundingClientRect(); return b.width > 0 && (b.right > innerWidth + 1 || b.left < -1); }).length;
       return {full: box.classList.contains('full'), anello: !!box.querySelector('.tm-ring'), chips, fuori, sx: box.scrollWidth <= innerWidth + 1,
         coperto: getComputedStyle(box).position};
     });
