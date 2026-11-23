@@ -24,6 +24,7 @@ const PROVE = [
   ['aperte',      require('./aperte.test.js')],
   ['nota',        require('./nota.test.js')],
   ['nomi',        require('./nomi.test.js')],
+  ['totem',       require('./totem.test.js')],
   ['prova',       require('./prova.test.js')],
   ['prenotazioni', require('./prenotazioni.test.js')]
 ];

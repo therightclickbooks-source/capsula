@@ -322,7 +322,7 @@ function motoreZenith(inp){
   if(press === 'abituale'){
     const hab = inp.abituale || 'media';
     press = hab === 'media' ? 'media' : hab;
-    why.push('Applicata la sua pressione abituale (' + hab + '), ricavata dalle ultime sessioni.');
+    why.push('Applicata la sua pressione abituale (' + hab + '), ricavata dalle ultime sedute.');
   }
   const qp = Object.assign({}, q, {pressione: press});
 
@@ -334,7 +334,7 @@ function motoreZenith(inp){
     why.push('💨 Preferenza «solo compressione d\'aria» applicata: P23 Airbag Massage, effetto pressoterapia — nessun rullo.');
   } else if(prima){
     prog = an.prefIntensita === 'deciso' ? 'P01' : 'P22'; fam = 'Z1'; pool = [prog];
-    why.push('Prima sessione in capsula: si parte dolcemente per far conoscere ogni sensazione.');
+    why.push('Prima seduta in capsula: si parte dolcemente per far conoscere ogni sensazione.');
   } else {
     const r = programmi(qp, {genere: inp.genere, quando});
     fam = r.fam; pool = r.pool; prog = pool[0];
@@ -423,7 +423,7 @@ function motoreZenith(inp){
   else {
     const rec = {Z6: q.goal === 'sonno' ? 30 : 25, Z2:25, Z3:25}[fam] || 20;
     S.timer = rec;
-    why.push(fam === 'Z6' ? 'Relax/sonno: sessione lunga di ' + rec + ' minuti — il rilassamento profondo ha bisogno di tempo.'
+    why.push(fam === 'Z6' ? 'Relax/sonno: seduta lunga di ' + rec + ' minuti — il rilassamento profondo ha bisogno di tempo.'
       : fam === 'Z2' ? 'Recupero: 25 minuti per un defaticamento completo dei gruppi muscolari.'
       : fam === 'Z3' ? 'Leggerezza: 25 minuti — la compressione a onde dà il meglio con la durata.'
       : 'Durata di 20 minuti.');
