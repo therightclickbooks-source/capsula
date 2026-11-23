@@ -154,7 +154,7 @@ module.exports = async function(browser){
     }
     return {quando, fine: TM.fine, stato: tmStato(tmEl()).fase};
   });
-  /* alta al 12, bassa al 15, tutte e due fino alla fine: nessuno «spegni». Senza «Fatto» la musica torna dopo 20″ e 40″ */
+  /* alta al 12, bassa al 15, tutte e due fino alla fine: nessuno «spegni». Se nessuno tocca il tasto la musica torna dopo 20″ e 40″ */
   const atteso = ['rifpre@710','rif@720','rif@740','rif@760','rifpre@890','rif@900','rif@920','rif@940','fine@1200'];
   tac.t('i suoni al secondo giusto: campanella 10″ prima, musica delle rifiniture al minuto esatto (ripetuta se nessuno conferma), fine seduta',
     JSON.stringify(giro.quando) === JSON.stringify(atteso), JSON.stringify(giro.quando));
@@ -188,47 +188,83 @@ module.exports = async function(browser){
     vecchio.prima.dur === 25 && vecchio.prima.ev === 0 && vecchio.dopo.dur === 20 && vecchio.dopo.ev === 1 && vecchio.stesso, JSON.stringify(vecchio));
   tac.t('la barra dice di quale programma e\' il timer', /“/.test(vecchio.chi), JSON.stringify(vecchio));
 
-  /* l'avviso di una rifinitura resta finche' non si tocca «Fatto», e apre il timer a tutto schermo */
+  /* v180: la rifinitura nel timer e' un tasto solo, discreto. Niente finestra
+     oro, niente tutto schermo da solo, niente «Fatto» ne' «Cosa riaccendo?» */
   const fasi = await p.evaluate(() => {
     timerChiudi(); window.__t = 5000000; timerAvvia();
     const r = {};
     const vai = s => { window.__t = 5000000 + s*1000; tmTick(); return tmStato(tmEl()); };
     const box = () => document.getElementById('tmr');
-    r.s100 = vai(100).fase; r.s705 = vai(705).fase; r.s715 = vai(715).fase; r.sec = Math.ceil(tmStato(tmEl()).sec);
+    const tasto = () => { const t = box().querySelector('.tm-rif'); return t ? t.textContent.replace(/\s+/g, ' ').trim() : ''; };
+    r.s100 = vai(100).fase; r.t100 = tasto(); r.s705 = vai(705).fase; r.s715 = vai(715).fase; r.sec = Math.ceil(tmStato(tmEl()).sec);
     r.oroPre = box().classList.contains('rif');
-    r.s721 = vai(721).fase; r.full721 = box().classList.contains('full'); r.testo721 = (box().querySelector('.tm-rt') || {}).textContent;
-    r.s800 = vai(800).fase;   /* nessuno ha toccato «Fatto»: l'avviso e' ancora li' */
-    timerFatto(); r.dopoFatto = tmStato(tmEl()).fase; r.fullDopo = box().classList.contains('full');
-    r.s880 = vai(880).fase; r.s895 = vai(895).fase; r.s901 = vai(901).fase; r.testo901 = (box().querySelector('.tm-rt') || {}).textContent;
-    r.insieme = (box().querySelector('.tm-rs') || {}).textContent;
-    timerFatto(); r.dopoFatto2 = tmStato(tmEl()).fase; r.chi = (box().querySelector('.tm-mt') || {}).textContent;
+    r.s721 = vai(721).fase; r.full721 = box().classList.contains('full'); r.t721 = tasto(); r.ora = !!box().querySelector('.tm-rif.ora');
+    r.tasti = box().querySelectorAll('.tm-rif').length; r.altri = box().querySelectorAll('[data-act="fatto"], [data-act="riatt"], .tm-ria, .tm-rv').length;
+    r.s770 = vai(770).fase;   /* nessuno l'ha toccato: resta acceso un minuto */
+    r.s785 = vai(785).fase; r.t785 = tasto();
+    r.s895 = vai(895).fase; r.s901 = vai(901).fase; r.t901 = tasto();
+    box().querySelector('.tm-rif').click(); r.dopoTocco = tmStato(tmEl()).fase; r.chi = tasto();
     r.s1195 = vai(1195).fase;
     return r;
   });
-  tac.t('le fasi: attesa → preavviso (10″) → ACCENDI alta → resta finché «Fatto» → in corso → preavviso bassa → ACCENDI ANCHE la bassa → in corso insieme fino alla fine',
-    fasi.s100 === 'attesa' && fasi.s705 === 'attesa' && fasi.s715 === 'pre' && fasi.sec === 5 && fasi.s721 === 'attiva' && fasi.s800 === 'attiva' && fasi.dopoFatto === 'corso'
-    && fasi.s880 === 'corso' && fasi.s895 === 'pre' && fasi.s901 === 'attiva' && fasi.dopoFatto2 === 'corso' && fasi.s1195 === 'corso', JSON.stringify(fasi));
-  tac.t('al minuto della rifinitura il timer diventa oro e si apre a tutto schermo; con «Fatto» torna com\'era',
-    fasi.oroPre && fasi.full721 && /ACCENDI LA RIFINITURA ALTA/.test(fasi.testo721) && !fasi.fullDopo, JSON.stringify(fasi));
-  tac.t('al minuto 15 «accendi anche la bassa»: l\'alta continua e lavorano insieme',
-    /ACCENDI ANCHE LA RIFINITURA BASSA/.test(fasi.testo901) && /continua/.test(fasi.insieme) && /alta \+ bassa/.test(fasi.chi), JSON.stringify(fasi));
+  tac.t('le fasi: attesa → preavviso (10″) → accendi alta (un minuto, o finché si tocca) → in corso → preavviso bassa → accendi anche la bassa → in corso insieme fino alla fine',
+    fasi.s100 === 'attesa' && fasi.s705 === 'attesa' && fasi.s715 === 'pre' && fasi.sec === 5 && fasi.s721 === 'attiva' && fasi.s770 === 'attiva' && fasi.s785 === 'corso'
+    && fasi.s895 === 'pre' && fasi.s901 === 'attiva' && fasi.dopoTocco === 'corso' && fasi.s1195 === 'corso', JSON.stringify(fasi));
+  tac.t('al minuto della rifinitura niente finestra oro e niente tutto schermo: un tasto solo, che si accende piano',
+    !fasi.oroPre && !fasi.full721 && fasi.ora && fasi.tasti === 1 && !fasi.altri && /Accendi la rifinitura alta/.test(fasi.t721) && /Vai ›/.test(fasi.t721), JSON.stringify(fasi));
+  tac.t('il tasto dice sempre quale rifinitura e quando: prima «tra», poi «in corso», poi «accendi anche la bassa», poi alta + bassa',
+    /Rifinitura alta/.test(fasi.t100) && /tra/.test(fasi.t100) && /Rifinitura alta in corso/.test(fasi.t785) && /Accendi anche la rifinitura bassa/.test(fasi.t901)
+    && /Rifinitura alta \+ bassa in corso/.test(fasi.chi), JSON.stringify(fasi));
 
-  /* «Cosa riaccendo?»: l'elenco si apre, ogni riga si spunta */
-  const ria = await p.evaluate(() => {
+  /* toccato il tasto: e' come «visto», la musica non torna, e il tutto schermo si chiude per mostrare il passo */
+  const tocco = await p.evaluate(() => {
     timerChiudi(); window.__t = 6000000; timerAvvia();
+    TM.full = true; tmDisegna(true);
     window.__t = 6000000 + 721*1000; tmTick();
     const box = document.getElementById('tmr'), r = {};
-    const tasto = box.querySelector('[data-act="riatt"]'); r.tasto = tasto ? tasto.textContent : '';
-    tasto.click();
-    r.righe = Array.from(box.querySelectorAll('.tm-rv')).map(x => x.querySelector('b').textContent);
-    box.querySelector('.tm-rv[data-k$=":leg"]').click();
-    r.spuntata = !!box.querySelector('.tm-rv.ok[data-k$=":leg"]'); r.conto = (box.querySelector('.tm-n') || {}).textContent;
-    r.salvata = /leg/.test(localStorage.getItem('zfl_timer'));
+    box.querySelector('.tm-rif').click();
+    r.fase = tmStato(tmEl()).fase; r.full = TM.full;
+    const n = TM.log.length; window.__t += 45000; tmTick(); r.suoni = TM.log.slice(n);
     timerChiudi(); return r;
   });
-  tac.t('«Cosa riaccendo?» elenca Leg Kneading, Foot Roller, gli airbag con la forza e lo Zero Gravity; le righe si spuntano',
-    /Cosa riaccendo\?/.test(ria.tasto) && ria.righe.length === 4 && /Leg Kneading/.test(ria.righe[0]) && /Foot Roller/.test(ria.righe[1]) && /Airbag · forza/.test(ria.righe[2]) && /Zero Gravity/.test(ria.righe[3])
-    && ria.spuntata && ria.conto === '1/4' && ria.salvata, JSON.stringify(ria));
+  tac.t('toccando il tasto la rifinitura risulta vista: niente più musica, e il timer a tutto schermo si rimpicciolisce',
+    tocco.fase === 'corso' && !tocco.full && !tocco.suoni.length, JSON.stringify(tocco));
+
+  /* v180 · avanti e indietro veloce come un lettore DVD: 2×, 4×, 8×, 16×; «▶» torna normale.
+     Mentre scorre non suona; tornando indietro i suoni passati tornano a valere */
+  const dvd = await p.evaluate(() => {
+    timerChiudi(); window.__t = 7000000; timerAvvia(); const r = {};
+    const box = () => document.getElementById('tmr');
+    box().querySelector('[data-act="avanti"]').click(); r.v1 = TM.vel;
+    box().querySelector('[data-act="avanti"]').click(); box().querySelector('[data-act="avanti"]').click(); box().querySelector('[data-act="avanti"]').click(); r.v4 = TM.vel;
+    r.badge = (box().querySelector('[data-act="avanti"] i') || {}).textContent;
+    box().querySelector('[data-act="avanti"]').click(); r.v5 = TM.vel;
+    /* 16× per 50 secondi veri: 800 secondi di seduta, oltre la rifinitura alta (720), senza suoni */
+    TM.vel = 16; TM.acc = tmEl(); TM.t0 = window.__t; const n = TM.log.length;
+    for(let i = 0; i < 200; i++){ window.__t += 250; tmTick(); }
+    r.el = Math.round(tmEl()); r.suoni = TM.log.slice(n); r.fase = tmStato(tmEl()).fase;
+    box().querySelector('[data-act="pausa"]').click(); r.normale = TM.vel === 1 && TM.run;
+    /* indietro a 8x fino a prima della rifinitura: il suono torna a valere */
+    box().querySelector('[data-act="indietro"]').click(); box().querySelector('[data-act="indietro"]').click(); box().querySelector('[data-act="indietro"]').click(); r.vi = TM.vel;
+    for(let i = 0; i < 48; i++){ window.__t += 250; tmTick(); }
+    r.indietro = Math.round(tmEl()); r.ripulito = !TM.fired['refa'];
+    box().querySelector('[data-act="pausa"]').click();
+    const m = TM.log.length; window.__t += (720 - tmEl() + 2) * 1000; tmTick(); r.suonaDiNuovo = TM.log.slice(m);
+    /* fino all'inizio: si ferma a zero, in pausa */
+    timerScorri(-1); for(let i = 0; i < 2000 && TM.run; i++){ window.__t += 250; tmTick(); } r.zero = Math.round(tmEl()); r.fermo = !TM.run && TM.vel === 1;
+    /* fino alla fine: si ferma un secondo prima, alla velocita' normale, e la seduta non finisce da sola */
+    timerScorri(1); timerScorri(1); timerScorri(1); timerScorri(1); for(let i = 0; i < 400; i++){ window.__t += 250; tmTick(); if(TM.vel === 1) break; }
+    r.fine = Math.round(tmEl()); r.nonFinita = !TM.fine && TM.vel === 1;
+    timerChiudi(); return r;
+  });
+  tac.t('i tasti avanti veloce: 2×, 4×, 8×, 16×, poi di nuovo 2×, e la velocità si legge sul tasto',
+    dvd.v1 === 2 && dvd.v4 === 16 && dvd.badge === '16×' && dvd.v5 === 2, JSON.stringify(dvd));
+  tac.t('a 16× 50 secondi diventano 800: si passa la rifinitura senza suoni, e «▶» torna alla velocità normale',
+    Math.abs(dvd.el - 800) <= 2 && !dvd.suoni.length && dvd.normale, JSON.stringify(dvd));
+  tac.t('tornando indietro prima della rifinitura, al minuto giusto la musica suona di nuovo',
+    dvd.vi === -8 && dvd.indietro < 720 && dvd.ripulito && dvd.suonaDiNuovo.indexOf('rif') >= 0, JSON.stringify(dvd));
+  tac.t('indietro si ferma a zero in pausa; avanti si ferma un secondo prima della fine, senza chiudere la seduta',
+    dvd.zero === 0 && dvd.fermo && dvd.fine === 1199 && dvd.nonFinita, JSON.stringify(dvd));
 
   /* pausa: il tempo non corre; ripresa: riparte da dove era */
   const pausa = await p.evaluate(() => {
@@ -242,7 +278,7 @@ module.exports = async function(browser){
 
   /* ricaricando la pagina il timer riparte da solo, senza rifare i suoni vecchi */
   const sal = await p.evaluate(() => {
-    timerChiudi(); window.__t = 20000000; timerAvvia(); window.__t += 780000; tmTick();   /* minuto 13: dentro la rifinitura alta, avviso non ancora confermato */
+    timerChiudi(); window.__t = 20000000; timerAvvia(); window.__t += 750000; tmTick();   /* minuto 12 e mezzo: dentro la rifinitura alta, tasto non ancora toccato */
     const prima = tmEl(); const nLog = TM.log.length;
     const salvato = localStorage.getItem('zfl_timer');
     TM = null; clearInterval(TM_H); timerRipristina();

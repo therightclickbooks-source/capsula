@@ -419,6 +419,29 @@ module.exports = async function(browser){
   tac.t('le tecniche delle rifiniture nell\'ordine della capsula, con le sue icone', dopo3.tec === 'Kneading,Tapping,Tap,Massage,Knead and Knock,Shiatsu', dopo3.tec);
   tac.t('nella pagina del protocollo niente striscia «seduta da chiudere» in cima', !dopo3.striscia);
 
+  /* 6b2 · v180: i colori del pannello. Azzurro = la scelta del programma,
+     giallo tratteggiato = cambiata, bianco = le altre */
+  const col = await browser.newPage({viewport:{width:430, height:900}});
+  col.on('pageerror', e => tac.rossi.push('errore di pagina (colori): ' + e.message));
+  await col.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
+  await col.goto(GESTIONALE); await col.waitForTimeout(600);
+  const colori = await col.evaluate(() => { RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['cervicale','lombare'], zone:'cervicale',
+    goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false}; VIEW = {name:'proposal'}; render();
+    const z = () => [...document.querySelectorAll('#regola .rp-z')].map(b => b.className.replace('rp-z', '').trim()).join('|');
+    const tec = () => [...document.querySelectorAll('#regola .rcrif.up .rp-ics.tre')][0];
+    const t = () => [...tec().querySelectorAll('.rp-ic')].map(b => b.querySelector('b').textContent + ':' + b.className.replace('rp-ic', '').trim()).filter(x => !/:$/.test(x)).join('|');
+    const r = {z0: z(), t0: t()};
+    rtSet('aria', 'braccia'); r.z1 = z();
+    const k = currentProt.manualRef.tkey; rtRif('up', 'tkey', k === 'SHIATSU' ? 'KNEADING' : 'SHIATSU'); r.t1 = t();
+    const ic = tec().querySelector('.rp-ic:not(.on):not(.orig) .capic');
+    r.bianca = ic ? getComputedStyle(ic).filter : '';
+    return r; });
+  await col.close();
+  tac.t('pannello: senza ritocchi gli airbag del programma sono tutti azzurri, e la tecnica del programma pure', colori.z0 === 'on|on|on|on' && /^[^|]+:on$/.test(colori.t0), JSON.stringify(colori));
+  tac.t('pannello: toccando «Braccia» le braccia restano azzurre, le altre zone spente col bordo giallo', colori.z1 === 'off mod|on|off mod|off mod', JSON.stringify(colori));
+  tac.t('pannello: la tecnica cambiata è gialla tratteggiata, quella del programma resta azzurra, le altre bianche',
+    /:on mod/.test(colori.t1) && /:orig/.test(colori.t1) && colori.t1.split('|').length === 2 && /grayscale/.test(colori.bianca), JSON.stringify(colori));
+
   /* 6c · v179: gli effetti della scheda. Il nome e' fatto di lettere ma si
      legge uguale; le bolle ci sono solo in questa pagina; a pagina ferma le
      lettere volano via e tornano, senza far scorrere la pagina di lato */

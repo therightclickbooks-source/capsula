@@ -3,8 +3,9 @@
    Raffaele ha perso delle sedute: il cliente finisce, lui si distrae,
    la pagina si chiude o il telefono si spegne, e la proposta non
    registrata sparisce. Da adesso una seduta, aperta dal timer (o dal QR),
-   resta salvata finche' non e' registrata con «✓ OK» e chiusa con le
-   risposte di fine seduta: in Home c'e' l'avviso, in cima la striscia.
+   resta salvata finche' non e' registrata con «✓ OK»: in Home c'e'
+   l'avviso, in cima la striscia. Dalla v180 non ci sono piu' domande di
+   fine seduta: registrata, la seduta e' chiusa.
    ═══════════════════════════════════════════════════════════════ */
 const { GESTIONALE, Taccuino } = require('./aiuto');
 
@@ -84,33 +85,25 @@ module.exports = async function(browser){
   tac.t('«Chiudi la seduta» riapre la proposta con lo stesso protocollo di allora e il tasto «✓ OK»',
     ripresa.view === 'proposal' && ripresa.prog === 'P14' && ripresa.avviso && ripresa.ok, JSON.stringify(ripresa));
 
-  /* 5 · «✓ OK»: registrata, ma resta aperta finche' mancano le risposte */
+  /* 5 · «✓ OK»: registrata e chiusa, senza domande da aspettare */
   const reg = await p.evaluate(() => {
     document.getElementById('okbtn').click();
     const s = DB.sessions[DB.sessions.length - 1];
-    return {view: VIEW.name, sid: VIEW.sid, prog: s.prog, nuova: s.id !== 's0', aperte: JSON.parse(localStorage.getItem('zfl_sedute_aperte') || '[]')};
+    return {view: VIEW.name, sid: VIEW.sid, prog: s.prog, nuova: s.id !== 's0', msg: !!(s.msg && s.msg.frasi && s.msg.frasi.length >= 2),
+      aperte: JSON.parse(localStorage.getItem('zfl_sedute_aperte') || '[]')};
   });
-  tac.t('con «✓ OK» la seduta è registrata (col protocollo salvato) e passa a «mancano le risposte»',
-    reg.view === 'closing' && reg.nuova && reg.prog === 'P14' && reg.aperte.length === 1 && reg.aperte[0].stato === 'chiudi' && reg.aperte[0].sid === reg.sid, JSON.stringify(reg));
+  tac.t('con «✓ OK» la seduta è registrata (col protocollo salvato e il suo messaggio) ed è già chiusa',
+    reg.view === 'closing' && reg.nuova && reg.prog === 'P14' && reg.msg && reg.aperte.length === 0, JSON.stringify(reg));
 
+  /* 6 · riaprendo l'app non resta niente da chiudere, nemmeno le «da chiudere» rimaste da prima */
+  await p.evaluate(() => { localStorage.setItem('zfl_sedute_aperte', JSON.stringify([{clientId:'c1', stato:'chiudi', sid: DB.sessions[DB.sessions.length - 1].id, inizio:new Date().toISOString()}])); });
   await riavvio();
-  const home2 = await p.evaluate(() => {
-    const card = document.querySelector('.sapcard'); const t = card ? card.textContent.replace(/\s+/g,' ') : '';
-    if(card) card.querySelector('.sapgo').click();
-    return {t, view: VIEW.name, sid: VIEW.sid};
-  });
-  tac.t('se l\'app si chiude prima delle risposte, la Home riporta alla chiusura di quella seduta',
-    /mancano le risposte/.test(home2.t) && home2.view === 'closing' && home2.sid === reg.sid, JSON.stringify(home2));
-
-  /* 6 · risposte date a tutto: la seduta e' chiusa, l'avviso sparisce */
   const chiusa = await p.evaluate(() => {
-    document.querySelectorAll('.fbr').forEach(r => r.querySelector('.fbb.g').click());
-    const a = JSON.parse(localStorage.getItem('zfl_sedute_aperte') || '[]');
-    go('home');
-    return {aperte: a.length, card: !!document.querySelector('.sapcard'), striscia: document.getElementById('tmr').classList.contains('sap')};
+    go('clients');
+    return {card: !!document.querySelector('.sapcard'), striscia: document.getElementById('tmr').classList.contains('sap'), aperte: aperte().length};
   });
-  tac.t('risposto a tutte le domande, la seduta è chiusa: niente avviso e niente striscia',
-    chiusa.aperte === 0 && !chiusa.card && !chiusa.striscia, JSON.stringify(chiusa));
+  tac.t('registrata la seduta niente avviso e niente striscia, anche con una «da chiudere» rimasta dalla versione di prima',
+    !chiusa.card && !chiusa.striscia && chiusa.aperte === 0, JSON.stringify(chiusa));
 
   /* 7 · «Non è stata fatta»: si toglie solo dopo la conferma */
   const nonfatta = await p.evaluate(() => {

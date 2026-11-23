@@ -118,8 +118,9 @@ module.exports = async function(browser){
   })));
   tac.t('i passi non chiedono mai un valore oltre il 3', !no.length, no.length + ' sedute');
 
-  no = ogni(s => /intensit/.test(s.passi[s.passi.length - 1].titolo));
-  tac.t('l\'ultimo passo chiede com\'era l\'intensita\'', !no.length, no.length + ' sedute');
+  /* v180: niente domande a fine seduta; l'ultimo passo dice di toccare «✓ OK» */
+  no = ogni(s => /✓ OK/.test(s.passi[s.passi.length - 1].titolo) && !/intensit/.test(s.passi[s.passi.length - 1].titolo));
+  tac.t('l\'ultimo passo dice di toccare «✓ OK», senza domande sull\'intensità', !no.length, no.length + ' sedute');
 
   /* le icone degli airbag: l'ordine del nostro display, non del libretto.
      Da sinistra braccio flesso, mano, ginocchio, piede, figura seduta. */
@@ -318,26 +319,28 @@ module.exports = async function(browser){
       DB.sessions.push(s);
       VIEW = {name:'closing', id:c.id, sid:s.id, lvUp:false}; render();
       const t = document.getElementById('app').innerText;
-      r.fam[f] = document.querySelectorAll('.dopo .dx').length === 3 && !!document.querySelector('.prossima');
+      /* v180: il messaggio e la tessera dell'omaggio, nient'altro */
+      r.fam[f] = !!document.querySelector('.lettera') && !!document.querySelector('.omg') && !document.querySelector('.dopo, .prossima, .fbr, .strada');
       r.testi.push(t);
-      r.tasti = [...document.querySelectorAll('.fbr .fbn b')].map(b => b.textContent).join('|');
+      r.tasti = document.querySelectorAll('.fbr, .fbb').length;
+      r.parole = Math.max(r.parole || 0, messaggioZenith(c, s).frasi.map(x => x.t.replace(/<[^>]+>/g, '')).join(' ').split(/\s+/).length);
       r.nome = (r.nome !== false) && !!document.querySelector('.lettera .nm') && /Prova/.test(document.querySelector('.ch-nome').textContent);
       r.ids = (r.ids || []).concat([messaggioZenith(c, s).ids]);
     });
     DB.sessions = DB.sessions.filter(s => !/^schiu/.test(s.id));
     return r;
   });
-  tac.t('la chiusura ha le tre cose da portare a casa e la prossima, per ogni famiglia',
+  tac.t('la chiusura è corta: il messaggio e la tessera della seduta omaggio, per ogni famiglia',
     Object.values(chiusura.fam).every(Boolean), JSON.stringify(chiusura.fam));
+  tac.t('il messaggio è una via di mezzo: tre frasi, al massimo 60 parole', chiusura.parole <= 60, chiusura.parole + ' parole');
   tac.t('il messaggio di Zenith chiama il cliente per nome, in oro', chiusura.nome);
   { let uguali = 0;
     for(let i = 1; i < chiusura.ids.length; i++)
-      uguali += chiusura.ids[i].filter(x => chiusura.ids[i - 1].includes(x) && !/^c-fb|^a-liv|^a-dec/.test(x)).length;
+      uguali += chiusura.ids[i].filter(x => chiusura.ids[i - 1].includes(x) && !/^livello/.test(x)).length;
     tac.t('due sedute di fila non hanno frasi del messaggio in comune', !uguali, uguali + ' frasi ripetute ' + JSON.stringify(chiusura.ids)); }
   { const sanitarie = chiusura.testi.filter(t => /Trombosi|Pacemaker|Gravidanza|Tumore|Diabete|certificato/i.test(t));
     tac.t('il messaggio non tira mai fuori l\'anamnesi sanitaria', !sanitarie.length); }
-  tac.t('a fine seduta si chiede solo di ciò che c\'era: qui, con i soli rulli, il massaggio',
-    chiusura.tasti === 'Massaggio', chiusura.tasti);
+  tac.t('a fine seduta niente domande al cliente (troppo forte · giusta · troppo leggera)', chiusura.tasti === 0, chiusura.tasti + ' tasti');
   { const vietate = /vend|propor|lascialo parlare|silenzio|momento d.oro|ora ne ha\b/i;
     const no = chiusura.testi.filter(t => vietate.test(t));
     tac.t('la chiusura parla al cliente: niente copioni di vendita a vista', !no.length,
@@ -364,9 +367,10 @@ module.exports = async function(browser){
     r.vinto = !!document.querySelector('.premiovinto') && /hai vinto/.test(document.querySelector('.premiovinto').textContent);
     DB.sessions = DB.sessions.filter(x => x.id !== 'sp12');
     VIEW = {name:'closing', id:'cpremi', sid:'sp11', lvUp:false}; render();
-    r.conto = /Premio Costanza/.test((document.querySelector('.costanza') || {}).textContent || '');
+    const omg = document.querySelector('.omg');
+    r.conto = !!omg && (omg.querySelector('.omg-n b') || {}).textContent === '1' && omg.querySelectorAll('.omg-t i.on').length === 12
+      && !!omg.querySelector('.omg-t i.regalo') && /vinci una/.test(omg.textContent) && /Se ci arrivi entro il/.test(omg.textContent);
     r.vuoto = messaggioZenith(g.c, DB.sessions.find(x => x.id === 'sp11')).frasi.map(f => f.t).join(' ');
-    r.tooltip = [...document.querySelectorAll('.fbb')].map(b => b.getAttribute('data-zt') || '').join(' ');
     /* la seduta da regalare: passa a un'altra scheda, o resta a lui */
     { const amico = {id:'camico', nome:'Marco', cognome:'Bianchi', anamnesi:{}};
       DB.clients = DB.clients.concat([amico]);
@@ -417,9 +421,7 @@ module.exports = async function(browser){
     premi.due.te === 12 && premi.due.regalo === 6 && premi.due.tappe.includes('Silver · 2° giro+'), JSON.stringify(premi.due.tappe));
   tac.t('la seduta che fa salire di livello dice al cliente «hai vinto»', premi.vinto);
   tac.t('senza risposte al check-in il messaggio non lascia buchi', !/undefined|così come stavi|null/.test(premi.vuoto), premi.vuoto.slice(0, 200));
-  tac.t('sotto la strada c\'e\' il conto alla rovescia del Premio Costanza', premi.conto);
-  tac.t('nella chiusura le schede della pressione parlano al cliente, non all\'operatore',
-    !/Il cliente|gestionale|questa persona/.test(premi.tooltip) && /Hai sentito/.test(premi.tooltip), premi.tooltip.slice(0, 200));
+  tac.t('la tessera dice quante sedute mancano alla seduta omaggio (12 caselle piene, il regalo in fondo) e il Premio Costanza', premi.conto);
   tac.t('la seduta regalata passa nella scheda dell\'amico, e lui la usa',
     premi.regalo.prima === 2 && premi.regalo.dopoGiver === 1 && premi.regalo.amico === 1 && premi.regalo.ricevuto
     && premi.regalo.scheda && premi.regalo.usato, JSON.stringify(premi.regalo));
