@@ -230,39 +230,39 @@ module.exports = async function(browser){
   tac.t('toccando il tasto la rifinitura risulta vista: niente più musica, e il timer a tutto schermo si rimpicciolisce',
     tocco.fase === 'corso' && !tocco.full && !tocco.suoni.length, JSON.stringify(tocco));
 
-  /* v180 · avanti e indietro veloce come un lettore DVD: 2×, 4×, 8×, 16×; «▶» torna normale.
+  /* v180 · avanti e indietro veloce come un lettore DVD: 2× e 4× (v181), «▶» torna normale.
      Mentre scorre non suona; tornando indietro i suoni passati tornano a valere */
   const dvd = await p.evaluate(() => {
     timerChiudi(); window.__t = 7000000; timerAvvia(); const r = {};
     const box = () => document.getElementById('tmr');
     box().querySelector('[data-act="avanti"]').click(); r.v1 = TM.vel;
-    box().querySelector('[data-act="avanti"]').click(); box().querySelector('[data-act="avanti"]').click(); box().querySelector('[data-act="avanti"]').click(); r.v4 = TM.vel;
-    r.badge = (box().querySelector('[data-act="avanti"] i') || {}).textContent;
+    box().querySelector('[data-act="avanti"]').click(); r.v4 = TM.vel;
+    r.badge = (box().querySelector('[data-act="avanti"] i') || {}).textContent; r.colore = box().querySelector('[data-act="avanti"]').classList.contains('v4');
     box().querySelector('[data-act="avanti"]').click(); r.v5 = TM.vel;
-    /* 16× per 50 secondi veri: 800 secondi di seduta, oltre la rifinitura alta (720), senza suoni */
-    TM.vel = 16; TM.acc = tmEl(); TM.t0 = window.__t; const n = TM.log.length;
-    for(let i = 0; i < 200; i++){ window.__t += 250; tmTick(); }
+    /* 4× per 200 secondi veri: 800 secondi di seduta, oltre la rifinitura alta (720), senza suoni */
+    TM.vel = 4; TM.acc = tmEl(); TM.t0 = window.__t; const n = TM.log.length;
+    for(let i = 0; i < 800; i++){ window.__t += 250; tmTick(); }
     r.el = Math.round(tmEl()); r.suoni = TM.log.slice(n); r.fase = tmStato(tmEl()).fase;
     box().querySelector('[data-act="pausa"]').click(); r.normale = TM.vel === 1 && TM.run;
     /* indietro a 8x fino a prima della rifinitura: il suono torna a valere */
-    box().querySelector('[data-act="indietro"]').click(); box().querySelector('[data-act="indietro"]').click(); box().querySelector('[data-act="indietro"]').click(); r.vi = TM.vel;
-    for(let i = 0; i < 48; i++){ window.__t += 250; tmTick(); }
+    box().querySelector('[data-act="indietro"]').click(); box().querySelector('[data-act="indietro"]').click(); r.vi = TM.vel;
+    for(let i = 0; i < 100; i++){ window.__t += 250; tmTick(); }
     r.indietro = Math.round(tmEl()); r.ripulito = !TM.fired['refa'];
     box().querySelector('[data-act="pausa"]').click();
     const m = TM.log.length; window.__t += (720 - tmEl() + 2) * 1000; tmTick(); r.suonaDiNuovo = TM.log.slice(m);
     /* fino all'inizio: si ferma a zero, in pausa */
     timerScorri(-1); for(let i = 0; i < 2000 && TM.run; i++){ window.__t += 250; tmTick(); } r.zero = Math.round(tmEl()); r.fermo = !TM.run && TM.vel === 1;
     /* fino alla fine: si ferma un secondo prima, alla velocita' normale, e la seduta non finisce da sola */
-    timerScorri(1); timerScorri(1); timerScorri(1); timerScorri(1); for(let i = 0; i < 400; i++){ window.__t += 250; tmTick(); if(TM.vel === 1) break; }
+    timerScorri(1); timerScorri(1); for(let i = 0; i < 1400; i++){ window.__t += 250; tmTick(); if(TM.vel === 1) break; }
     r.fine = Math.round(tmEl()); r.nonFinita = !TM.fine && TM.vel === 1;
     timerChiudi(); return r;
   });
-  tac.t('i tasti avanti veloce: 2×, 4×, 8×, 16×, poi di nuovo 2×, e la velocità si legge sul tasto',
-    dvd.v1 === 2 && dvd.v4 === 16 && dvd.badge === '16×' && dvd.v5 === 2, JSON.stringify(dvd));
-  tac.t('a 16× 50 secondi diventano 800: si passa la rifinitura senza suoni, e «▶» torna alla velocità normale',
+  tac.t('i tasti avanti veloce: 2×, poi 4×, poi di nuovo 2×; la velocità si legge sul tasto, ognuna col suo colore',
+    dvd.v1 === 2 && dvd.v4 === 4 && dvd.badge === '4×' && dvd.colore && dvd.v5 === 2, JSON.stringify(dvd));
+  tac.t('a 4× 200 secondi diventano 800: si passa la rifinitura senza suoni, e «▶» torna alla velocità normale',
     Math.abs(dvd.el - 800) <= 2 && !dvd.suoni.length && dvd.normale, JSON.stringify(dvd));
   tac.t('tornando indietro prima della rifinitura, al minuto giusto la musica suona di nuovo',
-    dvd.vi === -8 && dvd.indietro < 720 && dvd.ripulito && dvd.suonaDiNuovo.indexOf('rif') >= 0, JSON.stringify(dvd));
+    dvd.vi === -4 && dvd.indietro < 720 && dvd.ripulito && dvd.suonaDiNuovo.indexOf('rif') >= 0, JSON.stringify(dvd));
   tac.t('indietro si ferma a zero in pausa; avanti si ferma un secondo prima della fine, senza chiudere la seduta',
     dvd.zero === 0 && dvd.fermo && dvd.fine === 1199 && dvd.nonFinita, JSON.stringify(dvd));
 
