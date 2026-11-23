@@ -110,8 +110,9 @@ module.exports = async function(browser){
   tac.t('nessuna risposta promette la musica in seduta',
     !/musica/i.test(tutto), (tutto.match(/.{0,40}musica.{0,40}/i) || [''])[0]);
   const fine = trova('quando finisco');
-  tac.t('a fine seduta si chiede com\'era l\'intensita\'',
-    /intensit/.test(fine.piu), fine.piu);
+  /* v180: a fine seduta niente domande; c'e' il messaggio e la seduta omaggio */
+  tac.t('a fine seduta il messaggio di Zenith e le sedute che mancano all\'omaggio, niente domande',
+    /messaggio/.test(fine.piu) && /omaggio/.test(fine.piu) && !/intensit/.test(fine.piu), fine.piu);
 
   /* ── la domanda «massaggio completo o solo aria» ──
      si fa solo quando cambia davvero la seduta, e la risposta arriva al

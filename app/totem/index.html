@@ -34,6 +34,21 @@ html,body{overscroll-behavior:none}
 #tot{width:1080px; height:1920px; flex:none; position:relative; overflow:hidden;
   transform-origin:center center; background:#0c0a0f; color:#fff}
 
+/* ═══ v183 · IL LOGO: quello ufficiale, vettoriale, piu' grande (sul totem
+   da 50 pollici era alto 4 centimetri), e una luce che ci passa sopra
+   ogni tanto, solo sulle lettere ═══ */
+.logobox{position:relative; display:inline-block; line-height:0}
+.head #logo{height:88px}
+.head .ente{margin-top:12px}
+#s-idle .vetr{top:12.2%}
+.logoluce{position:absolute; inset:0; pointer-events:none;
+  -webkit-mask:var(--logo) center/contain no-repeat; mask:var(--logo) center/contain no-repeat;
+  background:linear-gradient(105deg, transparent 38%, rgba(255,255,255,.95) 48%, rgba(240,217,232,.9) 52%, transparent 62%);
+  background-size:300% 100%; background-repeat:no-repeat; animation:logoLuce 9s ease-in-out infinite}
+@keyframes logoLuce{0%,62%{background-position:130% 0} 82%,100%{background-position:-30% 0}}
+.ztop .zlogo{height:58px !important}
+@media (prefers-reduced-motion: reduce){ .logoluce{animation:none; opacity:0} }
+
 /* ═══════════ il fondo che respira ═══════════ */
 .aurora{position:absolute; inset:-25%; pointer-events:none}
 .aurora i{position:absolute; border-radius:50%; filter:blur(110px)}
@@ -1448,17 +1463,91 @@ html,body{overscroll-behavior:none}
 .znasce.tocca2:active{filter:brightness(1.2)}
 .znasce .zcgo{display:flex; align-items:center; gap:14px; margin-top:10px; font-size:25px; font-weight:800; color:#f3dc8a}
 .znasce .zcgo .zpast{margin-left:auto; background:#e6c65c; color:#2a1a10; border:none}
+
+/* ══════════════════════════════════════════════════════════════
+   v183 · I COLORI DEL MARCHIO
+   Il logo Zenith ha tre colori: il prugna #7A496C, il nero #141414 e il
+   bianco. La vetrina li prende tutti e tre: il fondo e' il nero del
+   marchio, le luci che si muovono sono prugna e bianche, le parole
+   messe in risalto passano dal bianco al prugna chiaro. L'oro resta
+   solo dove si parla di premi (le sedute in regalo): li', e solo li',
+   vuol dire «regalo».
+   ══════════════════════════════════════════════════════════════ */
+:root{--zk:#141414; --zp:#7a496c; --zpl:#c99bbb; --zpc:#f0d9e8}
+#fit, #tot{background:var(--zk)}
+.a2{background:#b98aad; opacity:.16}
+.a4{background:#f3e6ee; opacity:.05}
+.vign{background:radial-gradient(125% 78% at 50% 40%, transparent 38%, rgba(20,20,20,.88) 100%)}
+.gold{background:linear-gradient(95deg, #ffffff 0%, var(--zpc) 38%, var(--zpl) 100%); -webkit-background-clip:text; background-clip:text; color:transparent}
+.zgancio.t-c, .zgancio.t-r{background:rgba(201,155,187,.12); border-color:rgba(201,155,187,.45); color:var(--zpc)}
+.zgancio i{background:var(--zpl)}
+.zdots i.on{background:var(--c, var(--zpl))}
+.ztre span b{color:var(--zpc)}
+.zcaps .cer{border-color:rgba(201,155,187,.4)} .zcaps .c3{border-color:rgba(201,155,187,.2)}
+.zcaps .didas{color:rgba(240,217,232,.7)}
+.zdir.prima .live{color:var(--zpc)} .zdir.prima .live i{background:var(--zpl)}
+.znastro div{color:var(--zpc)}
+.zdir .conto{background:rgba(201,155,187,.14); color:var(--zpc); border-color:rgba(201,155,187,.4)}
+#logo.press{filter:drop-shadow(0 0 30px rgba(201,155,187,.9))}
+#lring rect{stroke:var(--zpl)}
+
+/* ══════════════════════════════════════════════════════════════
+   v183 · LA VETRINA SI MUOVE DI PIU'
+   Sul totem la vetrina resta accesa tutto il giorno: deve attirare lo
+   sguardo di chi passa, senza mai coprire quello che c'e' scritto.
+   · un raggio di luce prugna e bianca gira piano dietro a tutto;
+   · un pulviscolo luminoso sale lento dal basso, come in una sala spa;
+   · la frase grande entra dal basso, sfocata, e si mette a fuoco; la
+     parola in risalto ha una luce che la attraversa;
+   · le sei carte galleggiano, ognuna col suo tempo, e quella accesa ha
+     un filo di luce che le gira intorno.
+   Niente di tutto questo per chi ha chiesto meno movimento.
+   ══════════════════════════════════════════════════════════════ */
+@property --zang{syntax:'<angle>'; inherits:false; initial-value:0deg}
+.raggio{position:absolute; left:50%; top:26%; width:2000px; height:2000px; margin:-1000px 0 0 -1000px; pointer-events:none; border-radius:50%;
+  background:conic-gradient(from 0deg, transparent 0 8%, rgba(201,155,187,.10) 14%, transparent 22% 34%, rgba(255,255,255,.05) 40%, transparent 48% 60%, rgba(122,73,108,.16) 68%, transparent 78% 100%);
+  -webkit-mask:radial-gradient(circle, #000 0 30%, transparent 70%); mask:radial-gradient(circle, #000 0 30%, transparent 70%);
+  animation:zRaggio 70s linear infinite}
+@keyframes zRaggio{to{transform:rotate(360deg)}}
+.polvere{position:absolute; inset:0; pointer-events:none; overflow:hidden}
+.polvere i{position:absolute; bottom:-30px; left:var(--x); width:var(--s); height:var(--s); border-radius:50%;
+  background:radial-gradient(circle, #fff 0, rgba(240,217,232,.9) 35%, transparent 70%); opacity:0;
+  box-shadow:0 0 calc(var(--s) * 2) rgba(201,155,187,.7);
+  animation:zSale var(--d) linear var(--w) infinite, zOnda calc(var(--d) / 4) ease-in-out var(--w) infinite alternate}
+@keyframes zSale{0%{transform:translateY(0); opacity:0} 8%{opacity:var(--o)} 85%{opacity:var(--o)} 100%{transform:translateY(-1990px); opacity:0}}
+@keyframes zOnda{from{translate:-22px 0} to{translate:22px 0}}
+/* la frase grande: entra dal basso, sfocata, e si mette a fuoco */
+.zslide.on .h1{animation:zEntra 1s cubic-bezier(.2,.8,.2,1) .3s both}
+.zslide.on .sub{animation:zEntra 1s cubic-bezier(.2,.8,.2,1) .55s both}
+@keyframes zEntra{from{opacity:0; transform:translateY(34px); filter:blur(14px)} to{opacity:1; transform:none; filter:blur(0)}}
+.zslide .gold{background-size:220% 100%; animation:zParola 5s ease-in-out infinite}
+@keyframes zParola{0%,100%{background-position:0% 0} 50%{background-position:100% 0}}
+/* le carte galleggiano; quella accesa ha un filo di luce che le gira intorno */
+.zbis{animation:zGalleggia 5.5s ease-in-out infinite}
+.zbis:nth-child(2){animation-delay:-1.1s} .zbis:nth-child(3){animation-delay:-2.2s}
+.zbis:nth-child(4){animation-delay:-3.3s} .zbis:nth-child(5){animation-delay:-4.4s} .zbis:nth-child(6){animation-delay:-.6s}
+@keyframes zGalleggia{0%,100%{translate:0 0} 50%{translate:0 -6px}}
+.zbis.acceso::before{content:''; position:absolute; inset:-3px; border-radius:inherit; padding:3px; pointer-events:none;
+  background:conic-gradient(from var(--zang), transparent 0 55%, color-mix(in srgb, var(--c) 30%, #fff) 70%, var(--c) 80%, transparent 92%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:zFilo 3.2s linear infinite}
+@keyframes zFilo{to{--zang:360deg}}
+@media (prefers-reduced-motion: reduce){
+  .raggio, .polvere i, .zslide.on .h1, .zslide.on .sub, .zslide .gold, .zbis, .zbis.acceso::before{animation:none}
+  .polvere{display:none}
+}
 </style>
 </head>
 <body>
 <div id="fit"><div id="tot">
 
   <div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
+  <div class="raggio" aria-hidden="true"></div><div class="polvere" id="polvere" aria-hidden="true"></div>
   <div class="weave"></div><div class="vign"></div>
 
   <div class="head">
     <svg id="lring" viewBox="0 0 170 100"><rect x="2" y="2" width="166" height="96"/></svg>
-    <img id="logo" alt="Zenith">
+    <span class="logobox"><img id="logo" alt="Zenith"><i class="logoluce" aria-hidden="true"></i></span>
     <div class="ente">CENTRO DI RECUPERO BIOMUSCOLARE · POMPEI</div>
   </div>
 
@@ -1477,17 +1566,17 @@ html,body{overscroll-behavior:none}
         <div class="zslides" id="zslides" onclick="apriBisognoCorrente()"></div>
         <div class="zriga">
           <div class="zdots" id="zdots"></div>
-          <div class="ztre"><span onclick="apriInfo('sdraiato')">🛋️ Sdraiato e vestito</span><span onclick="apriInfo('durata')">⏱ <b>20–30</b> min</span><span onclick="apriInfo('misura')">✦ Su misura per te</span></div>
+          <div class="ztre"><span onclick="apriInfo('sdraiato')">🛋️ Senza spogliarti</span><span onclick="apriInfo('durata')">⏱ <b>20–30</b> min</span><span onclick="apriInfo('misura')">✦ Su misura per te</span></div>
         </div>
         <div class="zcaps" onclick="apriInfo('capsula')">
           <div class="alone"></div><div class="cer c3"></div><div class="cer c1"></div><div class="cer c2"></div>
           <svg viewBox="66 50 480 300" fill="none">
             <defs>
              <linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2536"/><stop offset=".6" stop-color="#1a1320"/><stop offset="1" stop-color="#0f0b13"/></linearGradient>
-             <linearGradient id="gb2" x1="0" x2="1"><stop offset="0" stop-color="#f3dc8a"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#d4af37" stop-opacity=".1"/></linearGradient>
+             <linearGradient id="gb2" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c99bbb"/><stop offset="1" stop-color="#c99bbb" stop-opacity=".1"/></linearGradient>
              <radialGradient id="gb3" cx=".45" cy=".55" r=".5"><stop offset="0" stop-color="#e2bdd4" stop-opacity=".55"/><stop offset="1" stop-color="#e2bdd4" stop-opacity="0"/></radialGradient>
              <linearGradient id="gb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#e2bdd4" stop-opacity=".8"/></linearGradient>
-             <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37" stop-opacity=".28"/><stop offset="1" stop-color="#d4af37" stop-opacity="0"/></linearGradient>
+             <linearGradient id="gbr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c99bbb" stop-opacity=".3"/><stop offset="1" stop-color="#c99bbb" stop-opacity="0"/></linearGradient>
             </defs>
             <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226 L540 250 C500 244 470 262 430 280 C360 310 250 318 170 290 C96 262 70 172 104 76 Z" fill="url(#gb1)"/>
             <path d="M112 84 C84 170 120 250 222 270 C318 288 400 252 456 226 C496 208 524 212 540 226" fill="none" stroke="url(#gb2)" stroke-width="4" stroke-linecap="round"/>
@@ -1554,7 +1643,7 @@ html,body{overscroll-behavior:none}
         <div class="o2" id="zpalla"></div>
         <div class="tx"><b id="zfase">Inspira</b><span id="zconta">1 · 4</span></div></div>
       <div class="zfasi" id="zfasi"><span class="on">Inspira 4″</span><span>Trattieni 2″</span><span>Espira 6″</span></div>
-      <div class="zdopo"><div class="p">Bastano sessanta secondi per abbassare i giri. Immagina <b>venti minuti così</b>, sdraiato, col calore sulla schiena e le gambe in alto: è una seduta Zenith.</div>
+      <div class="zdopo"><div class="p">Bastano sessanta secondi per abbassare i giri. Immagina <b>venti minuti così</b>, a occhi chiusi, col calore sulla schiena e le gambe in alto: è una seduta Zenith.</div>
         <div class="row"><span class="btnp" onclick="startCheck()">Fai il check-in ›</span><span class="btns" onclick="apriRespira()">Ancora<br>un minuto</span></div></div>
     </div>
   </section>
@@ -1644,11 +1733,11 @@ html,body{overscroll-behavior:none}
         <div class="ct" id="dcat"></div>
         <div class="dprima" id="dprima"></div>
         <div class="zacc" id="dchips"></div></div>
-      <div class="chiama"><span class="avv" id="dav">Z</span><span><div class="t" id="dmsg"></div><div class="s">Siediti e respira: la capsula la prepara lui.</div></span></div>
+      <div class="chiama"><span class="avv" id="dav">Z</span><span><div class="t" id="dmsg"></div><div class="s">Siediti e respira: intanto la capsula si prepara per te.</div></span></div>
       <div class="zfilo">
-        <div style="--c:#7ecbe8"><b>ADESSO</b><span>Togli orologio e bracciali, svuota le tasche. Resta vestito.</span></div>
-        <div style="--c:#e2bdd4"><b>IN CAPSULA</b><span id="dmin">20 minuti, sdraiato. Lascia lavorare Zenith.</span></div>
-        <div style="--c:#88d9ae"><b>ALLA FINE</b><span>Ci dici com'era: la prossima è ancora più tua.</span></div>
+        <div style="--c:#7ecbe8"><b>ADESSO</b><span>Togli orologio e bracciali, svuota le tasche. Non serve cambiarti.</span></div>
+        <div style="--c:#e2bdd4"><b>IN CAPSULA</b><span id="dmin">20 minuti di riposo. Lascia lavorare Zenith.</span></div>
+        <div style="--c:#88d9ae"><b>ALLA FINE</b><span>Un messaggio scritto per te, e quante sedute mancano al regalo.</span></div>
       </div>
       <div class="zpremio premibox" id="dpremi"></div>
       <div class="zattesa" onclick="apriRespira(true)"><span class="e">🌬️</span><span><b>Mentre aspetti: respira con Zenith</b><small>un minuto, qui davanti allo schermo</small></span><span class="zpast">›</span></div>
@@ -1713,9 +1802,10 @@ html,body{overscroll-behavior:none}
   <div class="dbg" id="dbg"></div>
 </div></div>
 
-<script src="../motore.js?v=182.26.11.23"></script>
+<script src="../motore.js?v=183.26.11.23"></script>
 <script>
-const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+gAAAFeCAYAAAAWrzWlAAAy1ElEQVR42u3dX2yUZ54n+sdnGLPDnxQI4gx/ioGo14zUhY4CyfaGorVJ6+z0pJQjldQXXZ1IIJ2LWHNRFm7JvvKlr2wpIHyxqr4zEkn1xUiWNirO7Fmls2qqs1kC0SpvpODTCjQF9ISMBW+D6caHUZ2LYJakCVTZheutqs9HailJV9mvn/d5/3zf53mfX9/WrVsDAAAA0F7/myYAAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABAAAAAR0AAAAEdAAAAEBABwAAAAEdAAAAENABAABAQAcAAAAEdAAAABDQAQAAAAEdAAAABHQAAABAQAcAAAABHQAAABDQAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAAAR0AAAAQEAHAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABgB6RyWTqWgEABHQAoI1SqdTR2dnZkE6nL2gNABDQAYA2GRoaOpZKpcLY2Nig1gCA1urbunWrVgAAniidTl84f/78g2C+f//+uVqttlfLAEBrGEEHABry7VFzo+gA0FpG0AGAJ/r26PkSo+gA0DpG0AGAJ/qu0fKJiQmj6AAgoAMAqyGdTl8oFAqP/P9yuVzIZrPKrgGAgA4APG1Petd8dHRUIwGAgA4APE2PGz1fks1mjaIDgIAOADxNja7UbhQdAAR0AOApaWT0fIlRdAAQ0AGAp6TZOudG0QFAQAcAWiyTydQbHT1fYhQdAAR0AKDFJiYmlvU9o+gAIKADAC2SzWbr2Wx2ud81ig4AAjoA0AorHQU3ig4AAjoAsEIrGT1/6GeEXC5nFB0AmtS3detWrQAAhBBCmJ2dXXFADyGEWq0W9u/f36dFAaBxRtABgBBCa0bPl6TT6VAoFIyiA4CADgA0q9Xvjo+NjWlUABDQAYBmtHL0fIlRdABojnfQAYCWvXv+bd5FB6DV0un0hX379g1mMplv/Pc4jkMURaFarXbsdWeN3QsAve1pjJ4/dBMVCoVCvVwuC+kArCiUDw0NDeZyuZBOp5/08XqlUgmnT58OnXb9MYIOAD3uV7/6Vf3boxCtZBQdgOVKpVJHJyYmjhUKhWVfg8bHx0OlUumI65B30AGghxUKhacazkPwLjoAy5PL5ernzp37RjiP4ziUy+VQLBZDPp8Pzz77bN+zzz7b973vfW8kn8+HqampEEXRN65BMzMzYWZmpp5KpY4m/W82gg4APez8+fP1BqYKrphRdACaUSgU6tPT09+4jkxOTjY8ZT2dTl8YGxsbfDjcR1EUisViiKIosdcjI+gA0MM3P6sRzu/fKBlFB6AhY2Nj3wjnpVIpvPrqqyPNvE9eq9X2FovFvnw+H2q1WgghhEwmE2ZnZ0OSR9KNoANAj1qt0fMlcRyHAwcOjMRxfFzrA/Ao3x45LxaLK17oLZVKHZ2dnT229EpXFEUhn88n8npkBB0AevQGaDXD+f0bpDA0NHRM6wPwKOl0+sLExERLw3kIIcRxfDyfz48svZueyWTC6OhoIq9HRtABoAet9uj5QzdJRtEBeKTZ2dkHZT9LpVIYHx9v6bviqVTq6Llz546lUqkQQgj5fD5xNdONoANAj2nH6PlDN0dG0QH4M9ls9kE4v18are9RAf6rr7565P9++9vf1mdmZuqPW+8kjuPjw8PDD/59dHQ0ce0goANAjxkbG2vr73/rrbdCJ5S6AWD1PLzaerFYbPr7qVQq5HK5MD09Haanp78zpFcqlb5qtbr0UCCk0+kLAjoA0K4boLaNnj98E2UUHYBHBfRarbbiaeeFQuGxlUPK5fKDfx4aGhoU0AGAtmj36PkSo+gALMnlcg/CdKlUavh7zz77bN/S/x4O3SGE8Nprr4XHBPS+OI5DCF+PogvoAEA7wnnbR8+XGEUHYMlS+bMQQliaft6s8fHxkW9fZx5n6fc8/LsFdABgtQLx0bfeeitR22QUHYAQQvj+97//4J+jKFrW9PZnnnnmH5r5/GefffbwA4K6gA4ArJqhoaFjTxpNaMNDA6PoADwY7V6adt6o+yu/13O5XP3kyZPfeJf89OnTj/3u5cuX/+z3J8Ea3QEAuv7GJ3Gj50veeuutUCqVjqqLDkAURU19fnZ29pH/vVarhXK5PPK479ZqtUS2gRF0AOhySRw9X5JKpcLExIRRdABasmBbFEXh1VdfHXnSg9+kvXsuoANAD0jy6PmSQqGQuDq0AKye5Y5mV6vVPxt1j+M4NDIr6+EH181OrRfQAYBlSfLo+cPGxsYG7S0AAT2bzTa8YFs+n+/L5/MjDwfsbDbb0M84ePDgg39e7sJ0AjoA0LBOGD1fYhQdoHc9XFrtcfXLHyWO4+O/+MUvvvHfRkdHn3h9XJpOv9yybgI6ANCUThk9X2IUHaBnA3rf0ih4Lpdr+vulUqmpUfTXXnvtwdonT1rtXUAHAFask0bPlxhFB+hdS0E5nU6HQqHQVF3yZkfRx8bGHvxzpVKZE9ABgKeq00bPH7ppMooO0IMmJyfnHg7QqVTqaDPff9QoeiaTqT/i+lhPp9MhhBDK5XKo1Wp7k9QOfVu3btUbAKCLpNPpC+fPn+/YoLt///65pN0wAfD0TU9P1wuFwoPwXCwWW7p4WyaTqc/Ozj5YwT2J1xsBHQC6TDabrTdSS/bgwYMtqTnbqFqtFsrl8hM/V61WQ7Va7bMnAXpLKpU6eu7cuQczwIrFYiiXy32t+tmzs7PHluqfT01NhcnJycRdawR0AOhRY2Nj9SetdNtK1Wo15PN5wRuA75TNZuuzs7MP/r0VQTqdTl84efLk4FI4j6IovPrqq4m8HnkHHQAAgESoVqt9xWLxwb+Pjo6GmZmZerPvpC/J5XL1X/3qV98I5/l8fiSpf7+ADgAAQGKUy+VvhPRcLhfOnTt3bGxsrOGgfn8kvj4zM/PgnfOlcB7H8fGk/u2muANAjzLFHYAky2Qy9ZMnT4alVdeXVCqV8Nlnn4VqtfqN/55Op0Mmkwm5XO7PvlMqlcL4+Hjir0Fr7HYAAACSJoqivldfffXo0NDQsbfeeuvBSHgulwu5XC408pC5Wq2Gqampjll81BR3AAAAEimO4+OTk5N9Bw4cGBkfHw9RFDXynVAul0M+nw/5fL6vkyqDGEEHAAAg8UG9VCodL5VKIYSv3zFPp9Nh165dDz5TrVbD5cuXE1fbXEBPsG+XDaA7Pfvss0/1Kd358+fr336vBh5lNd75TVp/HB8fD6VSyXvOdER/zefzqz7tcmZmpp7L5XSGLtaq8+D09HS9UCj09PEicyTn/vcR9zhd2RdMcV9lSTrJ0bknXOGcpMjlconrj6OjoyGTydTtHb4tk8n0/PkzlUodFc67X7lcHmlFX3HfCgJ6118UnehYKX2IJHnttdeSeK4N09PTdg5/ZmhoyDWkUDimJ3S3SqUSWlFC6rXXXtNXQEB3UYQnBA8PedAfG5DJZMLExIRRdL7RX5P4QGm1eUjR/X75y1/qKyCg02BA1wisiKfZJOycluj+ODQ0FLLZrJDOg/PnUnmeXmWKf/er1WqhUqn0taKvZDIZDQoCendfFJ3oaEXgAP2xcTMzMyGVSh21t/CQ3DWkF1QqFccLCOi4KLIaPOQhaf2xE0biUqlUmJmZMfOkx6XT6QvZbLan28AU/95QKpXmBHQQ0GmAiyIr5SEP+uPyZLPZMDQ0ZKp7b/fXQfchpvh3u2q1GlpR+7lQKNT1FRDQu5oTHS26udIIJEInjsRNTEwovdbb1+GebwMPebtfuVx2vICAjhMdq9SHPOQhMTp1JG56etr76D0ol8v1/PkznU5f8IpUd4vjOJTL5b5W9JVefx0EBPQeuCg60dGCgK4R0B9XKJPJhNHRUe+j95if/vSnPd8Gpvh3v9OnT7fk5/zsZz/TV0BA725OdKyUhzzojy0NKiGXy5nq3kP9NZfL9Xw7eMjb/Uqlkr4CAjpOdKwGD3lIWMDt+P544sSJkE6nL9ib3S+Xyw1qA1P8u10URSGKor5W9JVOqM4BAjpOdLSVhzzoj62VSqXC9PS0B189wMJopvj3glYtDmcxWhDQXRThCTzkIWn9sVtG4rLZbBgbGzPVvYtls9meP3+a4t8zAX1kpT8jlUodNSAAAnpXS6VSR10UWSkPedAfn57R0VGl17qYsOEVqR4J5yGO4+MtOF4soAkCetffGDjRsSIe8pAk3ToSd/LkSaXXuvT8KaB7SNErAb0VvA4CAnrXc6KjBTdWHvKQGN262FY6nQ4TExOOtS7z2muv9fw+NcW/+9VqtVCtVle8OFwmk9FXQEDvbk50tIKHPOiPq6NQKIRCoWCqu/7adf2a7mb0HAR0nOhYJR7ykCS9MBI3MTGh9FoXnT8zmUxPt4Ep/r3h3XffnWtFX7F6OwjoXX9RdKJjpTzkIUl64UY/lUqFkydPWlBLf+0Kpvh3v0qlEmq12t5W9JVuqc4BAjpOdDytoOAhD4nqj70SeDKZjNJrAnpX8JC3+50+fdrxAgI6LoqsBg95SFp/7KW/d3R0NGSzWSG9c8N5vdfPn6b4d784jkO5XF7x4nDpdPpCNpvVoCCgd690On3BRZGV8pAH/bG9pqenlV7r3IDumHUN6XotXBzOaz0goHf9RdGJjhXxkIck6dWRuHQ6HU6cOOEd3g48fxoNDMErUt2vVCrNteLn5HI5jQkCenfz5J6V8pAH57RkyOVySq91mJ/97GeDjllT/LtdFEUtWRwul8upFgMCetffzLkoIhChP3aRiYmJkMlkhHT9VRuQGKVSqSU/56c//anGBAG9uznRsVIe8pCwG/2e74+pVCpMT0/rDB1y/uz10UBT/LtfHMfh9OnTI63oK6a3Q3Kt0QSt8dlnn4XPPvtMQ6ySt956KyQ1PFQqlWVfeKemplpxk7bqoyjlcjnUajUdM4EuX768rO/VarWO7Y+tlMlkwsTERH18fLxPb0p2cOn1/ppKpQZb0QZJcfDgwbCaDxxqtVrLFl97mufzOI6Pt+JntaqvjI6OOgGBgJ5Mk5OTbt5WyfT0dGJH9srlcigWi8vqC9Vqta9ara54G7LZbL0dAb1arToGukgn98dWGxoaCqdPn67r4/prkkVR1BdFUdfs07GxsfpqBvTLly/3zL1crVbbOzk52aqA7jUgaDFT3Om4cJ7Um6dKpbLscA4k28zMjNJrAICADkvGxsYSG86jKArDw8Mj9hJ0p1QqpfQaACCgQwhfL1iV1PecoigK+Xx+pFXvhQHJlMvlwtDQkOmcAICATm+H86SupCycQ29Reg0AENARzoVzICGmp6e9jw4ACOgI58I50G6ZTCaMjo56Hx0AENARztstjuNw+PDhOeEcetfQ0FDI5XKmugMAAjrdLZPJ1CcmJhIbzvP5fKjVanvtKehtJ06cMNUdABDQ6e5wPjs7G1KpVGLDeRRFap0DIZVKhZmZGVPdAQABHeFcOAfaLZvNhrGxMVPdAQABHeFcOAfabXR0VOk1AEBARzhfDcI58CQnT570PjoAIKDT2VKp1NEkh/NisSicA0+UTqfDxMSE99EBAAGdjg7nx5IczsvlsnAONKRQKCi9BgAI6HRuOM9kMsI50DVOnDgR0un0BS0BAAjoCOfCOdDe81s4efLkoJYAAAR0hHPhHGizTCaj9BoAIKAjnK9EqVQSzoGWGB0dDdlsVkgHAAR0kmliYiKx4bxcLofx8XHhHLpAHMeJ2I7p6Wml1wAAAZ3kmZ6erhcKhcSG82KxKJxDlxgeHk7EdqTT6XDixAml1wAAAR3hXDiH3lSpVPrK5XIitiWXy4VCoWCqOwAgoCOcC+fQm8bHx0dqtVoitmViYkLpNQBAQEc4/y7ValU4hy4Wx/Hxw4cPJ2JblF4DAAR02mpoaCix4TyKonDkyJERewm6WxRFfVNTU4nYlkwmEyYmJkx1BwAEdFZXoVCoT0xMJDac5/P5kTiOj9tT0P0mJyf7qtVqIrZlaGhI6TUAQEBndcP59PS0cA4kxpEjR0aSUnptZmZG6TUAQEBHOBfOoTfFcXw8KaXXUqmU0msAgICOcC6cQ++qVCp9pVIpEduSy+XC0NCQqe4AgIDOU7nZTGw4j+M4FIvFIJwDU1NTI1EUJWJbRkdHQyaTEdIBAAGd1slkMvUTJ04kNpzn8/kQRZFyakCI4/h4sVhMxLakUqkwPT3tfXQAQECndeF8dnY2pFIp4RzoCFEU9Y2PjyflHBpGR0e9jw4ACOgI50BvKpVKfZVKJRHbMjQ0FHK5nKnuAEAIIYQ1mgDhnJUqFArqOzfo8uXLoVwu659tNjw8PJLNZo8l4Tx24sSJUK1Wj1orA8D9Rquk02mNIKAjnLffkSNHhPM2XTBpTLVaDeVyWUO0WRzHx48cOXJsdna27duSSqXCzMzMsXw+L6ADuN+gx5niTjM3kUdPnjyZ2HBeLBZDtVoVzoGGVKvVxJRey2azSq8BAAI6jYfz2dnZY0mdLlMsFk0bBpo2Pj7el5TSaxMTE0qvAYCADo2F80wmI5wDXadYLIY4jhOxLfdnKR21VwBAQAfhHOg5SSq9lk6nw8TEhNJrACCgg3AO9KZyuZyY0muFQkHpNQAQ0OGbkhzOy+WycA601PDw8EitVkvEtpw4cSKk0+kL9goACOgQpqen60kO58ViUTgHWiqO4+PFYjER25JKpcL09PSgvQIAAjrCeT2pdSaFc+BpqlarfVNTU4nYlmw2G8bGxkx1BwABHeFcOAd60+TkZGJKr42OjoZsNiukA4CAjnAunAO96fDhw3NJKb02PT2t9BoACOgI58lQrVaFc2BV1Wq1vcPDw4nYlnQ6HU6cOKH0GgAI6PSCoaGhxIbzKIrCkSNHRuwlYLVVKpW+crmciG3J5XKhUCiY6g4AAjrdrFAo1CcmJhIbzvP5/Egcx8ftKaAdxsfHE1N6bWJiQuk1ABDQ6eZwPj09LZwDfIc4jo8fPnw4EduSSqXCyZMnlV4DAAEd4Vw4B3pTFEWJKb2WyWSUXgMAAR3hXDgHetfk5GRftVpNxLYovQYAAjpdIpvNJjacx3EcisViEM6BJCoWi4kpvTYzM6P0GgAI6HSyTCZTn5mZSWw4z+fzIYoi5dSAREpS6bVUKqX0GgAI6HRyOJ+dnQ2pVEo4B1imSqXSVyqVErEtuVwuDA0NmeoOAAI6wrlwDvSmqampkSiKErEto6OjIZPJCOkAIKAjnAvnQO+J4/h4sVhMxLakUqmQ1HVFAAABnQ4J5yGEMDw8LJwDHSmKor7x8fGknOvDxMSEUXQAENBJqlQqdXR6ejqx4bxYLIZKpSKcAx2rVColpvTa0NBQyOVyQjoACOgkMZzPzs4ey2QyiQ3n5XJZOAc63pEjR0aSUnrtxIkTSq8BgICOcC6cA70pjuPjR44cScr5P8zMzCi9BgACOsK5cA70pmq1mpjSa9lsVuk1ABDQEc4fb3x8XDgHutb4+HhfUkqvTUxMKL0GAB1qjSboDjMzM4kN5+VyOZRKJeG8i+Xz+VCtVu1jelqxWAxJqZwxPT0d8vn80TiOj9szgPuN3pPNZuuzs7MaogMZQe8C09PT9Ww2m9hwXiwWnUiBrhdFUd/U1FQituV+6TXvowOAgM5qh/NCoSCcAyRAqVTqq1QqidiWQqGg9BoACOgI58I50LuGh4dHarVaIrblxIkTIZ1OX7BXAEBARzgH6DlxHB8vFouJ2JZUKhWmp6cH7RUAENDpwXAeRZFwDvS8arWamPfRs9lsGBsbM9UdAAR0Wq1QKCQ6nOfz+RF7CSCEycnJxJReGx0dVXoNAAR0Wh3Op6enEx3OlfQB+F8OHz48F8dxIrbl5MmTIZVKHbVXAEBARzgH6Dm1Wm3v+Ph4IrYlnU4rvQYAAjrCOUDvKpfLiSq9VigUTHUHAAGdbgvntVpNOAdoQJJKr01MTCi9BgACOs3KZrOJDedxHIfDhw8H4RygoXPm8cOHDydiW1KpVDh58qTSawAgoNOoTCZTn5mZSWw4z+fzIYoi5dQAGhRFUWJKr2UyGaXXACCB1miCZIbz2dnZkEqlhHOAJn311VdPNXhWq9WQz+eXdQ6cnJzsO3jwYD2bzba9nUZHR0O1WtVhACBBjKAL58I5QBOKxeLcSr+flNJrSXhQAAAI6MK5cA7QtKmpqVCr1fau5GfUarW9w8PDGhMAENCF8+UZHh4WzoGeVqvVwuTkZEvOg5VKpa9cLmtUAEBAT5pUKnV0eno6seG8WCyGSqUinAM9rVgstvTnjY+Pj0RRpGEBAAE9SeF8dnb2WCaTSewNablcFs6BnlYqlUK1Wm3puTCO4+OtDv0AgICOcA7QteI4DlNTUyNP42dHUdQ3Pj6ukQEAAV04F84BnmR4eDjEcXz8af38UqnUp9wZACCgC+ePNDU1JZwDhBAqlcqqrMFx5MiRkaSUXgMABPSecuLEicSG83K53LJVigE6WRzHYXx8fG6VftdxpdcAAAF9lU1PT9dzuVxiw3mxWBTOAUJrap43o1Kp9JVKJQ0PAAI6qxXOC4WCcA6QcNVqNZRKpVU/J46Pj/cpvQYAAjrCuXAO8L+Cctt+d7FYDN5HBwABHeEcoOdNTU2FKIradl6MoqhvamrKjgAAAZ1Wm5iYSGw4j6IojI+Pj9hLAF+r1WqJWCizVCr1VSoVOwQABHRapVAo1IeGhhIbzvP5/MjTrO0L0GmKxWJitmV4eFjpNQAQ0GlVOJ+enhbOATpEuVwO1Wo1Ma/8xHF8/MiRI3YMAAjoCOcAveN+zfPEvfJTrVa9jw4AAjrCOUDvGB4eDkk9N05OTiq9BgACOt0UzuM4Fs4BHqFarYZKpZLoahaHDx+e8z46AAjoNCiTySQ9nAfhHODPz4/FYnEu6dtZq9X2trM2OwCwOtZogtb41a9+ldhtS6VSS9tXt6dW5UY67N+/v6dqy8/OzupfCVWtVkM+n+/TEo82NTUVarXa3k7Y1nK53Pfaa6/Vc7mcHQcAXcoIOrT+JlojQAeIoiiUSqWOengxPDw8UqvV7DwAENCBRrz77rtzWgGSL0k1zxsVx/HxTtxuAKAxprhDC1UqlY6ZLgurFChDtVpd1ndTqVTIZDJPZbumpqZCFEUdOfX/fum1+ujoqA4GAAI68F1++ctfagR4SBRFffl8flnfzWaz9fvrG7RUrVYLpVJppJPbdXJysu/gwYP1bDarkwFAFzHFHVokjuPEl2oCvp7a3g1VLYrFotJrACCgA49icTjojOO0Wq12xYO0Wq22d3h42E4FAAEd+LZSqWRxOEiwOI7D+Pj4SDf9TZVKpc/DQQAQ0IGHRFFkcThIuPHx8a6Y2v6Iv0vpNQAQ0IElpVJJI0CCVavVUC6Xu3KNiDiOjx8+fNhOBgABHYjjOJw+fXpES0Byj9FisdjVr6BEUdQ3Pj5uZwOAgA697fTp0105bRa6xS9+8YueeAWlVCr1LbfmPAAgoEO33BRrBEioKIrC5ORkz5Q/PHLkyIjSawAgoENPqtVqIYoitc8hoYrFYk/9vXEcH1d6DQAEdOhJRs8h2cdnLz5Aq1Qqfc5NACCgQ88pl8sWh4MEqtVqYWpqqmePz6mpqZEoinQEABDQoTdUKhWLw0FCFYvFnj4+4zg+fr8NdAYAENCh+/3yl7/UCJBAlUolVKvVnl8bIoqivqmpKR0CAAR06G61Wi1UKhWLw0HCxHEchoeHvXpyX6lU6qtUKhoCAAR06F7lclkjQAKNj4979eRbhoeHlV4DAAEdute77747pxUgWarVaiiXy2a2fEscx8ePHDmiIQBAQIfuDAG1Wm2vloBEhdBQLBY9OPvu85bSawAgoEP3Mb0dkucXv/iFB2dPMD4+3qf0GgAI6NA14jg2hRYSJoqiMDk56bhswOHDh+e8jw4AAjp0hdOnT2sESJjx8XGN0KBarbZXewGAgA5dwTuckLxjUs3z5pTLZaXXAEBAh84WRVGIokgQgISo1WphampKzfNlGB4eHqnVahoCAAR06ExGzyFZ1DxfvjiOjxeLRQ0BAAmzRhO0Rj6f1whdLoqikU7Zznw+f8we434Q68q/q1KphEqlYkbLClSr1b5XX321nkql9Mc2nj875dqy2t599925arU6qG+6/3W8uB/sNX1bt27VCgAkTjabrc/Ozj7yRvrAgQMjRs8BgG5jijsAHWVqasrUdgBAQAeAdqpWq6FUKpnaDgAI6ADQTsVicU4rAAACOgC00dTUVKjVanu1BAAgoANAm0RRFCYnJ01tBwAEdABop/HxcY0AAAjoANBOpVIpVKtVo+cAgIAOAO0Sx3GYmpoa0RIAgIAOAG00PDys5jkA0DP+Yt26dVoBgMT5wx/+EEdR9JqWAAB6Rd/WrVu1AgAAALSZKe4AAAAgoAMAAAACOgAAAAjoAAAAgIAOAAAAAjoAAAAgoAMAAICADgAAAAjoAAAAIKADAAAAAjoAAAAI6AAAAICADgAAAAI6AAAA8DhrNEFrHNiRqXfidp+7GvUlaXsGt+ypb/w36x/7mVt/Wghz8xcTs93bNw78etszA4e6oR8nrW039K9/Y/vGgVNr1/xluHbr+rH5Ozd/nrQ268Q+++023vvsnlP66uq2+TNr1/9DCCF0wrnjwlcX37y9uPBOp57Xtm8c+PX9dj/0pGNVv+6s62rS7mF63do1/S/+TWrH2aXjbP7OzfjSjSub9OVkn+cX7y2G+Ts3z4QQwrVb13+oJwvo3RPQt2c6crvPXY2SFXae3RO2bxx47Geu3boe5uYvJmabtz0zcKhT93+S2/bAjkz9W+06cntxYeQ3lz9J1AW/E/vsw55Zu/4fOrH/JrlNv+umdffmHWHbxoGwdk1/R7X17/9w/R86KaBvWbfp7cGtz49s3zgQtqzbpF93oEavq0m7h+np++AdmXpmYPDb57fU7cWFetKu2+4RH2npIUL99uJC+JeFG+HSjavh2q3rHf2AVkAHaJHtGwd+/agL2ob+9eHvvnco9emXc/UPL583ckLig3nmucGzj7hp5SmdN/bvyBx60gMzoLXnuf/4vUNnv+u4c93uPBv614cN/evD7s07Qwjh1KUbV07NzV/q+dkQAjrQ0zLPDT52Oti+5wbD2jV/Wf/gi49c7Emk3Zt33vwPu/9dSjBvf0AAnt6x9/reH51tZKaK63ZHX8/C7s07U/N3btY/vHz+jGnwT59F4oDE2dbAjfbglj3hled/UNdaJM0rz/+g/nffOyScr4It6za9Xdj3unAObfAfv3fobDOvkQxu2RP2PTfout2559vw+t/+6NDLu/bX167pf1GLCOhAD2k02AjpJDGcD27ZoyFWKZy/vvdHIx6EwOrb99xgfTkPxvZvz4QN/evf0IIdve/D63t/dFZIF9ABhHSEc4RzaLO1a/pf3L/Mhc/WrukPB3e9cEordvw5WEgX0AGEdJJr9+adN4Xz1fPKnn8vnEObvLzrhbMrOf52b975oPwhnR/StYSADiCkkzgHd72Q0gqr48COTL3TyqdBt9i+ceDXrXgY+fKu/Ye0ZneE9AM7Mu69BHQAIZ1E9bv6hv71GmKV7N1qpgK0S6uC9ZZ1mywY1yUOWFeg5ZRZW0XnrkXh3NVIeYlu269Xo75zV6PWnux2ZOoHnvB+17Vb18N7n7+vPz0ipIcQlHJpsfc+f19ple+w76/3NvX5u/cWw+/iq2Huq4tn/nB34T/dXlx4Rys2ZvfmnTebfRhy7db1MPfVxXB7cUEfhpWc654bbOnslf3bM2Fu/tKLd+8tftzrbfuLs+W23rNsWbfp7Y1rN/xfW9ZtSu3etDM0u59f3Jk59cEXH7mWCegAQjrttXZN/4vN3MjM37kZ/un//fWbQvnybNs40NSrBB9ePh8+/XLOeQBacK5b7sJwj/mZYf/2zNkPL593jLbZ/J2bP5+/c/Pnl25cCeeuRmFD//o3XtyZOdXo6wyDW/aEj69Eb7i2tYYp7kDXhnTT3XnatvzVpmPNhPP3Lrz/khuYFbR3Ew9DPvjiI+EcWmSlC8N9l33PDYYt6za9rYWT5fbiwjsffPFR33ufv3/m7r3Fhr6zZ/MOq/ML6ABCOm0PjA2/j3nuWhSbyrkyjdZdnr9zM8zNXxTOoTXH3a+fZpWKl3ftH9HKyXTt1vUfvnfh/YYeRG9r8PyMgA4I6UI6T01/EyNKl25c2aTFVselm1c0ArQuQDe1MFyjI64PPQAIg1v2uE4n1Pydmz+fm7/4xM9tXLtBYwnoAEI6ADwty1kY7r0L7x+7vbjQ1Hde3JkJa9f0v6jFk+nSjavxkz6j/KWADiCk01HcfAKdds5qdmG4c9eiMH/n5s9/c/mTuJnvbehfHzLPDZ7V6sm0eG/xU60goAM81vydm0I6bXfrT42PEv1NaoebzxVqdFROrXRYuWYXhru9uBCiL+deCuHrV3qu3bre1O9TTzu5NvSvP6QVBHSAx7p080r44IuPhHTaHRjPNHGz6+Zzhf5wt7GAvqF/fTiwI+M4h2VazsJwH3zx0ZmHF8L84IuP3mz29x7c9YKVwBNo8Nkn94VmH8ggoANdaG7+Yp+QTjtdu3X9h40uiLR2TX/4yfd/fGr35p03tdzy/L6JG8AD2zPhled/UPdqATSv2YXhLt24Eq7duv7Dh//b7cWFd85di5r6vbs37wzbNw782h5Ijn3PDdYbqaCx2OTigHy3NZoA6PSQHkKov/L8D5oO6SGE+gdffKQUEyvyu/hqaHSkae2a/vB33zuUur24UL9442pY/NfF8Ps/XD+zmtt7918Xz87fufnzTmzrSzeuHDuwPTPSzHE+uGXP2Us3roT5P94Mt/600NSsh1aY/+PNEeX16LRA1syCX3fvLYbfXP7kkaPl0ZdzL+3duufshv71Df+8V57/waF3/ud/tiMS4MCOTP1Ag+sQXLpxVYMJ6ABCOgnof19dPDO4ZU9To00b+teHfc8Nfv0v28Nqv9t3KIQwMn/nZrh263qY+5cvjnVKYJ+/c/Pn125dH9neZL3d3Zt3ht2bdz7896+ms7cXF8K/LNwIl25cDb+Lr74ksJNUy1kYLro+F24vLrzzHeH9499c/iT+u+8dSjVzfjywI1M/dzVybW5TH/ib1I6zL+7MhGYerPwuvvqS1hPQO86B7ZlwYHv734m7dut6eO/z9530ENKF9Ia9/rc/OhRCaPv5673P3z/z7WmUCTin/vDarev1ZkNju21ZtylsWbcp7HtucGT+zs2RT//5wtJxlGjnr0Zntn/dHzvGhv71YUP/+rB7885w997i2d/FV8PHV6I3vyvUQLv8h93/rumF4Z4UpO8vGNfUOTIzMBiiL+de7JWHWe2e1t+/pn/flnWbUts2DoTlXMvm5i8GDx4FdAAhncT44IuP3vzJ9398qpkb26SF9Vee/0HY99d76x9c/O+JHlG/duv6Dy/duFJ/aES8o6xd0x8Gt+wJf5PacSq6PnfKKCFJConNHlcffPHRmQY/9+Yb//v/eaqZ4+TlXS+c7ZXr8usd9tDxYXfvLYaPr0RvOoJaxyJxQNeFdAvHsdpuLy688+HlTzr+79iyblP4yff/fmTfc4OJPhb+26X/8dJySi0mLagf2J4JP/n+31vIjkR45fkfNBUS5+YvhkZnNC1nwbjBLXssGNcBPrz8STAbSEAHENLpmn6XRC/v2p/oY+HuvcWP37vwfseH9BC+fihS2Pf62S3rNr3tKKJdDuzI1Jt53/juvcXw4eVPmnrn+NzVqO/24kJT27V/R0b97WRf9zri1SgBHUBIp4f73X/57Zn4bheUm0n6sbAU0ruh9u7aNf3h9b0/GtnQv/4NRxGrbUP/+jcyA4NNfef8tWhZ7xw3OiV+yfaNA2Fwyx7X5ISGc68GCugAQjqJd+nGlU3/+Nk/vdkNwfF+mbJkh/TP3+/78PL50OkPRdau6Q8//rc/PGW6O6vt4K4Xmlo/Y/7OzfDpl3PLCmb315Bo6jsv73ohOC6S5fbignAuoAMI6XTUzcs7733+ft97n79/ptmb0aR5edcLIekju59+OddX/vS9l859ParXsW29Zd2msH975qwjiNWynIXhPrx8/sxKfudvLn/yZjPH6do1/Y6LhNnQv9490lNkFXegJ0J6sLo7bXC/BFvY0L/+je0bB05tTw2ELX+1OWxZt6lj/oa1a/rDizszpz744qNELwJ0997ix+euRn3nrkZh9+adN7dtHEhtWbcpbPmrTaGTVtff99xg+PSfL7xh0SVWQ7MLw91eXAjbnhk4tO2ZgRWFs9uLd5o6Lh0XyeMeSUAHENLpWLcXF96Zm7/4ztz8xXaF7Be3/NWmYyGEsO2ZgUO7N+1s6iHB4JY94eMrUcfcHF+6cWVTO2cubFm36e21f9H/0ob+9Ye2pwbC36R2NBVGOuGBCJ2v2YXhQvh65PTA9ky7Hiaceu/z9x0XCQvp8ws36st95QEBve2u3boefp+AdxJv/WnBzkBIF9Kbbbtw6277zx1/uLvwn/Tk5t29t/jxUjmka7euh3NXo7Bl3aa3X961f2T7xoGGfsa+v9576sPL590cN+DhOvJz8xfD2jX9L2aeGzybGRhsKKjfD/QvLmcRLmgwaDe9MFy7bd84EHZv3nnz0o0rm+zB5Hh51/5w8cZVsxsE9M70+69vijxhAiG989rtq4tnGq13S+eEyPc+f//ng1v2NHQ87Nm8I3x4+byGW4al6fcXvrr4xo//7Q9PPWn2wto1/WHbxoH/KojwtDS7MFyCtjvV6et6PMp7n79/pp2/f9szA4f6/6I/bN84sKxXsMz6EdABhHRo4fGwds1f1l/etf+xn9vQv96o7grdXlx4570L78/95Ps/PvukqcXbNg50ZRCh/ZazMFxSbOhfHw7syNS7bcCr3Q/AH646snZN/4uDW3af3ffXe0Ojr0B02mtQSWcVd6BnQ4nV3eFrn34519dIWbil99hZvrv3Fj/+zeVP4ie2dQctJEhnaXZhuKTJDAwmvrJEp5+jPv1yru+d//mf+85dixr+3p7NO05pPQEdQEiHVh0PXz15AbsN/esPaamVu3TjyqYnlZla+xf9GoqWW87CcEmzVFnC3nz6zl2NGr5P2tbgeiYI6ABCOjTg9uLCE9+B3Phv1muoFpn/483H/v9G0Gm1TlwY7nHX4O0bB35tr67OfVIjFUg2rt2gsQR0gPaH9O2eGAPQATp1Ybjv8vKu/Wb0rJJLN656LUdAB+iMkA7don9N/z6tsHqeWfv42QhPmgIPzejkheEeFwj3PTdoJtsqWLy3+KlWWD1WcQd4KKSHZazuDt1g9+YdqSd9Zv7OzVhLrdyG/vVvPOk94CdNgYdmNLsw3LlrUVtKAx/Ykakf2J5p+PP7t2fC3Pwl1SWe/jnLbIVVZAQd4Fsh3Ug6vWbLuk1v3y8j+FhGUVrj4K4XTjXQ1hqKloXeZhaGu724EKIv515qx7aeuxr13V5caPjza9f0h/3bM2ft5afrxZ1PfmjSSCUQBHQAIR2efIP74it7/v1II59td63ebrDvucF6I1ONjaDTCstZGO6DLz46084R6Q+++OhMk8dU2LJu09v29tPxyvM/aOgBz/wd5ywBHUBIhxXZvnHg1z/5/o/PNrK4j9GRlVm7pv/FV57/Qf3lXfsb+vylG1fUnGfFml0Y7tKNK21/EHft1vUfXrpxpanvvLxr/4i9/TSuD39fb2R2VQgh/P7Wda9AtYh30AEeE9KDd9LpwqC4bePAf808N5hqpgrB75q8YeZrW9Ztentw6/Mjg1t2h0aD0u3FhTB/5+bPtR4rDVjNLAx3995i+M3lT95Mwrb/5vInb27bONDww4XtGwfC7s07b166cWWTPb+y89X2jQMjg1ufb2pV9tuLC0HbC+gAQvoqGnx2z6FtzwwkZrXcW39aWNo3ibgJ3vbMQKIX0Nl2P4iv/Yv+ZZXCuXtvMczNX3opCX/LgR2ZRK/avHHt+rA0HXTLX20KyylrdeFfLgY6ry/8/g/XzyTpNZBmF4aLrs+F24sL7yRh228vLrwTXZ871cyCcQd3vZD6/a3rHblg3Ot/+6O29uXlXhucswR0ACG9XQG9wSluq+Xarethbj4ZNwTbnhk41MxNZCeKrs+FpNz0dntb37232LYFujouoCesL5wL0aGkvAqynIXh2rFq+2Pb82rUt3vTznqjwXFD//qQeW7wbNL+jkY0M5spaebv3Ayd2OZJ5h10gAZDunfS6UVuvlbXf7v0P2Ilo1iJ5S4Ml8S/5cPL55vargPbM2FD//o39ILV88HF/269DAEdQEiH1XD33qKbr9U9x3iPkxVrdmG4ufmLia3QcO3W9R82O1uqkTKGtCicf/GR9TIEdID2h/Rz1yINQU/4f3575oybr9UL5x988ZGZCqzIchaG+/DyJ4l+peLDy5+8dPfeYsOf3715Z9i+ceDXesPTD+dJWQtGQAfoceeuRn1Jef8Znoa79xbDP372fx9T91w4p7M0uzDc+WtRSPorFXfvLX58vskH4822A81dH/7Lb8/EwrmADpAoH3zxUcMhfbGJJ//QbtduXQ//+Nk/vWnkfHVudD+8fF44pyWaXRhu/s7N8OmXcx3R9z79cq5v/s7Nhj+/oX992PfcYF2vaK1LN66Ef/zsn970Ks7TZRV3gBWE9Lv3/r/6vucevxjP/B9vaiwS7/biQvj4SmTK4iqZm78YPr4SvZmUslZ0tuUsDNfsAmzt9uHl82de/9sfNTwyvn97JszNX3rRooutCebRl3NnzKoS0AE64Yahb37hxmNLsF346uKbWook33hdunFVMF8FtxcXwsUbV8On/3xBMKelml0Y7tMv50Knha37C8bVGy37uXZNf3h51wtnzVBZdnuH3924Ei7euOp8JaB3bid+klt/WtBQT9DI9KVmpjh1qlt/Wnhin+rmdui042lu/mLf/B9vvP3yrv0j365leu5aFJJ8Ybv7r4tnr926fqgbzxVJOl6TZPHeYpj/480wf+dm/Ptb1/+PThtd6qS2Xuqrt+/eDtduXT/mtYHuPKbafV3a0L/+jf41/U212flr0Uud2Dc+vPzJSxv6159tom3C2jX9bRtF75S+fHtxIdy6uxBu/Wkh3F5cMFLeZn1bt27VCgAtvFHavnHg1No1f+mGHAAAAR0AAAA6jVXcAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAAAR0AAAAQEAHAAAAAR0AAAAQ0AEAAEBABwAAAAR0AAAAENABAAAAAR0AAAAEdAAAAEBABwAAAAEdAAAAENABAABAQAcAAAAEdAAAABDQAQAAAAEdAAAABHQAAABAQAcAAAABHQAAABDQAQAAQEAHAAAABHQAAAAQ0AEAAAABHQAAADrY/w/23nG00CdIXAAAAABJRU5ErkJggg==";
+/* v183: il logo ufficiale in vettoriale (dal PDF del marchio): nitido a ogni grandezza */
+const LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSI4MC4yIDM1My43IDg4Ny4wIDI5Mi42Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNIDIxMy44MiA0MTAuMTkgTCAyMTMuODIgNDM4LjI2IEwgMjEzLjYyIDQzOC4yNiBMIDEyMS4xNSA1MzUuMTcgTCAyMTMuODIgNTM1LjE3IEwgMjAyLjk2IDU2My4yNCBMIDgyLjE2IDU2My4yNCBMIDgyLjE2IDUzNS4xNyBMIDgyLjM2IDUzNS4xNyBMIDE3NC44MiA0MzguMjYgTCA4Mi4xNiA0MzguMjYgTCA5My4wMiA0MTAuMTkgWiBNIDIxMy44MiA0MTAuMTkgIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTSAzNzcuNjAgNDM4LjI2IEwgMzc3LjYwIDQxMC4xOSBMIDIzOC40MSA0MTAuMTkgTCAyMjcuNTUgNDM4LjI2IEwgMjQ1Ljk0IDQzOC4yNiBMIDI0NS45NCA1NjMuMjQgTCAzNzcuNjAgNTYzLjI0IEwgMzc3LjYwIDUzNS4xNyBMIDI3NC4wMSA1MzUuMTcgTCAyNzQuMDEgNTAwLjc1IEwgMzQ5LjUzIDUwMC43NSBMIDM0OS41MyA0NzIuNjggTCAyNzQuMDEgNDcyLjY4IEwgMjc0LjAxIDQzOC4yNiBaIE0gMzc3LjYwIDQzOC4yNiAiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNIDYxMC4wNCA0MTAuMTkgTCA2MTAuMDQgNTYzLjI0IEwgNTgxLjk4IDU2My4yNCBMIDU4MS45OCA0MzguMjYgTCA1NjMuNTkgNDM4LjI2IEwgNTc0LjQ1IDQxMC4xOSBaIE0gNjEwLjA0IDQxMC4xOSAiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNIDc2MC40MCA0MTAuMTkgTCA3NDkuNTMgNDM4LjI2IEwgNzA4LjYwIDQzOC4yNiBMIDcwOC42MCA1NjMuMjQgTCA2ODAuNTMgNTYzLjI0IEwgNjgwLjUzIDQzOC4yNiBMIDYyOC43NCA0MzguMjYgTCA2MzkuNjAgNDEwLjE5IFogTSA3NjAuNDAgNDEwLjE5ICIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0gODE0LjI0IDQxMC4xOSBMIDgxNC4yNCA0NzIuNjggTCA4ODkuNzYgNDcyLjY4IEwgODg5Ljc2IDQxMC4xOSBMIDkxNy44MyA0MTAuMTkgTCA5MTcuODMgNTYzLjIzIEwgODg5Ljc2IDU2My4yMyBMIDg4OS43NiA1MDAuNzUgTCA4MTQuMjQgNTAwLjc1IEwgODE0LjI0IDU2My4yNCBMIDc4Ni4xNyA1NjMuMjQgTCA3ODYuMTcgNDM4LjI2IEwgNzY3Ljc5IDQzOC4yNiBMIDc3OC42NSA0MTAuMTkgWiBNIDgxNC4yNCA0MTAuMTkgIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTSA1MjcuNTQgMzU1LjcxIEwgNTAzLjcwIDQwMi4zMSBMIDUxMy41MCA0MDIuMzEgTCA1MTMuNTAgNTE1LjE2IEwgNDM3Ljk4IDQxMC4yMSBMIDQzNy45OCA0MTAuMTkgTCA0MDIuMzkgNDEwLjE5IEwgMzkxLjUzIDQzOC4yNiBMIDQwOS45MSA0MzguMjYgTCA0MDkuOTEgNTM4LjcxIEwgNDI0Ljc4IDUzOC43MSBMIDQyNC43OCA1NzQuMDMgTCA0NjIuODIgNTE0LjA5IEwgNDM3Ljk4IDUxNC4wOSBMIDQzNy45OCA0NTguMjYgTCA1MTMuNTAgNTYzLjIxIEwgNTEzLjUwIDU2My4yNCBMIDU0MS41NyA1NjMuMjQgTCA1NDEuNTcgNDAyLjMxIEwgNTUxLjM4IDQwMi4zMSBaIE0gNTI3LjU0IDM1NS43MSAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDgyLjE2IDY0My43MyBMIDkxLjQwIDY0My43MyBMIDkxLjQwIDYyMS40NiBMIDEyNS41NCA2MjEuNDYgTCAxMjUuNTQgNjEyLjIyIEwgOTEuNDAgNjEyLjIyIEwgOTEuNDAgNTk5Ljk2IEwgMTI3Ljk1IDU5OS45NiBMIDEyNy45NSA1OTAuNzMgTCA4Mi4xNiA1OTAuNzMgWiBNIDgyLjE2IDY0My43MyAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDE2NC4zMiA2NDMuNzMgTCAxNzMuNTYgNjQzLjczIEwgMTczLjU2IDU5MC43MyBMIDE2NC4zMiA1OTAuNzMgWiBNIDE2NC4zMiA2NDMuNzMgIi8+PHBhdGggZmlsbD0iIzdhNDk2YyIgZD0iTSAyMDkuNjIgNTk5Ljk2IEwgMjMwLjU3IDU5OS45NiBMIDIzMC41NyA2NDMuNzMgTCAyMzkuNzMgNjQzLjczIEwgMjM5LjczIDU5OS45NiBMIDI2MC42MCA1OTkuOTYgTCAyNjAuNjAgNTkwLjczIEwgMjA5LjYyIDU5MC43MyBaIE0gMjA5LjYyIDU5OS45NiAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDMzNy4zMyA2MjcuNTEgTCAzMDMuMzQgNTkzLjQ0IEMgMzAxLjUzIDU5MS42MyAyOTkuNzcgNTkwLjczIDI5OC4wNiA1OTAuNzMgQyAyOTYuODIgNTkwLjczIDI5NS44NiA1OTEuMTggMjk1LjE5IDU5Mi4wOCBDIDI5NC41MSA1OTIuOTkgMjk0LjE4IDU5NC4wNiAyOTQuMTggNTk1LjMwIEwgMjk0LjE4IDY0My43MyBMIDMwMy4zNCA2NDMuNzMgTCAzMDMuMzQgNjA2Ljk0IEwgMzM3LjMzIDY0MS4wOSBDIDMzOS40NSA2NDMuMjEgMzQxLjM3IDY0NC4yOCAzNDMuMDcgNjQ0LjI4IEMgMzQ1LjQwIDY0NC4yOCAzNDYuNTcgNjQyLjU3IDM0Ni41NyA2MzkuMTUgTCAzNDYuNTcgNTkwLjczIEwgMzM3LjMzIDU5MC43MyBaIE0gMzM3LjMzIDYyNy41MSAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDM4NS44MSA2NDMuNzMgTCA0MzEuNjAgNjQzLjczIEwgNDMxLjYwIDYzNC41IEwgMzk1LjA0IDYzNC41IEwgMzk1LjA0IDYyMS40NiBMIDQyOS4xOSA2MjEuNDYgTCA0MjkuMTkgNjEyLjIyIEwgMzk1LjA0IDYxMi4yMiBMIDM5NS4wNCA1OTkuOTYgTCA0MzEuNjAgNTk5Ljk2IEwgNDMxLjYwIDU5MC43MyBMIDM4NS44MSA1OTAuNzMgWiBNIDM4NS44MSA2NDMuNzMgIi8+PHBhdGggZmlsbD0iIzdhNDk2YyIgZD0iTSA1MTkuOTYgNjE1LjE3IEMgNTE2LjU1IDYxMi4yMiA1MTIuMjggNjEwLjc1IDUwNy4xNiA2MTAuNzUgTCA0ODIuMTcgNjEwLjc1IEMgNDgwLjQxIDYxMC43NSA0NzguOTEgNjEwLjI4IDQ3Ny42NyA2MDkuMzUgQyA0NzYuNDIgNjA4LjQyIDQ3NS44MCA2MDcuMTAgNDc1LjgwIDYwNS4zOSBDIDQ3NS44MCA2MDMuNzQgNDc2LjQyIDYwMi40MiA0NzcuNjcgNjAxLjQ0IEMgNDc4LjkxIDYwMC40NSA0ODAuNDEgNTk5Ljk2IDQ4Mi4xNyA1OTkuOTYgTCA1MjIuMTQgNTk5Ljk2IEwgNTIyLjE0IDU5MC43MyBMIDQ4Mi4xNyA1OTAuNzMgQyA0NzcuNTYgNTkwLjczIDQ3My43MSA1OTEuOTkgNDcwLjYwIDU5NC41MyBDIDQ2Ny4yOSA1OTcuMjcgNDY1LjY0IDYwMC44NyA0NjUuNjQgNjA1LjMyIEMgNDY1LjY0IDYwOS44MiA0NjcuMjkgNjEzLjQ0IDQ3MC42MCA2MTYuMTggQyA0NzMuNzEgNjE4LjcyIDQ3Ny41NiA2MTkuOTggNDgyLjE3IDYxOS45OCBMIDUwNy4xNiA2MTkuOTggQyA1MDkuNjkgNjE5Ljk4IDUxMS44NyA2MjAuNTMgNTEzLjY4IDYyMS42MSBDIDUxNS44NSA2MjIuOTEgNTE2Ljk0IDYyNC43NSA1MTYuOTQgNjI3LjEyIEMgNTE2Ljk0IDYyOS41MCA1MTUuODcgNjMxLjM5IDUxMy43NiA2MzIuNzkgQyA1MTEuODkgNjMzLjkzIDUwOS42OSA2MzQuNSA1MDcuMTYgNjM0LjUgTCA0NjYuNzMgNjM0LjUgTCA0NjYuNzMgNjQzLjczIEwgNTA3LjE2IDY0My43MyBDIDUxMi4yOCA2NDMuNzMgNTE2LjU1IDY0Mi4zMSA1MTkuOTYgNjM5LjQ2IEMgNTIzLjUzIDYzNi40MSA1MjUuMzIgNjMyLjM3IDUyNS4zMiA2MjcuMzYgQyA1MjUuMzIgNjIyLjM0IDUyMy41MyA2MTguMjggNTE5Ljk2IDYxNS4xNyAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDYxMS40NCA2MTUuMTcgQyA2MDguMDIgNjEyLjIyIDYwMy43NSA2MTAuNzUgNTk4LjYzIDYxMC43NSBMIDU3My42NCA2MTAuNzUgQyA1NzEuODggNjEwLjc1IDU3MC4zOCA2MTAuMjggNTY5LjE0IDYwOS4zNSBDIDU2Ny45MCA2MDguNDIgNTY3LjI4IDYwNy4xMCA1NjcuMjggNjA1LjM5IEMgNTY3LjI4IDYwMy43NCA1NjcuOTAgNjAyLjQyIDU2OS4xNCA2MDEuNDQgQyA1NzAuMzggNjAwLjQ1IDU3MS44OCA1OTkuOTYgNTczLjY0IDU5OS45NiBMIDYxMy42MSA1OTkuOTYgTCA2MTMuNjEgNTkwLjczIEwgNTczLjY0IDU5MC43MyBDIDU2OS4wMyA1OTAuNzMgNTY1LjE4IDU5MS45OSA1NjIuMDggNTk0LjUzIEMgNTU4Ljc2IDU5Ny4yNyA1NTcuMTEgNjAwLjg3IDU1Ny4xMSA2MDUuMzIgQyA1NTcuMTEgNjA5LjgyIDU1OC43NiA2MTMuNDQgNTYyLjA4IDYxNi4xOCBDIDU2NS4xOCA2MTguNzIgNTY5LjAzIDYxOS45OCA1NzMuNjQgNjE5Ljk4IEwgNTk4LjYzIDYxOS45OCBDIDYwMS4xNyA2MTkuOTggNjAzLjM0IDYyMC41MyA2MDUuMTUgNjIxLjYxIEMgNjA3LjMyIDYyMi45MSA2MDguNDEgNjI0Ljc1IDYwOC40MSA2MjcuMTIgQyA2MDguNDEgNjI5LjUwIDYwNy4zNSA2MzEuMzkgNjA1LjIzIDYzMi43OSBDIDYwMy4zNyA2MzMuOTMgNjAxLjE3IDYzNC41IDU5OC42MyA2MzQuNSBMIDU1OC4yMCA2MzQuNSBMIDU1OC4yMCA2NDMuNzMgTCA1OTguNjMgNjQzLjczIEMgNjAzLjc1IDY0My43MyA2MDguMDIgNjQyLjMxIDYxMS40NCA2MzkuNDYgQyA2MTUuMDEgNjM2LjQxIDYxNi43OSA2MzIuMzcgNjE2Ljc5IDYyNy4zNiBDIDYxNi43OSA2MjIuMzQgNjE1LjAxIDYxOC4yOCA2MTEuNDQgNjE1LjE3ICIvPjxwYXRoIGZpbGw9IiM3YTQ5NmMiIGQ9Ik0gNjg4Ljg2IDU5MC43MyBMIDY3OS42MyA1OTAuNzMgTCA2NzkuNjMgNjQzLjczIEwgNzI1LjM0IDY0My43MyBMIDcyNS4zNCA2MzQuNSBMIDY4OC44NiA2MzQuNSBaIE0gNjg4Ljg2IDU5MC43MyAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDc4Mi4yOCA2MTkuNjcgTCA3OTEuNTkgNjA0LjM5IEwgODAwLjgyIDYxOS42NyBaIE0gNzk2LjAxIDU5Mi4yOCBDIDc5NC41NiA1OTEuMTQgNzkzLjE3IDU5MC41NyA3OTEuODIgNTkwLjU3IEMgNzkwLjU4IDU5MC41NyA3ODkuMTggNTkxLjE2IDc4Ny42MyA1OTIuMzUgQyA3ODYuMzMgNTkzLjM5IDc4NS4zMyA1OTQuNTMgNzg0LjYwIDU5NS43NyBMIDc1NS44MSA2NDMuNjYgTCA3NjcuNjggNjQzLjY2IEwgNzc2LjcxIDYyOC44MyBMIDgwNi4zMyA2MjguODMgTCA4MTUuMjYgNjQzLjY2IEwgODI3LjEzIDY0My43MyBMIDc5OS4wNCA1OTUuNzcgQyA3OTguMjYgNTk0LjQyIDc5Ny4yNSA1OTMuMjYgNzk2LjAxIDU5Mi4yOCAiLz48cGF0aCBmaWxsPSIjN2E0OTZjIiBkPSJNIDkwNS4wMiA2MTEuNTIgQyA5MDMuMDEgNjEyLjQ2IDkwMC43MCA2MTIuOTIgODk4LjEyIDYxMi45MiBMIDg2Ny45MiA2MTIuOTIgTCA4NjcuOTIgNTk5Ljg4IEwgODk4LjEyIDU5OS44OCBDIDkwMC43MCA1OTkuODggOTAzLjAxIDYwMC4zMiA5MDUuMDIgNjAxLjIwIEMgOTA3LjYxIDYwMi4zOSA5MDguOTEgNjA0LjEwIDkwOC45MSA2MDYuMzIgQyA5MDguOTEgNjA4LjYwIDkwNy42MSA2MTAuMzMgOTA1LjAyIDYxMS41MiBNIDkwNC44NyA2MzMuMjUgQyA5MDIuOTAgNjM0LjAzIDkwMC42NSA2MzQuNDIgODk4LjEyIDYzNC40MiBMIDg2Ny45MiA2MzQuNDIgTCA4NjcuOTIgNjIyLjE2IEwgODk4LjEyIDYyMi4xNiBDIDkwMC42MCA2MjIuMTYgOTAyLjg1IDYyMi41NyA5MDQuODcgNjIzLjQwIEMgOTA3LjU2IDYyNC41NCA5MDguOTEgNjI2LjE5IDkwOC45MSA2MjguMzcgQyA5MDguOTEgNjMwLjQ5IDkwNy41NiA2MzIuMTIgOTA0Ljg3IDYzMy4yNSBNIDkxMi4yNCA2MTcuNTAgQyA5MTUuOTYgNjE0LjUwIDkxNy44MyA2MTAuODAgOTE3LjgzIDYwNi40MCBDIDkxNy44MyA2MDMuODIgOTE3LjEzIDYwMS4zOCA5MTUuNzMgNTk5LjEwIEMgOTEyLjExIDU5My40NyA5MDUuNzcgNTkwLjY1IDg5Ni43MiA1OTAuNjUgTCA4NTguNjkgNTkwLjY1IEwgODU4LjY5IDY0My42NiBMIDg5Ni43MiA2NDMuNjYgQyA5MDYuMjQgNjQzLjY2IDkxMi43MSA2NDAuNjggOTE2LjEyIDYzNC43MyBDIDkxNy4yNiA2MzIuNzEgOTE3LjgzIDYzMC41NyA5MTcuODMgNjI4LjI5IEMgOTE3LjgzIDYyNCA5MTUuOTYgNjIwLjQwIDkxMi4yNCA2MTcuNTAgIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTSA5NDkuMjUgMzc5LjkxIEMgOTQxLjc5IDM3OS45MSA5MzUuNzMgMzg1Ljk4IDkzNS43MyAzOTMuNDQgQyA5MzUuNzMgNDAwLjkwIDk0MS43OSA0MDYuOTcgOTQ5LjI1IDQwNi45NyBDIDk1Ni43MSA0MDYuOTcgOTYyLjc4IDQwMC45MCA5NjIuNzggMzkzLjQ0IEMgOTYyLjc4IDM4NS45OCA5NTYuNzEgMzc5LjkxIDk0OS4yNSAzNzkuOTEgTSA5NDkuMjUgNDA5LjMyIEMgOTQ1LjAxIDQwOS4zMiA5NDEuMDIgNDA3LjY3IDkzOC4wMiA0MDQuNjcgQyA5MzUuMDIgNDAxLjY3IDkzMy4zNyAzOTcuNjggOTMzLjM3IDM5My40NCBDIDkzMy4zNyAzODkuMjAgOTM1LjAyIDM4NS4yMSA5MzguMDIgMzgyLjIxIEMgOTQxLjAyIDM3OS4yMSA5NDUuMDEgMzc3LjU2IDk0OS4yNSAzNzcuNTYgQyA5NTMuNDkgMzc3LjU2IDk1Ny40OCAzNzkuMjEgOTYwLjQ4IDM4Mi4yMSBDIDk2My40OCAzODUuMjEgOTY1LjEzIDM4OS4yMCA5NjUuMTMgMzkzLjQ0IEMgOTY1LjEzIDM5Ny42OCA5NjMuNDggNDAxLjY3IDk2MC40OCA0MDQuNjcgQyA5NTcuNDggNDA3LjY3IDk1My40OSA0MDkuMzIgOTQ5LjI1IDQwOS4zMiAiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNIDk1MC42MiAzOTIuMzQgQyA5NTAuMjggMzkyLjY5IDk0OS43OCAzOTIuODcgOTQ5LjExIDM5Mi44NyBMIDk0Ni44OCAzOTIuODcgTCA5NDYuODggMzg4Ljg1IEwgOTQ5LjExIDM4OC44NSBDIDk0OS43NyAzODguODUgOTUwLjI4IDM4OS4wMyA5NTAuNjIgMzg5LjM5IEMgOTUwLjk2IDM4OS43NSA5NTEuMTMgMzkwLjI0IDk1MS4xMyAzOTAuODcgQyA5NTEuMTMgMzkxLjUwIDk1MC45NiAzOTEuOTkgOTUwLjYyIDM5Mi4zNCBNIDk1Mi4xMCAzOTQuNzEgQyA5NTIuNDggMzk0LjUzIDk1Mi44MyAzOTQuMzIgOTUzLjE0IDM5NC4wNyBDIDk1My40NiAzOTMuODMgOTUzLjczIDM5My41NCA5NTMuOTUgMzkzLjIxIEMgOTU0LjE3IDM5Mi44NyA5NTQuMzUgMzkyLjQ5IDk1NC40NyAzOTIuMDUgQyA5NTQuNTkgMzkxLjYxIDk1NC42NSAzOTEuMTEgOTU0LjY1IDM5MC41NSBDIDk1NC42NSAzODkuODIgOTU0LjUyIDM4OS4xOSA5NTQuMjYgMzg4LjY0IEMgOTU0LjAxIDM4OC4wOSA5NTMuNjQgMzg3LjYzIDk1My4xNSAzODcuMjYgQyA5NTIuNjcgMzg2Ljg4IDk1Mi4wOCAzODYuNjAgOTUxLjQwIDM4Ni40MSBDIDk1MC43MiAzODYuMjIgOTQ5Ljk2IDM4Ni4xMiA5NDkuMTEgMzg2LjEyIEwgOTQzLjM1IDM4Ni4xMiBMIDk0My4zNSA0MDAuNzYgTCA5NDYuODggNDAwLjc2IEwgOTQ2Ljg4IDM5NS41OSBMIDk0OC43OSAzOTUuNTkgTCA5NTEuMzcgNDAwLjc2IEwgOTU1LjE1IDQwMC43NiBMIDk1NS4xNSA0MDAuNjEgWiBNIDk1Mi4xMCAzOTQuNzEgIi8+PC9zdmc+";
 /* ══════════════════════════════════════════════════════════════
    CHIOSCO ZENITH — schermo verticale da 49"
    Prototipo: le domande e il check-in funzionano davvero, ma non
@@ -1761,6 +1851,12 @@ function fit(){
 addEventListener('resize', fit); fit();
 
 document.getElementById('logo').src = LOGO;
+/* v183: il pulviscolo luminoso che sale dal basso */
+(function(){ const box = document.getElementById('polvere'); if(!box) return; let h = '';
+  for(let i = 0; i < 34; i++){ const d = 16 + Math.random() * 22;
+    h += `<i style="--x:${(Math.random() * 100).toFixed(1)}%; --s:${(3 + Math.random() * 7).toFixed(1)}px; --d:${d.toFixed(1)}s; --w:${(-Math.random() * d).toFixed(1)}s; --o:${(.25 + Math.random() * .55).toFixed(2)}"></i>`; }
+  box.innerHTML = h; })();
+document.getElementById('tot').style.setProperty('--logo', 'url("' + LOGO + '")');
 document.querySelectorAll('.zlogo').forEach(i=> i.src = LOGO);
 
 /* ─────────── il volto della mascotte ─────────── */
@@ -1816,7 +1912,7 @@ const QA = [
    piu:'C\'è anche una famiglia total body, per quando non c\'è una zona o un obiettivo preciso.'},
   {ic:'🤔', t:'seduta', alt:'dolore doloroso fastidio forte intensita pressione delicato paura', q:'Fa male? Che pressione si sente?',
    a:'No. E la pressione <b>la scegli tu</b>: fra le domande del check-in c\'è proprio «che pressione desideri oggi».',
-   piu:'Più dolce, come sempre, o più decisa. E se a fine seduta dici che era troppo, la volta dopo parte già corretta.'},
+   piu:'Più dolce, come sempre, o più decisa. E se durante la seduta la vuoi diversa, dillo all\'operatore: la cambia subito, e la volta dopo parte già da lì.'},
   {ic:'👕', t:'seduta', alt:'abbigliamento vestito vestita tuta gioielli orologio anelli collane tasche', q:'Come mi devo vestire?',
    a:'Abbigliamento comodo, <b>tasche vuote</b>, niente orologi né gioielli. Non serve spogliarsi.',
    piu:'La schiena va appoggiata bene allo schienale: la scansione delle spalle parte da sola.'},
@@ -1828,7 +1924,7 @@ const QA = [
    piu:'E nei giorni in cui non ti alleni la seduta serve lo stesso, perché parte da come stai in quel momento: con 20,3 milioni di combinazioni quella di oggi non è mai quella di ieri. Cinquantadue sedute in un anno sono il livello Diamond, ma già alla tredicesima si sente la differenza.'},
   {ic:'🏅', t:'pratica', alt:'punteggio livello premi medaglia gold classifica', q:'Cosa sono i punti e i livelli?',
    a:'Ogni seduta vale <b>dieci punti</b>, e i punti non si azzerano mai. Crescendo si passa da Iron a Silver, Gold, Platinum, Diamond.',
-   piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te stesso. E a ogni livello vinci una seduta omaggio.'
+   piu:'Non è un gioco: serve a ricordarti quanta strada hai fatto per te. E a ogni livello vinci una seduta omaggio.'
      + '<span class="aprireg" onclick="apriRegolamento()">🎁 Leggi il regolamento dei premi ›</span>'},
   {ic:'🎁', t:'pratica', alt:'premi omaggio gratis regalo regalare vincere bonus costanza regolamento', q:'Posso vincere delle sedute omaggio?',
    a:'Sì: a ogni livello vinci <b>una seduta omaggio</b>. E se ci arrivi entro <b>100 giorni</b>, vinci anche una seduta <b>da regalare</b> a chi vuoi.',
@@ -1872,7 +1968,7 @@ const QA = [
    piu:'Subito dopo il lavoro fisico Zenith defatica e aiuta le fibre muscolari. Prima non avrebbe senso: rilasserebbe muscoli che stai per far lavorare.'},
   {ic:'☕', t:'seduta', alt:'dopo fine finita caffe relax uscita', q:'Cosa faccio quando finisco?',
    a:'Un <b>caffè in sala relax</b>, con calma. Poi decidi: prenoti la prossima seduta, oppure vai — senza fretta.',
-   piu:'Prima di uscire l\'operatore ti chiede com\'era l\'intensità: la prossima seduta si regola sulla tua risposta.'},
+   piu:'Prima di uscire leggi il messaggio che Zenith ha scritto per te, e quante sedute ti mancano alla seduta omaggio.'},
   {ic:'👯', t:'pratica', alt:'amico amica insieme accompagna compagnia due', q:'Posso venire con un\'amica?',
    a:'Certo. In capsula si accomoda <b>una persona alla volta</b>, ma <b>chi ti accompagna può aspettarti comodamente in sala relax</b>.',
    piu:'Potete anche prenotare due sedute una dopo l\'altra: mentre una è in capsula l\'altra aspetta, e appena finisce tocca a lei.'},
@@ -1887,7 +1983,7 @@ const QA = [
    piu:'4D vuol dire che i rulli non scorrono soltanto: entrano ed escono con la profondità che serve a te, regolata dal tuo operatore.'},
   {ic:'🎛️', t:'capire', alt:'scegliere programma decido io preferenze personalizzare', q:'Posso scegliere io il programma?',
    a:'Il programma lo costruisce il <b>protocollo</b> dalle tue risposte. Ma decidi tu la <b>pressione</b>, e se preferisci senza rulli puoi chiedere <b>solo aria</b>.',
-   piu:'E a fine seduta la tua risposta su com\'era l\'intensità tara la volta dopo: più sedute fai, più il programma diventa tuo.'},
+   piu:'E quello che chiedi durante la seduta — più dolce, più decisa, un airbag spento — la capsula se lo ricorda: più sedute fai, più il programma diventa tuo.'},
   {ic:'🏛️', t:'capire', q:'Cos\'è Zenith Fitness Lab?',
    a:'È il nostro format. Un percorso che mette insieme <b>EMS, EMS2, Vacutherm e Matrix</b> — e alla fine <b>Zenith</b>, il nostro fiore all\'occhiello.',
    piu:'Ogni macchina lascia qualcosa di diverso nel corpo, e Zenith è quella che chiude il cerchio: raccoglie il lavoro di tutte le altre e lo trasforma in recupero.'},
@@ -1952,13 +2048,13 @@ const FZ = {calore:['🔥','Calore','#f5851f'], rulli:['🌀','Rulli 4D','#8fd3e
             gz:['🪶','Gravità zero','#5fd08a'], ioni:['✨','Ioni','#b98adf'], piedi:['🦶','Rulli plantari','#8fd3ec']};
 const BISOGNI = [
   {k:'schiena', c:'#dcab63', n:'Schiena e collo', s:'che tirano da ore', goal:'sollievo', gl:'sollievo alla schiena',
-   h1:'La schiena<br>ti <span class="gold">tira?</span>', sub:'Calore e rulli lenti lungo la colonna, mentre sei <b>sdraiato</b>. <b>Ti rialzi sciolto.</b>',
-   h2:'La schiena torna<br>al suo <span class="gold">posto.</span>', p:'Ore di scrivania o di guida si fermano lì: fra collo, spalle e lombare. Zenith le scioglie <b>mentre sei sdraiato</b>.',
+   h1:'La schiena<br>ti <span class="gold">tira?</span>', sub:'Calore e rulli lenti lungo la colonna, mentre <b>riposi</b>. <b>Ti rialzi con la schiena sciolta.</b>',
+   h2:'La schiena torna<br>al suo <span class="gold">posto.</span>', p:'Ore di scrivania o di guida si fermano lì: fra collo, spalle e lombare. Zenith le scioglie <b>mentre riposi</b>.',
    mom:[['Calore','Il calore scioglie, i rulli lavorano lenti lungo la colonna.'],['Leggerezza','Spalle più basse, schiena sciolta, meno peso addosso.'],['Libertà','Ti alzi con meno tensione su collo e schiena.']],
    fz:[['calore','sulla lombare'],['rulli','lungo la colonna'],['airbag','su spalle e vita'],['gz','la schiena si scarica']],
    q:{activity:'riposo', giornata:'scrivania', zones:['lombare'], goal:'sollievo', mood:'stanco', pressione:'media'}},
   {k:'gambe', c:'#77b795', n:'Gambe pesanti', s:'gonfie e stanche', goal:'drenaggio', gl:'gambe leggere',
-   h1:'Le gambe<br>ti <span class="gold">pesano?</span>', sub:'Venti minuti <b>sdraiato</b>, gambe sopra il cuore e compressione a onde. <b>Esci leggero.</b>',
+   h1:'Le gambe<br>ti <span class="gold">pesano?</span>', sub:'Venti minuti <b>di riposo</b>, gambe sopra il cuore e compressione a onde. <b>Esci con le gambe leggere.</b>',
    h2:'Gambe leggere,<br>fino a <span class="gold">sera.</span>', p:'Ore in piedi o seduti, e i liquidi restano giù. Zenith alza le gambe sopra il cuore e le <b>accompagna verso l\'alto</b>.',
    mom:[['Leggerezza','Gambe in alto e compressione a onde, dai piedi in su.'],['Sgonfie','Caviglie e polpacci meno pieni, le scarpe stringono meno.'],['Energia','Arrivi a sera con gambe che non pesano.']],
    fz:[['gz','gambe sopra il cuore'],['airbag','compressione a onde'],['piedi','sotto la pianta'],['rulli','sui polpacci']],
@@ -2001,7 +2097,7 @@ const BISOGNI = [
 const gd = t => '<span class="gold">' + t + '</span>';
 const FRASI = {
   schiena: [
-    ['p', 'La schiena<br>ti ' + gd('tira?'), 'Calore e rulli lenti lungo la colonna, mentre sei <b>sdraiato</b>. <b>Ti rialzi sciolto.</b>'],
+    ['p', 'La schiena<br>ti ' + gd('tira?'), 'Calore e rulli lenti lungo la colonna, mentre <b>riposi</b>. <b>Ti rialzi con la schiena sciolta.</b>'],
     ['p', 'Ti alzi, e la schiena<br>arriva ' + gd('prima di te?'), '<b>Zenith</b> la scioglie con calore e rulli lenti, proprio dove nasce la tensione.'],
     ['d', 'Mi fa male la schiena: cosa fate?'],
     ['p', 'Ore di ' + gd('guida,') + '<br>collo bloccato?', '<b>Zenith</b> scioglie collo e schiena che il volante ha tenuto fermi per ore.'],
@@ -2013,12 +2109,12 @@ const FRASI = {
     ['p', 'Quel punto preciso<br>che ' + gd('tira sempre?'), 'Il tuo operatore porta i rulli <b>esattamente lì</b>, negli ultimi minuti della seduta.'],
     ['d', 'Cosa vuol dire «quattro mani»?']],
   gambe: [
-    ['p', 'Le gambe<br>ti ' + gd('pesano?'), 'Venti minuti <b>sdraiato</b>, gambe sopra il cuore e compressione a onde. <b>Esci leggero.</b>'],
+    ['p', 'Le gambe<br>ti ' + gd('pesano?'), 'Venti minuti <b>di riposo</b>, gambe sopra il cuore e compressione a onde. <b>Esci con le gambe leggere.</b>'],
     ['p', 'Caviglie gonfie<br>che a sera ' + gd('non passano?'), '<b>Zenith</b> comprime dai piedi verso l\'alto, con le gambe sopra il cuore.'],
     ['d', 'Ho le gambe pesanti: cosa fate?'],
     ['c', 'Gravità zero,<br>' + gd('letteralmente.'), 'Gambe sopra il livello del cuore: è così che i liquidi tornano su.'],
     ['p', 'In piedi tutto il giorno,<br>i piedi ' + gd('non ce la fanno?'), '<b>Zenith</b>: rulli sotto la pianta e compressione a onde su polpacci e piedi.'],
-    ['p', 'Seduto tutto il giorno,<br>gambe ' + gd('di piombo?'), '<b>Zenith</b> scarica la colonna in gravità zero e rimette in moto le gambe.'],
+    ['p', 'Ore alla scrivania,<br>gambe ' + gd('di piombo?'), '<b>Zenith</b> scarica la colonna in gravità zero e rimette in moto le gambe.'],
     ['d', 'Cos\'è la gravità zero?'],
     ['c', 'Compressione a onde,<br>dai piedi ' + gd('in su.'), 'Una spremitura dolce che accompagna i liquidi dove devono andare.'],
     ['p', 'Mani e piedi<br>sempre ' + gd('freddi?'), 'Compressione e calore riattivano il circolo, dai piedi in su: <b>ci pensa Zenith.</b>'],
@@ -2039,11 +2135,11 @@ const FRASI = {
     ['p', 'Dormi otto ore<br>e ne senti ' + gd('quattro?'), '<b>Zenith</b> abbassa i giri: manovre lente, ioni e dondolio preparano il sonno vero.'],
     ['d', 'Dormo male. Può aiutarmi?'],
     ['c', 'Un dondolio lento,<br>come ' + gd('un\'amaca.'), 'Manovre lentissime che accompagnano il corpo verso il riposo.'],
-    ['p', 'Vai a letto stanco<br>ma ' + gd('non ti rilassi?'), '<b>Zenith</b> ha i protocolli del sonno: il corpo impara di nuovo a staccare.'],
+    ['p', 'A letto senza forze<br>ma ' + gd('non ti rilassi?'), '<b>Zenith</b> ha i protocolli del sonno: il corpo impara di nuovo a staccare.'],
     ['p', 'La sera arriva<br>e sei ' + gd('ancora teso?'), 'Venti minuti di dondolio lento con <b>Zenith</b>, e la serata cambia.'],
     ['d', 'Quanto ci metto a capire se fa per me?'],
     ['c', 'Si abbassano<br>' + gd('i giri.'), 'Manovre lentissime, ioni e gravità zero: il sistema nervoso rallenta.'],
-    ['p', 'Ti svegli<br>già ' + gd('stanco?'), 'Il riposo vero comincia la sera prima: <b>Zenith</b> prepara il corpo a staccare.'],
+    ['p', 'Ti svegli<br>senza ' + gd('energia?'), 'Il riposo vero comincia la sera prima: <b>Zenith</b> prepara il corpo a staccare.'],
     ['d', 'Ogni quanto posso venire?']],
   muscoli: [
     ['p', 'Muscoli<br>a ' + gd('pezzi?'), 'Dopo l\'allenamento <b>Zenith</b> porta <b>sangue nuovo</b> dove hai lavorato. <b>Domani lo senti.</b>'],
@@ -2053,7 +2149,7 @@ const FRASI = {
     ['c', 'Il muscolo cresce<br>' + gd('dopo') + ' il carico.', 'Non sotto i pesi, ma nelle ore dopo: <b>Zenith</b> gli dà le condizioni giuste.'],
     ['p', 'Dopo l\'allenamento<br>servono ' + gd('giorni?'), '<b>Zenith</b> accorcia l\'attesa: sangue nuovo dove hai lavorato, subito dopo.'],
     ['d', 'Mi alleno. Quando dovrei venire?'],
-    ['c', 'La capsula<br>' + gd('si ricorda di te.'), 'Se dici che era troppo leggera, la volta dopo parte già corretta.'],
+    ['c', 'La capsula<br>' + gd('si ricorda di te.'), 'Se in seduta la vuoi più decisa, la volta dopo parte già da lì.'],
     ['p', 'Weekend attivo,<br>lunedì ' + gd('a pezzi?'), 'Venti minuti di <b>Zenith</b> il lunedì sera, e la settimana riparte leggera.'],
     ['d', 'Fa male? Che pressione si sente?']],
   energia: [
@@ -2188,9 +2284,9 @@ const ELEMENTI = {
 const INFO = {
   capsula: {ic:'🛸', c:'#e6c65c', k:'LA CAPSULA ZENITH', t:'Sei elementi,<br>una seduta sola.', s:'Tocca un elemento per scoprire cosa fa',
     p:'Zenith non è una poltrona con un tasto: è una capsula che combina sei elementi, ognuno regolato a parte. Le tue risposte decidono quali si accendono e quanto: <b>20,3 milioni di combinazioni</b>, e la tua nasce oggi.', grid:true},
-  sdraiato: {ic:'🛋️', c:'#e2bdd4', k:'COME SI FA', t:'Sdraiato<br>e vestito.', s:'Non ti spogli e non ti cambi',
+  sdraiato: {ic:'🛋️', c:'#e2bdd4', k:'COME SI FA', t:'Senza<br>spogliarti.', s:'Non serve cambiarti',
     p:'Ti sdrai così come sei, e al resto pensa il tuo operatore: sistema la posizione, imposta la capsula e resta a un passo da te.',
-    righe:[['⌚','Togli orologio, bracciali e collane'],['👖','Svuota le tasche'],['👕','Resta vestito, comodo'],['🧦','Togli le scarpe: i calzini antiscivolo te li diamo noi']]},
+    righe:[['⌚','Togli orologio, bracciali e collane'],['👖','Svuota le tasche'],['👕','Tieni i tuoi vestiti, comodi'],['🧦','Togli le scarpe: i calzini antiscivolo te li diamo noi']]},
   durata: {ic:'⏱', c:'#7ecbe8', k:'QUANTO DURA', t:'Da 20<br>a 30 minuti.', s:'Il tempo giusto lo decide Zenith',
     p:'La durata nasce da come stai oggi: venti minuti per una carica o un relax veloce, fino a trenta per un recupero profondo. La prima volta sono quindici minuti, tutti dolci, con ogni sensazione spiegata prima che arrivi.'},
   misura: {ic:'✦', c:'#e6c65c', k:'SU MISURA', t:'Il tuo protocollo<br>ha un nome.', s:'Ogni combinazione si chiama in modo diverso',
@@ -2270,7 +2366,7 @@ function apriBisogno(k){
         + '<div class="p">Un nome solo suo, fra <b>20,3 milioni</b> di combinazioni. Per esempio:</div>'
         + '<div class="nm gold">' + esc(es.nome) + '</div>'
         + '<div class="zcgo">✎ Componilo tu: scegli cosa senti, e il nome cambia<span class="zpast">›</span></div></div>' : '')
-    + '<div class="zcome"><span onclick="apriInfo(\'sdraiato\')">🛋️ Sdraiato e vestito</span><span onclick="apriInfo(\'durata\')">⏱ 20–30 minuti</span><span onclick="apriInfo(\'misura\')">✦ Su misura per te</span></div>'
+    + '<div class="zcome"><span onclick="apriInfo(\'sdraiato\')">🛋️ Senza spogliarti</span><span onclick="apriInfo(\'durata\')">⏱ 20–30 minuti</span><span onclick="apriInfo(\'misura\')">✦ Su misura per te</span></div>'
     + '<div class="zanche"><em>GUARDA ANCHE</em>' + BISOGNI.filter(x=> x.k !== k).map(x=>
         '<span style="--k:' + x.c + '" onclick="apriBisogno(\'' + x.k + '\')">' + x.n + '</span>').join('') + '</div>'
     + '<div class="zcta2" onclick="startCheck(\'' + b.goal + '\')"><span><div class="t1">La voglio provare</div>'
@@ -2344,7 +2440,7 @@ function disegnaComponi(cambio){
     '<div class="lab">COMPONI IL TUO · ' + b.n.toUpperCase() + '</div>'
     + '<div class="h2">Scegli tu.<br>Zenith <span class="gold">compone.</span></div>'
     + '<div class="sub">Tocca le risposte: il protocollo cambia e prende un nome nuovo. Quanto dura, lo decide Zenith.</div>'
-    + '<div class="zcr"><div class="zcl">Oggi ti sei allenato?</div><div class="zcch">' + att.map(o =>
+    + '<div class="zcr"><div class="zcl">Allenamento, oggi?</div><div class="zcch">' + att.map(o =>
         chip(C.activity === o[0], 'compSet(\'activity\',\'' + o[0] + '\')', o[1] + ' ' + (o[0] === 'riposo' ? 'No' : o[2]), COL_MAC[o[0]])).join('') + '</div></div>'
     + '<div class="zcr"><div class="zcl">Dove lo senti? <small>fino a 3</small></div><div class="zcch">' + ZONE_COMP.map(([z, n]) =>
         chip(C.zones.indexOf(z) >= 0, 'compSet(\'zona\',\'' + z + '\')', (C.zones.indexOf(z) >= 0 ? '<i>' + (C.zones.indexOf(z) + 1) + '</i>' : '') + n)).join('')
@@ -2536,7 +2632,7 @@ function buildGriglia(){
   const {lista, cercato} = elencoDomande();
   if(!lista.length){
     g.innerHTML = '<div class="vuoto"><b>Non ho una risposta pronta per questo</b>'
-      + 'Chiedilo al tuo operatore: te la dà lui, e la aggiungiamo qui.</div>';
+      + 'Chiedila a chi ti segue: te la diamo noi, e la aggiungiamo qui.</div>';
     return;
   }
   g.innerHTML = lista.map((i,n)=>{
@@ -2688,7 +2784,7 @@ function percorsoHTML(k, mm){
       + '<span class="cv2"><i style="width:100%"></i><b>' + P.con + '</b></span></span>'
     : '';
   return '<span class="cal"><em>' + (k === 'riposo' ? 'La tua giornata' : 'Il tuo allenamento') + '</em>' + P.allena + '</span>'
-    + '<span class="cdz"><em>Poi, in Zenith · da 20 a 30 minuti, sdraiato e vestito</em>'
+    + '<span class="cdz"><em>Poi, in Zenith · da 20 a 30 minuti, senza spogliarti</em>'
     + P.dopo.map(r=> '<span class="cdr"><span class="cdk">' + r[0] + '</span><span class="cdt">' + r[1] + '</span></span>').join('')
     + '</span>'
     + '<span class="cvl"><em>' + (k === 'riposo' ? 'Perché ti serve' : 'Insieme valgono molto di più') + '</em>' + barre + '<span class="cvt">' + P.vale + '</span></span>';
@@ -3009,11 +3105,11 @@ const PASSI_TUTTI = [
     ['sonno','🌙','Verso il sonno','Dormi male o vuoi una sera più tranquilla'],
     ['energia','☀️','Energia','Ti serve una carica per affrontare la giornata']]},
   {k:'mood', q:'E adesso, come ti senti?', qs:'Una risposta sola: quella più vicina a come stai.', due:true, spiega:true, opts:[
-    ['sereno','🙂','Sereno','Nessun fastidio particolare: stai bene'],
-    ['stanco','🥱','Stanco','La giornata ti ha svuotato, poche energie'],
-    ['stressato','😣','Stressato','Testa piena, nervi tesi, pensieri che corrono'],
-    ['dolorante','😖','Indolenzito','Muscoli doloranti o rigidi, magari da ieri'],
-    ['carico','🔥','Carico','Tanta energia e voglia di muoverti']]},
+    ['sereno','🙂','In pace','Nessun fastidio particolare: stai bene'],
+    ['stanco','🥱','Senza energie','La giornata ti ha svuotato, poche energie'],
+    ['stressato','😣','Sotto stress','Testa piena, nervi tesi, pensieri che corrono'],
+    ['dolorante','😖','Muscoli doloranti','Doloranti o rigidi, magari da ieri'],
+    ['carico','🔥','Energia a mille','Tanta energia e voglia di muoverti']]},
   {k:'pressione', q:'Che pressione vuoi oggi?', qs:'Se va bene come l\'ultima volta, tocca «Come sempre».', due:true, spiega:true, opts:[
     ['dolce','🪶','Più dolce del solito','Oggi è una giornata delicata: la capsula ci va piano'],
     ['decisa','💎','Più decisa','Vuoi sentire il lavoro in profondità'],
@@ -3176,8 +3272,8 @@ const MACCHINE = [
    + '<b>postura</b> — oltre a gambe, glutei, addome e braccia. Lavoro breve, '
    + 'intenso e completo, con le articolazioni al riparo.',
    'Zenith ti dà un <b>defaticamento completo</b> dei gruppi che hai lavorato: '
-   + 'porta sangue nuovo dove è servito, mentre tu stai sdraiato. Se ti senti '
-   + 'già indolenzito parte il protocollo <b>anti-DOMS</b>; se oggi hai insistito '
+   + 'porta sangue nuovo dove è servito, mentre tu riposi. Se senti già i '
+   + 'muscoli indolenziti parte il protocollo <b>anti-DOMS</b>; se oggi hai insistito '
    + 'sulle braccia, il recupero della <b>parte alta</b>.', 'ems'],
   ['🌀','EMS2',
    'Gli stessi impulsi dell\'EMS, ma mentre <b>cammini</b>: muscoli e fiato '
@@ -3425,11 +3521,11 @@ const CARTE = {
          ['relax','🧘','Staccare','testa libera, corpo sciolto','#b98adf'],
          ['sonno','🌙','Dormire meglio','una sera più tranquilla','#7d7ce0'],
          ['energia','☀️','Energia','una carica per ripartire','#e0997d']],
-  mood: [['sereno','🙂','Sereno','sto bene, nessun fastidio','#5fd08a'],
-         ['stanco','🥱','Stanco','la giornata mi ha svuotato','#7d7ce0'],
-         ['stressato','😣','Stressato','testa piena, nervi tesi','#b98adf'],
-         ['dolorante','😖','Indolenzito','muscoli doloranti o rigidi','#c98ab0'],
-         ['carico','🔥','Carico','tanta energia, voglia di muovermi','#e0997d']],
+  mood: [['sereno','🙂','In pace','sto bene, nessun fastidio','#5fd08a'],
+         ['stanco','🥱','Senza energie','la giornata mi ha svuotato','#7d7ce0'],
+         ['stressato','😣','Sotto stress','testa piena, nervi tesi','#b98adf'],
+         ['dolorante','😖','Muscoli doloranti','doloranti o rigidi','#c98ab0'],
+         ['carico','🔥','Energia a mille','tanta voglia di muovermi','#e0997d']],
   pressione: [['abituale','⚖️','Come sempre','come l\'ultima volta: va bene così','#e6c65c'],
               ['dolce','🪶','Più dolce','oggi è una giornata delicata','#e2bdd4'],
               ['decisa','💎','Più decisa','voglio sentire il lavoro in profondità','#8fd3ec']],
@@ -3455,7 +3551,7 @@ const SEQ_TOTEM = [
    goal:{recupero:['🔋','Muscoli rigenerati','via la fatica dell\'allenamento'], sollievo:['📍','Meno fastidio','un punto che tira o fa male'],
      drenaggio:['🦵','Gambe leggere','meno gonfiore e pesantezza'], relax:['🌊','Testa libera','calma per corpo e mente'],
      sonno:['😴','Dormire meglio','una notte più serena'], energia:['🚀','Ricarica','energia per il resto del giorno']},
-   mood:{sereno:['😊','Tranquillo','sto bene così'], stanco:['😴','Scarico','poche energie oggi'], stressato:['🤯','Teso','testa piena di pensieri'],
+   mood:{sereno:['😊','Tutto tranquillo','sto bene così'], stanco:['😴','Batterie scariche','poche energie oggi'], stressato:['🤯','Tensione','testa piena di pensieri'],
      dolorante:['🤕','Dolorante','sento i muscoli'], carico:['🔥','Su di giri','energia da vendere']}},
   {q:{activity:['Da quale macchinario arrivi?', 'Un tocco, e si va avanti da soli.'],
       giornata:['Cosa hai fatto per gran parte del giorno?', 'Così scelgo il programma giusto per te.'],
@@ -3478,9 +3574,9 @@ const SEQ_TOTEM = [
       aria:['Oggi rulli e aria, o solo aria?']},
    goal:{recupero:['🛠️','Muscoli a nuovo','via la fatica dell\'allenamento'], sollievo:['🎯','Senza quel fastidio','in una zona precisa'],
      drenaggio:['🪶','Più leggerezza','gambe sgonfie, circolazione attiva'], relax:['😌','Corpo sciolto','e mente libera'],
-     sonno:['🌙','Pronto per la notte','un sonno più profondo'], energia:['⚡','Carica','energia per ripartire']},
-   mood:{sereno:['🙂','Di buon umore','nessun problema'], stanco:['😪','Giù di energie','oggi sono stanco'], stressato:['😤','Nervoso','tanto stress addosso'],
-     dolorante:['😬','Acciaccato','qualche muscolo dolorante'], carico:['🤩','Alle stelle','energia a mille']}},
+     sonno:['🌙','Verso la notte','un sonno più profondo'], energia:['⚡','Carica','energia per ripartire']},
+   mood:{sereno:['🙂','Di buon umore','nessun problema'], stanco:['😪','Giù di energie','oggi mi sento a terra'], stressato:['😤','Nervi tesi','tanto stress addosso'],
+     dolorante:['😬','Acciacchi','qualche muscolo dolorante'], carico:['🤩','Alle stelle','energia a mille']}},
   {q:{activity:['Raccontaci: cosa hai fatto al centro oggi?', 'Un tocco e si va avanti.'],
       giornata:['Che tipo di giornata hai avuto?', 'Così scelgo il programma giusto per te.'],
       zones:['Dove senti più rigidità?'],
@@ -3491,8 +3587,8 @@ const SEQ_TOTEM = [
    goal:{recupero:['🏁','Smaltire l\'allenamento','muscoli meno pieni e rigidi'], sollievo:['✋','Sciogliere un punto','un nodo o un fastidio preciso'],
      drenaggio:['🫗','Drenare','via liquidi e gonfiore'], relax:['🕯️','Calma totale','lasciar andare tutto'],
      sonno:['💤','Prepararmi a dormire','rilassarmi per la notte'], energia:['🌅','Ripartire','una carica per il resto del giorno']},
-   mood:{sereno:['🌈','Serena','va tutto bene'], stanco:['🐢','Lenta','manca la benzina'], stressato:['⏰','Frenetica','sempre di corsa'],
-     dolorante:['🩹','Pesante per il corpo','muscoli che fanno male'], carico:['🎉','Esplosiva','tanta voglia di fare']}}
+   mood:{sereno:['🌈','Giornata serena','va tutto bene'], stanco:['🐢','Giornata lenta','manca la benzina'], stressato:['⏰','Giornata frenetica','sempre di corsa'],
+     dolorante:['🩹','Pesante per il corpo','muscoli che fanno male'], carico:['🎉','Giornata esplosiva','tanta voglia di fare']}}
 ];
 const SEQ_RECENTI = 3;
 /* la sequenza per questo cliente: a caso, mai una delle sue ultime tre */
@@ -3797,7 +3893,7 @@ const NOMI = {
   ems:'EMS', matrix:'Matrix', vacufit:'Vacutherm', ems2:'EMS2', riposo:'Nessun allenamento',
   recupero:'Recupero muscolare', sollievo:'Sollievo mirato', drenaggio:'Leggerezza',
   relax:'Relax profondo', sonno:'Verso il sonno', energia:'Energia',
-  sereno:'Sereno', stanco:'Stanco', stressato:'Stressato', dolorante:'Indolenzito', carico:'Carico',
+  sereno:'In pace', stanco:'Senza energie', stressato:'Sotto stress', dolorante:'Muscoli doloranti', carico:'Energia a mille',
   dolce:'Pressione dolce', media:'Pressione media', decisa:'Pressione decisa',
   completo:'Massaggio completo', soloaria:'Solo aria',
   guida:'Ore alla guida', scrivania:'Ore alla scrivania', inpiedi:'In piedi tutto il giorno',
@@ -3938,7 +4034,7 @@ function finisci(){
   /* il protocollo si disegna per primo: il nome che legge il cliente e'
      lo stesso della targa dell'operatore, qui sotto */
   const r = disegnaProtocollo(), S = r.pr.S, P = PROGRAMMI[r.pr.prog] || {};
-  document.getElementById('dnome').textContent = D.nome || 'benvenuto';
+  document.getElementById('dnome').textContent = D.nome || 'ci siamo';
   document.getElementById('dnomep').textContent = r.nomeP;
   document.getElementById('dcat').textContent = 'categoria ' + (P.o || r.pr.prog) + ' · ' + S.timer
     + ' minuti · nato per te fra 20,3 milioni';
@@ -3950,7 +4046,7 @@ function finisci(){
     /* chi torna: Zenith guarda le sue ultime sedute, e un nome gia' avuto non si ripete */
     : D.composto && D.composto !== r.nomeP
     ? 'Zenith ha tenuto conto anche della tua scheda e delle tue ultime sedute: partendo da «' + esc(D.composto) + '», oggi il tuo protocollo ha un nome suo.' : '';
-  document.getElementById('dmin').textContent = S.timer + ' minuti, sdraiato. Lascia lavorare Zenith.';
+  document.getElementById('dmin').textContent = S.timer + ' minuti di riposo. Lascia lavorare Zenith.';
   /* gli elementi che oggi si accendono per lui: i colori sono quelli
      della vetrina, cosi' li riconosce */
   const acc = [S.calore && ['🔥 Calore','#f5851f'], S.ioni && ['✨ Ioni','#b98adf'], S.zerog && ['🪶 Gravità zero','#5fd08a'],
@@ -4118,8 +4214,8 @@ function disegnaProtocollo(){
     +   '<div class="fm">' + S.timer + '′</div><div class="fd">' + P.d + '</div>'
     +   '<div class="fa">Lascialo lavorare</div></div>'
     + '<div class="fase" style="--fc:#7ecbe8"><div class="fq">ALLA FINE</div>'
-    +   '<div class="fm">🏁</div><div class="fd">Ci dici com\'era l\'intensità: '
-    +   'la prossima si regola su di te.</div><div class="fa">💬 Com\'era?</div></div>'
+    +   '<div class="fm">🏁</div><div class="fd">Il messaggio di Zenith, scritto per te, '
+    +   'e le sedute che mancano alla seduta omaggio.</div><div class="fa">🎁 Il tuo regalo</div></div>'
     + '</div>';
 
   const pensiero =
@@ -4138,23 +4234,22 @@ function disegnaProtocollo(){
   const scala =
     '<div class="scala">'
     + '<div class="grad" style="--gc:#ff6b6b"><div class="gi">🪶</div>'
-    +   '<span class="gn">TROPPO FORTE</span><span class="gd">l\'ho sentita troppo</span></div>'
+    +   '<span class="gn">PIÙ DOLCE</span><span class="gd">«la sento troppo»</span></div>'
     + '<div class="grad" style="--gc:#5fd08a"><div class="gi">✓</div>'
-    +   '<span class="gn">PERFETTA</span><span class="gd">era giusta così</span></div>'
+    +   '<span class="gn">COSÌ</span><span class="gd">«va bene così»</span></div>'
     + '<div class="grad" style="--gc:#5eb7f0"><div class="gi">💪</div>'
-    +   '<span class="gn">TROPPO LEGGERA</span><span class="gd">l\'ho sentita appena</span></div>'
+    +   '<span class="gn">PIÙ DECISA</span><span class="gd">«la sento appena»</span></div>'
     + '</div>';
 
   const perTe =
     '<div class="perTe"><div class="th"><span class="tn">◐</span><span>'
-    + '<span class="tk">ALLA FINE DECIDI TU, ' + (D.nome || '').toUpperCase() + '</span>'
-    + '<span class="ts">Una parola sola, e la tua prossima seduta cambia</span></span></div>'
-    + '<div class="tp">Quando ti rialzi ti chiederemo una cosa sola: <b>com\'era '
-    +   'l\'intensità?</b> Non c\'è una risposta giusta — c\'è la tua.</div>'
+    + '<span class="tk">DURANTE LA SEDUTA DECIDI TU, ' + (D.nome || '').toUpperCase() + '</span>'
+    + '<span class="ts">Basta dirlo, e la seduta cambia subito</span></span></div>'
+    + '<div class="tp">Se la senti <b>troppo forte</b> o <b>troppo leggera</b>, o non vuoi '
+    +   'un airbag in un punto, dillo al tuo operatore: la cambia mentre sei in capsula.</div>'
     + scala
-    + '<div class="tp">Se dici <b>troppo leggera</b>, la prossima volta parte più decisa. '
-    +   'Se dici <b>troppo forte</b>, parte più morbida. Se dici <b>perfetta</b>, abbiamo '
-    +   'trovato la tua taratura e da lì non ci muoviamo.</div>'
+    + '<div class="tp">E la volta dopo <b>parte già da lì</b>: più morbida, più decisa, o '
+    +   'così com\'era, se andava bene.</div>'
     + '<div class="memo"><span class="mi2">🧠</span><span class="mt2">È così che questa '
     +   'capsula diventa <b>la tua</b>: la seduta di oggi è già uscita da '
     +   '<b class="oro">20,3 milioni di combinazioni</b>, e da domani conterà anche quello '
@@ -4282,13 +4377,12 @@ function rigaBackup(){
     return g <= 0 ? ' · oggi' : g === 1 ? ' · ieri' : ' · ' + g + ' giorni fa';
   };
   const mano = corto(db && db.lastBackup), auto = corto(db && db.lastAuto);
-  document.getElementById('dbg').innerHTML =
-    /* il numero sta sulla prima riga, non su una terza: tre righe qui
-       sotto arrivavano a toccare la riga sotto il tasto del check-in */
-    '<span class="b1">ultima copia a mano ' + (mano ? '<b>'+mano+'</b>' : '<i>mai fatta</i>')
-    + ' <i>·</i> vetrina ' + VETRINA_VERSION + '</span>'
-    + '<span class="b2' + (auto ? '' : ' mai') + '">ultimo backup automatico '
-    + (auto ? '<b>'+auto+'</b>' + quanto(db.lastAuto) : '<i>mai fatto</i>') + '</span>';
+  /* v183: sul totem la leggono i clienti. «Ultima copia mai fatta» non
+     e' una cosa da far leggere a chi aspetta la seduta: resta solo il
+     numero della versione, piccolo. Lo stato dei backup lo vede
+     l'operatore nel gestionale (anche aprendolo dal totem) */
+  void mano; void auto; void quanto;
+  document.getElementById('dbg').innerHTML = '<span class="b1">' + VETRINA_VERSION + '</span>';
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4325,7 +4419,7 @@ setInterval(guardaSeCeNeUnaNuova, CONTROLLO_VERSIONE);
 /* Il numero della vetrina: lo stesso del gestionale, cosi' guardando i
    due schermi si sa subito se stanno alla stessa pagina. Si vede in
    fondo alla vetrina, sotto le righe del backup. */
-const VETRINA_VERSION = 'v182.26.11(23)';
+const VETRINA_VERSION = 'v183.26.11(23)';
 
 /* ─────────── si parte ─────────── */
 rigaBackup();
