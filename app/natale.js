@@ -105,25 +105,97 @@
     </svg>`;
   }
 
-  /* ── la slitta con le renne, in silhouette luminosa ── */
-  function renna(x){
-    return `<g transform="translate(${x} 0)">
-      <path d="M22 24 C26 15 44 13 56 17 C62 19 64 23 62 27 C56 31 34 32 24 30 C20 29 20 26 22 24 Z"/>
-      <path d="M56 18 C60 12 63 7 67 4 L71 7 C68 11 66 16 63 21 Z"/>
-      <ellipse cx="71" cy="5" rx="6" ry="3.4" transform="rotate(-14 71 5)"/>
-      <path d="M67 2 C65 -4 66 -9 70 -13 M66 -3 C62 -5 60 -8 60 -11 M70 -10 C73 -12 75 -15 75 -18 M70 1 C72 -5 76 -8 80 -10 M75 -6 C78 -6 81 -8 82 -11" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      <path d="M58 26 L72 33 L74 31 M55 28 L66 38 L68 36 M28 27 L14 33 L12 31 M31 29 L20 39 L18 37" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M22 24 C17 22 15 24 16 27 C18 26 20 26 22 26 Z"/></g>`;
+  /* ── la slitta con le renne (v187: disegnate dal vero) ──
+     Ogni renna ha il corpo pieno (garrese, petto profondo, groppa), il collo
+     con la gola, il muso lungo, l'orecchio, i palchi ramificati che salgono
+     all'indietro e la coda corta. Le zampe hanno due pose del galoppo
+     (raccolte e distese) che si alternano: le renne corrono davvero, e
+     ognuna ha il suo tempo. Davanti alla slitta: Babbo Natale col sacco,
+     il pattino che si arriccia in punta, le redini fino al collare. */
+  function renna(x, y, k, fase, guida){
+    /* una zampa: coscia scura e spessa, canna piu' chiara e sottile, zoccolo nero */
+    const zampa = (a, b, c, lontana) => `<path d="M${a} L${b}" fill="none" stroke="${lontana ? '#3e2716' : '#5e3b22'}" stroke-width="3.8" stroke-linecap="round"/>`
+      + `<path d="M${b} L${c}" fill="none" stroke="${lontana ? '#6d5a48' : '#a08a72'}" stroke-width="2.2" stroke-linecap="round"/>`
+      + `<ellipse cx="${c.split(' ')[0]}" cy="${c.split(' ')[1]}" rx="2.1" ry="1.5" fill="#1d1510"/>`;
+    const posa = (cl, L) => `<g class="${cl}">${L.map(([a, b, c, far]) => zampa(a, b, c, far)).join('')}</g>`;
+    const A = [['55 33', '60 44', '69 50', 1], ['22 33', '16 44', '6 51', 1], ['59 31', '66 41', '76 46', 0], ['17 30', '12 41', '1 47', 0]];
+    const B = [['55 33', '58 45', '53 54', 1], ['22 33', '28 44', '35 52', 1], ['59 31', '64 42', '60 52', 0], ['17 30', '22 42', '29 51', 0]];
+    const lontane = l => l.filter(z => z[3]), vicine = l => l.filter(z => !z[3]);
+    return `<g class="zn-renna" transform="translate(${x} ${y}) scale(${k})" style="--f:${fase}s">
+      ${posa('zn-zA', lontane(A))}${posa('zn-zB', lontane(B))}
+      <g class="zn-corpo">
+        <path d="M14 21 C10 18 7 19 6 22 C9 22.5 12 23.5 14 25 Z" fill="#efe6d6"/>
+        <path d="M14 23 C13 18 19 16 27 17 C37 18 47 16 54 15 C58 14 60 11 62 7 L65 0 C66 -3 69 -4 71 -3 C74 -2 78 2 81 5 C83 7 82 9 80 9 L74 8 C71 9 69 11 67 14 C65 21 63 28 59 32 C55 35 47 35 40 34 C32 34 23 35 18 33 C14 31 13 27 14 23 Z" fill="url(#zr-pelo)"/>
+        <path d="M18 31 C26 33 40 33 52 32 C55 31.5 57 30 58 28 C52 30.5 34 31 18 28 Z" fill="#cdb99b" opacity=".8"/>
+        <path d="M60 11 C66 15 66.5 23 62.5 31 C59.5 27 58.5 18 58.5 12 Z" fill="#efe6d6"/>
+        <path d="M61 14 C63 17 63.5 21 62 25" fill="none" stroke="#d8c8ae" stroke-width=".9"/>
+        <path d="M74 8 C77 8.6 80 9 81 7.5 C82.5 6.5 82 4.5 80.5 3.8 C79 5 77 6.5 74 8 Z" fill="#4a3020"/>
+        <ellipse cx="81.2" cy="5.8" rx="1.6" ry="1.3" fill="${guida ? '#d8282f' : '#1a1210'}"/>
+        <circle cx="72.6" cy="1.4" r="1.05" fill="#140c08"/><circle cx="72.9" cy="1.1" r=".35" fill="#fff"/>
+        <path d="M68 -1 L72.5 -6.5 L72 0.5 Z" fill="#6b4428"/><path d="M69.4 -1.2 L72 -4.6 L71.6 -.4 Z" fill="#c9928a"/>
+        <g fill="none" stroke-linecap="round">
+          <g stroke="#b99464" stroke-width="2.1"><path d="M71 -3 C70 -11 67.5 -17 62 -23 M69 -11 C71 -15 74 -17 77 -17.5 M66.5 -17 C67.5 -21 69.5 -24 72.5 -25.5"/></g>
+          <g stroke="#d9be8e" stroke-width="2.3"><path d="M69 -2 C66 -10 62 -16 55 -21 M66 -9 C66 -14 68 -17 71 -20 M62.5 -14 C61.5 -18 62.5 -22 65 -25 M58.5 -17.5 C56.5 -20 55.5 -23 56 -27 M70 -3 C73 -7 76 -8 79 -7"/></g>
+          <g stroke="#f3e5c4" stroke-width=".7" opacity=".8"><path d="M68.6 -3 C66 -10 62 -15.6 56 -20 M66 -10 C66.4 -14 68 -16.5 70.6 -19"/></g>
+        </g>
+        <path d="M58.5 9.5 C62.5 14 65.5 16.5 68.5 15.5" fill="none" stroke="#b3202d" stroke-width="3"/>
+        <path d="M58.5 9.5 C62.5 14 65.5 16.5 68.5 15.5" fill="none" stroke="#e8505a" stroke-width=".8" opacity=".7"/>
+        <circle cx="63" cy="14.2" r="1.6" fill="url(#zr-oro)"/><circle cx="66.5" cy="15.8" r="1.6" fill="url(#zr-oro)"/>
+        <path d="M41 16.5 C41.5 22 41.5 28 41 33.8" fill="none" stroke="#b3202d" stroke-width="3"/>
+        <circle cx="41.2" cy="19" r="1.4" fill="url(#zr-oro)"/>
+        <path d="M27 18.5 C31 17.5 36 17.3 41 17" fill="none" stroke="#fff" stroke-width=".8" opacity=".25"/>
+      </g>
+      ${posa('zn-zA', vicine(A))}${posa('zn-zB', vicine(B))}
+    </g>`;
   }
   function slitta(){
-    return `<svg class="zn-slitta" viewBox="-6 -24 360 74" aria-hidden="true">
-      <g fill="#fff6e4" stroke="#fff6e4">
-        ${renna(196)}${renna(130)}${renna(64)}
-        <path d="M62 24 C90 20 130 20 150 22 M128 24 C160 20 196 20 214 22 M194 24 C230 20 262 20 270 22" stroke-width="1" fill="none" opacity=".8"/>
-        <path d="M0 40 C10 46 46 46 58 40" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        <path d="M6 38 L8 22 C8 16 14 12 22 12 L44 14 C52 14 56 20 56 26 L54 38 Z"/>
-        <circle cx="20" cy="4" r="6"/><path d="M14 2 C16 -8 26 -10 30 -4 L33 -2 L30 1 C28 -2 25 -2 24 0 Z"/><circle cx="34" cy="-3" r="2.2"/>
-        <path d="M12 14 C10 6 30 6 28 14 Z"/><rect x="36" y="4" width="14" height="10" rx="3"/>
+    /* quattro renne in due coppie: le lontane un po' piu' in alto e piccole;
+       la prima ha il naso rosso */
+    const R = [[318, 2, 1, 0, 1], [238, -3, .93, -.27], [158, 1, 1, -.13], [78, -4, .93, -.4]];
+    const redine = R.map(([x, y, k]) => `M38 12 C${x - 30} ${4 + y} ${x + 30 * k} ${y + 8 * k} ${(x + 62 * k).toFixed(1)} ${(y + 12 * k).toFixed(1)}`).join(' ');
+    return `<svg class="zn-slitta" viewBox="-8 -32 420 92" aria-hidden="true">
+      <defs>
+        <linearGradient id="zr-pelo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3820"/><stop offset=".5" stop-color="#835534"/><stop offset="1" stop-color="#a47a55"/></linearGradient>
+        <radialGradient id="zr-oro" cx=".35" cy=".35"><stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#d9ac45"/><stop offset="1" stop-color="#7a5a14"/></radialGradient>
+        <linearGradient id="zs-legno" x1="0" y1="0" x2="1" y2=".15">
+          <stop offset="0" stop-color="#5e3a1c"/><stop offset=".18" stop-color="#8f5d2e"/><stop offset=".3" stop-color="#734822"/><stop offset=".5" stop-color="#a06a37"/>
+          <stop offset=".66" stop-color="#7c4f27"/><stop offset=".82" stop-color="#9b6633"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+        <linearGradient id="zs-rosso" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d63a44"/><stop offset="1" stop-color="#7e121c"/></linearGradient>
+        <linearGradient id="zs-sacco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c49a62"/><stop offset="1" stop-color="#7d5a32"/></linearGradient>
+        <radialGradient id="zs-viso" cx=".4" cy=".4"><stop offset="0" stop-color="#f7d6bd"/><stop offset="1" stop-color="#e0a888"/></radialGradient>
+      </defs>
+      <path d="${redine}" fill="none" stroke="#3a2414" stroke-width=".8" opacity=".9"/>
+      ${R.map(([x, y, k, f, g]) => renna(x, y, k, f, g)).join('')}
+      <g class="zn-slitta-c">
+        <path d="M37 20 C35 10 41 4 48 7 C53 10 53 17 50 21 Z" fill="url(#zs-sacco)"/>
+        <path d="M40 9 C43 6.5 46 7 47.5 8.8" fill="none" stroke="#5a3f20" stroke-width="1.2"/>
+        <path d="M42 14 C44 12 47 13 48 16 M39.5 17 C41 15.5 43 16 44 18" fill="none" stroke="#6b4a26" stroke-width=".7" opacity=".7"/>
+        <rect x="44" y="2.5" width="7" height="6" rx=".6" fill="#2f6b4a" transform="rotate(12 47.5 5.5)"/>
+        <path d="M47.6 2.6 L46.4 8.4 M44.4 5 L50.6 6.2" stroke="#e7c35a" stroke-width="1" transform="rotate(12 47.5 5.5)"/>
+        <path d="M16 23 C15 13 19 8 26 8.5 C32 9 35.5 13 35.5 23 Z" fill="url(#zs-rosso)"/>
+        <path d="M25.5 9 L25.5 23" stroke="#fbf6ee" stroke-width="2.6"/>
+        <path d="M16.3 18.5 C22 19.5 30 19.5 35.2 18.5" stroke="#1d1510" stroke-width="2.4" fill="none"/>
+        <rect x="23.6" y="17" width="4" height="3.2" rx=".6" fill="none" stroke="#e7c35a" stroke-width="1"/>
+        <path d="M30 12 C34 13 37 13.5 40 12.5" stroke="#9e1b26" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+        <path d="M37.5 11.5 L38.5 14" stroke="#fbf6ee" stroke-width="2.2"/>
+        <circle cx="40.6" cy="12.3" r="1.9" fill="#1d1510"/>
+        <circle cx="25" cy="2.5" r="5" fill="url(#zs-viso)"/>
+        <path d="M20.6 3 C20.5 9 23 12.5 25.6 13 C28.4 12.5 30.8 9.2 30.2 3.2 C28.8 5 27.5 5.6 25.5 5.4 C23.5 5.6 21.9 4.8 20.6 3 Z" fill="#fbf8f2"/>
+        <path d="M22.8 5.2 C24 4 25 4.4 25.6 5 C26.2 4.4 27.3 4 28.4 5.2 C27 6 26 5.9 25.6 5.6 C25.1 5.9 24.1 6 22.8 5.2 Z" fill="#ffffff"/>
+        <circle cx="25.8" cy="3.4" r="1" fill="#e59686"/><circle cx="23.6" cy="1.2" r=".6" fill="#2a1a12"/><circle cx="27.8" cy="1.2" r=".6" fill="#2a1a12"/>
+        <path d="M20 -.5 C20.5 -7.5 27 -11 33 -6.5 C35 -5 36.5 -3 37 -.8 C34.5 -3 32 -3.2 30.5 -1.8 C29 -.5 25 -1 20 -.5 Z" fill="url(#zs-rosso)"/>
+        <path d="M19.4 -.2 C23 -1.6 27.5 -1.8 31.2 -.6" stroke="#fbf6ee" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        <circle cx="37.4" cy="-.4" r="2.2" fill="#fbf6ee"/>
+        <path d="M-1 47.5 L48 47.5 C58 47.5 63 43.5 62 37.5 C61.4 34 58 33.5 56.5 36" fill="none" stroke="#2b1c10" stroke-width="2.8" stroke-linecap="round"/>
+        <path d="M-1 46.6 L48 46.6 C57 46.6 61.6 43 61 38" fill="none" stroke="#d9ac45" stroke-width=".8" opacity=".9"/>
+        <path d="M10 47 L12 39 M36 47 L35 39" stroke="#4b2f17" stroke-width="2.4"/>
+        <path d="M3 39 C0 31 2 22 6 18 L8 9 C8.5 5 13 5 13.5 9 L14.5 20 L42 22 C50 22 55 26 57 30 C58.5 34 56.5 39 52 39 Z" fill="url(#zs-legno)" stroke="#3b2412" stroke-width=".8"/>
+        <path d="M7.5 9.5 C8 7 12.5 7 12.8 9.5 L13.6 19" fill="none" stroke="#b3202d" stroke-width="1.8"/>
+        <path d="M8 25 C16 23 32 24 47 25.5 C51 26 53.5 29 53 32 C52.6 35 50 36 46 36 L8 36 C6 33 6.5 28 8 25 Z" fill="url(#zs-rosso)"/>
+        <path d="M8 25 C16 23 32 24 47 25.5 C51 26 53.5 29 53 32 C52.6 35 50 36 46 36 L8 36 C6 33 6.5 28 8 25 Z" fill="none" stroke="#e7c35a" stroke-width=".9"/>
+        <path d="M17 30.5 C19 28 22.5 28 23 30.5 C23.4 32.5 20.5 33.2 19.6 31.4 M37 30.5 C35 28 31.5 28 31 30.5 C30.6 32.5 33.5 33.2 34.4 31.4" fill="none" stroke="#e7c35a" stroke-width=".8"/>
+        <path d="M5 20 C6 16 7 13 7.5 11" fill="none" stroke="#c48c55" stroke-width=".8" opacity=".6"/>
+        <path d="M14.5 20 L42 22 C46 22.2 49 23.2 51.5 24.6" fill="none" stroke="#c48c55" stroke-width=".9" opacity=".7"/>
       </g></svg>`;
   }
 
@@ -231,8 +303,8 @@
   .zn-strato *{pointer-events:none}
   .zn-top{position:absolute; left:0; right:0; top:0; filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
   .zn-ghirl{display:block; width:100%; height:100%; overflow:visible}
-  .zn-l{animation:znLuce 3s ease-in-out infinite}
-  @keyframes znLuce{0%,100%{opacity:1} 50%{opacity:.45}}
+  /* v187: le lucine restano accese, ferme: un bagliore caldo e morbido, niente intermittenza */
+  .zn-l{opacity:.95}
   .zn-appesa{position:absolute; transform-origin:50% 0; animation:znOscilla 4s ease-in-out infinite alternate; filter:drop-shadow(0 8px 10px rgba(0,0,0,.4))}
   .zn-palla{display:block}
   @keyframes znOscilla{from{transform:rotate(-4deg)} to{transform:rotate(4deg)}}
@@ -244,12 +316,21 @@
   .zn-strato.vetrina .zn-neve i{animation-name:znCadeV, znDondola}
   @keyframes znCadeV{to{transform:translateY(1980px)}}
   @keyframes znDondola{from{margin-left:-18px} to{margin-left:18px}}
-  .zn-stelle b{position:absolute; width:14px; height:14px; animation:znBrilla 4s ease-in-out infinite;
+  .zn-stelle b{position:absolute; width:14px; height:14px;
     background:radial-gradient(circle, #fff 0 8%, transparent 9%), linear-gradient(#fff, #fff) center/1.5px 100% no-repeat, linear-gradient(#fff, #fff) center/100% 1.5px no-repeat;
-    -webkit-mask:radial-gradient(circle, #000 20%, transparent 70%); mask:radial-gradient(circle, #000 20%, transparent 70%); opacity:.7}
-  @keyframes znBrilla{0%,100%{opacity:.15} 50%{opacity:.85}}
-  .zn-volo{position:absolute; left:0; top:16%; width:min(42%, 420px); animation:znVola 36s linear infinite; opacity:0}
-  .zn-slitta{display:block; width:100%; filter:drop-shadow(0 0 6px rgba(255,236,190,.9)) drop-shadow(0 0 18px rgba(255,214,140,.5))}
+    -webkit-mask:radial-gradient(circle, #000 20%, transparent 70%); mask:radial-gradient(circle, #000 20%, transparent 70%); opacity:.55}
+  .zn-volo{position:absolute; left:0; top:16%; width:min(48%, 480px); animation:znVola 36s linear infinite; opacity:0}
+  /* v187: a colori, con un filo di luce di luna sul bordo per staccarsi dal cielo scuro */
+  .zn-slitta{display:block; width:100%; filter:drop-shadow(0 0 1.5px rgba(255,244,226,.55)) drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+  /* il galoppo: due pose delle zampe che si alternano, e il corpo che sale e scende */
+  .zn-renna .zn-zA, .zn-renna .zn-zB{animation:znPasso .44s steps(1, end) infinite; animation-delay:var(--f)}
+  .zn-renna .zn-zB{animation-name:znPasso2}
+  @keyframes znPasso{0%{opacity:1} 50%{opacity:0}}
+  @keyframes znPasso2{0%{opacity:0} 50%{opacity:1}}
+  .zn-renna .zn-corpo{animation:znGalop .44s ease-in-out infinite; animation-delay:var(--f)}
+  @keyframes znGalop{0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.6px)}}
+  .zn-slitta-c{animation:znDondolo 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%}
+  @keyframes znDondolo{0%,100%{transform:rotate(0)} 50%{transform:rotate(-1.2deg)}}
   .zn-scia{position:absolute; right:88%; top:52%; width:120%; height:3px; border-radius:3px;
     background:linear-gradient(90deg, transparent, rgba(243,220,138,.0) 10%, rgba(243,220,138,.75) 85%, #fff6d8);
     box-shadow:0 0 12px rgba(243,220,138,.6); transform:rotate(4deg); transform-origin:100% 50%}
@@ -262,9 +343,9 @@
     18%{transform:translate(calc(var(--Wv) * .45), -10px) rotate(-3deg); opacity:1}
     33%{transform:translate(calc(var(--Wv) + 40px), -70px) rotate(-8deg); opacity:1}
     34%, 100%{transform:translate(calc(var(--Wv) + 40px), -70px); opacity:0}}
-  .zn-strato.vetrina .zn-volo{top:11.5%; width:400px}
+  .zn-strato.vetrina .zn-volo{top:10.8%; width:470px}
   .zn-cumulo{position:absolute; left:0; bottom:0; width:100%; height:120px}
-  .zn-stella{animation:znBrilla 2.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center}
+  .zn-stella{opacity:.95}
   /* il cappello di Babbo Natale sulla Z del logo (gestionale e vetrina) */
   html.natale .logowrap, html.natale .logobox{position:relative}
   html.natale .logowrap::before, html.natale .logobox::before{content:""; position:absolute; left:-7%; top:-44%; width:27%; aspect-ratio:1.15; z-index:3; pointer-events:none;
@@ -284,13 +365,12 @@
   html #tmr.full > .zn-strato.timer{position:fixed; inset:0; z-index:0}
   html.natale #tmr.full .tm-top{z-index:2}
   .zn-corona{position:absolute; inset:-15%; width:130%; height:130%; pointer-events:none; overflow:visible; z-index:-1;
-    filter:drop-shadow(0 8px 14px rgba(0,0,0,.5)); animation:znCorona 6s ease-in-out infinite}
-  @keyframes znCorona{0%,100%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.5)) brightness(1)} 50%{filter:drop-shadow(0 8px 14px rgba(0,0,0,.5)) brightness(1.12)}}
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,.5))}
   html.natale #tmr.full{padding-top:52px; overflow-x:hidden}
   @media (max-width:520px){ .zn-corona{inset:-10%; width:120%; height:120%} }
   @media (prefers-reduced-motion: reduce){
     .zn-corona{animation:none}
-    .zn-neve, .zn-volo{display:none} .zn-l, .zn-appesa, .zn-stelle b, .zn-stella{animation:none}
+    .zn-neve, .zn-volo{display:none} .zn-appesa{animation:none}
   }`;
   function stile(){
     if(document.getElementById('zn-stile')) return;
