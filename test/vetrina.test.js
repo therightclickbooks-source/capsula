@@ -47,12 +47,13 @@ module.exports = async function(browser){
       && ferma.x !== 'visible' && ferma.dopo === 0, JSON.stringify(ferma));
 
     /* ── l'ordine della colonna (v170) ──
-       la frase con la capsula, i sei bisogni, il nastro di oggi,
-       l'invito, e le due strade in piu' (domande e respiro) */
+       la frase con la capsula, i sei bisogni, l'invito (v193: salito
+       sopra il nastro, all'altezza della mano), il nastro di oggi, e le
+       due strade in piu' (domande e respiro) */
     const colonna = await p.evaluate(()=>
       [...document.querySelector('.vetr').children].map(e=> e.className.split(' ')[0]));
-    tac.t(q + 'la colonna e\' frase · bisogni · nastro · invito · due strade',
-      colonna.join(',') === 'zhero,zbisogni,zdir,zinvito,zdue', colonna.join(' | '));
+    tac.t(q + 'la colonna e\' frase · bisogni · invito · nastro · due strade',
+      colonna.join(',') === 'zhero,zbisogni,zinvito,zdir,zdue', colonna.join(' | '));
 
     /* ── lo spazio: niente sborda, niente si accavalla ── */
     const spazio = await p.evaluate(()=>{

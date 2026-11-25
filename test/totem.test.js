@@ -79,6 +79,25 @@ module.exports = async function(browser){
     tac.t('le Impostazioni restano larghe anche sullo schermo grande non ingrandito', w >= 600, 'larghezza utile ' + w);
     await ctx.close(); }
 
+  /* 6 · v193 · se Chrome non ingrandisce la pagina (resta larga 1600), la
+     rete di sicurezza la ingrandisce da se': il protocollo prende tutto lo
+     schermo invece di restare una colonna stretta in mezzo */
+  { const ctx = await browser.newContext({viewport:{width:1600, height:2844}, isMobile:false, hasTouch:true, deviceScaleFactor:1});
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errori.push(e.message));
+    await p.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio(true));
+    await p.goto(GESTIONALE); await p.waitForTimeout(700);
+    const r = await p.evaluate(async () => {
+      quizState = {clientId:'c1', activity:'riposo', giornata:'scrivania', goal:'relax', zones:['lombare'], mood:'stressato', pressione:'media', prefSoloAria:false};
+      NAV = [{name:'home'}]; VIEW = {name:'proposal'}; render();
+      await new Promise(ok => requestAnimationFrame(() => requestAnimationFrame(ok)));
+      const q = document.querySelector('.qd, .quadrante, #app .card') || document.getElementById('app');
+      const b = q.getBoundingClientRect();   /* gia' in punti dello schermo, zoom compreso */
+      return {riserva: document.documentElement.classList.contains('totem-largo'), largo: Math.round(b.width), schermo: innerWidth};
+    });
+    tac.t('sul totem che non ingrandisce, il protocollo prende comunque tutta la larghezza', r.riserva && r.largo > r.schermo * 0.85 && r.largo <= r.schermo + 2, JSON.stringify(r));
+    await ctx.close(); }
+
   tac.t('nessun errore di pagina', !errori.length, errori.join(' | '));
   return tac;
 };
