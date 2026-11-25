@@ -24,5 +24,7 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "zenith-gestionale",
+  "scope": "."
 }

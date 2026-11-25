@@ -3,7 +3,7 @@
   "short_name": "Zenith Totem",
   "description": "La vetrina interattiva e il check-in del cliente per il totem verticale del centro",
   "start_url": ".",
-  "scope": ".",
+  "scope": "../",
   "display": "fullscreen",
   "display_override": [
     "fullscreen",
@@ -31,5 +31,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "zenith-totem"
 }
