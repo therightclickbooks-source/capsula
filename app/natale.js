@@ -212,11 +212,15 @@
       <path d="M0 98 C${W * .2} 90 ${W * .4} 104 ${W * .6} 96 C${W * .8} 90 ${W * .9} 100 ${W} 94" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/></svg>`;
   }
 
-  function neve(n, cls, r, misura, durata, sfoca){
+  /* v188 · la neve leggera: ogni fiocco scende e dondola solo con
+     spostamenti (transform e translate), che la scheda grafica muove da sola;
+     niente margini che si muovono e niente sfocature. I fiocchi vicini sono
+     morbidi gia' nel disegno. Sul totem ne bastano meno. */
+  function neve(n, cls, r, misura, durata){
     let h = '';
     for(let i = 0; i < n; i++){
       const s = misura[0] + r() * (misura[1] - misura[0]), t = durata[0] + r() * (durata[1] - durata[0]);
-      h += `<i style="left:${(r() * 100).toFixed(2)}%; width:${s.toFixed(1)}px; height:${s.toFixed(1)}px; opacity:${(.35 + r() * .6).toFixed(2)}; animation-duration:${t.toFixed(1)}s, ${(t * .45).toFixed(1)}s; animation-delay:${(-r() * t).toFixed(1)}s, ${(-r() * 4).toFixed(1)}s${sfoca ? '; filter:blur(' + (1 + r() * 2.5).toFixed(1) + 'px)' : ''}"></i>`;
+      h += `<i style="left:${(r() * 100).toFixed(2)}%; width:${s.toFixed(1)}px; height:${s.toFixed(1)}px; opacity:${(.35 + r() * .6).toFixed(2)}; animation-duration:${t.toFixed(1)}s, ${(t * .45).toFixed(1)}s; animation-delay:${(-r() * t).toFixed(1)}s, ${(-r() * 4).toFixed(1)}s"></i>`;
     }
     return `<div class="zn-neve ${cls}">${h}</div>`;
   }
@@ -246,11 +250,11 @@
     for(let i = 0; i < (opt.stelle ?? 22); i++) stelle += `<b style="left:${(r() * 100).toFixed(1)}%; top:${(8 + r() * 34).toFixed(1)}%; animation-delay:${(-r() * 4).toFixed(1)}s; transform:scale(${(.5 + r() * .9).toFixed(2)})"></b>`;
     strato.innerHTML = `
       <div class="zn-stelle">${stelle}</div>
-      ${neve(opt.neveLontana ?? 46, 'lontana', r, [1.6, 3], [16, 26], false)}
-      ${neve(opt.neveMedia ?? 30, 'media', r, [3, 5.5], [11, 17], false)}
+      ${neve(opt.neveLontana ?? 46, 'lontana', r, [1.6, 3], [16, 26])}
+      ${neve(opt.neveMedia ?? 30, 'media', r, [3, 5.5], [11, 17])}
       ${opt.slitta === false ? '' : `<div class="zn-volo" style="--Wv:${W}px; --Hv:${H}px"><div class="zn-scia"></div>${slitta()}</div>`}
       ${opt.cumulo ? cumulo(W) : ''}
-      ${neve(opt.neveVicina ?? 10, 'vicina', r, [7, 12], [7, 11], true)}
+      ${neve(opt.neveVicina ?? 10, 'vicina', r, [7, 12], [7, 11])}
       ${altoG ? `<div class="zn-top" style="height:${altoG + 40}px">${ghirlanda(W, altoG, r)}</div>` : ''}
       ${palline}`;
     if(opt.dopo) opt.dopo.after(strato); else host.appendChild(strato);
@@ -301,36 +305,32 @@
   const CSS = `
   .zn-strato{position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0}
   .zn-strato *{pointer-events:none}
-  .zn-top{position:absolute; left:0; right:0; top:0; filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+  .zn-top{position:absolute; left:0; right:0; top:0; filter:drop-shadow(0 6px 10px rgba(0,0,0,.45)); will-change:transform}
   .zn-ghirl{display:block; width:100%; height:100%; overflow:visible}
   /* v187: le lucine restano accese, ferme: un bagliore caldo e morbido, niente intermittenza */
   .zn-l{opacity:.95}
-  .zn-appesa{position:absolute; transform-origin:50% 0; animation:znOscilla 4s ease-in-out infinite alternate; filter:drop-shadow(0 8px 10px rgba(0,0,0,.4))}
+  .zn-appesa{position:absolute; transform-origin:50% 0; animation:znOscilla 4s ease-in-out infinite alternate; will-change:transform}
   .zn-palla{display:block}
   @keyframes znOscilla{from{transform:rotate(-4deg)} to{transform:rotate(4deg)}}
   .zn-neve{position:absolute; inset:0}
-  .zn-neve i{position:absolute; top:-16px; border-radius:50%; background:radial-gradient(circle, #fff 0 45%, rgba(255,255,255,.4) 70%, transparent 72%);
+  .zn-neve i{position:absolute; top:-16px; border-radius:50%; background:radial-gradient(circle, #fff 0 40%, rgba(255,255,255,.45) 62%, transparent 72%);
     animation-name:znCade, znDondola; animation-timing-function:linear, ease-in-out; animation-iteration-count:infinite, infinite; animation-direction:normal, alternate}
-  .zn-neve.vicina i{background:radial-gradient(circle, rgba(255,255,255,.95) 0 35%, rgba(255,255,255,.25) 65%, transparent 72%)}
+  .zn-neve.vicina i{background:radial-gradient(circle, rgba(255,255,255,.85) 0, rgba(255,255,255,.45) 35%, rgba(255,255,255,.12) 60%, transparent 72%)}
   @keyframes znCade{to{transform:translateY(calc(100vh + 60px))}}
   .zn-strato.vetrina .zn-neve i{animation-name:znCadeV, znDondola}
   @keyframes znCadeV{to{transform:translateY(1980px)}}
-  @keyframes znDondola{from{margin-left:-18px} to{margin-left:18px}}
+  @keyframes znDondola{from{translate:-18px 0} to{translate:18px 0}}
   .zn-stelle b{position:absolute; width:14px; height:14px;
     background:radial-gradient(circle, #fff 0 8%, transparent 9%), linear-gradient(#fff, #fff) center/1.5px 100% no-repeat, linear-gradient(#fff, #fff) center/100% 1.5px no-repeat;
     -webkit-mask:radial-gradient(circle, #000 20%, transparent 70%); mask:radial-gradient(circle, #000 20%, transparent 70%); opacity:.55}
-  .zn-volo{position:absolute; left:0; top:16%; width:min(48%, 480px); animation:znVola 36s linear infinite; opacity:0}
+  .zn-volo{position:absolute; left:0; top:16%; width:min(48%, 480px); animation:znVola 36s linear infinite; opacity:0; will-change:transform, opacity}
   /* v187: a colori, con un filo di luce di luna sul bordo per staccarsi dal cielo scuro */
-  .zn-slitta{display:block; width:100%; filter:drop-shadow(0 0 1.5px rgba(255,244,226,.55)) drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+  .zn-slitta{display:block; width:100%; filter:drop-shadow(0 4px 5px rgba(0,0,0,.45))}
   /* il galoppo: due pose delle zampe che si alternano, e il corpo che sale e scende */
-  .zn-renna .zn-zA, .zn-renna .zn-zB{animation:znPasso .44s steps(1, end) infinite; animation-delay:var(--f)}
+  .zn-renna .zn-zA, .zn-renna .zn-zB{animation:znPasso .5s steps(1, end) infinite; animation-delay:var(--f)}
   .zn-renna .zn-zB{animation-name:znPasso2}
   @keyframes znPasso{0%{opacity:1} 50%{opacity:0}}
   @keyframes znPasso2{0%{opacity:0} 50%{opacity:1}}
-  .zn-renna .zn-corpo{animation:znGalop .44s ease-in-out infinite; animation-delay:var(--f)}
-  @keyframes znGalop{0%,100%{transform:translateY(0)} 50%{transform:translateY(-1.6px)}}
-  .zn-slitta-c{animation:znDondolo 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 100%}
-  @keyframes znDondolo{0%,100%{transform:rotate(0)} 50%{transform:rotate(-1.2deg)}}
   .zn-scia{position:absolute; right:88%; top:52%; width:120%; height:3px; border-radius:3px;
     background:linear-gradient(90deg, transparent, rgba(243,220,138,.0) 10%, rgba(243,220,138,.75) 85%, #fff6d8);
     box-shadow:0 0 12px rgba(243,220,138,.6); transform:rotate(4deg); transform-origin:100% 50%}
