@@ -27,6 +27,27 @@
     return periodo && !spento;
   }
 
+  /* v197 · ghirlanda e corona come UNA immagine sola. Disegnate ago per ago
+     dentro la pagina erano 2.500-6.700 pezzi da ricalcolare e ridipingere
+     (sul totem, a ogni fiocco che passava davanti); in un'immagine il totem
+     le disegna una volta e poi le appoggia, ferme, come una foto. */
+  const IMMAGINI = new Map();
+  function immagine(svg, cls){
+    let url = IMMAGINI.get(svg);
+    if(!url){
+      /* l'ombra morbida sotto i rami sta DENTRO l'immagine: si calcola una
+         volta sola. Come filtro della pagina (drop-shadow) il totem la
+         ricalcolava a ogni fiocco che passava: era la meta' del lavoro */
+      const ombra = '<filter id="zn-ombra" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".45"/></filter>';
+      const testo = svg.replace(/^\s*<svg /, '<svg xmlns="http://www.w3.org/2000/svg" ')
+        .replace('<defs>', '<defs>' + ombra).replace('</defs>', '</defs><g filter="url(#zn-ombra)">').replace(/<\/svg>\s*$/, '</g></svg>');
+      try{ url = URL.createObjectURL(new Blob([testo], {type:'image/svg+xml'})); }
+      catch(e){ url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(testo); }
+      IMMAGINI.set(svg, url);
+    }
+    return `<img class="${cls}" src="${url}" alt="" aria-hidden="true" draggable="false">`;
+  }
+
   /* un caso ripetibile: gli addobbi sono sempre uguali, non tremano a ogni ridisegno */
   function caso(seme){ let s = seme >>> 0 || 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
 
@@ -220,7 +241,7 @@
     let h = '';
     for(let i = 0; i < n; i++){
       const s = misura[0] + r() * (misura[1] - misura[0]), t = durata[0] + r() * (durata[1] - durata[0]);
-      h += `<i style="left:${(r() * 100).toFixed(2)}%; width:${s.toFixed(1)}px; height:${s.toFixed(1)}px; opacity:${(.35 + r() * .6).toFixed(2)}; animation-duration:${t.toFixed(1)}s, ${(t * .45).toFixed(1)}s; animation-delay:${(-r() * t).toFixed(1)}s, ${(-r() * 4).toFixed(1)}s"></i>`;
+      h += `<i style="left:${(r() * 100).toFixed(2)}%; width:${s.toFixed(1)}px; height:${s.toFixed(1)}px; opacity:${(.35 + r() * .6).toFixed(2)}; --dx:${((i * 37) % 61) - 30}px; animation-duration:${t.toFixed(1)}s, ${(t * .45).toFixed(1)}s; animation-delay:${(-r() * t).toFixed(1)}s, ${(-r() * 4).toFixed(1)}s"></i>`;
     }
     return `<div class="zn-neve ${cls}">${h}</div>`;
   }
@@ -233,7 +254,9 @@
     opt = opt || {};
     const W = opt.W || host.clientWidth || innerWidth, H = opt.H || host.clientHeight || innerHeight, r = caso(opt.seme || 2512);
     const strato = document.createElement('div');
-    strato.className = 'zn-strato' + (opt.classe ? ' ' + opt.classe : ''); strato.setAttribute('aria-hidden', 'true');
+    strato.className = 'zn-strato' + (opt.classe ? ' ' + opt.classe : '') + (opt.leggera ? ' zn-leggera' : ''); strato.setAttribute('aria-hidden', 'true');
+    /* v197 · sul totem: niente slitta, meta' dei fiocchi, palline ferme */
+    const meno = n => opt.senzaNeve ? 0 : opt.leggera ? Math.round(n * .45) : n;
     const altoG = opt.ghirlanda ?? 70;
     /* le palline: appese ai lati, a lunghezze diverse, mai sopra i contenuti */
     let palline = '';
@@ -250,12 +273,12 @@
     for(let i = 0; i < (opt.stelle ?? 22); i++) stelle += `<b style="left:${(r() * 100).toFixed(1)}%; top:${(8 + r() * 34).toFixed(1)}%; animation-delay:${(-r() * 4).toFixed(1)}s; transform:scale(${(.5 + r() * .9).toFixed(2)})"></b>`;
     strato.innerHTML = `
       <div class="zn-stelle">${stelle}</div>
-      ${neve(opt.neveLontana ?? 46, 'lontana', r, [1.6, 3], [16, 26])}
-      ${neve(opt.neveMedia ?? 30, 'media', r, [3, 5.5], [11, 17])}
-      ${opt.slitta === false ? '' : `<div class="zn-volo" style="--Wv:${W}px; --Hv:${H}px"><div class="zn-scia"></div>${slitta()}</div>`}
+      ${neve(meno(opt.neveLontana ?? 46), 'lontana', r, [1.6, 3], [16, 26])}
+      ${neve(meno(opt.neveMedia ?? 30), 'media', r, [3, 5.5], [11, 17])}
+      ${opt.slitta === false || opt.leggera ? '' : `<div class="zn-volo" style="--Wv:${W}px; --Hv:${H}px"><div class="zn-scia"></div>${slitta()}</div>`}
       ${opt.cumulo ? cumulo(W) : ''}
-      ${neve(opt.neveVicina ?? 10, 'vicina', r, [7, 12], [7, 11])}
-      ${altoG ? `<div class="zn-top" style="height:${altoG + 40}px">${ghirlanda(W, altoG, r)}</div>` : ''}
+      ${neve(meno(opt.neveVicina ?? 10), 'vicina', r, [7, 12], [7, 11])}
+      ${altoG ? `<div class="zn-top" style="height:${altoG + 40}px">${immagine(ghirlanda(W, altoG, r), 'zn-ghirl')}</div>` : ''}
       ${palline}`;
     if(opt.dopo) opt.dopo.after(strato); else host.appendChild(strato);
     return strato;
@@ -292,12 +315,12 @@
         <path d="M-2 2 C-8 14 -14 22 -12 30 L-6 27 C-7 20 -3 12 2 4 Z" fill="#5c3352"/>
         <path d="M2 2 C8 14 14 22 12 30 L6 27 C7 20 3 12 -1 4 Z" fill="#6b3d60"/>
         <ellipse cx="0" cy="1" rx="6" ry="5.5" fill="#8a5a7c"/><ellipse cx="-1.5" cy="-.5" rx="2.5" ry="1.6" fill="#c99bbb" opacity=".7"/></g>`;
-    return `<svg class="zn-corona" viewBox="-128 -128 256 256" aria-hidden="true">
+    return immagine(`<svg class="zn-corona" viewBox="-128 -128 256 256" width="256" height="256" aria-hidden="true">
       <defs>
         <radialGradient id="zn-alone"><stop offset="0" stop-color="#ffe7b0" stop-opacity=".9"/><stop offset="1" stop-color="#ffe7b0" stop-opacity="0"/></radialGradient>
         <radialGradient id="zn-oro" cx=".35" cy=".35"><stop offset="0" stop-color="#fff3c4"/><stop offset=".5" stop-color="#d9ac45"/><stop offset="1" stop-color="#7a5a14"/></radialGradient>
         <linearGradient id="zn-velluto" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a26a92"/><stop offset=".55" stop-color="#7a496c"/><stop offset="1" stop-color="#4b2a43"/></linearGradient>
-      </defs><g>${aghi}</g>${bacche}${luci}${fiocco}</svg>`;
+      </defs><g>${aghi}</g>${bacche}${luci}${fiocco}</svg>`, 'zn-corona');
   }
   function smonta(host){ const s = host && host.querySelector('.zn-strato'); if(s) s.remove(); }
 
@@ -305,7 +328,7 @@
   const CSS = `
   .zn-strato{position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0}
   .zn-strato *{pointer-events:none}
-  .zn-top{position:absolute; left:0; right:0; top:0; filter:drop-shadow(0 6px 10px rgba(0,0,0,.45)); will-change:transform}
+  .zn-top{position:absolute; left:0; right:0; top:0}
   .zn-ghirl{display:block; width:100%; height:100%; overflow:visible}
   /* v187: le lucine restano accese, ferme: un bagliore caldo e morbido, niente intermittenza */
   .zn-l{opacity:.95}
@@ -345,6 +368,12 @@
     34%, 100%{transform:translate(calc(var(--Wv) + 40px), -70px); opacity:0}}
   .zn-strato.vetrina .zn-volo{top:10.8%; width:470px}
   .zn-cumulo{position:absolute; left:0; bottom:0; width:100%; height:120px}
+  /* v197 · la versione leggera del totem: palline ferme, e ogni fiocco con
+     una sola animazione (scende e scivola un poco di lato insieme) */
+  .zn-strato.zn-leggera .zn-appesa{animation:none}
+  .zn-strato.zn-leggera .zn-neve i{animation-name:znCadeL; animation-timing-function:linear; animation-iteration-count:infinite}
+  .zn-strato.zn-leggera.vetrina{--cad:1980px}
+  @keyframes znCadeL{to{transform:translate(var(--dx, 0px), var(--cad, calc(100vh + 60px)))}}
   .zn-stella{opacity:.95}
   /* il cappello di Babbo Natale sulla Z del logo (gestionale e vetrina) */
   html.natale .logowrap, html.natale .logobox{position:relative}
@@ -364,8 +393,7 @@
   /* l'orologio: corona intorno al quadrante, ghirlanda, palline e neve dietro */
   html #tmr.full > .zn-strato.timer{position:fixed; inset:0; z-index:0}
   html.natale #tmr.full .tm-top{z-index:2}
-  .zn-corona{position:absolute; inset:-15%; width:130%; height:130%; pointer-events:none; overflow:visible; z-index:-1;
-    filter:drop-shadow(0 8px 14px rgba(0,0,0,.5))}
+  .zn-corona{position:absolute; inset:-15%; width:130%; height:130%; pointer-events:none; overflow:visible; z-index:-1}
   html.natale #tmr.full{padding-top:52px; overflow-x:hidden}
   @media (max-width:520px){ .zn-corona{inset:-10%; width:120%; height:120%} }
   @media (prefers-reduced-motion: reduce){
@@ -378,5 +406,5 @@
   }
 
   window.ZNatale = {attivo, monta, smonta, stile, corona,
-    ghirlanda: (W, alto, seme) => ghirlanda(W, alto, caso(seme || 7)), pallina};
+    ghirlanda: (W, alto, seme) => immagine(ghirlanda(W, alto, caso(seme || 7)), 'zn-ghirl'), pallina};
 })();

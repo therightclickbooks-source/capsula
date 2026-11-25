@@ -6,7 +6,7 @@
    testi del telefono e due terzi dello schermo vuoti. Sul telefono, e sul
    totem con la modalita' spenta, non cambia niente.
    ═══════════════════════════════════════════════════════════════ */
-const { GESTIONALE, Taccuino } = require('./aiuto');
+const { GESTIONALE, VETRINA, Taccuino } = require('./aiuto');
 
 function archivio(totem){
   const anamnesi = {certificatoOk:false};
@@ -118,6 +118,32 @@ module.exports = async function(browser){
         tasti: [...document.querySelectorAll('#tmr .tm-top .tm-b')].map(b => b.textContent.trim()), fuori: document.getElementById('tmr').scrollWidth > document.getElementById('tmr').clientWidth + 1}; });
     tac.t('a schermo intero l\'orologio resta grande (anello largo quanto sul totem ingrandito) e «Riduci» e\' un tasto a parte',
       (r.largo === 820 || r.riserva) && r.anello >= 760 && r.tasti.includes('Riduci') && !r.fuori, JSON.stringify(r));
+    await ctx.close(); }
+
+  /* 8 · v197 · il totem resta leggero: niente slitta, ghirlanda e corona come
+     immagine sola (prima erano migliaia di aghi), sfondi fermi, poche
+     animazioni. Senza questa prova un addobbo nuovo rifarebbe tutto lento. */
+  { const p = await browser.newPage({viewport:{width:1080, height:1920}});
+    p.on('pageerror', e => errori.push(e.message));
+    await p.goto(VETRINA); await p.waitForTimeout(1500);
+    const v = await p.evaluate(() => ({natale: document.documentElement.classList.contains('natale'),
+      slitta: !!document.querySelector('.zn-volo'), aghi: document.querySelectorAll('.zn-top line').length,
+      immagine: !!document.querySelector('.zn-top img'), animazioni: document.getAnimations().filter(a => a.playState === 'running').length,
+      sfondoFermo: document.querySelector('.aurora i') ? getComputedStyle(document.querySelector('.aurora i')).animationName === 'none' : true}));
+    tac.t('vetrina leggera: niente slitta, ghirlanda come immagine, sfondo fermo, meno di 60 animazioni',
+      (!v.natale || (!v.slitta && v.aghi === 0 && v.immagine)) && v.sfondoFermo && v.animazioni < 60, JSON.stringify(v));
+    await p.close(); }
+  { const ctx = await browser.newContext({viewport:{width:1215, height:2160}, screen:{width:2160, height:1215}, isMobile:true, hasTouch:true, deviceScaleFactor:1});
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errori.push(e.message));
+    await p.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio(true));
+    await p.goto(GESTIONALE); await p.waitForTimeout(800);
+    const g = await p.evaluate(() => { quizState = {clientId:'c1', activity:'riposo', giornata:'scrivania', goal:'relax', zones:['lombare'], mood:'stressato', pressione:'media', prefSoloAria:false};
+      NAV = [{name:'home'}]; VIEW = {name:'proposal'}; render();
+      return {natale: document.documentElement.classList.contains('natale'), neve: document.querySelectorAll('#natale .zn-neve i').length, slitta: !!document.querySelector('.zn-volo'),
+        aghi: document.querySelectorAll('.zn-top line, .zn-corona line').length, bolle: [...document.querySelectorAll('.fx-bolle')].some(b => getComputedStyle(b).display !== 'none')}; });
+    tac.t('gestionale sul totem leggero: niente neve che cade, niente slitta, niente bolle, ghirlanda come immagine',
+      !g.natale || (g.neve === 0 && !g.slitta && g.aghi === 0 && !g.bolle), JSON.stringify(g));
     await ctx.close(); }
 
   tac.t('nessun errore di pagina', !errori.length, errori.join(' | '));
