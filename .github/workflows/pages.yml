@@ -24,5 +24,8 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
+      # GitHub a volte non «vede» subito il pacchetto appena caricato e la
+      # pubblicazione si ferma con «No artifacts named github-pages»: si aspetta un poco
+      - run: sleep 20
       - id: deployment
         uses: actions/deploy-pages@v4
