@@ -98,6 +98,28 @@ module.exports = async function(browser){
     tac.t('sul totem che non ingrandisce, il protocollo prende comunque tutta la larghezza', r.riserva && r.largo > r.schermo * 0.85 && r.largo <= r.schermo + 2, JSON.stringify(r));
     await ctx.close(); }
 
+  /* 7 · v194 · a SCHERMO INTERO Chrome smette di ingrandire la pagina: il
+     tocco che toglie la barra dell'indirizzo faceva rimpicciolire tutto,
+     orologio compreso. La pagina si ingrandisce allora dalla radice. */
+  { const ctx = await browser.newContext({viewport:{width:1215, height:2160}, screen:{width:2160, height:1215}, isMobile:true, hasTouch:true, deviceScaleFactor:1});
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errori.push(e.message));
+    await p.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio(true));
+    await p.goto(GESTIONALE); await p.waitForTimeout(700);
+    await p.evaluate(() => { quizState = {clientId:'c1', activity:'riposo', giornata:'scrivania', goal:'relax', zones:['lombare'], mood:'stressato', pressione:'media', prefSoloAria:false};
+      NAV = [{name:'home'}]; VIEW = {name:'proposal'}; render(); });
+    await p.waitForTimeout(500);
+    await p.evaluate(() => document.querySelector('.tmgo-b').click());   /* il tocco porta anche allo schermo intero */
+    await p.waitForTimeout(1200);
+    await p.evaluate(() => { if(!TM.full) timerSchermo(); });
+    await p.waitForTimeout(900);
+    const r = await p.evaluate(() => { const a = document.querySelector('.tm-ringbox').getBoundingClientRect();
+      return {schermoIntero: !!document.fullscreenElement, largo: innerWidth, anello: Math.round(a.width), riserva: document.documentElement.classList.contains('totem-largo'),
+        tasti: [...document.querySelectorAll('#tmr .tm-top .tm-b')].map(b => b.textContent.trim()), fuori: document.getElementById('tmr').scrollWidth > document.getElementById('tmr').clientWidth + 1}; });
+    tac.t('a schermo intero l\'orologio resta grande (anello largo quanto sul totem ingrandito) e «Riduci» e\' un tasto a parte',
+      (r.largo === 820 || r.riserva) && r.anello >= 760 && r.tasti.includes('Riduci') && !r.fuori, JSON.stringify(r));
+    await ctx.close(); }
+
   tac.t('nessun errore di pagina', !errori.length, errori.join(' | '));
   return tac;
 };
