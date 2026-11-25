@@ -57,6 +57,28 @@ module.exports = async function(browser){
     tac.t('su un tablet in verticale resta com\'era', m.largo === 1024 && !m.classe, JSON.stringify(m));
     await ctx.close(); }
 
+  /* 4 · v191 · il totem vero: la ToolBox ruota lo schermo di 90° e Android
+     dichiara le misure coricate (screen piu' largo che alto) anche se la
+     pagina e' in verticale. Prima l'ingrandimento non scattava. */
+  { const ctx = await browser.newContext({viewport:{width:1215, height:2160}, screen:{width:2160, height:1215}, isMobile:true, hasTouch:true, deviceScaleFactor:1});
+    const p = await ctx.newPage();
+    p.on('pageerror', e => errori.push(e.message));
+    await p.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio(true));
+    await p.goto(GESTIONALE); await p.waitForTimeout(700);
+    const m = await misura(p);
+    tac.t('sul totem con lo schermo dichiarato coricato la pagina si ingrandisce lo stesso (820 punti)', m.largo === 820 && m.classe && !m.fuori, JSON.stringify(m));
+    await ctx.close(); }
+
+  /* 5 · v191 · se l'ingrandimento non c'e' (schermo largo), le Impostazioni
+     non si schiacciano in una striscia accanto alla barra di lato */
+  { const {ctx, p} = await apri(browser, {width:1440, height:1600}, true);
+    p.on('pageerror', e => errori.push(e.message));
+    const w = await p.evaluate(() => { VIEW = {name:'settings'}; render();
+      const a = document.getElementById('app'), cs = getComputedStyle(a);
+      return Math.round(a.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)); });
+    tac.t('le Impostazioni restano larghe anche sullo schermo grande non ingrandito', w >= 600, 'larghezza utile ' + w);
+    await ctx.close(); }
+
   tac.t('nessun errore di pagina', !errori.length, errori.join(' | '));
   return tac;
 };
