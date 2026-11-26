@@ -66,7 +66,10 @@ const intervalloAlt = ikey => ({INT_WHOLE:'INT_LOCAL', INT_LOCAL:'INT_WHOLE', IN
 const MEMORIA = 7;
 const GIORNATE = ['guida','scrivania','inpiedi','fisico','tranquilla'];
 
-function scalaCapsula(v){ return v <= 0 ? 0 : v <= 2 ? 1 : v === 3 ? 2 : 3; }
+/* v198 · la capsula arriva a 6. Il motore propone come prima (0-3, il 4 se
+   chiesto), ma la scheda cliente puo' fissare 4, 5 o 6: si salvano come 7, 8
+   e 9, cosi' i valori vecchi (fino a 6, che diventano 3) restano uguali */
+function scalaCapsula(v){ return v <= 0 ? 0 : v <= 2 ? 1 : v === 3 ? 2 : v <= 6 ? 3 : Math.min(6, v - 3); }
 const lim = (v, a, b) => Math.max(a, Math.min(b, v));
 /* «spalle», «spalle e braccia», «spalle, braccia e vita e fianchi» */
 const elenco = l => l.length < 2 ? (l[0] || '') : l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1];
@@ -331,7 +334,7 @@ function motoreZenith(inp){
   /* «solo aria» ha sempre la precedenza, anche alla prima volta: niente rulli */
   if(soloAria){
     prog = 'P23'; fam = 'Z3'; pool = ['P23'];
-    why.push('💨 Preferenza «solo compressione d\'aria» applicata: P23 Airbag Massage, effetto pressoterapia — nessun rullo.');
+    why.push('💨 Preferenza «solo compressione d\'aria» applicata: P23 Airbag Massage Mode, effetto pressoterapia — nessun rullo.');
   } else if(prima){
     prog = an.prefIntensita === 'deciso' ? 'P01' : 'P22'; fam = 'Z1'; pool = [prog];
     why.push('Prima seduta in capsula: si parte dolcemente per far conoscere ogni sensazione.');
@@ -356,7 +359,9 @@ function motoreZenith(inp){
   if(q.mood === 'carico' && q.goal !== 'sonno' && q.goal !== 'relax') dD++;
   if(press === 'dolce') dD--;
   if(press === 'decisa') dD++;
-  if(fourD0 > 0) S.fourD = lim(fourD0 + dD, 1, 3);
+  /* il tetto resta 3, a meno che la scheda del cliente non dica di piu' */
+  const tettoD = Math.max(3, fourD0), tettoA = Math.max(3, S.airbag);
+  if(fourD0 > 0) S.fourD = lim(fourD0 + dD, 1, tettoD);
 
   /* airbag: piu' alti dove c'e' da far defluire, piu' bassi verso il sonno */
   let dA = 0;
@@ -365,7 +370,7 @@ function motoreZenith(inp){
   if(q.goal === 'sonno') dA--;
   if(press === 'dolce') dA--;
   if(press === 'decisa') dA++;
-  S.airbag = lim(S.airbag + dA, 1, 3);
+  S.airbag = lim(S.airbag + dA, 1, tettoA);
   if(press === 'dolce') why.push('Pressione alleggerita: oggi ha chiesto un tocco più dolce.');
   if(press === 'decisa') why.push('Pressione aumentata di un livello: oggi vuole sentire il lavoro in profondità.');
   if(dD && fourD0 > 0 && (q.goal === 'sonno' || q.goal === 'relax')) why.push('Profondità 4D più bassa: per rilassarsi i rulli lavorano più in superficie.');
@@ -405,12 +410,12 @@ function motoreZenith(inp){
   const chiedeDiPiu = press === 'decisa';
   if(!prima){
     if(soloAria){
-      if(cal){ S.airbag = lim(S.airbag + cal, 1, chiedeDiPiu && cal > 0 ? 4 : 3);
+      if(cal){ S.airbag = lim(S.airbag + cal, 1, Math.max(tettoA, chiedeDiPiu && cal > 0 ? 4 : 3));
         why.push('🎚️ Taratura personale applicata (' + (cal>0?'+':'') + cal + ' livell' + (Math.abs(cal)>1?'i':'o') + ') sulla forza dell\'aria: ' + (cal<0 ? 'a fine seduta aveva riferito che era troppo forte.' : 'a fine seduta aveva riferito che era troppo leggera.')); }
     } else {
-      if(cal && S.fourD > 0){ S.fourD = lim(S.fourD + cal, 1, chiedeDiPiu && cal > 0 ? 4 : 3);
+      if(cal && S.fourD > 0){ S.fourD = lim(S.fourD + cal, 1, Math.max(tettoD, chiedeDiPiu && cal > 0 ? 4 : 3));
         why.push('🎚️ Taratura personale applicata (' + (cal>0?'+':'') + cal + ' livell' + (Math.abs(cal)>1?'i':'o') + '): ' + (cal<0 ? 'a fine seduta aveva riferito che era troppo forte.' : 'a fine seduta aveva riferito che era troppo leggera.')); }
-      if(cx.aria){ S.airbag = lim(S.airbag + cx.aria, 1, chiedeDiPiu && cx.aria > 0 ? 4 : 3);
+      if(cx.aria){ S.airbag = lim(S.airbag + cx.aria, 1, Math.max(tettoA, chiedeDiPiu && cx.aria > 0 ? 4 : 3));
         why.push('🎚️ Airbag tarati (' + (cx.aria>0?'+':'') + cx.aria + '): ' + (cx.aria<0 ? 'li aveva trovati troppo forti.' : 'li aveva trovati troppo leggeri.')); }
     }
     if(manualRef && manualRef.tarata) why.push('🎚️ Rifinitura alta ' + (manualRef.tarata < 0 ? 'più larga e più lenta: la volta scorsa era troppo forte.' : 'più stretta e più veloce: la volta scorsa era troppo leggera.'));

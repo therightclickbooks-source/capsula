@@ -77,9 +77,9 @@ module.exports = async function(browser){
     const acceso = t => { const x = [...q.querySelectorAll('.qd-s, .qd-l')].find(e => e.textContent.indexOf(t) >= 0); return x ? x.classList.contains('on') : null; };
     const top = [...q.querySelectorAll('.qd-top .qd-l')].map(e => e.querySelector('.qd-lt').lastChild.textContent.trim());
     const det = [...document.querySelectorAll('details.gdet')];
-    const tm = document.querySelector('.tmgo-b');
+    const tm = document.getElementById('qd-tempo'); /* v198: il timer parte dal «Tempo» del quadrante */
     return {titolo: document.querySelector('.pname2').textContent, atteso: '“' + nomeProt(currentProt) + '”',
-      categoria: document.querySelector('.pcat').textContent, prog: PROGRAMS[currentProt.prog].o,
+      categoria: document.querySelector('.pprog').textContent, prog: PROGRAMS[currentProt.prog].o,
       quad: !!q, sopra: q && q.compareDocumentPosition(document.querySelector('.call.acc')) & Node.DOCUMENT_POSITION_FOLLOWING,
       d: [...q.querySelectorAll('.qd-top .qd-l')][1].querySelector('.qd-v').textContent, S, top,
       sotto: [...q.querySelectorAll('.qd-sw .qd-s')].map(e => e.querySelector('.qd-sn').textContent.trim()),
@@ -92,7 +92,7 @@ module.exports = async function(browser){
       testoTocco: !!document.querySelector('details.gdet summary') && /istruzioni/.test(document.querySelector('details.gdet summary').textContent)};
   });
   tac.t('in cima alla proposta c\'è il nome del protocollo, non quello della categoria', prop.titolo === prop.atteso && prop.titolo.indexOf(prop.prog) < 0, prop.titolo);
-  tac.t('sotto il nome c\'è la categoria: il programma da toccare sul touchscreen', prop.categoria.indexOf(prop.prog) >= 0 && /touchscreen/.test(prop.categoria), prop.categoria);
+  tac.t('sotto il nome c\'è la riga P · categoria · schermata del tablet', prop.categoria.indexOf(prop.prog) >= 0 && /schermata|Home Page/.test(prop.categoria), prop.categoria);
   tac.t('il quadrante sta sopra il «perché», con il 4D e gli interruttori accesi e spenti come nel protocollo',
     prop.quad && !!prop.sopra && +prop.d === prop.S.fourD
       && prop.top.join('|') === 'Tempo|Profondità 4D|Forza airbag|Zero Gravity' && prop.sotto.join('|') === 'Calore|Ioni|Leg Kneading|Foot Roller'
@@ -203,7 +203,7 @@ module.exports = async function(browser){
   });
   tac.t('il recupero resta spento finché non riconosce un codice o un nome', !rec.vuoto.ok && !rec.sbagliato.ok && /Non riconosco/.test(rec.sbagliato.testo), JSON.stringify([rec.vuoto, rec.sbagliato]));
   tac.t('riconosce il codice scritto come capita, anche senza la famiglia, e chiede i rulli che il codice non dice',
-    rec.codice.ok && /Gently Rub Soothing/.test(rec.codice.testo) && rec.senzaFamiglia.ok && /Back Relieve/.test(rec.senzaFamiglia.testo)
+    rec.codice.ok && /Gently rub soothing/i.test(rec.codice.testo) && rec.senzaFamiglia.ok && /Back Relieve/.test(rec.senzaFamiglia.testo)
       && /rulli di gambe e piedi/.test(rec.senzaFamiglia.testo) && rec.leg, JSON.stringify([rec.codice, rec.senzaFamiglia]));
   tac.t('la seduta recuperata entra con giorno e ora scelti, conta 10 punti ed è segnata «recuperata» nello storico',
     rec.salvata.n === 1 && rec.salvata.prog === 'P04' && rec.salvata.fam === 'Z4' && rec.salvata.zCode === 'Z4·P04·D2A2ICG' && rec.salvata.giorno === '2026-10-30'
@@ -401,7 +401,7 @@ module.exports = async function(browser){
   await pg.addInitScript(d => { try{ localStorage.setItem('zfl_app_v1', JSON.stringify(d)); }catch(e){} }, archivio());
   await pg.goto(GESTIONALE); await pg.waitForTimeout(600);
   await pg.evaluate(() => { RT = null; quizState = {clientId:'c1', step:0, operatore:null, activity:'riposo', giornata:'scrivania', zones:['cervicale','lombare'], zone:'cervicale',
-    goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false}; VIEW = {name:'proposal'}; render(); });
+    goal:'sollievo', mood:'stanco', pressione:'media', prefSoloAria:false}; VIEW = {name:'proposal', ptab:'regola'}; render(); });
   const n0 = await pg.evaluate(() => nomeProt(currentProt));
   /* un tocco vero sulla zona «Braccia»: si accende solo quella */
   const z = pg.locator('#regola [data-anc="aria-braccia"]');

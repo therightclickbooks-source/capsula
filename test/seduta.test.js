@@ -283,7 +283,9 @@ module.exports = async function(browser){
     !/Health Check|\bSTART\b|\bEND\b/.test(pagina.tutto));
 
   /* il riquadro del Timing sta davvero sul tasto Timing: il quadrato
-     ambra e' largo, e il vecchio calcolo lo spingeva in alto */
+     ambra e' largo, e il vecchio calcolo lo spingeva in alto.
+     Da v198 il setup sta nella sua scheda: prima si apre. */
+  await p.evaluate(()=> pTab('setup'));
   await p.waitForTimeout(600);
   const quadrato = await p.evaluate(()=>{
     const g = [...document.querySelectorAll('.gstep')].find(x => /Timing/.test(x.querySelector('.gt').textContent));
@@ -298,15 +300,22 @@ module.exports = async function(browser){
     editClient('cprova');
     const t = document.body.innerText;
     const prima = MDRAFT.fourD;
-    stepCap('fourD', 1); stepCap('fourD', 1); stepCap('fourD', 1); stepCap('fourD', 1);
+    for(let i = 0; i < 8; i++) stepCap('fourD', 1);
     const alMassimo = document.getElementById('sv_fourD').textContent;
-    return {t, alMassimo, salvato: MDRAFT.fourD, prima,
-            scalaDiNuovo: scalaCapsula(MDRAFT.fourD)};
+    /* v198 · la capsula arriva a 6: il 5 fissato nella scheda arriva alla proposta */
+    stepCap('fourD', -1);
+    const q = {clientId:'cprova', activity:'ems', zones:['gambe'], goal:'recupero', mood:'sereno', pressione:'media', prefSoloAria:false};
+    const conCinque = MOTORE.motoreZenith({quiz:q, macro:Object.assign({}, MDRAFT), anamnesi:{}, primaVolta:false, ultime:[]}).S.fourD;
+    const senza = MOTORE.motoreZenith({quiz:q, macro:{fourD:3, airbag:3, zerog:true, polpacci:1, plantari:1}, anamnesi:{}, primaVolta:false, ultime:[]}).S.fourD;
+    return {t, alMassimo, salvato: MDRAFT.fourD, prima, conCinque, senza,
+            scalaDiNuovo: scalaCapsula(MDRAFT.fourD), vecchi: [0,1,2,3,4,5,6].map(scalaCapsula).join('')};
   });
   tac.t('nella scheda cliente Leg Kneading e Foot Roller sono interruttori, senza «0–3»',
     /Leg Kneading/.test(scheda.t) && /Foot Roller/.test(scheda.t) && !/Rulli plantari\s*0–3/.test(scheda.t));
-  tac.t('nella scheda cliente 4D e airbag si fermano al 3, e il 3 salvato torna 3',
-    scheda.alMassimo === '3' && scheda.scalaDiNuovo === 3, JSON.stringify(scheda, ['alMassimo','salvato','scalaDiNuovo']));
+  tac.t('nella scheda cliente 4D e airbag arrivano a 6, e il 5 salvato torna 5 (i valori vecchi non cambiano)',
+    scheda.alMassimo === '6' && scheda.scalaDiNuovo === 5 && scheda.vecchi === '0112333', JSON.stringify(scheda, ['alMassimo','salvato','scalaDiNuovo','vecchi']));
+  tac.t('il 5 fissato nella scheda arriva alla proposta; senza, il motore resta sotto il 4 come prima',
+    scheda.conCinque >= 5 && scheda.senza <= 3, JSON.stringify(scheda, ['conCinque','senza']));
 
   /* la chiusura: la compila l'operatore ma la legge anche il cliente */
   const chiusura = await p.evaluate(()=>{

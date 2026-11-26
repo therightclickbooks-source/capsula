@@ -146,6 +146,62 @@ module.exports = async function(browser){
       !g.natale || (g.neve === 0 && !g.slitta && g.aghi === 0 && !g.bolle), JSON.stringify(g));
     await ctx.close(); }
 
+  /* 9 · v198 · la proposta a schede, il timer dal «Tempo», l'orologio che
+     dice cosa gira, la schermata finale della vetrina in uno schermo */
+  { const {ctx, p} = await apri(browser, {width:1080, height:1920}, true);
+    p.on('pageerror', e => errori.push(e.message));
+    const s = await p.evaluate(() => { quizState = {clientId:'c1', activity:'riposo', giornata:'scrivania', goal:'relax', zones:['lombare'], mood:'stressato', pressione:'media', prefSoloAria:false};
+      NAV = [{name:'home'}]; VIEW = {name:'proposal'}; render();
+      const vis = sel => { const e = document.querySelector(sel); return !!e && e.offsetHeight > 0; };
+      const r = {schede: [...document.querySelectorAll('.ptab')].map(b => b.textContent.trim()), riga: (document.querySelector('.pprog') || {}).textContent || '',
+        setupChiuso: !vis('.gstep'), regolaChiusa: !vis('#regola'), tempo: vis('#qd-tempo'), taratura: !!document.querySelector('.ppane.on .caltag, .ppane.on .quad'),
+        scorre: document.documentElement.scrollHeight > innerHeight + 2};
+      pTab('setup'); r.setup = vis('.gstep'); pTab('regola'); r.regola = vis('#regola');
+      r.fuori = document.documentElement.scrollWidth > innerWidth + 1; pTab('proto');
+      return r; });
+    tac.t('la proposta ha tre schede (Protocollo · Setup · Regola), apre su Protocollo e sta in uno schermo',
+      s.schede.length === 3 && /Protocollo/.test(s.schede[0]) && /Setup/.test(s.schede[1]) && /Regola/.test(s.schede[2])
+        && s.setupChiuso && s.regolaChiusa && s.setup && s.regola && s.tempo && !s.scorre && !s.fuori, JSON.stringify(s));
+    tac.t('lo schema in cima: il P (una volta sola), la categoria e la schermata del tablet', /P\d\d/.test(s.riga) && /schermata|Home Page/.test(s.riga) && (s.riga.match(/P\d\d/g) || []).length === 1, s.riga);
+    await p.evaluate(() => document.getElementById('qd-tempo').click());
+    await p.waitForTimeout(1300);
+    const t = await p.evaluate(() => ({vivo: !!TM && !TM.fine, mm: (document.getElementById('qd-tm') || {}).textContent || '',
+      full: !!(TM && TM.full), scheda: (document.querySelector('#tmr .tm-scheda') || {}).textContent || ''}));
+    tac.t('toccando il «Tempo» parte il timer e dentro il riquadro si leggono minuti e secondi', t.vivo && /^\d{1,2}:\d\d$/.test(t.mm.trim()), JSON.stringify(t));
+    await p.evaluate(() => { if(!TM.full) timerSchermo(); }); await p.waitForTimeout(500);
+    const o = await p.evaluate(() => (document.querySelector('#tmr .tm-scheda') || {}).textContent || '');
+    tac.t('l\'orologio grande dice la famiglia Z, il P con la categoria e il tipo di seduta', /Z/.test(o) && /P\d\d/.test(o) && /aria|Massaggio/i.test(o), o.replace(/\s+/g, ' '));
+    /* il tocco: un piccolo effetto sul tasto premuto; il clic si spegne da Impostazioni */
+    const tocco = await p.evaluate(async () => {
+      const b = document.querySelector('.ptab:not(.on)') || document.querySelector('button');
+      b.dispatchEvent(new PointerEvent('pointerdown', {bubbles:true, pointerType:'touch'}));
+      const r = {effetto: b.classList.contains('tocco')}; await new Promise(ok => setTimeout(ok, 250)); r.finito = !b.classList.contains('tocco');
+      VIEW = {name:'settings'}; render();
+      const riga = [...document.querySelectorAll('.paramrow')].find(x => /Suono al tocco/.test(x.textContent));
+      r.riga = !!riga; if(riga){ r.primaOn = riga.querySelector('.sw').classList.contains('on'); riga.querySelector('.sw').click();
+        r.dopo = localStorage.getItem('zfl_tocco'); localStorage.removeItem('zfl_tocco'); }
+      return r; });
+    tac.t('il tocco dà un piccolo effetto sul tasto, e il clic si spegne da Impostazioni («Suono al tocco»)',
+      tocco.effetto && tocco.finito && tocco.riga && tocco.primaOn && tocco.dopo === '0', JSON.stringify(tocco));
+    await ctx.close(); }
+  { const p = await browser.newPage({viewport:{width:1080, height:1920}});
+    p.on('pageerror', e => errori.push(e.message));
+    await p.goto(VETRINA); await p.waitForTimeout(1200);
+    await p.evaluate(() => { startCheck(); D.nome = 'Chiara'; D.cogn = 'Prova'; disegnaPasso(); });
+    for(let i = 0; i < 8; i++){
+      const fine = await p.evaluate(() => { if(SCENE !== 'form') return true; const P = passi()[PASSO];
+        if(P.k !== 'nome'){ const os = [...document.querySelectorAll('#fcorpo [onclick]')]; const o = os[Math.min(2, os.length - 1)]; if(o) o.dispatchEvent(new MouseEvent('click', {bubbles:true})); }
+        passoAvanti(); return false; });
+      await p.waitForTimeout(600); if(fine) break; }
+    await p.waitForTimeout(1500);
+    const f = await p.evaluate(() => { const w = document.getElementById('donewrap'), box = document.querySelector('.tuo');
+      const r = {scena: SCENE, scorre: w.scrollHeight > w.clientHeight + 1, gestDentro: !!(box && box.querySelector('.dgest')),
+        operatoreNascosto: !document.getElementById('opdett').classList.contains('on'), puntino: !!document.querySelector('.dpunto')};
+      dettagliOp(true); r.dettagli = document.getElementById('opdett').classList.contains('on'); dettagliOp(false); return r; });
+    tac.t('vetrina: la schermata finale sta in uno schermo, «Apri il gestionale» è nel riquadro del protocollo, i dettagli dietro •••',
+      f.scena === 'done' && !f.scorre && f.gestDentro && f.operatoreNascosto && f.puntino && f.dettagli, JSON.stringify(f));
+    await p.close(); }
+
   tac.t('nessun errore di pagina', !errori.length, errori.join(' | '));
   return tac;
 };
