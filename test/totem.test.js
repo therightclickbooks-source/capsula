@@ -171,6 +171,18 @@ module.exports = async function(browser){
     await p.evaluate(() => { if(!TM.full) timerSchermo(); }); await p.waitForTimeout(500);
     const o = await p.evaluate(() => (document.querySelector('#tmr .tm-scheda') || {}).textContent || '');
     tac.t('l\'orologio grande dice la famiglia Z, il P con la categoria e il tipo di seduta', /Z/.test(o) && /P\d\d/.test(o) && /aria|Massaggio/i.test(o), o.replace(/\s+/g, ' '));
+    /* v199 · dalla Home, col timer che gira, «Apri il protocollo» riporta alla seduta */
+    await p.evaluate(() => { if(TM.full) timerSchermo();
+      quizState = {clientId:'c1', activity:'riposo', giornata:'tranquilla', goal:'energia', zones:[], mood:'stanco', pressione:'media', prefSoloAria:false};
+      VIEW = {name:'proposal'}; render(); document.getElementById('qd-tempo').click(); });
+    await p.waitForTimeout(600);
+    await p.evaluate(() => { if(TM.full) timerSchermo(); NAV = []; go('home'); }); await p.waitForTimeout(600);
+    const ap = await p.evaluate(() => { const b = document.querySelector('#tmr .tm-apri'); const r = {vista: VIEW.name, tasto: !!b && b.offsetHeight > 0};
+      if(b) b.click(); return r; });
+    await p.waitForTimeout(400);
+    const ap2 = await p.evaluate(() => ({vista: VIEW.name, tab: PTAB, nascosto: !(document.querySelector('#tmr .tm-apri') || {}).offsetHeight}));
+    tac.t('fuori dal protocollo, nel riquadro del timer c\'è «Apri il protocollo» e riporta alla seduta (sul protocollo non si vede)',
+      ap.vista === 'home' && ap.tasto && ap2.vista === 'proposal' && ap2.tab === 'proto' && ap2.nascosto, JSON.stringify({ap, ap2}));
     /* il tocco: un piccolo effetto sul tasto premuto; il clic si spegne da Impostazioni */
     const tocco = await p.evaluate(async () => {
       const b = document.querySelector('.ptab:not(.on)') || document.querySelector('button');
